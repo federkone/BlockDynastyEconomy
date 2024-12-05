@@ -34,13 +34,12 @@ import java.util.List;
 
 //TODO: REFACTORIZAR LOS CASOS DE USO EN VAULT, TRABAJAR SIEMPRE CON LA MONEDA POR DEFECTO DEL PROYECTO AQUI, NECESARIO PARA VAULT
 public class GEVaultHook extends AbstractEconomy {
-    private GetAccountsUseCase getAccountsUseCase;
-    private CreateAccountUseCase createAccountUseCase;
-    private GetCurrencyUseCase getCurrencyUseCase;
-    private DepositUseCase depositUseCase;
-    private WithdrawUseCase withdrawUseCase;
+    private final GetAccountsUseCase getAccountsUseCase;
+    private final CreateAccountUseCase createAccountUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final DepositUseCase depositUseCase;
+    private final WithdrawUseCase withdrawUseCase;
     private final BlockDynastyEconomy plugin;
-    //PRIVATE FINAL BOOLEAN LOGENABLED;
 
     public GEVaultHook(BlockDynastyEconomy plugin,CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase,DepositUseCase depositUseCase, WithdrawUseCase withdrawUseCase) {
         this.getAccountsUseCase = getAccountsUseCase;
@@ -49,7 +48,6 @@ public class GEVaultHook extends AbstractEconomy {
         this.withdrawUseCase = withdrawUseCase;
         this.createAccountUseCase = createAccountUseCase;
         this.plugin = plugin;
-        //THIS.LOGENABLED = LOGENABLED
     }
     @Override
     public boolean isEnabled() {
@@ -154,7 +152,7 @@ public class GEVaultHook extends AbstractEconomy {
         //}
 
         try{
-            withdrawUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount,false);
+            withdrawUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -198,7 +196,7 @@ public class GEVaultHook extends AbstractEconomy {
         }
         return new EconomyResponse(amount, balance, type, error);*/
         try {
-            depositUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount,false);
+            depositUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player.getName());
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -239,7 +237,7 @@ public class GEVaultHook extends AbstractEconomy {
         }
         return new EconomyResponse(amount, balance, type, error);*/
         try{
-            withdrawUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount,false);
+            withdrawUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -281,7 +279,7 @@ public class GEVaultHook extends AbstractEconomy {
         }
         return new EconomyResponse(amount, balance, type, error);*/
         try {
-            depositUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount,false);
+            depositUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");

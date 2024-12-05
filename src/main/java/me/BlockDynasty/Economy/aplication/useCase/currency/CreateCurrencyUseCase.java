@@ -48,13 +48,13 @@ public class CreateCurrencyUseCase {
 
     }
 
-    public List<Currency> getCurrencies(){
+    /*public List<Currency> getCurrencies(){
         return currencyManager.getCurrencies();
-    }
+    } //todo ,no va aca
 
     public Currency getCurrency(String name){
         return currencyManager.getCurrency(name);
-    }
+    } //todo, no va aca
 
     public void editStartBal(String name, double startBal){
         Currency currency = currencyManager.getCurrency(name);
@@ -188,7 +188,7 @@ public class CreateCurrencyUseCase {
         try {
             dataStore.deleteCurrency(currency);
             //plugin.getAccountManager().getAccounts().stream().filter(account -> account.getBalances().containsKey(currency)).forEach(account -> account.getBalances().remove(currency)); //TODO: ELIMINAR LAS CURRENCY Y BALANCE DE TODOS LOS USUARIOS?
-            currencyManager.remove(currency);  //TODO:agregar a currency manager ub metodo para remover
+            currencyManager.remove(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
@@ -207,5 +207,5 @@ public class CreateCurrencyUseCase {
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
         }
-    }
+    }*/
 }

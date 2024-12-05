@@ -114,6 +114,60 @@ public class MessageService {
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", target);
     }
+
+    public String getOfferSendMessage(String target, String currencyName, double amount, String currencyName2, double amount2) {
+        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency2 = currencyManager.getCurrency(currencyName2);
+        return F.getOfferSender()
+                .replace("{currencycolorOffert}", currency.getColor() + "")
+                .replace("{amountOffert}",  currency.format(amount))
+                .replace("{currencycolorValue}", currency2.getColor() + "")
+                .replace("{amountValue}", currency2.format(amount2))
+                .replace("{player}", target);
+
+    }
+
+    public String getOfferReceiveMessage(String target, String currencyName, double amount, String currencyName2, double amount2) {
+        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency2 = currencyManager.getCurrency(currencyName2);
+        return F.getOfferReceiver()
+                .replace("{currencycolorOffert}", currency.getColor() + "")
+                .replace("{amountOffert}",  currency.format(amount))
+                .replace("{currencycolorValue}", currency2.getColor() + "")
+                .replace("{amountValue}", currency2.format(amount2))
+                .replace("{player}", target);
+    }
+
+    public String getOfferCancelMessage(String target) {
+        return F.getOfferCancel()
+                .replace("{player}", target);
+    }
+
+    public String getOfferCancelToMessage(String target) {
+        return F.getOfferCancelTo()
+                .replace("{player}", target);
+    }
+
+    public String getOfferDenyMessage(String target) {
+        return F.getOfferDeny()
+                .replace("{player}", target);
+    }
+
+    public String getOfferDenyToMessage(String target) {
+        return F.getOfferDenyTo()
+                .replace("{player}", target);
+    }
+
+    public String getOfferAcceptMessage(String target) {
+        return F.getOfferAccept()
+                .replace("{player}", target);
+    }
+
+    public String getOfferAcceptToMessage(String target) {
+        return F.getOfferAcceptTo()
+                .replace("{player}", target);
+    }
+
     public String getNoDefaultCurrency() {
         return F.getNoDefaultCurrency();
     }

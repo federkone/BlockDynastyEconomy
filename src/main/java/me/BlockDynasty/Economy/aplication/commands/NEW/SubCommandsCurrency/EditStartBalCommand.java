@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
@@ -12,10 +13,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditStartBalCommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public EditStartBalCommand(CreateCurrencyUseCase createCurrencyUseCase){
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public EditStartBalCommand(EditCurrencyUseCase editCurrencyUseCase){
+        this.editCurrencyUseCase = editCurrencyUseCase;
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -40,7 +41,7 @@ public class EditStartBalCommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.editStartBal(currencyName, finalAmount);
+                editCurrencyUseCase.editStartBal(currencyName, finalAmount);
                 sender.sendMessage(F.getPrefix() + "§7Starting balance for §f" + currencyName + " §7set: §a" + finalAmount);
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());

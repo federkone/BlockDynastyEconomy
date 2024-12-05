@@ -4,6 +4,8 @@ import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 
+import java.util.List;
+
 public class GetCurrencyUseCase {
     private final CurrencyManager currencyManager;
 
@@ -24,5 +26,11 @@ public class GetCurrencyUseCase {
     public Currency getDefaultCurrency() {
         return currencyManager.getDefaultCurrency();
     }
+
+
+    public List<Currency> getCurrencies(){
+        return currencyManager.getCurrencies();
+    }
+
 
 }

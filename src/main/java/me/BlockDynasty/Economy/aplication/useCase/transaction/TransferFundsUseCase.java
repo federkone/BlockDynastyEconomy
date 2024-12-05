@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountManager;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
@@ -18,16 +19,15 @@ import me.BlockDynasty.Economy.config.logging.EconomyLogger;
 import java.util.UUID;
 
 public class TransferFundsUseCase {
-    private final AccountManager accountManager;
+
     private final CurrencyManager currencyManager;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
-    private final EconomyLogger economyLogger;
+    private final AbstractLogger economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public TransferFundsUseCase(AccountManager accountManager, CurrencyManager currencyManager,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                                UpdateForwarder updateForwarder, EconomyLogger economyLogger) {
-        this.accountManager = accountManager;
+    public TransferFundsUseCase( CurrencyManager currencyManager,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+                                UpdateForwarder updateForwarder, AbstractLogger economyLogger) {
         this.currencyManager = currencyManager;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;

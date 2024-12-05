@@ -24,7 +24,6 @@ public class ExchangeCommandV2 implements CommandExecutor {
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        //TODO:RE VERIFICAR EL TEMA DE LOS PERMISOS Y LOS ARGUMENTOS PASADOS
         if (!sender.hasPermission("gemseconomy.command.exchange")) {
             sender.sendMessage(F.getNoPerms());
             return true;

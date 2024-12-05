@@ -59,9 +59,10 @@ public class SetCommand implements CommandExecutor {
         SchedulerUtils.runAsync(() -> {
             try {
                 setbalance.execute(target, currencyName, finalMount);
+                sender.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
+                    targetPlayer.sendMessage("Se ha seteado tu balance a " + finalMount + " de " + currencyName);
                 }
             } catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());

@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -11,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class DeleteCurrencyCommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public DeleteCurrencyCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public DeleteCurrencyCommand(DeleteCurrencyUseCase deleteCurrencyUseCase) {
+        this.deleteCurrencyUseCase = deleteCurrencyUseCase;
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -28,7 +29,7 @@ public class DeleteCurrencyCommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.deleteCurrency(currencyName);
+                deleteCurrencyUseCase.deleteCurrency(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Deleted currency: §a" + currencyName);
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency() + e.getMessage());

@@ -37,3 +37,7 @@ commands:
     usage: /exchange
     description: Exchange currencies.
     aliases: [gex, gemsexchange, gexchange]
+  offer:
+    #usage: /offer
+    description: Offer currency to another player.
+    aliases: [goffer, gemsoffer]

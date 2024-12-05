@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -11,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditRateCommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public EditRateCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public EditRateCommand(EditCurrencyUseCase editCurrencyUseCase) {
+        this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class EditRateCommand implements CommandExecutor {
         double finalAmount = amount;
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
+                editCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
                 sender.sendMessage("Rate currency updated for " + currencyName + " to " + rate);
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());

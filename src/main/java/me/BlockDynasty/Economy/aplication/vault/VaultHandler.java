@@ -23,12 +23,12 @@ import org.bukkit.plugin.ServicesManager;
 public class VaultHandler {
 
     private GEVaultHook economy = null;
-    private BlockDynastyEconomy plugin;
-    private CreateAccountUseCase createAccountUseCase;
-    private GetAccountsUseCase getAccountsUseCase;
-    private GetCurrencyUseCase getCurrencyUseCase;
-    private DepositUseCase depositUseCase;
-    private WithdrawUseCase withdrawUseCase;
+    private final BlockDynastyEconomy plugin;
+    private final CreateAccountUseCase createAccountUseCase;
+    private final GetAccountsUseCase getAccountsUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final DepositUseCase depositUseCase;
+    private final WithdrawUseCase withdrawUseCase;
 
     public VaultHandler(BlockDynastyEconomy plugin, CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase, DepositUseCase depositUseCase, WithdrawUseCase withdrawUseCase) {
         this.plugin = plugin;

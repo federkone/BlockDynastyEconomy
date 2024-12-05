@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountManager;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
@@ -21,21 +22,21 @@ import java.util.UUID;
 //trade, que 2 personas intercambien 2 monedas distintas
 //TODO: TAMBIEN SE PODRIA COBRAR IMPUESTO POR TRADE
 public class TradeCurrenciesUseCase {
-    private final AccountManager accountManager;
+
     private final CurrencyManager currencyManager;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
-    private final EconomyLogger economyLogger;
+    private final AbstractLogger economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public TradeCurrenciesUseCase(AccountManager accountManager, CurrencyManager currencyManager,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                                  UpdateForwarder updateForwarder, EconomyLogger economyLogger) {
-        this.accountManager = accountManager;
+    public TradeCurrenciesUseCase( CurrencyManager currencyManager,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+                                  UpdateForwarder updateForwarder, AbstractLogger economyLogger) {
+
         this.currencyManager = currencyManager;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
-        this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.economyLogger = economyLogger;
 
     }
 

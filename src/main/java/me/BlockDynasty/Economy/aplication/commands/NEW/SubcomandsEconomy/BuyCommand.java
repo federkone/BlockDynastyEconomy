@@ -1,85 +1,86 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubcomandsEconomy;
 
+import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
+import me.BlockDynasty.Economy.config.file.F;
+import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
-import me.BlockDynasty.Economy.config.file.F;
-import me.BlockDynasty.Economy.config.file.MessageService;
-import me.BlockDynasty.Economy.utils.SchedulerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class WithdrawCommand implements CommandExecutor {
-    private final WithdrawUseCase withdraw;
+public class BuyCommand implements CommandExecutor {
+   private final WithdrawUseCase withdraw;
     private final MessageService messageService;
 
-    public WithdrawCommand(WithdrawUseCase withdraw, MessageService messageService) {
+    public BuyCommand(WithdrawUseCase withdraw, MessageService messageService) {
         this.withdraw = withdraw;
         this.messageService = messageService;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-
-        if (!sender.hasPermission("gemseconomy.command.take")) {
-            sender.sendMessage(F.getNoPerms());
-            return true;
-        }
-
-
-        if (args.length == 0) {
-            F.getManageHelp(sender); //todo el mensaje de eco help
+        if (!sender.hasPermission("gemseconomy.command.buycommand")) {
+            sender.sendMessage(messageService.getPayNoPerms()); //no tiene permisos para ejecutar comando pagar
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage(F.getTakeUsage());
-            return true;
+            sender.sendMessage("/eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar>");
+            return false;
         }
 
-        String target = args[0];
-        String montoString= args[1];
-        String currencyName = args[2];
+        Player player = Bukkit.getPlayer(args[0]);
 
-        double amount=0;
+        if(player==null) {
+            sender.sendMessage("§cEl jugador no está en línea.");
+            return false;
+        }
+        double cantidadDemoneda;
         try {
-            amount = Double.parseDouble(montoString);
+            cantidadDemoneda = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(F.getUnvalidAmount());
-            return true;
+            player.sendMessage("invalid_number");
+            return false;
         }
 
-        double finalMount = amount;
-        SchedulerUtils.runAsync(() -> {
-            try {
-                withdraw.execute(target, currencyName, finalMount);
-                sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, finalMount));
-                Player targetPlayer = Bukkit.getPlayer(target);
-                if (targetPlayer != null) {
-                    targetPlayer.sendMessage("&a Se ha descontado " + finalMount + " " + currencyName);
-                }
-            } catch (AccountNotFoundException e) {
+        String tipoDemoneda = args[2];
+
+        //constructor de comando a entregar a partir del argumento 3
+        StringBuilder cmdBuilder = new StringBuilder();
+        for (int i = 3; i < args.length; i++) {
+            cmdBuilder.append(args[i]).append(" ");
+        }
+        String cmd = cmdBuilder.toString().trim();
+
+
+            try{
+                withdraw.execute(player.getName(),tipoDemoneda,cantidadDemoneda);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                player.sendMessage("&aTu compra ha sido realizada con exito");
+            }catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());
             } catch (CurrencyAmountNotValidException | DecimalNotSupportedException e) {
                 sender.sendMessage(messageService.getUnvalidAmount());
             }catch (InsufficientFundsException e){
-                sender.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
+                player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
             } catch (TransactionException e) {
                 sender.sendMessage("Error inesperado al realizar transacción");
             } catch (Exception e) {
-                sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                sender.sendMessage(messageService.getUnexpectedErrorMessage()+e.getMessage());
             }
-        });
+
         return false;
     }
 }

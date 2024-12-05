@@ -15,7 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: MIGRAR EL MESSAGE SERVICE AQUI SI ES POSIBLE Y CONSTRUIR DINAMICAMENTE LOS MENSAJES
 public class F {
     private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance(); //TODO: REVISAR LA NECEISTAD DE TENER UNA REFERENCIA
     private static FileConfiguration cfg = plugin.getConfig();
@@ -211,6 +211,24 @@ public class F {
     public static String getCurrencyUsage_Convert() {
         return get("Messages.usage.currency_convert");
     }
+
+    public static String getOfferUsage() {return get("Messages.usage.offer");}
+    public static String getOfferUsageCreate() {return get("Messages.usage.offer_create");}
+    public static String getOfferUsageAccept() {return get("Messages.usage.offer_accept");}
+    public static String getOfferUsageDeny() {return get("Messages.usage.offer_deny");}
+    public static String getOfferUsageCancel() {return get("Messages.usage.offer_cancel");}
+    public static String getOfferSender() {return get("Messages.send_offer");}
+    public static String getOfferReceiver() {return get("Messages.receive_offer");}
+    public static String getOfferAccept() {return get("Messages.accept_offer");}
+    public static String getOfferAcceptTo() {return get("Messages.accept_offer_to");}
+    public static String getOfferDeny() {return get("Messages.deny_offer");}
+    public static String getOfferDenyTo() {return get("Messages.deny_offer_to");}
+    public static String getOfferCancel() {return get("Messages.cancel_offer");}
+    public static String getOfferCancelTo() {return get("Messages.cancel_offer_to");}
+    public static String getNotOffers() {return get("Messages.not_offers");}
+    public static String getOfflinePlayer() { return get("Messages.offline"); }
+    public static String getOfferExpired(String name){return get("Messages.offerExpired").replace("{player}",name);}
+    public static String getOfferExpiredTo(String name){return get("Messages.offerExpiredTo").replace("{player}",name);}
 
     public static void sendCurrencyUsage(CommandSender sender){
         for(String s : getList("Messages.help.currency_command")){

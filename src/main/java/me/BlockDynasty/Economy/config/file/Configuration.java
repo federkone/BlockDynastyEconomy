@@ -42,8 +42,9 @@ public class Configuration {
 
         config.addDefault("storage", "yaml");
         config.addDefault("debug", false);
-        config.addDefault("vault", false);
+        config.addDefault("vault", true);
         config.addDefault("transaction_log", true);
+        config.addDefault("transaction_log_vault",false);
 
         config.addDefault("mysql.database", "minecraft");
         config.addDefault("mysql.tableprefix", "gemseconomy");
@@ -55,11 +56,12 @@ public class Configuration {
         config.addDefault("mongoUri", "mongodb://localhost:27017");
       //  config.addDefault("sqlite.file", "database.sqlite");
 
+        config.addDefault("maxDistanceTrade", 5.0);
         config.addDefault("cheque.material", Material.PAPER.toString());
         config.addDefault("cheque.name", "&aBank Note");
         config.addDefault("cheque.lore", Arrays.asList("&7Worth: {value}.", "&7&oWritten by {player}"));
         config.addDefault("cheque.console_name", "Console");
-        config.addDefault("cheque.enabled", true);
+        config.addDefault("cheque.enabled", false);
 
         config.addDefault(path + "prefix", "&2&lGemsEconomy> ");
         config.addDefault(path + "nopermission", "&7You don't have permission to do this.");
@@ -110,7 +112,8 @@ public class Configuration {
                 "{prefix}&e&lEconomy Help",
                 "&2&l>> &a/eco give <user> <amount> [currency] &8- &7Give a player an amount of a currency.",
                 "&2&l>> &a/eco take <user> <amount> [currency] &8- &7Take an amount of a currency from a player.",
-                "&2&l>> &a/eco set <user> <amount> [currency] &8- &7Set a players amount of a currency."));
+                "&2&l>> &a/eco set <user> <amount> [currency] &8- &7Set a players amount of a currency.",
+                "&2&l>> &a/eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar> &8- &7sell command at player."));
 
         config.addDefault(path + "help.exchange_command", Arrays.asList(
                 "{prefix}&b&lExchange Help",
@@ -122,6 +125,7 @@ public class Configuration {
         config.addDefault(path + "usage.give_command", "&2&l>> &a/eco give <user> <amount> [currency] &8- &7Give a player an amount of a currency.");
         config.addDefault(path + "usage.take_command", "&2&l>> &a/eco take <user> <amount> [currency] &8- &7Take an amount of a currency from a player.");
         config.addDefault(path + "usage.set_command", "&2&l>> &a/eco set <user> <amount> [currency] &8- &7Set a players amount of a currency.");
+        config.addDefault(path + "usage.buycommand"," &2&l>> &a/eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar> &8- &7sell command at player.");
 
         config.addDefault(path + "help.cheque_command", Arrays.asList("{prefix}&e&lCheque Help",
                 "&2&l>> &a/cheque write <amount> [currency] &8- &7Write a cheque with a specified amount and currency.",
@@ -158,6 +162,31 @@ public class Configuration {
         config.addDefault(path + "usage.currency_startbal", "&2&l>> &a/currency startbal <plural> <amount> &8- &7Set the starting balance for a currency.");
         config.addDefault(path + "usage.currency_setrate", "&2&l>> &a/currency setrate <plural> <amount> &8- &7Sets the currency's exchange rate.");
 
+        //--------------------------new--Offer-----------------------------------------------------
+        config.addDefault(path+"too_far","&cEl jugador objetivo está demasiado lejos. Deben estar dentro de 5 bloques de distancia." );
+        config.addDefault(path+"offline","&cEl jugador que te hizo la oferta ya no está en línea.");
+        config.addDefault(path+"not_offers","&cNo tienes ofertas pendientes.");
+        config.addDefault(path+"only_players","&2&l>> &cSolo los jugadores pueden hacer esto.");
+        config.addDefault(path+"usage.offer","&2&l>> &aUso: /offer <create/accept/deny/cancel>");
+        config.addDefault(path+"usage.offer_create","&2&l>> &aUso: /offer create <cantidad> <tipoMoneda> <monto> <tipoMoneda> <Ajugador>");
+        config.addDefault(path+"usage.offer_accept","&2&l>> &aUso: /offer accept <Ajugador>");
+        config.addDefault(path+"usage.offer_deny","&2&l>> &aUso: /offer deny <Ajugador>");
+        config.addDefault(path+"usage.offer_cancel","&2&l>> &aUso: /offer cancel <Ajugador>");
+
+        config.addDefault(path + "send_offer", "&7Has ofrecido{currencycolorOffert} {amountOffert} &7por{currencycolorValue} {amountValue} &7a &a{player}&7.");
+        config.addDefault(path + "receive_offer", "&7Has recibido una oferta de{currencycolorOffert} {amountOffert} &7por{currencycolorValue} {amountValue} &7del jugador &a{player}&7.");
+        config.addDefault(path + "accept_offer_to", "&7Has aceptado la oferta de &a{player}&7.");
+        config.addDefault(path + "accept_offer", "&7Tu oferta para &a{player}&7 ha sido aceptada.");
+        config.addDefault(path+ "cancel_offer_to","&7Has cancelado la oferta para &a{player}&7."); //cancelado
+        config.addDefault(path+ "cancel_offer","&a{player}&7 cancelo la oferta."); //cancelado
+        config.addDefault(path+ "deny_offer_to","&7Has rechazado la oferta de &a{player}&7."); //denegada
+        config.addDefault(path+ "deny_offer","&7Tu oferta para &a{player}&7 ha sido rechazada."); //denagada
+
+        config.addDefault(path+"offerExpiredTo","&7La oferta de &a{player}&7 ha expirado."); //expirado
+        config.addDefault(path+"offerExpired","&7Tu oferta a &a{player}&7 ha expirado."); //expirado
+
+
+       //------------------------------------------------------------------------------------------
 
         config.options().copyDefaults(true);
         plugin.saveConfig();

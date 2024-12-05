@@ -13,17 +13,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GetBalanceUseCase {
-    private final AccountManager accountManager;
-    private final CurrencyManager currencyManager;
-    private final IRepository dataStore;
-    private final UpdateForwarder updateForwarder;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public GetBalanceUseCase(AccountManager accountManager, CurrencyManager currencyManager, GetAccountsUseCase getAccountsUseCase, UpdateForwarder updateForwarder, IRepository dataStore) {
-        this.accountManager = accountManager;
-        this.currencyManager = currencyManager;
-        this.dataStore = dataStore;
-        this.updateForwarder = updateForwarder;
+    public GetBalanceUseCase(GetAccountsUseCase getAccountsUseCase) {
+
         this.getAccountsUseCase = getAccountsUseCase;
     }
 

@@ -60,9 +60,10 @@ public class DepositCommand implements CommandExecutor {
         SchedulerUtils.runAsync(() -> {
             try {
                 deposit.execute(target, currencyName, finalMount);
+                sender.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
+                    targetPlayer.sendMessage("&aHas recibido " + finalMount + " " + currencyName);
                 }
             } catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());

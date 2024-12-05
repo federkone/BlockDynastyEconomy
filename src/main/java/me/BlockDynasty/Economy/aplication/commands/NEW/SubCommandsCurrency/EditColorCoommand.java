@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -11,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditColorCoommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public EditColorCoommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public EditColorCoommand(EditCurrencyUseCase editCurrencyUseCase) {
+        this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
     @Override
@@ -48,7 +49,7 @@ public class EditColorCoommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.editColor(currencyName, colorString);
+                editCurrencyUseCase.editColor(currencyName, colorString);
                 sender.sendMessage(F.getPrefix() + "§7Color for §f" + currencyName + " §7updated: " + colorString);
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());

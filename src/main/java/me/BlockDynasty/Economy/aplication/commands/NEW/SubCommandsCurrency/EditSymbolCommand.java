@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -11,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditSymbolCommand implements CommandExecutor {
-    private CreateCurrencyUseCase createCurrencyUseCase;
+    private EditCurrencyUseCase editCurrencyUseCase;
 
-    public EditSymbolCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public EditSymbolCommand(EditCurrencyUseCase editCurrencyUseCase) {
+        this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class EditSymbolCommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.editSymbol(currencyName, currencySymbol);
+                editCurrencyUseCase.editSymbol(currencyName, currencySymbol);
                 sender.sendMessage(F.getPrefix() + "§7Currency symbol for §f" + currencyName + " §7updated: §a" + currencySymbol);
             } catch (TransactionException e) {
                 sender.sendMessage(F.getPrefix() + "§7error in transaction.");

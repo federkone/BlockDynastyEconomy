@@ -3,14 +3,19 @@
 
 package me.BlockDynasty.Economy;
 
+import me.BlockDynasty.Economy.aplication.useCase.currency.*;
+import me.BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
+import me.BlockDynasty.Economy.config.logging.AbstractLogger;
+import me.BlockDynasty.Economy.config.logging.VaultLogger;
+import me.BlockDynasty.Economy.domain.Offers.OfferManager;
 import me.BlockDynasty.Economy.domain.account.AccountManager;
 import me.BlockDynasty.Economy.aplication.api.BlockDynastyEconomyAPI;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.cheque.ChequeManager;
 import me.BlockDynasty.Economy.aplication.commands.NEW.CommandRegistration;
@@ -38,19 +43,20 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private ChequeManager chequeManager;
     private CurrencyManager currencyManager;
     private VaultHandler vaultHandler;
-    private Metrics metrics;
-    private EconomyLogger economyLogger;
+    private AbstractLogger economyLogger;
+    private AbstractLogger vaultLogger;
     private UpdateForwarder updateForwarder;
+    private OfferManager offerManager;
 
     private boolean debug = false;
-    private boolean vault = false;
-    private boolean logging = false;
-    private boolean cheques = true;
+    private boolean vault = true;
+    private boolean logging = true;
+    private boolean cheques = false;
 
     private boolean disabling = false;
 
-    private WithdrawUseCase NewWithdrawUseCase ;
-    private DepositUseCase NewDepositUseCase ;
+    private WithdrawUseCase withdrawUseCase ;
+    private DepositUseCase depositUseCase ;
     private MessageService messageService ;
     private CreateCurrencyUseCase createCurrencyUseCase ;
     private SetBalanceUseCase setBalanceUseCase ;
@@ -62,8 +68,13 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private CreateAccountUseCase createAccountUseCase ;
     private TransferFundsUseCase transferFundsUseCase ;
     private TradeCurrenciesUseCase tradeCurrenciesUseCase ;
+    private DeleteCurrencyUseCase deleteCurrencyUseCase ;
+    private EditCurrencyUseCase editCurrencyUseCase ;
+    private ToggleFeaturesUseCase toggleFeaturesUseCase ;
+    private CreateOfferUseCase createOfferUseCase ;
+    private AcceptOfferUseCase acceptOfferUseCase ;
+    private CancelOfferUseCase cancelOfferUseCase ;
     private static BlockDynastyEconomyAPI api;
-    //GetAccountsUseCase getAccountsUseCase ;
 
 
     @Override
@@ -95,7 +106,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
 
         //registrar api
-        api = new BlockDynastyEconomyAPI(getAccountsUseCase,getCurrencyUseCase,NewDepositUseCase,NewWithdrawUseCase,exchangeUseCase,transferFundsUseCase,tradeCurrenciesUseCase);
+        api = new BlockDynastyEconomyAPI(getAccountsUseCase,getCurrencyUseCase,depositUseCase,withdrawUseCase,exchangeUseCase,transferFundsUseCase,tradeCurrenciesUseCase);
         getServer().getServicesManager().register(BlockDynastyEconomyAPI.class, api, this, ServicePriority.Normal);
     }
 
@@ -144,22 +155,32 @@ public class BlockDynastyEconomy extends JavaPlugin {
         accountManager = new AccountManager();
         currencyManager = new CurrencyManager(repository);
         economyLogger = new EconomyLogger(this);
+        vaultLogger = new VaultLogger(this);
         //metrics = new Metrics(this);
         updateForwarder = new UpdateForwarder(this);
+        offerManager = new OfferManager(this);
+
 
         messageService = new MessageService(currencyManager);
         getAccountsUseCase = new GetAccountsUseCase(accountManager, currencyManager, getDataStore());
         getCurrencyUseCase = new GetCurrencyUseCase(currencyManager);
-        NewWithdrawUseCase = new WithdrawUseCase(accountManager, currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        NewDepositUseCase = new DepositUseCase(accountManager, currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
+        withdrawUseCase = new WithdrawUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        depositUseCase = new DepositUseCase(currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
         createCurrencyUseCase = new CreateCurrencyUseCase(currencyManager, updateForwarder,getDataStore());
-        setBalanceUseCase = new SetBalanceUseCase(accountManager, currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
-        payUseCase = new PayUseCase(accountManager, currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        exchangeUseCase = new ExchangeUseCase(accountManager, currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        balanceUseCase = new GetBalanceUseCase(accountManager, currencyManager,getAccountsUseCase, updateForwarder,getDataStore());
+        setBalanceUseCase = new SetBalanceUseCase( currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
+        payUseCase = new PayUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        exchangeUseCase = new ExchangeUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        balanceUseCase = new GetBalanceUseCase(getAccountsUseCase);
         createAccountUseCase = new CreateAccountUseCase(accountManager,currencyManager,getAccountsUseCase,updateForwarder, getDataStore());
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(accountManager, currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        transferFundsUseCase = new TransferFundsUseCase(accountManager, currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        transferFundsUseCase = new TransferFundsUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyManager,getDataStore(),updateForwarder);
+        editCurrencyUseCase = new EditCurrencyUseCase(currencyManager,updateForwarder,getDataStore());
+        toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyManager,getDataStore(),updateForwarder);
+        createOfferUseCase = new CreateOfferUseCase(offerManager,getCurrencyUseCase,getAccountsUseCase);
+        acceptOfferUseCase = new AcceptOfferUseCase(offerManager,tradeCurrenciesUseCase);
+        cancelOfferUseCase = new CancelOfferUseCase(offerManager);
+
 
 
         if (isLogging()) {
@@ -173,20 +194,22 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     }
     private void registerCommands(){
-        CommandRegistration.registerCommands(this,payUseCase,exchangeUseCase,balanceUseCase, NewWithdrawUseCase, setBalanceUseCase, NewDepositUseCase,createCurrencyUseCase, messageService);
-
-
-
+        CommandRegistration.registerCommands(this,payUseCase,exchangeUseCase,balanceUseCase, withdrawUseCase,
+                                            setBalanceUseCase, depositUseCase,createCurrencyUseCase, messageService,getCurrencyUseCase,
+                                            deleteCurrencyUseCase,editCurrencyUseCase,toggleFeaturesUseCase,createOfferUseCase,acceptOfferUseCase,cancelOfferUseCase);
         //todo: comando trade, el cual eliminaria la necesidad del comando vender de la extension que hice
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new EconomyListener(this,createAccountUseCase,getAccountsUseCase), this);
+        getServer().getPluginManager().registerEvents(new EconomyListener(this,createAccountUseCase,getAccountsUseCase,accountManager), this);
     }
     private void setupIntegrations() {
         // Configuración de Vault
         if (isVault()) {
-            vaultHandler = new VaultHandler(this,createAccountUseCase,getAccountsUseCase,getCurrencyUseCase,NewDepositUseCase,NewWithdrawUseCase);
+            //TODO SE PUEDE PREGUNTAR VAULT_LOGGER ESTA HABILITADO PARA INYECTAR EL LOGER VAULT O EL DE ECONOMY
+            vaultHandler = new VaultHandler(this,createAccountUseCase,getAccountsUseCase,getCurrencyUseCase,
+                                            new DepositUseCase(currencyManager,getAccountsUseCase,getDataStore(),updateForwarder,vaultLogger),
+                                            new WithdrawUseCase(currencyManager,getAccountsUseCase,getDataStore(),updateForwarder,vaultLogger));
             vaultHandler.hook();
         } else {
             getLogger().info("Vault integration is disabled.");
@@ -231,13 +254,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
         return vaultHandler;
     }
 
-    public EconomyLogger getEconomyLogger() {
+    public AbstractLogger getEconomyLogger() {
         return economyLogger;
     }
 
-    public Metrics getMetrics() {
-        return metrics;
-    }
 
     public ChequeManager getChequeManager() {
         return chequeManager;

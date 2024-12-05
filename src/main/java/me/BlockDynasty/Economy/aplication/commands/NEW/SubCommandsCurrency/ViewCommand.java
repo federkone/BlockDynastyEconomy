@@ -1,8 +1,10 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.config.file.F;
+import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.utils.SchedulerUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class ViewCommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
 
-    public ViewCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public ViewCommand(GetCurrencyUseCase getCurrencyUseCase) {
+        this.getCurrencyUseCase = getCurrencyUseCase;
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -22,8 +24,9 @@ public class ViewCommand implements CommandExecutor {
             return true;
         }
         SchedulerUtils.runAsync(() -> {
-            Currency currency = createCurrencyUseCase.getCurrency(args[0]);
-            if (currency != null) {
+            try {
+                Currency currency = getCurrencyUseCase.getCurrency(args[0]);
+
                 sender.sendMessage(F.getPrefix() + "§7ID: §c" + currency.getUuid().toString());
                 sender.sendMessage(F.getPrefix() + "§7Singular: §a" + currency.getSingular() + "§7, Plural: §a" + currency.getPlural());
                 sender.sendMessage(F.getPrefix() + "§7Start Balance: " + currency.getColor() + currency.format(currency.getDefaultBalance()) + "§7.");
@@ -32,9 +35,10 @@ public class ViewCommand implements CommandExecutor {
                 sender.sendMessage(F.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
                 sender.sendMessage(F.getPrefix() + "§7Color: " + currency.getColor() + currency.getColor().name());
                 sender.sendMessage(F.getPrefix() + "§7Rate: " + currency.getColor() + currency.getExchangeRate());
-            } else {
+            }catch (CurrencyNotFoundException e){
                 sender.sendMessage(F.getUnknownCurrency());
             }
+
         });
         return false;
     }

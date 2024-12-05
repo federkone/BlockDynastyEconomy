@@ -10,6 +10,7 @@ import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.RepositoryNotSupportTopException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -50,7 +51,7 @@ public class GetAccountsUseCase {
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
                 updateAccountBalances(account);
-                accountManager.addAccountToCache(account); //añadir a cache
+                //accountManager.addAccountToCache(account); //TODO :añadir a cache, CUIDADO, ANALIZAR HACER UN LOADACCOUNTUSERCASE, YA QUE LOS COMANDOS DE CONSULTA ESTAN CARGANDO EN LA CACHE DE MANERA INNECESARIA
             }else{
                 throw new AccountNotFoundException("Account not found");
             }
@@ -68,7 +69,7 @@ public class GetAccountsUseCase {
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
                 updateAccountBalances(account);
-                accountManager.addAccountToCache(account); //añadir a cache
+                //accountManager.addAccountToCache(account); //añadir a cache
             }else{
                 throw new AccountNotFoundException("Account not found");
             }
@@ -82,7 +83,7 @@ public class GetAccountsUseCase {
         return dataStore.loadAccounts(Criteria.create());
     }
 
-    public List<Account> getOnlineAccounts() {
+    public Set<Account> getOnlineAccounts() {
         return accountManager.getAccounts();
     }
 

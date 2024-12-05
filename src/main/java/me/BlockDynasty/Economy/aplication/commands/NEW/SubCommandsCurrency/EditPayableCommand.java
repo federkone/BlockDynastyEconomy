@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.ToggleFeaturesUseCase;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -11,10 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditPayableCommand implements CommandExecutor {
-    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final ToggleFeaturesUseCase toggleFeaturesUseCase;
 
-    public EditPayableCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        this.createCurrencyUseCase = createCurrencyUseCase;
+    public EditPayableCommand(ToggleFeaturesUseCase toggleFeaturesUseCase) {
+        this.toggleFeaturesUseCase = toggleFeaturesUseCase;
     }
 
     @Override
@@ -27,7 +28,7 @@ public class EditPayableCommand implements CommandExecutor {
         String currencyName = args[0];
         SchedulerUtils.runAsync(() -> {
             try {
-                createCurrencyUseCase.togglePayable(currencyName);
+                toggleFeaturesUseCase.togglePayable(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Toggled payability for §f" + currencyName);
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());

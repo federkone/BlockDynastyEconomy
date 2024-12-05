@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountManager;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
@@ -13,21 +14,21 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
 import java.util.UUID;
 
 public class DepositUseCase {
-    private final AccountManager accountManager;
     private final CurrencyManager currencyManager;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
-    private final EconomyLogger economyLogger;
+    private final AbstractLogger economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public DepositUseCase(AccountManager accountManager, CurrencyManager currencyManager,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                          UpdateForwarder updateForwarder, EconomyLogger economyLogger){
+    public DepositUseCase(CurrencyManager currencyManager, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+                          UpdateForwarder updateForwarder, AbstractLogger economyLogger){
 
-        this.accountManager = accountManager;
         this.currencyManager = currencyManager;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
@@ -36,12 +37,11 @@ public class DepositUseCase {
 
     }
 
-    //accountManager.deposit(target,currency, amount))
     public void execute(UUID targetUUID, String currencyName, double amount) {
         Account account = getAccountsUseCase.getAccount(targetUUID);
         Currency currency = currencyManager.getCurrency(currencyName);
 
-        performDeposit(account, currency, amount,true);
+        performDeposit(account, currency, amount);
     }
 
 
@@ -49,25 +49,12 @@ public class DepositUseCase {
         Account account = getAccountsUseCase.getAccount(targetName);
         Currency currency = currencyManager.getCurrency(currencyName);
 
-        performDeposit(account, currency, amount,true);
+        performDeposit(account, currency, amount);
     }
 
-    public void execute(UUID targetUUID, String currencyName, double amount,boolean enableLog) {
-        Account account = getAccountsUseCase.getAccount(targetUUID);
-        Currency currency = currencyManager.getCurrency(currencyName);
-
-        performDeposit(account, currency, amount,enableLog);
-    }
-
-    public void execute(String targetName, String currencyName, double amount,boolean enableLog) {
-        Account account = getAccountsUseCase.getAccount(targetName);
-        Currency currency = currencyManager.getCurrency(currencyName);
-
-        performDeposit(account, currency, amount,enableLog);
-    }
 
     //TODO: PREGUNTAR SI EL USUSARIO TIENE LA MONEDA? .DE MOMENTO TODAS LAS CUENTAS CUENTAN CON TODOS LOS TIPOS DE MONEDAS INICIALIZADAS
-    private void performDeposit(Account account, Currency currency, double amount,boolean enableLog) {
+    private void performDeposit(Account account, Currency currency, double amount) {
         if (account == null) {
             throw new AccountNotFoundException("Account not found");
         }
@@ -86,10 +73,10 @@ public class DepositUseCase {
         try {
             dataStore.saveAccount(account);
             updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-            if(enableLog) //todo: esto puedo agregarlo al archivo de configuracion, para permitir que el usuario habilite el log de VAULT y todo lo que haga vault con este plugin
-                economyLogger.log("[DEPOSIT] Account: " + account.getDisplayName() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
+            economyLogger.log("[DEPOSIT] Account: " + account.getDisplayName() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
         } catch (TransactionException e) {
             throw new TransactionException("Error saving account",e);
         }
     }
+
 }
