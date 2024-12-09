@@ -7,9 +7,9 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class TransactionEvent extends Event implements Cancellable {
+public class TransactionEvent {//extends Event implements Cancellable {
 
-    private static final HandlerList handlerList = new HandlerList();
+    /*private static final HandlerList handlerList = new HandlerList();
     private Currency currency;
     private Account account;
     private double amount;
@@ -61,5 +61,5 @@ public class TransactionEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean b) {
         this.cancel = b;
-    }
+    }*/
 }

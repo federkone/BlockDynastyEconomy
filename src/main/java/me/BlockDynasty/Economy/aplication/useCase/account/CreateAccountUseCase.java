@@ -4,11 +4,13 @@ import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountManager;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountExeption;
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -31,27 +33,29 @@ public class CreateAccountUseCase {
 
     //todo: se puede upgradear para aceptar solo uuid y obtener el nombre a trabez de la api bukkit
     public void execute(UUID userUuid , String userName) {
-        Account existingAccount = getAccountsUseCase.getAccount(userUuid);
-
-        if (existingAccount != null) {
-            throw new AccountExeption("Account already exists for: " + existingAccount.getDisplayName());
+        try{
+            Account existingAccount = getAccountsUseCase.getAccount(userUuid);
+            if (existingAccount != null) {
+                throw new AccountExeption("Account already exists for: " + existingAccount.getDisplayName());
+            }
+        }catch (AccountNotFoundException e){
+            Account account = new Account(userUuid, userName);
+            account.setCanReceiveCurrency(true);
+            account.setNickname(userName);
+            initializeAccountWithDefaultCurrencies(account);
+            try {
+                dataStore.createAccount(account);
+                accountManager.addAccountToCache(account);
+                //updateForwarder.sendUpdateMessage("account", account.getUuid().toString()); //todo :test sin esto, ya que no hace falta broadcastear la creacion de una cuenta
+            } catch (TransactionException t) {
+                throw new TransactionException("Error creating account for: " + account.getDisplayName());
+            }
         }
 
-        Account account = new Account(userUuid, userName);
-        account.setCanReceiveCurrency(true);
-        account.setNickname(userName);
-        initializeAccountWithDefaultCurrencies(account);
-        try {
-            dataStore.createAccount(account);
-            accountManager.addAccountToCache(account);
-            updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-        } catch (TransactionException e) {
-            throw new TransactionException("Error creating account for: " + account.getDisplayName());
-        }
     }
 
     private void initializeAccountWithDefaultCurrencies(Account account) {
-        Map<Currency, Double> balances = new HashMap<>();
+        Map<Currency, BigDecimal> balances = new HashMap<>();
         for (Currency currency : currencyManager.getCurrencies()) {
             balances.put(currency, currency.getDefaultBalance());
         }

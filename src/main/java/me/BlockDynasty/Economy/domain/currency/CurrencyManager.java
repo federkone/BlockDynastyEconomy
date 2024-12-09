@@ -1,9 +1,10 @@
 package me.BlockDynasty.Economy.domain.currency;
 
-import com.google.common.collect.Lists;
+
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public class CurrencyManager {
     private List<Currency> currencies ;
 
     public CurrencyManager(IRepository repository) {
-        this.currencies = Lists.newArrayList();
+        this.currencies = new ArrayList<>();
         this.currencies = repository.loadCurrencies(Criteria.create());
 
     }

@@ -29,6 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class GEVaultHook extends AbstractEconomy {
     public String format(double amount) {
         Currency currency = getCurrencyUseCase.getDefaultCurrency();
         if(currency == null) return String.valueOf(amount);
-        return currency.format(amount);
+        return currency.format(BigDecimal.valueOf(amount));
     }
 
     @Override
@@ -92,7 +93,7 @@ public class GEVaultHook extends AbstractEconomy {
     public boolean has(String playerName, double amount) {
         Account user = getAccountsUseCase.getAccount(playerName);
         if(user != null){
-            return user.hasEnough(getCurrencyUseCase.getDefaultCurrency(), amount);
+            return user.hasEnough(getCurrencyUseCase.getDefaultCurrency(), BigDecimal.valueOf(amount));
         }
         return false;
     }
@@ -117,7 +118,7 @@ public class GEVaultHook extends AbstractEconomy {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + playerName);
         Account user = getAccountsUseCase.getAccount(playerName);
         Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency);
+        return user.getBalance(currency).doubleValue();
     }
 
     @Override
@@ -125,34 +126,16 @@ public class GEVaultHook extends AbstractEconomy {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
         Account user = getAccountsUseCase.getAccount(player.getUniqueId());
         Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency);
+        return user.getBalance(currency).doubleValue();
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
 
-        //if (amount < 0) {
-        //    return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit negative funds");
-        //}
-
-        //double balance;
-        //EconomyResponse.ResponseType type = EconomyResponse.ResponseType.FAILURE;
-        //String error = null;
-
-        //Account user = getAccountsUseCase.getAccount(player.getUniqueId());
-        //Currency currency = getCurrencyUseCase.getDefaultCurrency();
-
-        //if(depositUseCase.execute(user.getNickname(),currency.getSingular(), amount)){
-        //    balance = user.getBalance(currency);
-        //    type = EconomyResponse.ResponseType.SUCCESS;
-        //}else{
-        //    balance = user.getBalance(currency);
-        //    error = "Could not withdraw " + amount + " from " + player.getName() + " because they don't have enough funds";
-        //}
 
         try{
-            withdrawUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+            withdrawUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(),BigDecimal.valueOf(amount));
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -175,28 +158,8 @@ public class GEVaultHook extends AbstractEconomy {
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId()+ ")");
 
-       /* if (amount < 0) {
-            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit negative funds");
-        }
-
-        double balance;
-        EconomyResponse.ResponseType type = EconomyResponse.ResponseType.FAILURE;
-        String error = null;
-
-        Account user = accountManager.getAccount(player.getUniqueId());
-
-        Currency currency = currencyManager.getDefaultCurrency();
-
-        if(accountManager.deposit(user,currency, amount)){
-            balance = user.getBalance(currency);
-            type = EconomyResponse.ResponseType.SUCCESS;
-        }else{
-            balance = user.getBalance(currency);
-            error = "Could not deposit " + amount + " to " + player.getName() + " because they are not allowed to receive currency.";
-        }
-        return new EconomyResponse(amount, balance, type, error);*/
         try {
-            depositUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+            depositUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player.getName());
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -217,27 +180,8 @@ public class GEVaultHook extends AbstractEconomy {
     public EconomyResponse withdrawPlayer(String player, double amount) {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
 
-        /*if (amount < 0) {
-            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit negative funds");
-        }
-
-        double balance;
-        EconomyResponse.ResponseType type = EconomyResponse.ResponseType.FAILURE;
-        String error = null;
-
-        Account user = accountManager.getAccount(player);
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-
-        if(accountManager.withdraw(user,currency, amount)){
-            balance = user.getBalance(currency);
-            type = EconomyResponse.ResponseType.SUCCESS;
-        }else{
-            balance = user.getBalance(currency);
-            error = "Could not withdraw " + amount + " from " + player + " because they don't have enough funds";
-        }
-        return new EconomyResponse(amount, balance, type, error);*/
         try{
-            withdrawUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+            withdrawUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
@@ -259,27 +203,8 @@ public class GEVaultHook extends AbstractEconomy {
     @Override
     public EconomyResponse depositPlayer(String player, double amount) {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
-       /* if (amount < 0) {
-            return new EconomyResponse(0, 0, EconomyResponse.ResponseType.FAILURE, "Cannot deposit negative funds");
-        }
-
-        double balance;
-        EconomyResponse.ResponseType type = EconomyResponse.ResponseType.FAILURE;
-        String error = null;
-
-        Account user = accountManager.getAccount(player);
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-
-        if(accountManager.deposit(user,currency, amount)){
-            balance = user.getBalance(currency);
-            type = EconomyResponse.ResponseType.SUCCESS;
-        }else{
-            balance = user.getBalance(currency);
-            error = "Could not deposit " + amount + " to " + player + " because they are not allowed to receive currency.";
-        }
-        return new EconomyResponse(amount, balance, type, error);*/
         try {
-            depositUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+            depositUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(),BigDecimal.valueOf(amount));
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player);
         }catch (AccountNotFoundException e){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");

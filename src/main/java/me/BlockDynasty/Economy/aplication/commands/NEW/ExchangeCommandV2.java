@@ -9,10 +9,14 @@ import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.utils.SchedulerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.math.BigDecimal;
 
 public class ExchangeCommandV2 implements CommandExecutor {
     private ExchangeUseCase exchange;
@@ -34,7 +38,12 @@ public class ExchangeCommandV2 implements CommandExecutor {
             return true;
         }
 
-        String player = sender.getName();
+        String player;
+        if (args.length > 4) {
+            player = args[4];
+        }else {
+            player =  sender.getName();
+        }
 
         double toExchangeAmount = 0;
         double toReceiveAmount = 0;
@@ -54,11 +63,19 @@ public class ExchangeCommandV2 implements CommandExecutor {
 
         double finalToExchangeAmount = toExchangeAmount;
         double finalToReceiveAmount = toReceiveAmount;
+
+        Player targetPlayer = Bukkit.getPlayer(player); //para informar al jugador que hace el exchange
         SchedulerUtils.runAsync(() -> {
             try
             {
-                exchange.execute(player, toExchange, toReceive, finalToExchangeAmount, finalToReceiveAmount);
-                sender.sendMessage(messageService.getExchangeSuccess( toExchange, finalToExchangeAmount, toReceive));
+                exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
+
+                if( targetPlayer != null){
+                    targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,BigDecimal.valueOf( finalToExchangeAmount), toReceive));
+                }else{
+                    sender.sendMessage(messageService.getExchangeSuccess( toExchange, BigDecimal.valueOf(finalToExchangeAmount), toReceive));
+                }
+
             }
             catch (CurrencyNotFoundException e)
             {
@@ -74,16 +91,26 @@ public class ExchangeCommandV2 implements CommandExecutor {
             }
             catch (InsufficientFundsException e)
             {
-                sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                if( targetPlayer != null){
+                    targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                }else {
+                    sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                }
             }
             catch (TransactionException e)
             {
-                sender.sendMessage("Error en el proceso de exchange");
+                if( targetPlayer != null){
+                    targetPlayer.sendMessage("§cError en el proceso de exchange");
+                    //console log informate about the error or another log
+                }else {
+                    sender.sendMessage("§cError en el proceso de exchange");
+                }
 
             }
             catch (Exception e)
             {
                 sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                //console log informate about the error
             }
         });
         return true;

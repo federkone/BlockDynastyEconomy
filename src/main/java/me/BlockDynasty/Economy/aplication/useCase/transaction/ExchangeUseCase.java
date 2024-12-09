@@ -14,7 +14,9 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import me.BlockDynasty.Economy.utils.DecimalUtils;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 
@@ -38,7 +40,7 @@ public class ExchangeUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID accountUuid, String currencyFromName, String currencyToname, double amountFrom, double amountTo) {
+    public void execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
         Account account = getAccountsUseCase.getAccount(accountUuid);
         Currency currencyFrom = currencyManager.getCurrency(currencyFromName);
         Currency currencyTo = currencyManager.getCurrency(currencyToname);
@@ -47,7 +49,7 @@ public class ExchangeUseCase {
 
     }
 
-    public void execute(String accountString, String currencyFromName, String currencyToname, double amountFrom, double amountTo) {
+    public void execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
         Account account = getAccountsUseCase.getAccount(accountString);
         Currency currencyFrom = currencyManager.getCurrency(currencyFromName);
         Currency currencyTo = currencyManager.getCurrency(currencyToname);
@@ -56,7 +58,8 @@ public class ExchangeUseCase {
     }
 
 
-    private void performExchange(Account account, Currency currencyFrom, Currency currencyTo,double amountFrom,double amountTo){
+    private void performExchange(Account account, Currency currencyFrom, Currency currencyTo,BigDecimal amountFrom,BigDecimal amountTo){
+
         if(currencyFrom == null || currencyTo == null ) {
             throw new CurrencyNotFoundException("currency not found"); // Manejo de errores
         }
@@ -65,18 +68,21 @@ public class ExchangeUseCase {
             throw new AccountNotFoundException("Account or One or both currencies not found"); // Manejo de errores
         }
 
-        if (!currencyFrom.isDecimalSupported() && amountFrom % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
-
-        if (!currencyTo.isDecimalSupported() && amountTo % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
-        //TODO:aca se puede calcular el ratio de impuesto a cobrar antes de preguntar si tiene suficiente fondos
         if (!account.hasEnough(currencyFrom, amountFrom)) {
             throw new InsufficientFundsException("Insufficient balance for currency: " + currencyFrom.getUuid()); // Manejo de errores
         }
 
+        if (!currencyFrom.isDecimalSupported() && amountFrom.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+
+        if (!currencyTo.isDecimalSupported() && amountTo.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+
+        //TODO:aca se puede calcular el ratio de impuesto a cobrar antes de preguntar si tiene suficiente fondos
+
+        //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
         account.withdraw(currencyFrom, amountFrom);
         account.deposit(currencyTo, amountTo);
 

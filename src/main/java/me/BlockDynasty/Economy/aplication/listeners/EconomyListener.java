@@ -35,8 +35,8 @@ public class EconomyListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) return;
-        SchedulerUtils.runAsync(()->{
+        //if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) return;
+        SchedulerUtils.run(() -> {
             try{
                Account account = getAccountsUseCase.getAccount(player.getUniqueId()); //traer y cargar en cache
                 accountManager.addAccountToCache(account); //se agrega a cache por que se conecta
@@ -45,14 +45,35 @@ public class EconomyListener implements Listener {
             }catch (TransactionException e){
                 player.kickPlayer("Error al crear tu cuenta de economia, vuelve a ingresar al server, o contacta a un administrador"); //todo: si para el server es critico el plugin de economia, se debe impedir que juegue sin tener una cuenta, esto se podria hacer configurable
             }
-
-
+        });
 
            /* acc = getAccountsUseCase.getAccount(player.getUniqueId());
             if(!acc.getNickname().equals(player.getName()))
                 acc.setNickname(player.getName());
             UtilServer.consoleLog("Account name changes detected, updating: " + player.getName());
             plugin.getDataStore().saveAccount(acc);  */ //TODO: PENSAR EN ESTA LOGICA, DONDED SE DETECTA UN CAMBIO DE NOMBRE SEGUN EL UUID
+
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        // Caching
+        SchedulerUtils.run(() -> {
+            try {
+                Account account  = getAccountsUseCase.getAccount(player.getUniqueId());  //todo: ya deberia devolver la cuenta de la cache
+                accountManager.addAccountToCache(account);
+            }catch (AccountNotFoundException e) {
+                player.kickPlayer("Error al cargar tu cuenta de economia vuelve a ingresar al server, o contacta a un administrador");
+            }
+
+        });
+
+        SchedulerUtils.runLater(40L, () -> {
+            if (plugin.getCurrencyManager().getDefaultCurrency() == null && (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
+                player.sendMessage(F.getPrefix() + "§cYou have not made a currency yet. Please do so by \"§e/currency§c\".");
+            }
         });
     }
 
@@ -66,22 +87,6 @@ public class EconomyListener implements Listener {
     public void onKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
         accountManager.removeAccount(player.getUniqueId());  //se quita cache por que se kikea
-    }
-
-    @EventHandler(priority = EventPriority.LOW)
-    public void onJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-
-        // Caching
-        SchedulerUtils.run(() -> {
-            getAccountsUseCase.getAccount(player.getUniqueId());
-        });
-
-        SchedulerUtils.runLater(40L, () -> {
-            if (plugin.getCurrencyManager().getDefaultCurrency() == null && (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
-                player.sendMessage(F.getPrefix() + "§cYou have not made a currency yet. Please do so by \"§e/currency§c\".");
-            }
-        });
     }
 
 }

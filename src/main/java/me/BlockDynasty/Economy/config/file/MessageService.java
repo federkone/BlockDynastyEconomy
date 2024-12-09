@@ -3,6 +3,7 @@ import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 
 public class MessageService {
@@ -62,7 +63,7 @@ public class MessageService {
         return "Error inesperado al realizar transacción";
     }
 
-    public String getSuccessMessage(String payerName, String targetName, String currencyName, double amount) {
+    public String getSuccessMessage(String payerName, String targetName, String currencyName, BigDecimal amount) {
         Currency currency = currencyManager.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
@@ -73,7 +74,7 @@ public class MessageService {
                 .replace("{player}", targetName);
     }
 
-    public String getReceivedMessage(String payerName, String currencyName, double amount) {
+    public String getReceivedMessage(String payerName, String currencyName, BigDecimal amount) {
         Currency currency = currencyManager.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
@@ -84,7 +85,7 @@ public class MessageService {
                 .replace("{player}", payerName);
     }
 
-    public String getExchangeSuccess( String toExchange, double toExchangeAmount, String toReceive) {
+    public String getExchangeSuccess( String toExchange, BigDecimal toExchangeAmount, String toReceive) {
         Currency currencyTo = currencyManager.getCurrency(toExchange);
         Currency currencyToRecive = currencyManager.getCurrency(toReceive);
         return F.getExchangeSuccess()
@@ -93,7 +94,7 @@ public class MessageService {
                 .replace("{currencycolor2}", "" + currencyToRecive.getColor())
                 .replace("{re_curr}", currencyToRecive.getPlural());
     }
-    public String getWithdrawMessage(String target, String currencyName, double amount) {
+    public String getWithdrawMessage(String target, String currencyName, BigDecimal amount) {
         Currency currency = currencyManager.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
@@ -104,7 +105,7 @@ public class MessageService {
                 .replace("{player}", target);
     }
 
-    public String getDepositMessage(String target, String currencyName, double amount) {
+    public String getDepositMessage(String target, String currencyName, BigDecimal amount) {
         Currency currency = currencyManager.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
@@ -115,7 +116,7 @@ public class MessageService {
                 .replace("{player}", target);
     }
 
-    public String getOfferSendMessage(String target, String currencyName, double amount, String currencyName2, double amount2) {
+    public String getOfferSendMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
         Currency currency = currencyManager.getCurrency(currencyName);
         Currency currency2 = currencyManager.getCurrency(currencyName2);
         return F.getOfferSender()
@@ -127,7 +128,7 @@ public class MessageService {
 
     }
 
-    public String getOfferReceiveMessage(String target, String currencyName, double amount, String currencyName2, double amount2) {
+    public String getOfferReceiveMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
         Currency currency = currencyManager.getCurrency(currencyName);
         Currency currency2 = currencyManager.getCurrency(currencyName2);
         return F.getOfferReceiver()

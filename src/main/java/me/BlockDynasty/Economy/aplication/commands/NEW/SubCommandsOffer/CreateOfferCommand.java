@@ -16,6 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 public class CreateOfferCommand implements CommandExecutor {
     private final CreateOfferUseCase createOfferUseCase;
     private final MessageService messageService;
@@ -66,24 +68,24 @@ public class CreateOfferCommand implements CommandExecutor {
 
         //INTENTA CREAR LA OFERTA
         try {
-            createOfferUseCase.execute(player.getUniqueId(), target.getUniqueId(),tipoCantidad,cantidad,tipoMonto,monto);
-            player.sendMessage(messageService.getOfferSendMessage(target.getName(),tipoCantidad,cantidad,tipoMonto,monto));
+            createOfferUseCase.execute(player.getUniqueId(), target.getUniqueId(),tipoCantidad, BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto));
+            player.sendMessage(messageService.getOfferSendMessage(target.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //player.sendMessage("has ofertado a "+target.getName() +" "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
-            target.sendMessage(messageService.getOfferReceiveMessage(player.getName(),tipoCantidad,cantidad,tipoMonto,monto));
+            target.sendMessage(messageService.getOfferReceiveMessage(player.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
-            target.sendMessage("Para aceptarla usa /offer accept "+player.getName()+ " o /offer deny "+player.getName());  //todo: podria dejar que una persona reciba varias ofertas de varias persoanas
+            target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());  //todo: podria dejar que una persona reciba varias ofertas de varias persoanas
         } catch (AccountNotFoundException e) {
-            player.sendMessage("No existe la cuenta de "+ target.getName());
+            player.sendMessage("§cNo existe la cuenta de "+ target.getName());
         }catch (OffertAlreadyExist offertAlreadyExist){
-            player.sendMessage("Ya existe una oferta entre "+player.getName()+" y "+target.getName());
+            player.sendMessage("§cYa existe una oferta entre "+player.getName()+" y "+target.getName());
         }catch (CurrencyNotFoundException e){
-            player.sendMessage("No existe la moneda que intentas ofertar");
+            player.sendMessage("§cNo existe la moneda que intentas ofertar");
         }catch (CurrencyAmountNotValidException e){
             player.sendMessage(messageService.getUnvalidAmount());
         }catch (InsufficientFundsException e){
-            player.sendMessage("No tienes suficiente dinero para ofertar");
+            player.sendMessage("§cNo tienes suficiente dinero para ofertar");
         }catch (AccountCanNotReciveException e){
-            player.sendMessage("El jugador no puede recibir la oferta");
+            player.sendMessage("§cEl jugador no puede recibir la oferta");
         }
 
         return false;

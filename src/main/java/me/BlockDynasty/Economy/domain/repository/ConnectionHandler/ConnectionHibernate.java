@@ -6,7 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 //todo, podemos configurar hibernate desde aqui, como cache, etc etc
 public class ConnectionHibernate {
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public ConnectionHibernate(String host, int port, String database, String username, String password) { //puedo recibir los parametros de conexion como con sql
         Configuration configuration = new Configuration();

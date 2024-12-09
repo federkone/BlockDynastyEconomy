@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +46,7 @@ public class ChequeManager {
         List<String> formatLore = new ArrayList<>();
 
         for (String baseLore2 : Objects.requireNonNull(chequeBaseItem.getItemMeta().getLore())) {
-            formatLore.add(baseLore2.replace("{value}", currency.format(amount)).replace("{player}", creatorName));
+            formatLore.add(baseLore2.replace("{value}", currency.format(BigDecimal.valueOf(amount))).replace("{player}", creatorName));
         }
         ItemStack ret = chequeBaseItem.clone();
         ItemMeta meta = ret.getItemMeta();

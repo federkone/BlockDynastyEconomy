@@ -4,6 +4,8 @@ import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
 import me.BlockDynasty.Economy.domain.currency.Currency;
+
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class BlockDynastyEconomyAPI {
@@ -34,7 +36,7 @@ public class BlockDynastyEconomyAPI {
      * @param amount - An amount of the default currency.
      */
     public void deposit(UUID uuid, double amount){
-        depositUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+        depositUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
     }
 
     /**
@@ -44,7 +46,7 @@ public class BlockDynastyEconomyAPI {
      * @param currency - A specified currency.
      */
     public void deposit(UUID uuid, double amount, String currency){
-        depositUseCase.execute(uuid,currency, amount);
+        depositUseCase.execute(uuid,currency,  BigDecimal.valueOf(amount));
     }
 
     /**
@@ -53,7 +55,7 @@ public class BlockDynastyEconomyAPI {
      * @param amount - An amount of the default currency.
      */
     public void withdraw(UUID uuid, double amount){
-        withdrawUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(), amount);
+        withdrawUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(),  BigDecimal.valueOf(amount));
     }
 
     /**
@@ -63,7 +65,7 @@ public class BlockDynastyEconomyAPI {
      * @param currency - The currency you withdraw from.
      */
     public void withdraw(UUID uuid, double amount, String currency){
-        withdrawUseCase.execute(uuid,currency, amount);
+        withdrawUseCase.execute(uuid,currency, BigDecimal.valueOf(amount));
     }
 
     /**
@@ -72,7 +74,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The default currency balance of the user.
      */
     public double getBalance(UUID uuid){
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getDefaultCurrency());
+        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getDefaultCurrency()).doubleValue();
     }
 
     /**
@@ -82,7 +84,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The balance of the specified currency.
      */
     public double getBalance(UUID uuid, String currency) {
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getCurrency(currency));
+        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getCurrency(currency)).doubleValue();
     }
 
     /**
@@ -94,7 +96,7 @@ public class BlockDynastyEconomyAPI {
      * @param ammountTo - double mount ammountTo.
      */
     public void exchange(UUID uuid, String currencyFrom, String currencyTo, double amountFrom,double ammountTo){
-        exchangeUseCase.execute(uuid,currencyFrom,currencyTo,amountFrom,ammountTo);
+        exchangeUseCase.execute(uuid,currencyFrom,currencyTo,BigDecimal.valueOf(amountFrom), BigDecimal.valueOf(ammountTo));
     }
 
     /**
@@ -105,11 +107,11 @@ public class BlockDynastyEconomyAPI {
      * @param amount - double mount amount.
      */
     public void transfer(UUID userFrom, UUID userTo, String currency, double amount){
-        transferFundsUseCase.execute(userFrom,userTo,currency,amount);
+        transferFundsUseCase.execute(userFrom,userTo,currency,BigDecimal.valueOf(amount));
     }
 
     public void trade(UUID userFrom, UUID userTo, String currencyFrom, String currencyTo, double amountFrom, double amountTo){
-        tradeCurrenciesUseCase.execute(userFrom,userTo,currencyFrom,currencyTo,amountFrom,amountTo);
+        tradeCurrenciesUseCase.execute(userFrom,userTo,currencyFrom,currencyTo,BigDecimal.valueOf(amountFrom),BigDecimal.valueOf(amountTo));
 
     }
     /**

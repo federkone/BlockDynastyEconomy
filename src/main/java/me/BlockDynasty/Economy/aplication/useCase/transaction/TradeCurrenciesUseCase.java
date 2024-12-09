@@ -15,7 +15,9 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import me.BlockDynasty.Economy.utils.DecimalUtils;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 //TODO ESTA FUNCIONALIDAD PERMITE TRADEAR 2 MONEDAS DISTINTAS ENTRE 2 PERSONAS DISTINTAS, NO NECESITA VALIDAR SI LA MONEDA ES PAGABLE O NO, YA QUE ES UN TRADE
@@ -40,7 +42,7 @@ public class TradeCurrenciesUseCase {
 
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, double amountFrom, double amountTo){
+    public void execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
         Currency currencyFrom = currencyManager.getCurrency(currencyFromS);
@@ -49,7 +51,7 @@ public class TradeCurrenciesUseCase {
         performTrade(accountFrom, accountTo, currencyFrom, currencyTo, amountFrom, amountTo);
     }
 
-    public void execute(String userFrom, String userTo, String currencyFromS, String currencyToS, double amountFrom, double amountTo){
+    public void execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
         Currency currencyFrom = currencyManager.getCurrency(currencyFromS);
@@ -58,7 +60,7 @@ public class TradeCurrenciesUseCase {
         performTrade(accountFrom, accountTo, currencyFrom, currencyTo, amountFrom, amountTo);
     }
 
-    private void performTrade ( Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, double amountFrom, double amountTo){
+    private void performTrade ( Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
         if (currencyFrom == null || currencyTo == null ) {
             throw new CurrencyNotFoundException("currencies not found");
         }
@@ -75,19 +77,20 @@ public class TradeCurrenciesUseCase {
             throw new InsufficientFundsException("Insufficient balance for currency: " + currencyTo.getUuid());
         }
 
-        if (!currencyFrom.isDecimalSupported() && amountFrom % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
-
-        if (!currencyTo.isDecimalSupported() && amountTo % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
-
         if (!accountTo.canReceiveCurrency()) {
             throw new AccountCanNotReciveException("Account can't receive currency");
         }
-        //preguntar si el receptor puede recibir monedas
 
+        if (!currencyFrom.isDecimalSupported() && amountFrom.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+
+        if (!currencyTo.isDecimalSupported() && amountTo.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+
+        //preguntar si el receptor puede recibir monedas
+//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
         accountFrom.withdraw(currencyFrom, amountFrom);
         accountFrom.deposit(currencyTo, amountTo);
         accountTo.withdraw(currencyTo, amountTo);

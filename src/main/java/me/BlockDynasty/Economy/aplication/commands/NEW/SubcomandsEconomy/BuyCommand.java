@@ -18,6 +18,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 public class BuyCommand implements CommandExecutor {
    private final WithdrawUseCase withdraw;
     private final MessageService messageService;
@@ -64,9 +66,9 @@ public class BuyCommand implements CommandExecutor {
 
 
             try{
-                withdraw.execute(player.getName(),tipoDemoneda,cantidadDemoneda);
+                withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-                player.sendMessage("&aTu compra ha sido realizada con exito");
+                player.sendMessage("§aCcompra realizada con exito!");
             }catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());
             } catch (CurrencyNotFoundException e) {
@@ -76,7 +78,7 @@ public class BuyCommand implements CommandExecutor {
             }catch (InsufficientFundsException e){
                 player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
             } catch (TransactionException e) {
-                sender.sendMessage("Error inesperado al realizar transacción");
+                sender.sendMessage("§cError inesperado al realizar transacción");
             } catch (Exception e) {
                 sender.sendMessage(messageService.getUnexpectedErrorMessage()+e.getMessage());
             }

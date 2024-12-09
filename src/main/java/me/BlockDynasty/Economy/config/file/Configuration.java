@@ -47,7 +47,7 @@ public class Configuration {
         config.addDefault("transaction_log_vault",false);
 
         config.addDefault("mysql.database", "minecraft");
-        config.addDefault("mysql.tableprefix", "gemseconomy");
+        config.addDefault("mysql.tableprefix", "BlockDynastyEconomy");
         config.addDefault("mysql.host", "localhost");
         config.addDefault("mysql.port", 3306);
         config.addDefault("mysql.username", "root");
@@ -63,7 +63,7 @@ public class Configuration {
         config.addDefault("cheque.console_name", "Console");
         config.addDefault("cheque.enabled", false);
 
-        config.addDefault(path + "prefix", "&2&lGemsEconomy> ");
+        config.addDefault(path + "prefix", "&2&lBlockDynasty> ");
         config.addDefault(path + "nopermission", "&7You don't have permission to do this.");
         config.addDefault(path + "noconsole", "&7Console cannot do this.");
         config.addDefault(path + "invalidamount", "&7Not a valid amount.");
@@ -117,8 +117,8 @@ public class Configuration {
 
         config.addDefault(path + "help.exchange_command", Arrays.asList(
                 "{prefix}&b&lExchange Help",
-                "&2&l>> &a/exchange <account> <currency_to_exchange> <amount> <currency_to_receive> <amount> &8- &7Exchange between currencies with a custom rate for an account.",
-                "&2&l>> &a/exchange <currency_to_exchange> <amount> <currency_to_receive> <amount> &8- &7Exchange between currencies with a custom rate.",
+                "&2&l>> &a/exchange <currency_to_exchange> <amount> <currency_to_receive> <amount> &8- &7Exchange between currencies with a custom rate for an account.",
+                "&2&l>> &a/exchange <currency_to_exchange> <amount> <currency_to_receive> <amount> <account> &8- &7Exchange between currencies with a custom rate.",
                 "&2&l>> &a/exchange <currency_to_exchange> <amount> <currency_to_receive> &8- &7Exchange with a pre-set exchange rate."));
 
         config.addDefault(path + "usage.pay_command", "&2&l>> &a/pay <user> <amount> [currency] &8- &7Pay the specified user the specified amount.");

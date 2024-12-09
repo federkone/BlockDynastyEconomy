@@ -10,6 +10,8 @@ import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import org.bukkit.ChatColor;
 
+import java.math.BigDecimal;
+
 public class EditCurrencyUseCase {
     private final CurrencyManager currencyManager;
     private final IRepository dataStore;
@@ -32,7 +34,7 @@ public class EditCurrencyUseCase {
             throw new DecimalNotSupportedException("Currency does not support decimals");
         }
 
-        currency.setStartBalance(startBal);
+        currency.setStartBalance(BigDecimal.valueOf(startBal));
         try {
             dataStore.saveCurrency(currency);
             //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager

@@ -71,7 +71,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
         if(s.equalsIgnoreCase("balance_default")){
             String amount = "";
-            return amount + Math.round(a.getBalance(dc));
+            return amount + Math.round(a.getBalance(dc).doubleValue());
         }else if(s.equalsIgnoreCase("balance_default_formatted")){
             return dc.format(a.getBalance(dc));
         }
@@ -83,7 +83,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
                 return c.format(a.getBalance(c));
             } else {
                 String amount = "";
-                return amount + Math.round(a.getBalance(c));
+                return amount + Math.round(a.getBalance(c).doubleValue());
             }
         }
 

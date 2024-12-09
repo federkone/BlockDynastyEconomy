@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import me.BlockDynasty.Economy.config.file.MessageService;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class BalanceCommand implements CommandExecutor {
@@ -49,11 +50,11 @@ public class BalanceCommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                Map<Currency, Double> balances = balance.getBalances(target);
+                Map<Currency, BigDecimal> balances = balance.getBalances(target);
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
-                for (Map.Entry<Currency, Double> entry : balances.entrySet()) {
+                for (Map.Entry<Currency, BigDecimal> entry : balances.entrySet()) {
                     Currency currency = entry.getKey();
-                    double balance = entry.getValue();
+                    BigDecimal balance = entry.getValue();
                     sender.sendMessage(F.getBalanceList().replace("{currencycolor}", currency.getColor() + "").replace("{format}", currency.format(balance)));
                 }
             } catch (AccountNotFoundException e) {

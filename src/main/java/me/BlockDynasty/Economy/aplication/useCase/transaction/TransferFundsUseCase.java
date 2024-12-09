@@ -15,7 +15,9 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import me.BlockDynasty.Economy.utils.DecimalUtils;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class TransferFundsUseCase {
@@ -35,7 +37,7 @@ public class TransferFundsUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currency, double amount) {
+    public void execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
         Currency currencyFrom = currencyManager.getCurrency(currency);
@@ -43,7 +45,7 @@ public class TransferFundsUseCase {
         performTransfer(accountFrom, accountTo, currencyFrom, amount);
     }
 
-    public void execute (String userFrom, String userTo, String currency, double amount) {
+    public void execute (String userFrom, String userTo, String currency, BigDecimal amount) {
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
         Currency currencyFrom = currencyManager.getCurrency(currency);
@@ -51,7 +53,7 @@ public class TransferFundsUseCase {
         performTransfer(accountFrom, accountTo, currencyFrom, amount);
     }
 
-    private void performTransfer( Account accountFrom, Account accountTo, Currency currencyFrom, double amount){
+    private void performTransfer( Account accountFrom, Account accountTo, Currency currencyFrom, BigDecimal amount){
         if (accountFrom == null || accountTo == null) {
             throw new AccountNotFoundException("Account not found");
         }
@@ -61,12 +63,15 @@ public class TransferFundsUseCase {
         if (!accountFrom.hasEnough(currencyFrom, amount)) {
             throw new InsufficientFundsException("Insufficient balance for currency: " + currencyFrom.getSingular());
         }
-        if (!currencyFrom.isDecimalSupported() && amount % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
+
         if (!accountTo.canReceiveCurrency()) {
             throw new AccountCanNotReciveException("Account can't receive currency");
         }
+
+        if (!currencyFrom.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
 
         accountFrom.withdraw(currencyFrom, amount);
         accountTo.deposit(currencyFrom, amount);

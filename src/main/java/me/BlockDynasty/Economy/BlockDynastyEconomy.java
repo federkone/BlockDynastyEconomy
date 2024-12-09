@@ -157,12 +157,13 @@ public class BlockDynastyEconomy extends JavaPlugin {
         economyLogger = new EconomyLogger(this);
         vaultLogger = new VaultLogger(this);
         //metrics = new Metrics(this);
-        updateForwarder = new UpdateForwarder(this);
+
         offerManager = new OfferManager(this);
 
 
         messageService = new MessageService(currencyManager);
         getAccountsUseCase = new GetAccountsUseCase(accountManager, currencyManager, getDataStore());
+        updateForwarder = new UpdateForwarder(this,getAccountsUseCase);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyManager);
         withdrawUseCase = new WithdrawUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
         depositUseCase = new DepositUseCase(currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);

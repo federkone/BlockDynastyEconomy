@@ -3,26 +3,27 @@ package me.BlockDynasty.Economy.domain.Offers;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Offer {
     private UUID vendedor;
     private UUID comprador;
-    private double cantidad;
+    private BigDecimal cantidad;
     private Currency tipoCantidad;
-    private double monto;
+    private BigDecimal monto;
     private Currency tipoMonto;
     private BukkitRunnable expirationTask;
 
     public Offer() {
         this.vendedor=null;
         this.comprador=null;
-        this.cantidad=0;
+        this.cantidad=new BigDecimal(0);
         this.tipoCantidad=null;
-        this.monto=0;
+        this.monto=new BigDecimal(0);
         this.tipoMonto=null;
     }
-    public Offer(UUID vendedor, UUID comprador, double cantidad, double monto,Currency tipoCantidad,Currency tipoMonto) {
+    public Offer(UUID vendedor, UUID comprador, BigDecimal cantidad, BigDecimal monto,Currency tipoCantidad,Currency tipoMonto) {
         this.vendedor = vendedor;
         this.comprador = comprador;
         this.cantidad = cantidad;
@@ -38,13 +39,13 @@ public class Offer {
         this.comprador=comprador;
     }
 
-    public void setCantidad(double cantidad) {
+    public void setCantidad(BigDecimal cantidad) {
         this.cantidad=cantidad;
     }
     public void setTipoCantidad(Currency tipoCantidad) {
         this.tipoCantidad=tipoCantidad;
     }
-    public void setMonto(double monto) {
+    public void setMonto(BigDecimal monto) {
         this.monto=monto;
     }
     public void setTipoMonto(Currency tipoMonto) {
@@ -60,7 +61,7 @@ public class Offer {
     }
 
     //cantidad de moneda ofertada
-    public double getCantidad() {
+    public BigDecimal getCantidad() {
         return this.cantidad;
     }
 
@@ -70,7 +71,7 @@ public class Offer {
     }
 
     //monto a pagar
-    public double getMonto() {
+    public BigDecimal getMonto() {
         return this.monto;
     }
     //tipo de moneda monto a pagar

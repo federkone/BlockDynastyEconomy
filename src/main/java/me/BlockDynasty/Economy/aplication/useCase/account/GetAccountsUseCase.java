@@ -13,6 +13,7 @@ import me.BlockDynasty.Economy.domain.repository.IRepository;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,21 @@ public class GetAccountsUseCase {
         return account;
     }
 
+    public void updateAccountCache(UUID uuid){
+        Account accountCache = accountManager.getAccount(uuid);
+        Account accountDb = null;
+
+        Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
+        List<Account> accounts = dataStore.loadAccounts(criteria);
+                //accountManager.addAccountToCache(account); //añadir a cache
+        if (!accounts.isEmpty() && accountCache != null){
+            accountDb = accounts.get(0);
+            updateAccountBalances(accountDb);
+            accountCache.setBalances(accountDb.getBalances());
+        }else {
+            throw new AccountNotFoundException("Account not found");
+        }
+    }
 
     public List<Account> getAllAccounts() {
         return dataStore.loadAccounts(Criteria.create());
@@ -134,7 +150,7 @@ public class GetAccountsUseCase {
 
 
     private void updateAccountBalances(Account account) {
-        Map<Currency, Double> updatedBalances = currencyManager.getCurrencies().stream()
+        Map<Currency, BigDecimal> updatedBalances = currencyManager.getCurrencies().stream()
                 .collect(Collectors.toMap(
                         systemCurrency -> systemCurrency,
                         systemCurrency -> account.getBalances().entrySet().stream()

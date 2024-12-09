@@ -1,11 +1,13 @@
 package me.BlockDynasty.Economy.domain.currency;
 
+import java.math.BigDecimal;
+
 public class CachedTopListEntry {
 
     private String name;
-    private double amount;
+    private BigDecimal amount;
 
-    public CachedTopListEntry(String name, double amount) {
+    public CachedTopListEntry(String name, BigDecimal amount) {
         this.name = name; //PLAYER NAME
         this.amount = amount;  //monto?
         //tambien incorporar la currency
@@ -19,11 +21,11 @@ public class CachedTopListEntry {
         this.name = name;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }

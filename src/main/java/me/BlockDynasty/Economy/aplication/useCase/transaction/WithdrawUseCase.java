@@ -15,9 +15,11 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import me.BlockDynasty.Economy.utils.DecimalUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 //TODO, FUNCIONALIDAD PARA EXTRACCION DE DINERO
@@ -37,14 +39,14 @@ public class WithdrawUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID targetUUID, String currencyName, double amount) {
+    public void execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Account account = getAccountsUseCase.getAccount(targetUUID);
         Currency currency = currencyManager.getCurrency(currencyName);
 
         performWithdraw(account, currency, amount);
     }
 
-    public void execute(String targetName, String currencyName, double amount) {
+    public void execute(String targetName, String currencyName, BigDecimal amount) {
         Account account = getAccountsUseCase.getAccount(targetName);
         Currency currency = currencyManager.getCurrency(currencyName);
 
@@ -53,24 +55,27 @@ public class WithdrawUseCase {
 
 
     //TODO: PREGUNTAR SI EL USUSARIO TIENE LA MONEDA? .DE MOMENTO TODAS LAS CUENTAS CUENTAN CON TODOS LOS TIPOS DE MONEDAS INICIALIZADAS
-    private void performWithdraw(Account account, Currency currency, double amount) {
+    private void performWithdraw(Account account, Currency currency, BigDecimal amount) {
         if (account == null) {
             throw new AccountNotFoundException("Account not found");
         }
         if (currency == null) {
             throw new CurrencyNotFoundException("Currency not found");
         }
-        if (amount <= 0) {
-            throw new CurrencyAmountNotValidException("Invalid amount");
-        }
-        if (!currency.isDecimalSupported() && amount % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
+
         if (!account.hasEnough(currency, amount)) {
             throw new InsufficientFundsException("Insufficient funds");
         }
 
-        account.withdraw(currency, amount);
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new CurrencyAmountNotValidException("Invalid amount");
+        }
+
+        if (!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
+
+        account.withdraw(currency, amount); //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
 
         try {
             dataStore.saveAccount(account);

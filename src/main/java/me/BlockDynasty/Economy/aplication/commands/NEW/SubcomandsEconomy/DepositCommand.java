@@ -16,6 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 
 public class DepositCommand implements CommandExecutor {
     private DepositUseCase deposit;
@@ -59,11 +61,11 @@ public class DepositCommand implements CommandExecutor {
         double finalMount = amount;
         SchedulerUtils.runAsync(() -> {
             try {
-                deposit.execute(target, currencyName, finalMount);
-                sender.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
+                deposit.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+                sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage("&aHas recibido " + finalMount + " " + currencyName);
+                    targetPlayer.sendMessage("§aHas recibido " + finalMount + " " + currencyName);
                 }
             } catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());

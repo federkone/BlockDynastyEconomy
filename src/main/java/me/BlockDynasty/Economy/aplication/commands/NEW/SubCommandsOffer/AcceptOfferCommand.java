@@ -46,10 +46,10 @@ public class AcceptOfferCommand  implements CommandExecutor {
             sender.sendMessage(F.getNotOffers());
         }catch (InsufficientFundsException e){
             sender.sendMessage("No tienes suficiente dinero para aceptar la oferta");
-            playerFrom.sendMessage("El jugador no tiene suficiente dinero para aceptar la oferta");
+            playerFrom.sendMessage("§cEl jugador no tiene suficiente dinero para aceptar la oferta");
         }catch (TransactionException e){
-            sender.sendMessage("Error al intentar la transaccion");
-            playerFrom.sendMessage("Error al intentar la transaccion");
+            sender.sendMessage("§cError al intentar la transaccion");
+            playerFrom.sendMessage("§cError al intentar la transaccion");
         }
 
 

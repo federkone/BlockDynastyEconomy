@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import me.BlockDynasty.Economy.config.file.MessageService;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class PayCommandV2 implements CommandExecutor {
@@ -63,11 +64,11 @@ public class PayCommandV2 implements CommandExecutor {
             player.sendMessage(messageService.getPayYourselfMessage()); //no puede pagarse a si mismo
             return true;
         }
-        double amount=0; //monto temporal
+        BigDecimal amount=BigDecimal.ZERO; //monto temporal
         try{
-            amount = Double.parseDouble(args[1]);  //intentar extraer monto
-            if(amount <= 0){
-                player.sendMessage(messageService.getUnvalidAmount());  //monto invalido en caso de ser menor o igual a 0
+            amount = new BigDecimal(args[1]);  //intentar extraer monto
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                player.sendMessage(messageService.getUnvalidAmount());  // monto invalido en caso de ser menor o igual a 0
                 return true;
             }
         }catch (NumberFormatException e){
@@ -75,7 +76,7 @@ public class PayCommandV2 implements CommandExecutor {
             return true;
         }
 
-        double finalAmount = amount;
+        BigDecimal finalAmount = amount;
         SchedulerUtils.runAsync(() -> {
             try {
                 pay.execute(player.getName(), targetName, currencyName, finalAmount);
@@ -98,7 +99,7 @@ public class PayCommandV2 implements CommandExecutor {
             } catch (CurrencyNotPayableException e){
                 player.sendMessage(messageService.getCurrencyNotPayableMessage(currencyName));
             } catch (TransactionException e){
-                player.sendMessage("Error inesperado al realizar transacción");
+                player.sendMessage("§cError inesperado al realizar transacción");
             } catch (Exception e){
                 player.sendMessage(messageService.getUnexpectedErrorMessage());
             }

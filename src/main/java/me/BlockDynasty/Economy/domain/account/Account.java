@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.utils.UUIDConverter;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -27,8 +28,8 @@ public class Account {
     @ElementCollection(fetch = FetchType.EAGER) //TODO TEST para ver si se carga bien y hibernate no tire excepcion de lazy
     @CollectionTable(name = "account_balances", joinColumns = @JoinColumn(name = "account_uuid"))
     @MapKeyJoinColumn(name = "currency_uuid")
-    @Column(name = "balance")
-    private Map<Currency, Double> balances;
+    @Column(name = "balance",precision = 18,scale = 2 ) //precision = 18,scale = 2 para bigdecimal con esto soportaria hasta 9999999999999999.99
+    private Map<Currency, BigDecimal> balances; //podriamos cambiar a BigDecimal para mayor precision
 
     @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency = true;
@@ -43,50 +44,39 @@ public class Account {
 
     }
 
-    public void deposit(Currency currency, double amount) {
+    public void deposit(Currency currency, BigDecimal amount) {
         if (getBalances().containsKey(currency)) {
-            getBalances().put(currency, getBalances().get(currency) + amount);
+            getBalances().put(currency, getBalances().get(currency).add(amount));
         } else {
             getBalances().put(currency, amount);
         }
     }
 
-    public void withdraw(Currency currency, double amount) {
+    public void withdraw(Currency currency, BigDecimal amount) {
         if (getBalances().containsKey(currency)) {
-            getBalances().put(currency, getBalances().get(currency) - amount);
-        }// else {
-         //   getBalances().put(currency, -amount);
-        //}
+            getBalances().put(currency, getBalances().get(currency).subtract(amount));
+        }
     }
 
-    public void setBalance(Currency currency, double amount) {
+    public void setBalance(Currency currency, BigDecimal amount) {
         getBalances().put(currency, amount);
     }
 
-    public double getBalance(Currency currency) {
+    public BigDecimal getBalance(Currency currency) {
         if (getBalances().containsKey(currency)) {
             return getBalances().get(currency);
         }
         return currency.getDefaultBalance();
     }
 
-    public double getBalance(String identifier){
+    public BigDecimal getBalance(String identifier){
         for(Currency currency : getBalances().keySet()){
             if(currency.getPlural().equalsIgnoreCase(identifier) || currency.getSingular().equalsIgnoreCase(identifier)){
                 return getBalances().get(currency);
             }
         }
-        return 0; // Do not edit this
+        return BigDecimal.ZERO;
     }
-
-    //public boolean exchange(Currency currencyFrom, Currency currencyTo, double amountFrom, double amountTo){
-    //    if(hasEnough(currencyFrom, amountFrom)){
-    //        withdraw(currencyFrom, amountFrom);
-    //        deposit(currencyTo, amountTo);
-    //        return true;
-    //    }
-    //    return false;
-    //}
 
     public String getDisplayName() {
         return getNickname() != null ? getNickname() : getUuid().toString();
@@ -104,8 +94,8 @@ public class Account {
         return uuid;
     }
 
-    public boolean hasEnough(Currency currency, double amount){
-        return getBalance(currency) >= amount;
+    public boolean hasEnough(Currency currency, BigDecimal amount) {
+        return getBalance(currency).compareTo(amount) >= 0;
     }
 
     public boolean canReceiveCurrency() {
@@ -116,11 +106,12 @@ public class Account {
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
-    public void setBalances(Map<Currency,Double> balances){
+    public void setBalances(Map<Currency,BigDecimal> balances){
         this.balances = balances;
     }
 
-    public Map<Currency, Double> getBalances() {
+
+    public Map<Currency, BigDecimal> getBalances() {
         return balances;
     }
 }

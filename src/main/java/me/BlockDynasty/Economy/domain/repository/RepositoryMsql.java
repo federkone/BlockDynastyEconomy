@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -70,7 +71,7 @@ public class RepositoryMsql implements IRepository {
                 UUID uuid = UUID.fromString(set.getString("uuid"));
                 String singular = set.getString("name_singular");
                 String plural = set.getString("name_plural");
-                double defaultBalance = set.getDouble("default_balance");
+                BigDecimal defaultBalance = set.getBigDecimal("default_balance");
                 String symbol = set.getString("symbol");
                 boolean decimals = set.getInt("decimals_supported") == 1;
                 boolean isDefault = set.getInt("is_default") == 1;
@@ -104,7 +105,7 @@ public class RepositoryMsql implements IRepository {
             stmt.setString(1, currency.getUuid().toString());
             stmt.setString(2, currency.getSingular());
             stmt.setString(3, currency.getPlural());
-            stmt.setDouble(4, currency.getDefaultBalance());
+            stmt.setBigDecimal(4, currency.getDefaultBalance());
             stmt.setString(5, currency.getSymbol());
             stmt.setInt(6, currency.isDecimalSupported() ? 1 : 0);
             stmt.setInt(7, currency.isDefaultCurrency() ? 1 : 0);
@@ -157,7 +158,7 @@ public class RepositoryMsql implements IRepository {
                 JSONParser parser = new JSONParser();
                 JSONObject data = (JSONObject) parser.parse(json); // Solo un casteo
 
-                Map<Currency, Double> currencies = new HashMap<>();
+                Map<Currency, BigDecimal> currencies = new HashMap<>();
                 // Iterar sobre las entradas del JSONObject
                 for (Object entryObj : data.entrySet()) {
                     Map.Entry<String, Object> entry = (Map.Entry<String, Object>) entryObj; // Cast explícito
@@ -171,7 +172,7 @@ public class RepositoryMsql implements IRepository {
                     // Crear una instancia de Currency (usando el UUID)
                     Currency currency = new Currency(UUID.fromString(uuid), "null", "null");
 
-                    currencies.put(currency, value.doubleValue());
+                    currencies.put(currency, BigDecimal.valueOf(value.doubleValue()));
                 }
 
                 account.setBalances(currencies);
@@ -216,7 +217,7 @@ public class RepositoryMsql implements IRepository {
             stmt.setInt(3, account.canReceiveCurrency() ? 1 : 0);
 
             JSONObject obj = new JSONObject();
-            for (Map.Entry<Currency, Double> entry : account.getBalances().entrySet()) {
+            for (Map.Entry<Currency, BigDecimal> entry : account.getBalances().entrySet()) {
                 obj.put(entry.getKey().getUuid().toString(), entry.getValue());
             }
             String json = obj.toJSONString();
@@ -237,7 +238,7 @@ public class RepositoryMsql implements IRepository {
             stmt.setInt(2, account.canReceiveCurrency() ? 1 : 0);
 
             JSONObject obj = new JSONObject();
-            for (Map.Entry<Currency, Double> entry : account.getBalances().entrySet()) {
+            for (Map.Entry<Currency, BigDecimal> entry : account.getBalances().entrySet()) {
                 obj.put(entry.getKey().getUuid().toString(), entry.getValue());
             }
             String json = obj.toJSONString();
@@ -298,7 +299,7 @@ public class RepositoryMsql implements IRepository {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     String nickname = rs.getString("nickname");
-                    double balance = rs.getDouble("balance");
+                    BigDecimal balance = rs.getBigDecimal("balance");
                     topListEntries.add(new CachedTopListEntry(nickname, balance));
                 }
             } catch (SQLException e) {

@@ -17,6 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+
 public class SetCommand implements CommandExecutor {
     private final SetBalanceUseCase setbalance;
     private final MessageService messageService;
@@ -58,11 +60,11 @@ public class SetCommand implements CommandExecutor {
         double finalMount = amount;
         SchedulerUtils.runAsync(() -> {
             try {
-                setbalance.execute(target, currencyName, finalMount);
-                sender.sendMessage(messageService.getDepositMessage(target, currencyName, finalMount));
+                setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+                sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage("Se ha seteado tu balance a " + finalMount + " de " + currencyName);
+                    targetPlayer.sendMessage("§7Se ha seteado tu balance a " + finalMount + " de " + currencyName);
                 }
             } catch (AccountNotFoundException e) {
                 sender.sendMessage(messageService.getAccountNotFoundMessage());

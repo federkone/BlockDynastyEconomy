@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.BlockDynasty.Economy.config.file.F;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class OfferManager {
@@ -20,7 +21,7 @@ public class OfferManager {
 
     }
 
-    public void createOffer(UUID vendedor, UUID comprador, double cantidad, double monto,Currency tipoCantidad,Currency tipoMonto){
+    public void createOffer(UUID vendedor, UUID comprador, BigDecimal cantidad, BigDecimal monto, Currency tipoCantidad, Currency tipoMonto){
         Offer offer = new Offer(vendedor, comprador, cantidad, monto, tipoCantidad, tipoMonto);
         this.ofertasPendientes.add(offer);
 

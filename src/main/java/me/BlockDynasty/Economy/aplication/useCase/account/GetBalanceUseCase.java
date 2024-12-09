@@ -9,6 +9,7 @@ import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,17 +22,17 @@ public class GetBalanceUseCase {
     }
 
 
-    public Map<Currency, Double> getBalances(String accountName) {
+    public Map<Currency, BigDecimal> getBalances(String accountName) {
         Account account = getAccountsUseCase.getAccount(accountName);
         return performGetBalances(account);
     }
 
-    public Map<Currency, Double> getBalances(UUID accountUUID) {
+    public Map<Currency, BigDecimal> getBalances(UUID accountUUID) {
         Account account = getAccountsUseCase.getAccount(accountUUID);
         return performGetBalances(account);
     }
 
-    private Map<Currency, Double> performGetBalances(Account account) {
+    private Map<Currency, BigDecimal> performGetBalances(Account account) {
         if(account == null) {
             throw new AccountNotFoundException("Account not found");
         }

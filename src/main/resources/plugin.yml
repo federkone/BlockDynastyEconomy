@@ -1,6 +1,6 @@
 name: BlockDynastyEconomy
 main: me.BlockDynasty.Economy.BlockDynastyEconomy
-version: ${version}
+version: 1.0
 author: Nullplague
 description: A multi-currency economy plugin for spigot servers!
 load: STARTUP
@@ -12,7 +12,7 @@ commands:
   balance:
     description: Shows your balances
     usage: /balance (account)
-    aliases: [gbal, gmoney, bal, money]
+    aliases: [bal, money]
   baltop:
     description: Shows the top balances of the server
     usage: /baltop (currency) (page)
@@ -20,15 +20,15 @@ commands:
   currency:
     description: Manage the currencies.
     usage: /currency
-    aliases: [gcurr, gemscurrencies, gcurrency, currencies]
+    aliases: [currencies]
   economy:
     description: Give, set or take currency.
     #usage: /eco <set|take|give> <account> <amount> (currency)
-    aliases: [geconomy, eco, geco, gemseconomy]
+    aliases: [eco, blockdynastyeconomy]
   pay:
     description: Pays another account
     usage: /pay <account> <amount> (currency)
-    aliases: [gpay, gemspay]
+    aliases: [pagar]
   cheque:
     usage: /cheque
     description: Write or Redeem a cheque.
@@ -36,8 +36,8 @@ commands:
   exchange:
     usage: /exchange
     description: Exchange currencies.
-    aliases: [gex, gemsexchange, gexchange]
+    aliases: [intercambiar]
   offer:
     #usage: /offer
     description: Offer currency to another player.
-    aliases: [goffer, gemsoffer]
+    aliases: [ofertar,ofrecer]

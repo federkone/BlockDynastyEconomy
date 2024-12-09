@@ -16,7 +16,9 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedExc
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
+import me.BlockDynasty.Economy.utils.DecimalUtils;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class PayUseCase {
@@ -35,53 +37,56 @@ public class PayUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currency, double amount) {
+    public void execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = currencyManager.getCurrency(currency);
+        Currency currency = currencyManager.getCurrency(currencyName);
 
-        performPay(accountFrom, accountTo, currencyFrom, amount);
+        performPay(accountFrom, accountTo, currency, amount);
     }
 
-    public void execute (String userFrom, String userTo, String currency, double amount) {
+    public void execute (String userFrom, String userTo, String currencyName, BigDecimal amount) {
         Account accountFrom = getAccountsUseCase.getAccount(userFrom);
         Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = currencyManager.getCurrency(currency);
+        Currency currency = currencyManager.getCurrency(currencyName);
 
-        performPay(accountFrom, accountTo, currencyFrom, amount);
+        performPay(accountFrom, accountTo, currency, amount);
     }
 
-    private void performPay (Account accountFrom, Account accountTo, Currency currencyFrom, double amount) {
+    private void performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         if (accountFrom == null || accountTo == null) {
             throw new AccountNotFoundException("Account not found");
         }
-        if (currencyFrom == null) {
+        if (currency == null) {
             throw new CurrencyNotFoundException("Currency not found");
         }
-        if (!accountFrom.hasEnough(currencyFrom, amount)) {
-            throw new InsufficientFundsException("Insufficient balance for currency: " + currencyFrom.getPlural());
+        if (!accountFrom.hasEnough(currency, amount)) {
+            throw new InsufficientFundsException("Insufficient balance for currency: " + currency.getPlural());
         }
-        if (!currencyFrom.isDecimalSupported() && amount % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
+
         if (!accountTo.canReceiveCurrency()) {
             throw new AccountCanNotReciveException("Account can't receive currency");
         }
 
-        if(!currencyFrom.isPayable()){
+        if(!currency.isPayable()){
             throw new CurrencyNotPayableException("Currency is not payable");
         }
 
-        accountFrom.withdraw(currencyFrom, amount);//TODO ACTUALIZA CUENTA CACHE
-        accountTo.deposit(currencyFrom, amount);//TODO ACTUALIZA CUENTA CACHE
+        if (!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            throw new DecimalNotSupportedException("Currency does not support decimals");
+        }
 
+        accountFrom.withdraw(currency, amount);
+        accountTo.deposit(currency, amount);
+
+//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
         try {
-
             dataStore.transfer(accountFrom, accountTo);
             updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
             updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
             economyLogger.log("[TRANSFER] Account: " + accountFrom.getDisplayName() + " transferred " +
-                    currencyFrom.format(amount) + " to " + accountTo.getDisplayName());
+                    currency.format(amount) + " to " + accountTo.getDisplayName());
+            //todo aca actualizaria la cache con el metodo de GetAccountsUseCase.updateAccountCache
         } catch (TransactionException e) {
             throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
         }

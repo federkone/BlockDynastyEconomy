@@ -15,6 +15,8 @@ import me.BlockDynasty.Economy.utils.UUIDConverter;
 import me.BlockDynasty.Economy.utils.UtilString;
 import org.bukkit.ChatColor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.UUID;
 
@@ -53,7 +55,7 @@ public class Currency {
     private boolean defaultCurrency = false;
 
     @Column(name = "default_balance")
-    private double defaultBalance = 0.0;
+    private BigDecimal defaultBalance = BigDecimal.ZERO;
 
     @Column(name = "exchange_rate")
     private double exchangeRate = 0.0;
@@ -76,7 +78,7 @@ public class Currency {
         this.plural = plural;
     }
 
-    public void setDefaultBalance(double defaultBalance) {
+    public void setDefaultBalance(BigDecimal defaultBalance) {
 
         this.defaultBalance = defaultBalance;
     }
@@ -93,28 +95,25 @@ public class Currency {
         return this.plural;
     }
 
-    public double getDefaultBalance() {
+    public BigDecimal getDefaultBalance() {
 
         return this.defaultBalance;
     }
 
-    public String format(double amount) {
+    public String format(BigDecimal amount) {
         StringBuilder amt = new StringBuilder();
         if (this.getSymbol() != null) {
             amt.append(this.getSymbol());
         }
         if (this.isDecimalSupported()) {
-            amt.append(UtilString.format(amount));
+            amount = amount.setScale(2, RoundingMode.HALF_UP); // Limitar a 2 decimales
+            amt.append(NumberFormat.getInstance().format(amount));
         } else {
-            String s = String.valueOf(amount);
-            String[] ss = s.split(".");
-            if (ss.length > 0) {
-                s = ss[0];
-            }
+            String s = amount.setScale(0, RoundingMode.HALF_UP).toPlainString();
             amt.append(NumberFormat.getInstance().format(Double.parseDouble(s)));
         }
         amt.append(" ");
-        if (amount != 1.0) {
+        if (amount.compareTo(BigDecimal.ONE) != 0) {
             amt.append(this.getPlural().replace("_", " "));
         } else {
             amt.append(this.getSingular().replace("_", " "));
@@ -126,7 +125,7 @@ public class Currency {
         return this.defaultCurrency;
     }
 
-    public void setStartBalance(Double startBalance){
+    public void setStartBalance(BigDecimal startBalance){
         this.defaultBalance =startBalance;
     }
 

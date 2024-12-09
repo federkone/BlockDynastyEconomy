@@ -13,6 +13,7 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValid
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class CreateOfferUseCase {
@@ -28,7 +29,7 @@ public class CreateOfferUseCase {
 
     }
 
-    public void execute (UUID playerSender, UUID playerReciber, String currencyNameValue, double amountCurrencyValue,String currencyNameOffer, double amountCurrencyOffer) {
+    public void execute (UUID playerSender, UUID playerReciber, String currencyNameValue, BigDecimal amountCurrencyValue, String currencyNameOffer, BigDecimal amountCurrencyOffer) {
         Account accountSender = getAccountsUseCase.getAccount(playerSender);
         Account accountReciber = getAccountsUseCase.getAccount(playerReciber);
         Currency currencyValue = getCurrencyUseCase.getCurrency(currencyNameValue);
@@ -53,17 +54,17 @@ public class CreateOfferUseCase {
         }
 
         //si el monto es menor o igual a 0
-        if (amountCurrencyValue <= 0 || amountCurrencyOffer <= 0) {
+        if (amountCurrencyValue.compareTo(BigDecimal.ZERO) <= 0 || amountCurrencyOffer.compareTo(BigDecimal.ZERO) <= 0) {
             throw new CurrencyAmountNotValidException("Amount must be greater than 0");
         }
 
-        //si la moneda soporta decimales y el monto no es entero
-        if (!currencyOffer.isDecimalSupported() && amountCurrencyOffer % 1 != 0) {
+// si la moneda soporta decimales y el monto no es entero
+        if (!currencyOffer.isDecimalSupported() && amountCurrencyOffer.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
             throw new CurrencyAmountNotValidException("Amount must be an integer");
         }
 
-        //si la moneda soporta decimales y el monto no es entero
-        if (!currencyValue.isDecimalSupported() && amountCurrencyValue % 1 != 0) {
+// si la moneda soporta decimales y el monto no es entero
+        if (!currencyValue.isDecimalSupported() && amountCurrencyValue.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
             throw new CurrencyAmountNotValidException("Amount must be an integer");
         }
 
