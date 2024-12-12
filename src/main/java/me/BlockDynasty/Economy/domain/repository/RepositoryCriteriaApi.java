@@ -31,7 +31,7 @@ public class RepositoryCriteriaApi implements IRepository
 
     @Override
     public List<Currency> loadCurrencies(Criteria criteria) {
-        return createQuery(Currency.class,criteria);
+        return createQueryWithOr(Currency.class,criteria);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class RepositoryCriteriaApi implements IRepository
 
     @Override
     public void createAccount(Account account)throws TransactionException {
-        executeInsideTransaction(session -> session.merge(account));
+        executeInsideTransaction(session -> session.persist(account));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class RepositoryCriteriaApi implements IRepository
         }
     }
 //TODO: TEST LIMITS AND ORDER FROM CRITERIA
-    public <T> List<T> createQuery(Class<T> entityClass, Criteria criteria)throws TransactionException  {
+    private <T> List<T> createQuery(Class<T> entityClass, Criteria criteria)throws TransactionException  {
         List<T> results = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -131,6 +131,47 @@ public class RepositoryCriteriaApi implements IRepository
             results = query.getResultList();
         } catch (Exception e) {
             throw new TransactionException(e.getMessage());
+        }
+        return results;
+    }
+    private <T> List<T> createQueryWithOr(Class<T> entityClass, Criteria criteria) throws TransactionException {
+        List<T> results = new ArrayList<>();
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> criteriaQuery = cb.createQuery(entityClass);
+            Root<T> root = criteriaQuery.from(entityClass);
+
+            if (criteria != null) {
+                List<Predicate> predicates = new ArrayList<>(); // Lista de predicados para 'OR'
+
+                for (Filter filter : criteria.getFilters()) {
+                    String field = filter.getField();
+                    Object value = filter.getValue();
+                    predicates.add(cb.equal(root.get(field), value));
+                }
+
+                if (!predicates.isEmpty()) {
+                    if (predicates.size() == 1) {
+                        criteriaQuery.where(predicates.get(0)); // Aplica el único predicado directamente
+                    } else {
+                        criteriaQuery.where(cb.or(predicates.toArray(new Predicate[0])));
+                    }
+                }
+
+                if (criteria.getOrder() != null) {
+                    criteriaQuery.orderBy(serializeOrder(criteria.getOrder(), cb, root));
+                }
+            }
+
+            Query<T> query = session.createQuery(criteriaQuery);
+
+            if (criteria != null && criteria.getLimit() != null) {
+                query.setMaxResults(criteria.getLimit());
+            }
+
+            results = query.getResultList();
+        } catch (Exception e) {
+            throw new TransactionException(e.getMessage(), e);
         }
         return results;
     }
@@ -194,6 +235,28 @@ public class RepositoryCriteriaApi implements IRepository
                 accounts.add((Account) result[0]);
             }
             return accounts;
+        } catch (Exception e) {
+            throw new TransactionException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearAll() throws TransactionException{
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            session.createQuery("DELETE FROM Balance").executeUpdate();
+
+            // Eliminar todas las entidades de la tabla Account
+            session.createQuery("DELETE FROM Account").executeUpdate();
+
+            // Eliminar todas las entidades de la tabla Currency
+            session.createQuery("DELETE FROM Currency").executeUpdate();
+
+            // Añadir más tablas si es necesario
+            // session.createQuery("DELETE FROM OtraTabla").executeUpdate();
+
+            transaction.commit();
         } catch (Exception e) {
             throw new TransactionException(e.getMessage());
         }

@@ -118,7 +118,7 @@ public class GEVaultHook extends AbstractEconomy {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + playerName);
         Account user = getAccountsUseCase.getAccount(playerName);
         Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency).doubleValue();
+        return user.getBalance(currency).getBalance().doubleValue();
     }
 
     @Override
@@ -126,7 +126,7 @@ public class GEVaultHook extends AbstractEconomy {
         if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
         Account user = getAccountsUseCase.getAccount(player.getUniqueId());
         Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency).doubleValue();
+        return user.getBalance(currency).getBalance().doubleValue();
     }
 
     @Override

@@ -9,12 +9,12 @@ public class UUIDConverter implements AttributeConverter<UUID, String> {
     @Override
     public String convertToDatabaseColumn(UUID attribute) {
         // Convierte el UUID a String antes de guardarlo
-        return attribute == null ? null : attribute.toString();
+        return attribute.toString();
     }
 
     @Override
     public UUID convertToEntityAttribute(String dbData) {
         // Convierte el String de la base de datos a UUID
-        return dbData == null ? null : UUID.fromString(dbData);
+        return  UUID.fromString(dbData);
     }
 }

@@ -86,6 +86,9 @@ public class CreateOfferCommand implements CommandExecutor {
             player.sendMessage("§cNo tienes suficiente dinero para ofertar");
         }catch (AccountCanNotReciveException e){
             player.sendMessage("§cEl jugador no puede recibir la oferta");
+        }catch (Exception e){
+            player.sendMessage("§cError inesperado");
+            e.printStackTrace();
         }
 
         return false;

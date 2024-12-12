@@ -41,6 +41,10 @@ public class CancelOfferCommand implements CommandExecutor {
             sender.sendMessage(messageService.getOfferCancelToMessage(playerFrom.getName()));
         } catch (OffertNotFoundException e) {
             sender.sendMessage(F.getNotOffers());
+        }catch (Exception e){
+            sender.sendMessage("§cError inesperado");
+            playerFrom.sendMessage("§cError inesperado");
+            e.printStackTrace();
         }
         return false;
     }

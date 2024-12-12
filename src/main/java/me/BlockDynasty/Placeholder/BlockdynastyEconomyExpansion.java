@@ -3,8 +3,8 @@ package me.BlockDynasty.Placeholder;
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.BlockDynasty.Economy.domain.account.Account;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -71,19 +71,19 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
         if(s.equalsIgnoreCase("balance_default")){
             String amount = "";
-            return amount + Math.round(a.getBalance(dc).doubleValue());
+            return amount + Math.round(a.getBalance(dc).getBalance().doubleValue());
         }else if(s.equalsIgnoreCase("balance_default_formatted")){
-            return dc.format(a.getBalance(dc));
+            return dc.format(a.getBalance(dc).getBalance());
         }
 
         else if(s.startsWith("balance_") || !s.startsWith("balance_default")) {
             String[] currencyArray = s.split("_");
             Currency c = getCurrencyUseCase.getCurrency(currencyArray[1]);
             if (s.equalsIgnoreCase("balance_" + currencyArray[1] + "_formatted")) {
-                return c.format(a.getBalance(c));
+                return c.format(a.getBalance(c).getBalance());
             } else {
                 String amount = "";
-                return amount + Math.round(a.getBalance(c).doubleValue());
+                return amount + Math.round(a.getBalance(c).getBalance().doubleValue());
             }
         }
 

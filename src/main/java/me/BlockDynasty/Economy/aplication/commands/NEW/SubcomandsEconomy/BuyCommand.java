@@ -81,6 +81,7 @@ public class BuyCommand implements CommandExecutor {
                 sender.sendMessage("§cError inesperado al realizar transacción");
             } catch (Exception e) {
                 sender.sendMessage(messageService.getUnexpectedErrorMessage()+e.getMessage());
+                e.printStackTrace();
             }
 
         return false;

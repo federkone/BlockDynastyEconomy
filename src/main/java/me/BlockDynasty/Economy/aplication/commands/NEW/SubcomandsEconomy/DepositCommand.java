@@ -77,6 +77,7 @@ public class DepositCommand implements CommandExecutor {
                 sender.sendMessage("Error inesperado al realizar transacción");
             } catch (Exception e) {
                 sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                e.printStackTrace();
             }
         });
         return false;

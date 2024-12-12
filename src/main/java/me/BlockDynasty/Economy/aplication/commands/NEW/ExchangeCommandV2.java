@@ -111,6 +111,7 @@ public class ExchangeCommandV2 implements CommandExecutor {
             {
                 sender.sendMessage(messageService.getUnexpectedErrorMessage());
                 //console log informate about the error
+                e.printStackTrace();
             }
         });
         return true;

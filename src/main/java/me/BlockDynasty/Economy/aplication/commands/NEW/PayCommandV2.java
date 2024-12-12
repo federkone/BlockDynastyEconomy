@@ -102,6 +102,7 @@ public class PayCommandV2 implements CommandExecutor {
                 player.sendMessage("§cError inesperado al realizar transacción");
             } catch (Exception e){
                 player.sendMessage(messageService.getUnexpectedErrorMessage());
+                e.printStackTrace();
             }
         });
 

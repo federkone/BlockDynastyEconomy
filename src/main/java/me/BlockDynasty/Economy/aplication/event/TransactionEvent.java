@@ -1,12 +1,5 @@
 package me.BlockDynasty.Economy.aplication.event;
 
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.utils.TranactionType;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 public class TransactionEvent {//extends Event implements Cancellable {
 
     /*private static final HandlerList handlerList = new HandlerList();

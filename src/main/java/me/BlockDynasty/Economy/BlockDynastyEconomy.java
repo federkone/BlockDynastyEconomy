@@ -11,7 +11,7 @@ import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.config.logging.VaultLogger;
 import me.BlockDynasty.Economy.domain.Offers.OfferManager;
-import me.BlockDynasty.Economy.domain.account.AccountManager;
+import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.aplication.api.BlockDynastyEconomyAPI;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
@@ -22,12 +22,11 @@ import me.BlockDynasty.Economy.aplication.commands.NEW.CommandRegistration;
 import me.BlockDynasty.Economy.domain.repository.ConnectionHandler.ConnectionHibernate;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.domain.repository.RepositoryCriteriaApi;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.config.file.Configuration;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.aplication.listeners.EconomyListener;
 import me.BlockDynasty.Economy.config.logging.EconomyLogger;
-import me.BlockDynasty.Economy.utils.Metrics;
 import me.BlockDynasty.Economy.utils.UtilServer;
 import me.BlockDynasty.Economy.aplication.vault.VaultHandler;
 import me.BlockDynasty.Placeholder.BlockdynastyEconomyExpansion;
@@ -39,9 +38,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
 
     private IRepository repository;
-    private AccountManager accountManager;
+    private AccountCache accountCache;
     private ChequeManager chequeManager;
-    private CurrencyManager currencyManager;
+    private CurrencyCache currencyCache;
     private VaultHandler vaultHandler;
     private AbstractLogger economyLogger;
     private AbstractLogger vaultLogger;
@@ -152,8 +151,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
     }
     private void initCoreServices() {
-        accountManager = new AccountManager();
-        currencyManager = new CurrencyManager(repository);
+        accountCache = new AccountCache();
+        currencyCache = new CurrencyCache(repository);
         economyLogger = new EconomyLogger(this);
         vaultLogger = new VaultLogger(this);
         //metrics = new Metrics(this);
@@ -161,23 +160,24 @@ public class BlockDynastyEconomy extends JavaPlugin {
         offerManager = new OfferManager(this);
 
 
-        messageService = new MessageService(currencyManager);
-        getAccountsUseCase = new GetAccountsUseCase(accountManager, currencyManager, getDataStore());
+        getCurrencyUseCase = new GetCurrencyUseCase(currencyCache,getDataStore());
+        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, getDataStore());
+
+        messageService = new MessageService(currencyCache);
         updateForwarder = new UpdateForwarder(this,getAccountsUseCase);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyManager);
-        withdrawUseCase = new WithdrawUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        depositUseCase = new DepositUseCase(currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyManager, updateForwarder,getDataStore());
-        setBalanceUseCase = new SetBalanceUseCase( currencyManager, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
-        payUseCase = new PayUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        exchangeUseCase = new ExchangeUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyCache, updateForwarder,getDataStore());
+        setBalanceUseCase = new SetBalanceUseCase( getCurrencyUseCase, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
+        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        exchangeUseCase = new ExchangeUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
         balanceUseCase = new GetBalanceUseCase(getAccountsUseCase);
-        createAccountUseCase = new CreateAccountUseCase(accountManager,currencyManager,getAccountsUseCase,updateForwarder, getDataStore());
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        transferFundsUseCase = new TransferFundsUseCase(currencyManager,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyManager,getDataStore(),updateForwarder);
-        editCurrencyUseCase = new EditCurrencyUseCase(currencyManager,updateForwarder,getDataStore());
-        toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyManager,getDataStore(),updateForwarder);
+        createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache,getAccountsUseCase, getDataStore());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyCache,getDataStore(),updateForwarder);
+        editCurrencyUseCase = new EditCurrencyUseCase(currencyCache,updateForwarder,getDataStore());
+        toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyCache,getDataStore(),updateForwarder);
         createOfferUseCase = new CreateOfferUseCase(offerManager,getCurrencyUseCase,getAccountsUseCase);
         acceptOfferUseCase = new AcceptOfferUseCase(offerManager,tradeCurrenciesUseCase);
         cancelOfferUseCase = new CancelOfferUseCase(offerManager);
@@ -202,15 +202,13 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new EconomyListener(this,createAccountUseCase,getAccountsUseCase,accountManager), this);
+        getServer().getPluginManager().registerEvents(new EconomyListener(this,createAccountUseCase,getAccountsUseCase, accountCache), this);
     }
     private void setupIntegrations() {
         // Configuración de Vault
         if (isVault()) {
             //TODO SE PUEDE PREGUNTAR VAULT_LOGGER ESTA HABILITADO PARA INYECTAR EL LOGER VAULT O EL DE ECONOMY
-            vaultHandler = new VaultHandler(this,createAccountUseCase,getAccountsUseCase,getCurrencyUseCase,
-                                            new DepositUseCase(currencyManager,getAccountsUseCase,getDataStore(),updateForwarder,vaultLogger),
-                                            new WithdrawUseCase(currencyManager,getAccountsUseCase,getDataStore(),updateForwarder,vaultLogger));
+            vaultHandler = new VaultHandler(this,createAccountUseCase,getAccountsUseCase,getCurrencyUseCase, depositUseCase, withdrawUseCase);
             vaultHandler.hook();
         } else {
             getLogger().info("Vault integration is disabled.");
@@ -243,12 +241,12 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static BlockDynastyEconomy getInstance() {  //en el unico lugar que queda es en la API como @deprecated
         return instance;
     }
-    public CurrencyManager getCurrencyManager() {
-        return currencyManager;
+    public CurrencyCache getCurrencyManager() {
+        return currencyCache;
     }
 
-    public AccountManager getAccountManager() {
-        return accountManager;
+    public AccountCache getAccountManager() {
+        return accountCache;
     }
 
     public VaultHandler getVaultHandler() {

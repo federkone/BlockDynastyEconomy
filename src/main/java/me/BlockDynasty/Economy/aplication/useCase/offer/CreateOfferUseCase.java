@@ -6,11 +6,9 @@ import me.BlockDynasty.Economy.domain.Offers.OfferManager;
 import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertAlreadyExist;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 
 
 import java.math.BigDecimal;
@@ -68,15 +66,6 @@ public class CreateOfferUseCase {
             throw new CurrencyAmountNotValidException("Amount must be an integer");
         }
 
-        //si el enviador no tiene suficiente moneda para la oferta
-        if(!accountSender.hasEnough(currencyValue,amountCurrencyValue)){
-            throw new InsufficientFundsException("Insufficient funds");
-        }
-
-        //si el receptor no puede recibir la moneda
-        if(!accountReciber.canReceiveCurrency()){
-            throw new AccountCanNotReciveException(" account can not receive currency");
-        }
 
 
         offerManager.createOffer(playerSender, playerReciber, amountCurrencyValue, amountCurrencyOffer, currencyValue, currencyOffer);

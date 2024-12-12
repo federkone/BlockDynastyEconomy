@@ -3,44 +3,39 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAlreadyExist;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
-import org.bukkit.ChatColor;
 
-import java.util.List;
 import java.util.UUID;
 
 //TODO :CREATE CURRENCY, NOTA IMPORTANTE, VALIDAR QUE SI YA EXISTE UNA CURRENCY POR DEFAULT NO SE PUEDA CREAR, Y EN EL CASO DE QUERER SETEAR UNA POR DEFECTO DEBEMOS DESASER LA ANTERIOR DEFAULT
 public class CreateCurrencyUseCase {
-    private final CurrencyManager currencyManager;
+    private final CurrencyCache currencyCache;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
 
-    public CreateCurrencyUseCase(CurrencyManager currencyManager, UpdateForwarder updateForwarder,IRepository dataStore) {
-        this.currencyManager = currencyManager;
+    public CreateCurrencyUseCase(CurrencyCache currencyCache, UpdateForwarder updateForwarder, IRepository dataStore) {
+        this.currencyCache = currencyCache;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
 
     public void createCurrency(String singular,String plural){
-        if (currencyManager.currencyExist(singular) || currencyManager.currencyExist(plural)){
+        if (currencyCache.currencyExist(singular) || currencyCache.currencyExist(plural)){
             throw new CurrencyAlreadyExist("Currency already exist");
         }
 
         Currency currency = new Currency(UUID.randomUUID(), singular, plural);
         currency.setExchangeRate(1.0);
-        if(currencyManager.getCurrencies().isEmpty()) {  //setear por defecto si es la unica moneda en el sistema
+        if(currencyCache.getCurrencies().isEmpty()) {  //setear por defecto si es la unica moneda en el sistema
             currency.setDefaultCurrency(true);
         }
 
         try {
             dataStore.saveCurrency(currency);
-            currencyManager.add(currency);//cache
+            currencyCache.add(currency);//cache
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");

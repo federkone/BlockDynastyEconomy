@@ -3,18 +3,20 @@ package me.BlockDynasty.Economy.domain.currency;
 
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.domain.currency.Currency;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CurrencyManager {
-
+public class CurrencyCache {
     private List<Currency> currencies ;
+    public Currency defaultCurrency;
 
-    public CurrencyManager(IRepository repository) {
+    public CurrencyCache(IRepository repository) {
         this.currencies = new ArrayList<>();
         this.currencies = repository.loadCurrencies(Criteria.create());
+        updateDefaultCurrency();
 
     }
 
@@ -37,11 +39,15 @@ public class CurrencyManager {
                 .orElse(null);
     }
 
-    public Currency getDefaultCurrency() {
-        return currencies.stream()
+    public void updateDefaultCurrency() {
+        defaultCurrency = currencies.stream()
                 .filter(Currency::isDefaultCurrency)
                 .findFirst()
-                .orElse(null);
+                .orElse(defaultCurrency);
+    }
+
+    public Currency getDefaultCurrency() {
+        return this.defaultCurrency;
     }
 
     public void remove(Currency currency){

@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.aplication.commands.NEW;
 
 import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
+import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.config.file.F;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import me.BlockDynasty.Economy.config.file.MessageService;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class BalanceCommand implements CommandExecutor {
@@ -50,11 +52,11 @@ public class BalanceCommand implements CommandExecutor {
 
         SchedulerUtils.runAsync(() -> {
             try {
-                Map<Currency, BigDecimal> balances = balance.getBalances(target);
+                List<Balance> balances = balance.getBalances(target);
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
-                for (Map.Entry<Currency, BigDecimal> entry : balances.entrySet()) {
-                    Currency currency = entry.getKey();
-                    BigDecimal balance = entry.getValue();
+                for (Balance entry : balances) {
+                    Currency currency = entry.getCurrency();
+                    BigDecimal balance = entry.getBalance();
                     sender.sendMessage(F.getBalanceList().replace("{currencycolor}", currency.getColor() + "").replace("{format}", currency.format(balance)));
                 }
             } catch (AccountNotFoundException e) {

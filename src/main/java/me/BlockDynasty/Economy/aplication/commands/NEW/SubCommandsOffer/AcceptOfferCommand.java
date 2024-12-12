@@ -50,6 +50,10 @@ public class AcceptOfferCommand  implements CommandExecutor {
         }catch (TransactionException e){
             sender.sendMessage("§cError al intentar la transaccion");
             playerFrom.sendMessage("§cError al intentar la transaccion");
+        }catch (Exception e){
+            sender.sendMessage("§cError inesperado");
+            playerFrom.sendMessage("§cError inesperado");
+            e.printStackTrace();
         }
 
 

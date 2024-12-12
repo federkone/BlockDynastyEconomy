@@ -1,7 +1,8 @@
 package me.BlockDynasty.Economy.domain.repository.ConnectionHandler;
 
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.account.Account;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 //todo, podemos configurar hibernate desde aqui, como cache, etc etc
@@ -17,10 +18,14 @@ public class ConnectionHibernate {
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
         configuration.setProperty("hibernate.connection.autocommit", "true");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
+        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.format_sql", "true");
+        configuration.setProperty("hibernate.use_sql_comments", "true");
 
         // Añadir mapeos manualmente
         configuration.addAnnotatedClass(Currency.class);
         configuration.addAnnotatedClass(Account.class);
+        configuration.addAnnotatedClass(Balance.class);
 
         try {
             sessionFactory = configuration.buildSessionFactory();

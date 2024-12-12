@@ -1,17 +1,17 @@
 package me.BlockDynasty.Economy.config.file;
 import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
 
 public class MessageService {
 
-    private final CurrencyManager currencyManager;
+    private final CurrencyCache currencyCache;
 
-    public MessageService(CurrencyManager currencyManager) {
-        this.currencyManager = currencyManager;
+    public MessageService(CurrencyCache currencyCache) {
+        this.currencyCache = currencyCache;
     }
 
     public String getPayNoPerms() {
@@ -23,7 +23,7 @@ public class MessageService {
     }
 
     public String getInsufficientFundsMessage(String currencyName) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found"; // Manejo de errores interno si no se encuentra la moneda
         }
@@ -45,7 +45,7 @@ public class MessageService {
     }
 
     public String getCurrencyNotPayableMessage(String currencyName) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
         }
@@ -64,7 +64,7 @@ public class MessageService {
     }
 
     public String getSuccessMessage(String payerName, String targetName, String currencyName, BigDecimal amount) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
         }
@@ -75,7 +75,7 @@ public class MessageService {
     }
 
     public String getReceivedMessage(String payerName, String currencyName, BigDecimal amount) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
         }
@@ -86,8 +86,8 @@ public class MessageService {
     }
 
     public String getExchangeSuccess( String toExchange, BigDecimal toExchangeAmount, String toReceive) {
-        Currency currencyTo = currencyManager.getCurrency(toExchange);
-        Currency currencyToRecive = currencyManager.getCurrency(toReceive);
+        Currency currencyTo = currencyCache.getCurrency(toExchange);
+        Currency currencyToRecive = currencyCache.getCurrency(toReceive);
         return F.getExchangeSuccess()
                 .replace("{currencycolor}", "" + currencyTo.getColor())
                 .replace("{ex_curr}", currencyTo.format(toExchangeAmount))
@@ -95,7 +95,7 @@ public class MessageService {
                 .replace("{re_curr}", currencyToRecive.getPlural());
     }
     public String getWithdrawMessage(String target, String currencyName, BigDecimal amount) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
         }
@@ -106,7 +106,7 @@ public class MessageService {
     }
 
     public String getDepositMessage(String target, String currencyName, BigDecimal amount) {
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null) {
             return "Currency not found";
         }
@@ -117,8 +117,8 @@ public class MessageService {
     }
 
     public String getOfferSendMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
-        Currency currency = currencyManager.getCurrency(currencyName);
-        Currency currency2 = currencyManager.getCurrency(currencyName2);
+        Currency currency = currencyCache.getCurrency(currencyName);
+        Currency currency2 = currencyCache.getCurrency(currencyName2);
         return F.getOfferSender()
                 .replace("{currencycolorOffert}", currency.getColor() + "")
                 .replace("{amountOffert}",  currency.format(amount))
@@ -129,8 +129,8 @@ public class MessageService {
     }
 
     public String getOfferReceiveMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
-        Currency currency = currencyManager.getCurrency(currencyName);
-        Currency currency2 = currencyManager.getCurrency(currencyName2);
+        Currency currency = currencyCache.getCurrency(currencyName);
+        Currency currency2 = currencyCache.getCurrency(currencyName2);
         return F.getOfferReceiver()
                 .replace("{currencycolorOffert}", currency.getColor() + "")
                 .replace("{amountOffert}",  currency.format(amount))

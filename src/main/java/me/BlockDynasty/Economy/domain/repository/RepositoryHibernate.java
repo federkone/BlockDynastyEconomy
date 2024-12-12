@@ -146,7 +146,7 @@ public class RepositoryHibernate implements IRepository {
     }
 
     @Override
-    public List<Account> getAccountsByCurrency(String currencyName, int limit,int offset) {
+    public List<Account> getAccountsByCurrency(String currencyName, int limit, int offset) {
         return null;
     }
 
@@ -162,6 +162,11 @@ public class RepositoryHibernate implements IRepository {
 
     @Override
     public void close() {
+
+    }
+
+    @Override
+    public void clearAll() {
 
     }
 }

@@ -24,10 +24,11 @@ public interface IRepository {
 
     //get top list se va a eliminar ude jar
     void getTopList(Currency currency, int offset, int amount, Callback<LinkedList<CachedTopListEntry>> callback);
-    List<Account> getAccountsByCurrency(String currencyName,int limit,int offset);
+    List<Account> getAccountsByCurrency(String currencyName, int limit, int offset);
 
     boolean isTopSupported();
     String getName();
     void close();
+    void clearAll();
 
 }

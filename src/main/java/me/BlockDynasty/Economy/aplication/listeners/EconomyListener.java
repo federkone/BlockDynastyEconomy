@@ -4,7 +4,7 @@ import me.BlockDynasty.Economy.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountManager;
+import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
@@ -23,13 +23,13 @@ public class EconomyListener implements Listener {
     private final BlockDynastyEconomy plugin ;
     private final CreateAccountUseCase createAccountUseCase;
     private final GetAccountsUseCase getAccountsUseCase;
-    private final AccountManager accountManager;
+    private final AccountCache accountCache;
 
-    public EconomyListener(BlockDynastyEconomy plugin, CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, AccountManager accountManager) {
+    public EconomyListener(BlockDynastyEconomy plugin, CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, AccountCache accountCache) {
         this.plugin = plugin;
         this.createAccountUseCase = createAccountUseCase;
         this.getAccountsUseCase = getAccountsUseCase;
-        this.accountManager = accountManager;
+        this.accountCache = accountCache;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -39,7 +39,7 @@ public class EconomyListener implements Listener {
         SchedulerUtils.run(() -> {
             try{
                Account account = getAccountsUseCase.getAccount(player.getUniqueId()); //traer y cargar en cache
-                accountManager.addAccountToCache(account); //se agrega a cache por que se conecta
+                accountCache.addAccountToCache(account); //se agrega a cache por que se conecta
             }catch(AccountNotFoundException e){
                 createAccountUseCase.execute(player.getUniqueId(),player.getName());  //sino crear
             }catch (TransactionException e){
@@ -63,7 +63,7 @@ public class EconomyListener implements Listener {
         SchedulerUtils.run(() -> {
             try {
                 Account account  = getAccountsUseCase.getAccount(player.getUniqueId());  //todo: ya deberia devolver la cuenta de la cache
-                accountManager.addAccountToCache(account);
+                accountCache.addAccountToCache(account);
             }catch (AccountNotFoundException e) {
                 player.kickPlayer("Error al cargar tu cuenta de economia vuelve a ingresar al server, o contacta a un administrador");
             }
@@ -80,13 +80,13 @@ public class EconomyListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        accountManager.removeAccount(player.getUniqueId());  //se quita cache por que se desconecta
+        accountCache.removeAccount(player.getUniqueId());  //se quita cache por que se desconecta
     }
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
-        accountManager.removeAccount(player.getUniqueId());  //se quita cache por que se kikea
+        accountCache.removeAccount(player.getUniqueId());  //se quita cache por que se kikea
     }
 
 }

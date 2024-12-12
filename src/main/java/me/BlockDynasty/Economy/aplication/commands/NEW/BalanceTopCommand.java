@@ -46,6 +46,9 @@ public class BalanceTopCommand implements CommandExecutor {
                 sender.sendMessage("No support top");
             } catch (AccountNotFoundException e) {
                 sender.sendMessage(F.getBalanceTopEmpty()); //cuentas no encotradas para moneda
+            }catch (Exception e){
+                sender.sendMessage("Error inesperado");
+                e.printStackTrace();
             }
         });
 

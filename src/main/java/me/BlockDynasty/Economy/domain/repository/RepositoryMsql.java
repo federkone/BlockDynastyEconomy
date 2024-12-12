@@ -23,8 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class RepositoryMsql implements IRepository {
-    private HikariDataSource hikari;
+public class RepositoryMsql  {
+    /*private HikariDataSource hikari;
     private boolean isTopSupported = true;
 
     private String currencyTable = "currencies";
@@ -140,7 +140,7 @@ public class RepositoryMsql implements IRepository {
         return getAccounts(sql,criteria);
     }
 
-    private List<Account> getAccounts (String sql ,Criteria criteria){
+    private List<Account> getAccounts (String sql , Criteria criteria){
         List<Account> accounts = new ArrayList<>();
 
         try (Connection connection = hikari.getConnection()) {
@@ -212,7 +212,7 @@ public class RepositoryMsql implements IRepository {
         String SAVE_ACCOUNT = "INSERT INTO `" + this.accountsTable + "` (`nickname`, `uuid`, `payable`, `balance_data`) VALUES (?, ?, ?, ?)";
         try (Connection connection = hikari.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(SAVE_ACCOUNT);
-            stmt.setString(1, account.getDisplayName());
+            stmt.setString(1, account.getNickname());
             stmt.setString(2, account.getUuid().toString());
             stmt.setInt(3, account.canReceiveCurrency() ? 1 : 0);
 
@@ -234,7 +234,7 @@ public class RepositoryMsql implements IRepository {
         String UPDATE_ACCOUNT = "UPDATE `" + this.accountsTable + "` SET `nickname` = ?, `payable` = ?, `balance_data` = ? WHERE `uuid` = ?";
         try (Connection connection = hikari.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement(UPDATE_ACCOUNT);
-            stmt.setString(1, account.getDisplayName());
+            stmt.setString(1, account.getNickname());
             stmt.setInt(2, account.canReceiveCurrency() ? 1 : 0);
 
             JSONObject obj = new JSONObject();
@@ -310,7 +310,7 @@ public class RepositoryMsql implements IRepository {
     }
 
     @Override
-    public List<Account> getAccountsByCurrency(String currencyName, int limit,int offset) {
+    public List<Account> getAccountsByCurrency(String currencyName, int limit, int offset) {
         return null;
     }
 
@@ -326,4 +326,6 @@ public class RepositoryMsql implements IRepository {
             hikari.close();
         }
     }
+    
+     */
 }

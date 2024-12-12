@@ -74,7 +74,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The default currency balance of the user.
      */
     public double getBalance(UUID uuid){
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getDefaultCurrency()).doubleValue();
+        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getDefaultCurrency()).getBalance().doubleValue();
     }
 
     /**
@@ -84,7 +84,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The balance of the specified currency.
      */
     public double getBalance(UUID uuid, String currency) {
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getCurrency(currency)).doubleValue();
+        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getCurrency(currency)).getBalance().doubleValue();
     }
 
     /**

@@ -28,9 +28,6 @@ public class EditStartBalCommand implements CommandExecutor {
         double amount;
         try {
             amount = Double.parseDouble(args[1]);
-            if (amount <= 0.0) {
-                throw new NumberFormatException();
-            }
         } catch (NumberFormatException ex) {
             sender.sendMessage(F.getUnvalidAmount());
             return true;

@@ -1,14 +1,12 @@
 package me.BlockDynasty.Economy.domain.account;
-
 import java.util.*;
 
 
 //TODO ESTE MANAGER SE VA A ENCARGAR DE DECIDIR SI TRAER AL USUSARIO DE LA DB O USAR EL DE LA LISTA
-public class AccountManager {
+public class AccountCache {
     private final Set<Account> accounts;
 
-    public AccountManager() {
-
+    public AccountCache() {
         this.accounts = new HashSet<>(); //para no repetir cuentas
     }
     //TODO: CACHE ACCOUNTS, ESTO PUEDE QUEDAR ACA

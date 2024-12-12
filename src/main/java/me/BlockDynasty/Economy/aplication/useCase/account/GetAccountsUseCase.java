@@ -1,26 +1,21 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountManager;
+import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.RepositoryNotSupportTopException;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GetAccountsUseCase {
-    private final AccountManager accountManager;
+    private final AccountCache accountCache;
     private final IRepository dataStore;
-    private final CurrencyManager currencyManager;
+    private final CurrencyCache currencyCache;
     //private final CachedTopList cachedTopList;
 
 
@@ -32,10 +27,10 @@ public class GetAccountsUseCase {
    plugin.getDataStore().saveAccount(acc);  */
     //TODO----------------------------------------------------------------
 
-    public GetAccountsUseCase(AccountManager accountManager, CurrencyManager currencyManager, IRepository dataStore) {
-        this.accountManager = accountManager;
+    public GetAccountsUseCase(AccountCache accountCache, CurrencyCache currencyCache, IRepository dataStore) {
+        this.accountCache = accountCache;
         this.dataStore = dataStore;
-        this.currencyManager = currencyManager;
+        this.currencyCache = currencyCache;
         //this.cachedTopList = cachedTopList;
     }
 
@@ -44,9 +39,10 @@ public class GetAccountsUseCase {
     }
 
     public Account getAccount(String name) {
-        Account account = accountManager.getAccount(name);
+        Account account = accountCache.getAccount(name);
 
        if(account == null){
+           //System.out.println("CUENTA NO ENCONTRAD EN CACHE");
             Criteria criteria = Criteria.create().filter("nickname", name).limit(1); //prepare for get account with uuid
             List<Account> accounts = dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
@@ -62,7 +58,7 @@ public class GetAccountsUseCase {
     }
 
         public Account getAccount(UUID uuid) {
-        Account account = accountManager.getAccount(uuid);
+        Account account = accountCache.getAccount(uuid);
 
        if(account == null){
             Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
@@ -80,7 +76,7 @@ public class GetAccountsUseCase {
     }
 
     public void updateAccountCache(UUID uuid){
-        Account accountCache = accountManager.getAccount(uuid);
+        Account accountCache = this.accountCache.getAccount(uuid);
         Account accountDb = null;
 
         Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
@@ -89,7 +85,7 @@ public class GetAccountsUseCase {
         if (!accounts.isEmpty() && accountCache != null){
             accountDb = accounts.get(0);
             updateAccountBalances(accountDb);
-            accountCache.setBalances(accountDb.getBalances());
+            accountCache.setBalances(accountDb.getBalances( ));
         }else {
             throw new AccountNotFoundException("Account not found");
         }
@@ -100,12 +96,12 @@ public class GetAccountsUseCase {
     }
 
     public Set<Account> getOnlineAccounts() {
-        return accountManager.getAccounts();
+        return accountCache.getAccounts();
     }
 
    //TODO: TOP 10 ACC, añadir uso de la cache de CachedTopList class
     //todo: puedo tomar como criterio que la lista de tops sean los que mas suma de todas las monedas tienen
-    public LinkedList<CachedTopListEntry> getTopAccounts(String currency) {
+   /*lic LinkedList<CachedTopListEntry> getTopAccounts(String currency) {
         List<Account> accounts = new ArrayList<>();
         LinkedList<CachedTopListEntry> cache = new LinkedList<>();
 
@@ -126,7 +122,7 @@ public class GetAccountsUseCase {
                 }
                 //AGREGAR A CACHE PARA LUEGO RETORNAR
                 for(Account account : accounts){
-                    cache.add(new CachedTopListEntry(account.getDisplayName(), account.getBalance(currency))); //añado a la cache los datos encontrados
+                    cache.add(new CachedTopListEntry(account.getNickname(), account.getBalance(currency))); //añado a la cache los datos encontrados
 
                 }
             }catch (TransactionException e){
@@ -148,17 +144,20 @@ public class GetAccountsUseCase {
         return cache;
     }
 
+/*
+    */
+    private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
+        List<Balance> updatedBalances = currencyCache.getCurrencies().stream()
+                .map(systemCurrency ->
+                        account.getBalances().stream()
+                                .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
+                                .findFirst() // Busca si ya existe el balance para esta moneda
+                                .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
+                                    return new Balance(systemCurrency);
+                                }))
+                .collect(Collectors.toList());
 
-    private void updateAccountBalances(Account account) {
-        Map<Currency, BigDecimal> updatedBalances = currencyManager.getCurrencies().stream()
-                .collect(Collectors.toMap(
-                        systemCurrency -> systemCurrency,
-                        systemCurrency -> account.getBalances().entrySet().stream()
-                                .filter(entry -> entry.getKey().getUuid().equals(systemCurrency.getUuid()))
-                                .map(Map.Entry::getValue)
-                                .findFirst()
-                                .orElse(systemCurrency.getDefaultBalance())
-                ));
+// Actualiza los balances del usuario con la lista construida
         account.setBalances(updatedBalances);
     }
 

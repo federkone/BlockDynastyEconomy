@@ -41,6 +41,10 @@ public class DenyOfferCommand  implements CommandExecutor {
             sender.sendMessage(messageService.getOfferDenyToMessage(playerFrom.getName()));
         } catch (OffertNotFoundException e) {
             sender.sendMessage("No hay ofertas pendientes de este jugador");
+        }catch (Exception e) {
+            sender.sendMessage("§cError inesperado");
+            playerFrom.sendMessage("§cError inesperado");
+            e.printStackTrace();
         }
         return false;
     }

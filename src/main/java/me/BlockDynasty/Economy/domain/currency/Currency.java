@@ -18,19 +18,21 @@ import org.bukkit.ChatColor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Table(name = "currencies")
 //@Converter(autoApply = true)
 public class Currency {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private int id;
 
+    @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-    @Convert(converter = UUIDConverter.class)
-    private UUID uuid;
+    //@Convert(converter = UUIDConverter.class)
+    private String uuid;
 
     @Column(name = "name_singular")
     private String singular;
@@ -39,35 +41,46 @@ public class Currency {
     private String plural;
 
     @Column(name = "symbol")
-    private String symbol = "";
+    private String symbol ;
 
     @Column(name = "color")
     @Convert(converter = ChatColorConverter.class)
-    private ChatColor color = ChatColor.WHITE;
+    private ChatColor color ;
 
     @Column(name = "decimal_supported")
-    private boolean decimalSupported = true;
+    private boolean decimalSupported ;
 
     @Column(name = "payable")
-    private boolean payable = true;
-
+    private boolean payable ; //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
+                                             //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
     @Column(name = "default_currency")
-    private boolean defaultCurrency = false;
+    private boolean defaultCurrency ;
 
     @Column(name = "default_balance")
-    private BigDecimal defaultBalance = BigDecimal.ZERO;
+    private BigDecimal defaultBalance ;
 
     @Column(name = "exchange_rate")
-    private double exchangeRate = 0.0;
+    private double exchangeRate ;
 
     public Currency(UUID uuid, String singular, String plural) {
-        this.uuid = uuid;
+        this.defaultBalance = BigDecimal.ZERO;
+        this.exchangeRate = 0.0;
+        this.color = ChatColor.WHITE;
+        this.decimalSupported = true;
+        this.payable = true;
+        this.defaultCurrency = false;
+        this.uuid = uuid.toString();
         this.singular = singular;
         this.plural = plural;
     }
 
     public Currency() {
-
+        this.defaultBalance = BigDecimal.ZERO;
+        this.exchangeRate = 0.0;
+        this.color = ChatColor.WHITE;
+        this.decimalSupported = true;
+        this.payable = true;
+        this.defaultCurrency = false;
     }
 
     public void setSingular(String singular) {
@@ -84,7 +97,7 @@ public class Currency {
     }
 
     public UUID getUuid() {
-        return this.uuid;
+        return UUID.fromString(this.uuid);
     }
 
     public String getSingular() {
@@ -171,6 +184,19 @@ public class Currency {
 
     public void setExchangeRate(double exchangeRate) {
         this.exchangeRate = exchangeRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Currency currency = (Currency) o;
+        return uuid.equals(currency.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
     }
 }
 

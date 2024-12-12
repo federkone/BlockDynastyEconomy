@@ -2,7 +2,7 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
@@ -13,19 +13,19 @@ import org.bukkit.ChatColor;
 import java.math.BigDecimal;
 
 public class EditCurrencyUseCase {
-    private final CurrencyManager currencyManager;
+    private final CurrencyCache currencyCache;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
 
-    public EditCurrencyUseCase(CurrencyManager currencyManager, UpdateForwarder updateForwarder, IRepository dataStore) {
-        this.currencyManager = currencyManager;
+    public EditCurrencyUseCase(CurrencyCache currencyCache, UpdateForwarder updateForwarder, IRepository dataStore) {
+        this.currencyCache = currencyCache;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
 
 
     public void editStartBal(String name, double startBal){
-        Currency currency = currencyManager.getCurrency(name);
+        Currency currency = currencyCache.getCurrency(name);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -45,7 +45,7 @@ public class EditCurrencyUseCase {
     }
 
         public void setCurrencyRate(String currencyName, double rate){
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -60,7 +60,7 @@ public class EditCurrencyUseCase {
 
 
        public void editColor(String nameCurrency, String colorString){
-        Currency currency = currencyManager.getCurrency(nameCurrency);
+        Currency currency = currencyCache.getCurrency(nameCurrency);
 
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
@@ -83,7 +83,7 @@ public class EditCurrencyUseCase {
     }
 
     public void editSymbol(String nameCurrency,String symbol){
-            Currency currency = currencyManager.getCurrency(nameCurrency);
+            Currency currency = currencyCache.getCurrency(nameCurrency);
 
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
@@ -100,34 +100,38 @@ public class EditCurrencyUseCase {
     }
 
         public void setDefaultCurrency(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
+        Currency currency = currencyCache.getCurrency(currencyName);
 
         if (currency.isDefaultCurrency()){
             return;
         }
 
-        currencyManager.getCurrencies().forEach(c -> {
+        currencyCache.getCurrencies().forEach(c -> {
             if (c.isDefaultCurrency()){
                 c.setDefaultCurrency(false);
                 try {
                     dataStore.saveCurrency(c);
                     updateForwarder.sendUpdateMessage("currency", c.getUuid().toString());
                 }catch (TransactionException e){
-                    throw new TransactionException("Error creating currency");
+                    throw new TransactionException("Error save in setDefaultCurrency");
                 }
             }
         });
 
         currency.setDefaultCurrency(true);
+        currencyCache.updateDefaultCurrency();
+
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
         }
+
+    }
+
+    public void changeName(String actualName, String newName){
+        //todo: cambiar nombre de la moneda, verificar si existe el actualname tanto plural como singualr, y actualizar el mismo campo plural o singular
     }
 
 }

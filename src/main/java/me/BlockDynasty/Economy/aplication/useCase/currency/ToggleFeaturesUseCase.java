@@ -2,24 +2,24 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyManager;
+import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
 public class ToggleFeaturesUseCase {
-        private final CurrencyManager currencyManager;
+        private final CurrencyCache currencyCache;
         private final IRepository dataStore;
         private final UpdateForwarder updateForwarder;
 
-        public ToggleFeaturesUseCase(CurrencyManager currencyManager, IRepository dataStore, UpdateForwarder updateForwarder){
-            this.currencyManager = currencyManager;
+        public ToggleFeaturesUseCase(CurrencyCache currencyCache, IRepository dataStore, UpdateForwarder updateForwarder){
+            this.currencyCache = currencyCache;
             this.dataStore = dataStore;
             this.updateForwarder = updateForwarder;
         }
 
         public void togglePayable(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -33,7 +33,7 @@ public class ToggleFeaturesUseCase {
     }
 
     public void toggleDecimals(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
+        Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
