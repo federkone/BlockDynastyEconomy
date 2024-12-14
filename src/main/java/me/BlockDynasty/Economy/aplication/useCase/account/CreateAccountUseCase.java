@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountExeption;
@@ -30,25 +32,23 @@ public class CreateAccountUseCase {
     }
 
     //todo: se puede upgradear para aceptar solo uuid y obtener el nombre a trabez de la api bukkit
-    public void execute(UUID userUuid , String userName) {
-        try{
-            Account existingAccount = getAccountsUseCase.getAccount(userUuid);
-            if (existingAccount != null) {
-                throw new AccountExeption("Account already exists for: " + existingAccount.getNickname());
-            }
-        }catch (AccountNotFoundException e){
-            Account account = new Account(userUuid, userName);
-            account.setCanReceiveCurrency(true);
-            initializeAccountWithDefaultCurrencies(account);
-            try {
-                dataStore.createAccount(account);
-                accountCache.addAccountToCache(account);
-                //updateForwarder.sendUpdateMessage("account", account.getUuid().toString()); //todo :test sin esto, ya que no hace falta broadcastear la creacion de una cuenta
-            } catch (TransactionException t) {
-                throw new TransactionException("Error creating account for: " + account.getNickname());
-            }
+    public Result<Void> execute(UUID userUuid , String userName) {
+        Result<Account> accountResult = getAccountsUseCase.getAccount(userUuid);
+        if (accountResult.isSuccess()) {
+            return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
+        }
+        Account account = new Account(userUuid, userName);
+        account.setCanReceiveCurrency(true);
+        initializeAccountWithDefaultCurrencies(account);
+        try {
+            dataStore.createAccount(account);
+            accountCache.addAccountToCache(account);
+            //updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        } catch (TransactionException t) {
+            return Result.failure("Error creating account for: " + account.getNickname(), ErrorCode.DATA_BASE_ERROR);
         }
 
+        return Result.success(null);
     }
 
     private void initializeAccountWithDefaultCurrencies(Account account) {

@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
@@ -29,30 +31,54 @@ public class PayUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currency = getCurrencyUseCase.getCurrency(currencyName);
-
-        performPay(accountFrom, accountTo, currency, amount);
-    }
-
-    public void execute (String userFrom, String userTo, String currencyName, BigDecimal amount) {
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currency = getCurrencyUseCase.getCurrency(currencyName);
-
-        performPay(accountFrom, accountTo, currency, amount);
-    }
-
-    private void performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
-        if(!currency.isPayable()){
-            throw new CurrencyNotPayableException("Currency is not payable");
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
-        accountFrom.transfer(accountTo,currency,amount);
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
 
-    //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+        return performPay(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+    }
+
+    public Result<Void> execute (String userFrom, String userTo, String currencyName, BigDecimal amount) {
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
+
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+        return performPay(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+    }
+
+    private Result<Void> performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+        if(!currency.isPayable()){
+            return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
+        }
+
+        Result<Void> result = accountFrom.transfer(accountTo,currency,amount);
+        if(!result.isSuccess()){
+            return result;
+        }
+
         try {
             dataStore.transfer(accountFrom, accountTo);
 
@@ -62,9 +88,11 @@ public class PayUseCase {
                 economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " transferred " +
                         currency.format(amount) + " to " + accountTo.getNickname());
             }
-            //todo aca actualizaria la cache con el metodo de GetAccountsUseCase.updateAccountCache
         } catch (TransactionException e) {
-            throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
+            //throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
+            return Result.failure("Failed to perform transfer: " , ErrorCode.DATA_BASE_ERROR);
         }
+
+        return Result.success(null);
     }
 }

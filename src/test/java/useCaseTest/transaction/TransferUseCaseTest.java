@@ -86,8 +86,8 @@ public class TransferUseCaseTest {
             fail("Decimal not supported");
         }
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getBalance("dinero").getBalance().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getBalance("dinero").getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance("dinero").getBalance().setScale(2));
 
     }
 

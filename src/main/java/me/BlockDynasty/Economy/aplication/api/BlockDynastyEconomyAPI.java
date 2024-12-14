@@ -36,7 +36,7 @@ public class BlockDynastyEconomyAPI {
      * @param amount - An amount of the default currency.
      */
     public void deposit(UUID uuid, double amount){
-        depositUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
+        depositUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getValue().getSingular(), BigDecimal.valueOf(amount));
     }
 
     /**
@@ -55,7 +55,7 @@ public class BlockDynastyEconomyAPI {
      * @param amount - An amount of the default currency.
      */
     public void withdraw(UUID uuid, double amount){
-        withdrawUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getSingular(),  BigDecimal.valueOf(amount));
+        withdrawUseCase.execute(uuid,getCurrencyUseCase.getDefaultCurrency().getValue().getSingular(),  BigDecimal.valueOf(amount));
     }
 
     /**
@@ -74,7 +74,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The default currency balance of the user.
      */
     public double getBalance(UUID uuid){
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getDefaultCurrency()).getBalance().doubleValue();
+        return getAccountsUseCase.getAccount(uuid).getValue().getBalance(getCurrencyUseCase.getDefaultCurrency().getValue()).getBalance().doubleValue();
     }
 
     /**
@@ -84,7 +84,7 @@ public class BlockDynastyEconomyAPI {
      * @return - The balance of the specified currency.
      */
     public double getBalance(UUID uuid, String currency) {
-        return getAccountsUseCase.getAccount(uuid).getBalance(getCurrencyUseCase.getCurrency(currency)).getBalance().doubleValue();
+        return getAccountsUseCase.getAccount(uuid).getValue().getBalance(getCurrencyUseCase.getCurrency(currency).getValue()).getBalance().doubleValue();
     }
 
     /**
@@ -120,7 +120,7 @@ public class BlockDynastyEconomyAPI {
      * @return - Currency Object.
      */
     public Currency getCurrency(String name){
-            return getCurrencyUseCase.getCurrency(name);
+            return getCurrencyUseCase.getCurrency(name).getValue();
     }
 
     public BlockDynastyEconomyAPI getAPI(){

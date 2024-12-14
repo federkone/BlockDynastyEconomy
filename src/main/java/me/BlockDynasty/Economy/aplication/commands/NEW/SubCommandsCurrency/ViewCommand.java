@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsCurrency;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
@@ -23,21 +24,23 @@ public class ViewCommand implements CommandExecutor {
             sender.sendMessage(F.getCurrencyUsage_View());
             return true;
         }
-        SchedulerUtils.runAsync(() -> {
-            try {
-                Currency currency = getCurrencyUseCase.getCurrency(args[0]);
 
-                sender.sendMessage(F.getPrefix() + "§7ID: §c" + currency.getUuid().toString());
-                sender.sendMessage(F.getPrefix() + "§7Singular: §a" + currency.getSingular() + "§7, Plural: §a" + currency.getPlural());
-                sender.sendMessage(F.getPrefix() + "§7Start Balance: " + currency.getColor() + currency.format(currency.getDefaultBalance()) + "§7.");
-                sender.sendMessage(F.getPrefix() + "§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"));
-                sender.sendMessage(F.getPrefix() + "§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"));
-                sender.sendMessage(F.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
-                sender.sendMessage(F.getPrefix() + "§7Color: " + currency.getColor() + currency.getColor().name());
-                sender.sendMessage(F.getPrefix() + "§7Rate: " + currency.getColor() + currency.getExchangeRate());
-            }catch (CurrencyNotFoundException e){
+        SchedulerUtils.runAsync(() -> {
+            Result<Currency> resultCurrency = getCurrencyUseCase.getCurrency(args[0]);
+            if (!resultCurrency.isSuccess()) {
                 sender.sendMessage(F.getUnknownCurrency());
+                return;
             }
+
+            Currency currency = resultCurrency.getValue();
+            sender.sendMessage(F.getPrefix() + "§7ID: §c" + currency.getUuid().toString());
+            sender.sendMessage(F.getPrefix() + "§7Singular: §a" + currency.getSingular() + "§7, Plural: §a" + currency.getPlural());
+            sender.sendMessage(F.getPrefix() + "§7Start Balance: " + currency.getColor() + currency.format(currency.getDefaultBalance()) + "§7.");
+            sender.sendMessage(F.getPrefix() + "§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"));
+            sender.sendMessage(F.getPrefix() + "§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"));
+            sender.sendMessage(F.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
+            sender.sendMessage(F.getPrefix() + "§7Color: " + currency.getColor() + currency.getColor().name());
+            sender.sendMessage(F.getPrefix() + "§7Rate: " + currency.getColor() + currency.getExchangeRate());
 
         });
         return false;

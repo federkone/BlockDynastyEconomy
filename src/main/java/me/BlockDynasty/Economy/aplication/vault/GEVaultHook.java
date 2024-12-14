@@ -9,6 +9,7 @@
 package me.BlockDynasty.Economy.aplication.vault;
 
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
@@ -62,38 +63,37 @@ public class GEVaultHook extends AbstractEconomy {
 
     @Override
     public String format(double amount) {
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        if(currency == null) return String.valueOf(amount);
-        return currency.format(BigDecimal.valueOf(amount));
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if(currencyResult.isSuccess()) return currencyResult.getValue().format(BigDecimal.valueOf(amount));
+        return String.valueOf(amount);
+
     }
 
     @Override
     public String currencyNamePlural() {
-        Currency currency =getCurrencyUseCase.getDefaultCurrency();
-        if(currency == null) return "";
-        if(currency.getPlural() != null) {
-            return currency.getPlural();
-        }else{
-            return "";
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (currencyResult.isSuccess()) {
+            return currencyResult.getValue().getPlural();
         }
+        return "";
     }
 
     @Override
     public String currencyNameSingular() {
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        if(currency == null) return "";
-        if(currency.getSingular() != null) {
-            return currency.getSingular();
-        }else{
-            return "";
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (currencyResult.isSuccess()) {
+            return currencyResult.getValue().getSingular();
         }
+        return "";
     }
 
     @Override
     public boolean has(String playerName, double amount) {
-        Account user = getAccountsUseCase.getAccount(playerName);
-        if(user != null){
-            return user.hasEnough(getCurrencyUseCase.getDefaultCurrency(), BigDecimal.valueOf(amount));
+        //Account user = getAccountsUseCase.getAccount(playerName);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(playerName);
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if(accountResult.isSuccess() && currencyResult.isSuccess()){
+            return accountResult.getValue().hasEnough(currencyResult.getValue(), BigDecimal.valueOf(amount));
         }
         return false;
     }
@@ -115,110 +115,83 @@ public class GEVaultHook extends AbstractEconomy {
 
     @Override
     public double getBalance(String playerName) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + playerName);
-        Account user = getAccountsUseCase.getAccount(playerName);
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency).getBalance().doubleValue();
+        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + playerName);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(playerName);
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if(accountResult.isSuccess() && currencyResult.isSuccess()){
+            return accountResult.getValue().getBalance(currencyResult.getValue()).getBalance().doubleValue();
+        }
+        return 0;
     }
 
     @Override
     public double getBalance(OfflinePlayer player) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
-        Account user = getAccountsUseCase.getAccount(player.getUniqueId());
-        Currency currency = getCurrencyUseCase.getDefaultCurrency();
-        return user.getBalance(currency).getBalance().doubleValue();
+        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
+        Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
+        Result<Currency> currency = getCurrencyUseCase.getDefaultCurrency();
+        if(accountResult.isSuccess() && currency.isSuccess()){
+            return accountResult.getValue().getBalance(currency.getValue()).getBalance().doubleValue();
+        }
+        return 0;
     }
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
-
-
-        try{
-            withdrawUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(),BigDecimal.valueOf(amount));
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
-        }catch (AccountNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
-        }catch (CurrencyNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency not found");
-        }catch (CurrencyAmountNotValidException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Amount not valid");
-        }catch(DecimalNotSupportedException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Decimal not supported");
-        }catch (TransactionException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
-        }catch (InsufficientFundsException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds from "+player.getName());
-        } catch (Exception e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Unknown error");
+       // if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!currencyResult.isSuccess()) {
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency default not found");
         }
+        Result<Void> resultWithdraw = withdrawUseCase.execute(player.getUniqueId(), currencyResult.getValue().getSingular(), BigDecimal.valueOf(amount));
+        if(resultWithdraw.isSuccess()){
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "withdraw success for "+player.getName());
+        }
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
     }
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId()+ ")");
-
-        try {
-            depositUseCase.execute(player.getUniqueId(), getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player.getName());
-        }catch (AccountNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
-        }catch (CurrencyNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency not found");
-        }catch (CurrencyAmountNotValidException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Amount not valid");
-        }catch (DecimalNotSupportedException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Decimal not supported for default currency");
-        }catch (TransactionException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
-        } catch (Exception e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Unknown error");
+        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId()+ ")");
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!currencyResult.isSuccess()) {
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency default not found");
         }
+        Result<Void> resultDeposit = depositUseCase.execute(player.getUniqueId(), currencyResult.getValue().getSingular(), BigDecimal.valueOf(amount));
+        if(resultDeposit.isSuccess()){
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player.getName());
+        }
+
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
     }
 
     @Override
     public EconomyResponse withdrawPlayer(String player, double amount) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
+        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
 
-        try{
-            withdrawUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(), BigDecimal.valueOf(amount));
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, null);
-        }catch (AccountNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
-        }catch (CurrencyNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency not found");
-        }catch (CurrencyAmountNotValidException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Amount not valid");
-        }catch(DecimalNotSupportedException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Decimal not supported");
-        }catch (TransactionException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
-        }catch (InsufficientFundsException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Insufficient funds from "+player);
-        } catch (Exception e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Unknown error");
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!currencyResult.isSuccess()) {
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency default not found");
         }
+        Result<Void> resultWithdraw = withdrawUseCase.execute(player, currencyResult.getValue().getSingular(), BigDecimal.valueOf(amount));
+        if(resultWithdraw.isSuccess()){
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "withdraw success for "+player);
+        }
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
     }
 
     @Override
     public EconomyResponse depositPlayer(String player, double amount) {
-        if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
-        try {
-            depositUseCase.execute(player, getCurrencyUseCase.getDefaultCurrency().getSingular(),BigDecimal.valueOf(amount));
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player);
-        }catch (AccountNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Account not found");
-        }catch (CurrencyNotFoundException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency not found");
-        }catch (CurrencyAmountNotValidException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Amount not valid");
-        }catch (DecimalNotSupportedException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Decimal not supported for default currency");
-        }catch (TransactionException e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
-        } catch (Exception e){
-            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Unknown error");
+        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player);
+        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!currencyResult.isSuccess()) {
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Currency default not found");
         }
+        Result<Void> resultDeposit = depositUseCase.execute(player, currencyResult.getValue().getSingular(), BigDecimal.valueOf(amount));
+        if(resultDeposit.isSuccess()){
+            return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player);
+        }
+
+        return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.FAILURE, "Transaction error");
     }
 
     @Override

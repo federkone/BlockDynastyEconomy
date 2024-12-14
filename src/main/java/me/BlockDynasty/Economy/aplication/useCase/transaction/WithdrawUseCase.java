@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -29,24 +31,38 @@ public class WithdrawUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        Account account = getAccountsUseCase.getAccount(targetUUID);
-        Currency currency = getCurrencyUseCase.getCurrency(currencyName);
+    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
+        Result<Account> accountResult = getAccountsUseCase.getAccount(targetUUID);
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
 
-        performWithdraw(account, currency, amount);
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
     }
 
-    public void execute(String targetName, String currencyName, BigDecimal amount) {
-        Account account = getAccountsUseCase.getAccount(targetName);
-        Currency currency = getCurrencyUseCase.getCurrency(currencyName);
+    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
+        Result<Account> accountResult = getAccountsUseCase.getAccount(targetName);
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
 
-        performWithdraw(account, currency, amount);
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
     }
 
-
-    //TODO: PREGUNTAR SI EL USUSARIO TIENE LA MONEDA? .DE MOMENTO TODAS LAS CUENTAS CUENTAN CON TODOS LOS TIPOS DE MONEDAS INICIALIZADAS
-    private void performWithdraw(Account account, Currency currency, BigDecimal amount) {
-        account.withdraw(currency, amount); //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
+    private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {
+        Result<Void> result = account.withdraw(currency, amount); //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
+        if(!result.isSuccess()){
+            return result;
+        }
 
         try {
             dataStore.saveAccount(account);
@@ -55,9 +71,10 @@ public class WithdrawUseCase {
                 logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
             }
         } catch (TransactionException e) {
-            throw new TransactionException("Error saving account",e);
+            //throw new TransactionException("Error saving account",e);
+            return Result.failure("Error saving account", ErrorCode.DATA_BASE_ERROR);
         }
-
+    return Result.success(null);
     }
 
 }

@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
@@ -17,7 +19,7 @@ public class GetCurrencyUseCase {
         this.datastore = datastore;
     }
 
-    public Currency getCurrency(String name) {
+    public Result<Currency> getCurrency(String name) {
         Currency currency = currencyCache.getCurrency(name);
         //System.out.println("el currency manager encontro " + currency.getSingular());
         if (currency == null) {
@@ -25,13 +27,14 @@ public class GetCurrencyUseCase {
             if(!currencies.isEmpty()){
                 currency = currencies.get(0);
             }else {
-                throw new CurrencyNotFoundException("Currency not found");
+                //throw new CurrencyNotFoundException("Currency not found");
+                return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return currency;
+        return Result.success(currency);
     }
 
-    public Currency getDefaultCurrency() {
+    public Result<Currency>  getDefaultCurrency() {
         Currency defaultCurrency = currencyCache.getDefaultCurrency();
         if(defaultCurrency == null){
             System.out.println("la moneda por defecto no esta en cache");
@@ -39,10 +42,11 @@ public class GetCurrencyUseCase {
             if(!currencies.isEmpty()){
                 defaultCurrency = currencies.get(0);
             }else {
-                throw new CurrencyNotFoundException("Default currency not found");
+               // throw new CurrencyNotFoundException("Default currency not found");
+                return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return defaultCurrency;
+        return Result.success(defaultCurrency);
 
     }
 

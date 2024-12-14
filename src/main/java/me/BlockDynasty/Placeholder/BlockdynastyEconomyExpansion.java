@@ -1,6 +1,7 @@
 package me.BlockDynasty.Placeholder;
 
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -65,8 +66,18 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
             return "";
         }
 
-        Account a = getAccountsUseCase.getAccount(player.getUniqueId());
-        Currency dc = getCurrencyUseCase.getDefaultCurrency();
+        Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
+        if (!accountResult.isSuccess()) {
+            return  "Player data not found";
+        }
+        Result<Currency> defaultcurrencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!defaultcurrencyResult.isSuccess()) {
+            return  "Default currency not found";
+        }
+
+        Account a = accountResult.getValue();
+        Currency dc = defaultcurrencyResult.getValue();
+
         s = s.toLowerCase();
 
         if(s.equalsIgnoreCase("balance_default")){
@@ -78,7 +89,11 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
         else if(s.startsWith("balance_") || !s.startsWith("balance_default")) {
             String[] currencyArray = s.split("_");
-            Currency c = getCurrencyUseCase.getCurrency(currencyArray[1]);
+            Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyArray[1]);
+            if (!currencyResult.isSuccess()) {
+                return "Currency not found";
+            }
+            Currency c = currencyResult.getValue();
             if (s.equalsIgnoreCase("balance_" + currencyArray[1] + "_formatted")) {
                 return c.format(a.getBalance(c).getBalance());
             } else {

@@ -2,6 +2,8 @@ package useCaseTest.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
@@ -70,7 +72,7 @@ public class PayUseCaseTest {
     }
 
     @Test
-    void payTest (){
+    void payUseCseTest (){
         try {
             payUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
         }catch (AccountNotFoundException e){
@@ -87,48 +89,60 @@ public class PayUseCaseTest {
             fail("Decimal not supported");
         }
 
-        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
-        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("cris").getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getBalance());
     }
 
     @Test
     void payUseCaseTestWithNullAccount(){
-        assertThrows(AccountNotFoundException.class, () -> {
+        /*assertThrows(AccountNotFoundException.class, () -> {
             payUseCase.execute("nullplague", "robert", "dinero", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = payUseCase.execute("nullplague", "robert", "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
 
     @Test
     void payUseCaseTestWithNullCurrency(){
-        assertThrows(CurrencyNotFoundException.class, () -> {
+        /*assertThrows(CurrencyNotFoundException.class, () -> {
             payUseCase.execute("nullplague", "cris", "oro", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = payUseCase.execute("nullplague", "cris", "oro", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
 
     @Test
     void payUseCseTestWithoutFounds(){
-        assertThrows(InsufficientFundsException.class, () -> {
+       /* assertThrows(InsufficientFundsException.class, () -> {
             payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10001));
-        });
+        });*/
+        Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10001));
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
 
     @Test
     void payUseCaseTestWithCurrencyNotPayable(){
         dinero.setPayable(false);
-        assertThrows(CurrencyNotPayableException.class, () -> {
+        /*assertThrows(CurrencyNotPayableException.class, () -> {
             payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.CURRENCY_NOT_PAYABLE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
 
     @Test
     void setPayUseCaseTestAccountCanNotRecibe(){
         cris.setCanReceiveCurrency(false);
-        assertThrows(AccountCanNotReciveException.class, () -> {
+        /*assertThrows(AccountCanNotReciveException.class, () -> {
             payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
 
-        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
-        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getBalance());
+
+
     }
 
 

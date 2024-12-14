@@ -1,5 +1,7 @@
 package useCaseTest.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
@@ -55,15 +57,18 @@ public class SetBalanceUseCaseTest {
     @Test
     void setBalanceUseCaseTest() {
         setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(1));
-        assertEquals(BigDecimal.valueOf(1), getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(1), getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
     }
 
     @Test
     void  setBalanceUseCaseUnvalidAmountTest(){
-        assertThrows(CurrencyAmountNotValidException.class, () -> {
+        /*assertThrows(CurrencyAmountNotValidException.class, () -> {
             setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(-1));
-        });
-        assertEquals(BigDecimal.valueOf(10000), getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
+        });*/
+
+        Result<Void> result = setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(-1));
+        assertEquals(ErrorCode.INVALID_AMOUNT, result.getErrorCode());
+        assertEquals(BigDecimal.valueOf(10000), getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
     }
 
     @AfterEach

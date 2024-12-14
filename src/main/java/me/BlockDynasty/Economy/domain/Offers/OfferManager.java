@@ -21,8 +21,7 @@ public class OfferManager {
 
     }
 
-    public void createOffer(UUID vendedor, UUID comprador, BigDecimal cantidad, BigDecimal monto, Currency tipoCantidad, Currency tipoMonto){
-        Offer offer = new Offer(vendedor, comprador, cantidad, monto, tipoCantidad, tipoMonto);
+    public void addOffer(Offer offer) {
         this.ofertasPendientes.add(offer);
 
         //todo: test

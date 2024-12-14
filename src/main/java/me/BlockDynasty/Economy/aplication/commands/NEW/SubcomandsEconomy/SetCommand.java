@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubcomandsEconomy;
 
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
@@ -59,24 +60,34 @@ public class SetCommand implements CommandExecutor {
 
         double finalMount = amount;
         SchedulerUtils.runAsync(() -> {
-            try {
-                setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+            Result<Void> result = setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+            if(result.isSuccess()){
                 sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
                     targetPlayer.sendMessage("§7Se ha seteado tu balance a " + finalMount + " de " + currencyName);
                 }
-            } catch (AccountNotFoundException e) {
-                sender.sendMessage(messageService.getAccountNotFoundMessage());
-            } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
-            } catch (CurrencyAmountNotValidException | DecimalNotSupportedException e) {
-                sender.sendMessage(messageService.getUnvalidAmount());
-            } catch (TransactionException e) {
-                sender.sendMessage("Error inesperado al realizar transacción");
-            } catch (Exception e) {
-                sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                e.printStackTrace();
+            }else{
+                switch (result.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND:
+                        sender.sendMessage(messageService.getAccountNotFoundMessage());
+                        break;
+                    case CURRENCY_NOT_FOUND:
+                        sender.sendMessage(F.getUnknownCurrency());
+                        break;
+                    case INVALID_AMOUNT:
+                        sender.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case DECIMAL_NOT_SUPPORTED:
+                        sender.sendMessage(F.getUnvalidAmount());
+                        break;
+                    case DATA_BASE_ERROR:
+                        sender.sendMessage("Error inesperado al realizar transacción");
+                        break;
+                    default:
+                        sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                        break;
+                }
             }
         });
         return false;

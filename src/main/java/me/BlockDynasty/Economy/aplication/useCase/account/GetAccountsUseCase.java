@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
@@ -34,30 +36,28 @@ public class GetAccountsUseCase {
         //this.cachedTopList = cachedTopList;
     }
 
-    public Account getAccount(Player player) {
+    public Result<Account> getAccount(Player player) {
         return getAccount(player.getUniqueId());
     }
 
-    public Account getAccount(String name) {
+    public Result<Account> getAccount(String name) {
         Account account = accountCache.getAccount(name);
 
        if(account == null){
-           //System.out.println("CUENTA NO ENCONTRAD EN CACHE");
             Criteria criteria = Criteria.create().filter("nickname", name).limit(1); //prepare for get account with uuid
             List<Account> accounts = dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
-                updateAccountBalances(account);
-                //accountManager.addAccountToCache(account); //TODO :añadir a cache, CUIDADO, ANALIZAR HACER UN LOADACCOUNTUSERCASE, YA QUE LOS COMANDOS DE CONSULTA ESTAN CARGANDO EN LA CACHE DE MANERA INNECESARIA
+                updateAccountBalances(account);//AUTOMATICAMENTE CHEQUEA SI EL BALANCE DE LA CUENTA ESTA ACTUALIZADO CON LAS MONEDAS DEL SISTEMA
             }else{
-                throw new AccountNotFoundException("Account not found");
+                return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
        }
 
-        return account;
+        return Result.success(account);
     }
 
-        public Account getAccount(UUID uuid) {
+        public Result<Account> getAccount(UUID uuid) {
         Account account = accountCache.getAccount(uuid);
 
        if(account == null){
@@ -65,14 +65,14 @@ public class GetAccountsUseCase {
             List<Account> accounts = dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
-                updateAccountBalances(account);
+                updateAccountBalances(account); //AUTOMATICAMENTE CHEQUEA SI EL BALANCE DE LA CUENTA ESTA ACTUALIZADO CON LAS MONEDAS DEL SISTEMA
                 //accountManager.addAccountToCache(account); //añadir a cache
             }else{
-                throw new AccountNotFoundException("Account not found");
+                return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
        }
 
-        return account;
+            return Result.success(account);
     }
 
     public void updateAccountCache(UUID uuid){
@@ -81,7 +81,6 @@ public class GetAccountsUseCase {
 
         Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
         List<Account> accounts = dataStore.loadAccounts(criteria);
-                //accountManager.addAccountToCache(account); //añadir a cache
         if (!accounts.isEmpty() && accountCache != null){
             accountDb = accounts.get(0);
             updateAccountBalances(accountDb);
@@ -157,7 +156,6 @@ public class GetAccountsUseCase {
                                 }))
                 .collect(Collectors.toList());
 
-// Actualiza los balances del usuario con la lista construida
         account.setBalances(updatedBalances);
     }
 

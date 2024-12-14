@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubcomandsEconomy;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
@@ -61,27 +62,39 @@ public class WithdrawCommand implements CommandExecutor {
 
         double finalMount = amount;
         SchedulerUtils.runAsync(() -> {
-            try {
-                withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+            Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+            if(result.isSuccess()){
                 sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
                     targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
                 }
-            } catch (AccountNotFoundException e) {
-                sender.sendMessage(messageService.getAccountNotFoundMessage());
-            } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
-            } catch (CurrencyAmountNotValidException | DecimalNotSupportedException e) {
-                sender.sendMessage(messageService.getUnvalidAmount());
-            }catch (InsufficientFundsException e){
-                sender.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
-            } catch (TransactionException e) {
-                sender.sendMessage("Error inesperado al realizar transacción");
-            } catch (Exception e) {
-                sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                e.printStackTrace();
+            }else{
+                switch (result.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND:
+                        sender.sendMessage(messageService.getAccountNotFoundMessage());
+                        break;
+                    case ACCOUNT_NOT_HAVE_BALANCE:
+                        sender.sendMessage("El usuario no cuenta con esta moneda");
+                        break;
+                    case INVALID_AMOUNT:
+                        sender.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case DECIMAL_NOT_SUPPORTED:
+                        sender.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case INSUFFICIENT_FUNDS:
+                        sender.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
+                        break;
+                    case DATA_BASE_ERROR:
+                        sender.sendMessage("Error inesperado al realizar transacción");
+                        break;
+                    default:
+                        sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                        break;
+                }
             }
+
         });
         return false;
     }

@@ -18,9 +18,9 @@ public class ConnectionHibernate {
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
         configuration.setProperty("hibernate.connection.autocommit", "true");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
-        configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.format_sql", "true");
-        configuration.setProperty("hibernate.use_sql_comments", "true");
+        configuration.setProperty("hibernate.show_sql", "false"); //todo: setup for debug
+        configuration.setProperty("hibernate.format_sql", "false");  //todo: setup for debug
+        configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
 
         // Añadir mapeos manualmente
         configuration.addAnnotatedClass(Currency.class);

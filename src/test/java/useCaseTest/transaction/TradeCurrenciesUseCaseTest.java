@@ -1,5 +1,7 @@
 package useCaseTest.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
@@ -97,17 +99,19 @@ public class TradeCurrenciesUseCaseTest {
             fail("Exception"+ e);
         }
 
-        assertEquals(BigDecimal.valueOf(30000),getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
-        assertEquals(BigDecimal.valueOf(1),getAccountsUseCase.getAccount("cris").getBalance(coin).getBalance());
+        assertEquals(BigDecimal.valueOf(30000),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(1),getAccountsUseCase.getAccount("cris").getValue().getBalance(coin).getBalance());
     }
 
     @Test
     void TradeCurrencyUseCseTestInsufficientFounds(){
-        assertThrows(InsufficientFundsException.class, () -> {
+        /*assertThrows(InsufficientFundsException.class, () -> {
             tradeCurrenciesUseCase.execute("nullplague","cris","Coin","dinero",BigDecimal.valueOf(2),BigDecimal.valueOf(30000));
-        });
-        assertEquals(BigDecimal.valueOf(1),getAccountsUseCase.getAccount("nullplague").getBalance(coin).getBalance());
-        assertEquals(BigDecimal.valueOf(30000),getAccountsUseCase.getAccount("cris").getBalance(dinero).getBalance());
+        });*/
+        Result<Void> result = tradeCurrenciesUseCase.execute("nullplague","cris","Coin","dinero",BigDecimal.valueOf(2),BigDecimal.valueOf(30000));
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
+        assertEquals(BigDecimal.valueOf(1),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(coin).getBalance());
+        assertEquals(BigDecimal.valueOf(30000),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getBalance());
     }
 
 

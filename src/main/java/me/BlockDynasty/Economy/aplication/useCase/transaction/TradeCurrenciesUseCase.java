@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -34,34 +36,60 @@ public class TradeCurrenciesUseCase {
 
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromS);
-        Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToS);
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
 
-        performTrade(accountFrom, accountTo, currencyFrom, currencyTo, amountFrom, amountTo);
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult = getCurrencyUseCase.getCurrency(currencyFromS);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult = getCurrencyUseCase.getCurrency(currencyToS);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performTrade(accountFromResult.getValue(), accountToResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
+
     }
 
-    public void execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromS);
-        Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToS);
+    public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
 
-        performTrade(accountFrom, accountTo, currencyFrom, currencyTo, amountFrom, amountTo);
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult = getCurrencyUseCase.getCurrency(currencyFromS);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult = getCurrencyUseCase.getCurrency(currencyToS);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performTrade(accountFromResult.getValue(), accountToResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
     }
 
-    private void performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
-        //todo validar que el monto no sea 0 o negativo
-
-        //preguntar si el receptor puede recibir monedas
-//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-        accountFrom.trade(accountTo,currencyFrom,currencyTo,amountFrom,amountTo);
-        //accountFrom.withdraw(currencyFrom, amountFrom);
-        //accountFrom.deposit(currencyTo, amountTo);
-        //accountTo.withdraw(currencyTo, amountTo);
-        //accountTo.deposit(currencyFrom, amountFrom);
+    private Result<Void> performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        Result<Void> result =accountFrom.trade(accountTo,currencyFrom,currencyTo,amountFrom,amountTo);
+        if(!result.isSuccess()){
+            return result;
+        }
 
         try {
             dataStore.transfer(accountFrom, accountTo); //actualizo ambos accounts de manera atomica, en una operacion segun hibernate
@@ -71,7 +99,8 @@ public class TradeCurrenciesUseCase {
                 economyLogger.log("[TRADE] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo));
             }
         } catch (TransactionException e) {
-            throw new TransactionException("Failed to perform trade: " + e.getMessage(), e);
+            return Result.failure("Failed to perform trade: " , ErrorCode.DATA_BASE_ERROR);
         }
+        return Result.success(null);
     }
 }

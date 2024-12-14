@@ -45,7 +45,7 @@ public class Offer {
     public void setTipoCantidad(Currency tipoCantidad) {
         this.tipoCantidad=tipoCantidad;
     }
-    public void setMonto(BigDecimal monto) {
+    public void setMonto(BigDecimal monto) { //todo:Result tipe can validate monto
         this.monto=monto;
     }
     public void setTipoMonto(Currency tipoMonto) {

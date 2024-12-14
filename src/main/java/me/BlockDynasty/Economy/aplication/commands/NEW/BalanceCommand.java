@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
@@ -51,18 +53,19 @@ public class BalanceCommand implements CommandExecutor {
         }
 
         SchedulerUtils.runAsync(() -> {
-            try {
-                List<Balance> balances = balance.getBalances(target);
+            Result<List<Balance>> resultBalances = balance.getBalances(target);
+            if (resultBalances.isSuccess()) {
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
-                for (Balance entry : balances) {
+                for (Balance entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
                     BigDecimal balance = entry.getBalance();
                     sender.sendMessage(F.getBalanceList().replace("{currencycolor}", currency.getColor() + "").replace("{format}", currency.format(balance)));
                 }
-            } catch (AccountNotFoundException e) {
-                sender.sendMessage(messageService.getAccountNotFoundMessage());
-            } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(messageService.getNoCurrencyFund(target));
+            }else{
+                switch (resultBalances.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND -> sender.sendMessage(messageService.getAccountNotFoundMessage());
+                    case CURRENCY_NOT_FOUND -> sender.sendMessage(messageService.getNoCurrencyFund(target));
+                }
             }
         });
         return true;

@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
@@ -78,31 +79,38 @@ public class PayCommandV2 implements CommandExecutor {
 
         BigDecimal finalAmount = amount;
         SchedulerUtils.runAsync(() -> {
-            try {
-                pay.execute(player.getName(), targetName, currencyName, finalAmount);
+            Result<Void> result = pay.execute(player.getName(), targetName, currencyName, finalAmount);
+            if (result.isSuccess()){
                 player.sendMessage(messageService.getSuccessMessage(player.getName(), targetName, currencyName, finalAmount));
 
                 Player targetPlayer = Bukkit.getPlayer(targetName);
                 if (targetPlayer != null) {
                     targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));
                 }
-            } catch (InsufficientFundsException e) {
-                player.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
-            } catch (AccountCanNotReciveException e){
-                sender.sendMessage(messageService.getCannotReceiveMessage(targetName));
-            } catch (DecimalNotSupportedException e){
-                player.sendMessage(messageService.getUnvalidAmount());
-            } catch (AccountNotFoundException e){
-                player.sendMessage(messageService.getAccountNotFoundMessage());
-            } catch (CurrencyNotFoundException e){
-                player.sendMessage(F.getUnknownCurrency());
-            } catch (CurrencyNotPayableException e){
-                player.sendMessage(messageService.getCurrencyNotPayableMessage(currencyName));
-            } catch (TransactionException e){
-                player.sendMessage("§cError inesperado al realizar transacción");
-            } catch (Exception e){
-                player.sendMessage(messageService.getUnexpectedErrorMessage());
-                e.printStackTrace();
+            }else {
+                switch (result.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND:
+                        player.sendMessage(messageService.getAccountNotFoundMessage());
+                        break;
+                    case ACCOUNT_CAN_NOT_RECEIVE:
+                        player.sendMessage(messageService.getCannotReceiveMessage(targetName));
+                        break;
+                    case INSUFFICIENT_FUNDS:
+                        player.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
+                        break;
+                    case DECIMAL_NOT_SUPPORTED:
+                        player.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case CURRENCY_NOT_FOUND:
+                        player.sendMessage(F.getUnknownCurrency());
+                        break;
+                    case CURRENCY_NOT_PAYABLE:
+                        player.sendMessage(messageService.getCurrencyNotPayableMessage(currencyName));
+                        break;
+                    default:
+                        player.sendMessage(messageService.getUnexpectedErrorMessage());
+                        break;
+                }
             }
         });
 

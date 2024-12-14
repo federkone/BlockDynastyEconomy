@@ -1,15 +1,15 @@
 package me.BlockDynasty.Economy.domain.account;
 
+
 import jakarta.persistence.*;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.utils.UUIDConverter;
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
 
 import java.math.BigDecimal;
 import java.util.*;
+
 
 @Entity
 @Table(name = "accounts")
@@ -34,6 +34,7 @@ public class Account {
     @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency = true;
 
+
     public Account(){
 
     }
@@ -43,59 +44,122 @@ public class Account {
         this.balances = new ArrayList<>();
     }
 
-    public void deposit(Currency currency, BigDecimal amount) {
+    public Result<Void> deposit(Currency currency, BigDecimal amount) {
         if(!canReceiveCurrency){
-            throw new AccountCanNotReciveException("Account can't receive currency");
+            return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
         Balance balance = getBalance(currency);
         if (balance == null) {
             createBalance(currency, amount);
         } else {
-            balance.deposit(amount);
+            Result<Void> result = balance.deposit(amount);
+            if (!result.isSuccess()) {
+                return result;
+            }
         }
+        return Result.success(null);
     }
 
-    public void withdraw(Currency currency, BigDecimal amount) {
+    public Result<Void> withdraw(Currency currency, BigDecimal amount) {
         Balance balance = getBalance(currency);
         if (balance == null) {
-            throw new CurrencyNotFoundException("Currency not found in account");
+            return Result.failure("Currency not found in account", ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
-        balance.withdraw(amount);
+        Result<Void> result = balance.withdraw(amount);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        return Result.success(null);
     }
 
-    public void setBalance(Currency currency, BigDecimal amount) {
+    public Result<Void> setBalance(Currency currency, BigDecimal amount) {
         Balance balance = getBalance(currency);
         if (balance == null) {
             createBalance(currency, amount);
         }else{
-            balance.setBalance(amount);
+            Result<Void> result = balance.setBalance(amount);
+            if (!result.isSuccess()) {
+                return result;
+            }
         }
+        return Result.success(null);
     }
 
-    //---- si el objetivo puede recibir currencies
-    //---- si ambos cuentan con los montos necesarios
-    //-----y ejecutar el tradeo, creo que deberia hacer dos withdraw primero y luego los dos deposit para evirar problemas
-    //-----tengo los hasEnough/tiene monto para preguntarle a cada cuenta antes de hacer el tradeo
-    public void trade(Account account,Currency currencyFrom,Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
-        if(!account.canReceiveCurrency()){
-            throw new AccountCanNotReciveException("Account can't receive currency");
+    public Result<Void> trade(Account targetAccount,Currency currencyFrom,Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        if(!targetAccount.canReceiveCurrency()){
+            return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
-        if(!hasEnough(currencyFrom, amountFrom) || !account.hasEnough(currencyTo, amountTo)){
-            throw new InsufficientFundsException("Accounts doesn't have sufficient founds");
+        if(!hasEnough(currencyFrom, amountFrom) || !targetAccount.hasEnough(currencyTo, amountTo)){
+            return Result.failure("Accounts doesn't have sufficient founds for trade", ErrorCode.INSUFFICIENT_FUNDS);
         }
 
-        withdraw(currencyFrom, amountFrom);
-        account.withdraw(currencyTo, amountTo);
-        deposit(currencyTo, amountTo);
-        account.deposit(currencyFrom, amountFrom);
+                Result<Void> withdrawFromResult = withdraw(currencyFrom, amountFrom);
+                if (!withdrawFromResult.isSuccess()) {
+                    return withdrawFromResult;
+                }
+
+                Result<Void> withdrawToResult = targetAccount.withdraw(currencyTo, amountTo);
+                if (!withdrawToResult.isSuccess()) {
+                    return withdrawToResult;
+                }
+
+                Result<Void> depositToResult = deposit(currencyTo, amountTo);
+                if (!depositToResult.isSuccess()) {
+                    return depositToResult;
+                }
+
+                Result<Void> depositFromResult = targetAccount.deposit(currencyFrom, amountFrom);
+                if (!depositFromResult.isSuccess()) {
+                    return depositFromResult;
+                }
+
+            return Result.success(null);
+
+
     }
 
-    public void transfer(Account account, Currency currency, BigDecimal amount) {
-        if(!account.canReceiveCurrency()){
-            throw new AccountCanNotReciveException("Account can't receive currency");
+    public Result<Void> transfer(Account targetAccount, Currency currency, BigDecimal amount) {
+        // Verificar si la cuenta objetivo puede recibir la moneda
+        if (!targetAccount.canReceiveCurrency()) {
+            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
-        withdraw(currency, amount);
-        account.deposit(currency, amount);
+                // Intentar retirar de la cuenta actual
+                Result<Void> withdrawResult = withdraw(currency, amount);
+                if (!withdrawResult.isSuccess()) {
+                    return withdrawResult; // Propagar el error del withdraw
+                }
+
+                // Intentar depositar en la cuenta objetivo
+                Result<Void> depositResult = targetAccount.deposit(currency, amount);
+                if (!depositResult.isSuccess()) {
+                    return depositResult; // Propagar el error del depósito
+                }
+
+            return Result.success(null);
+
+    }
+
+    public Result<Void> exchange(Currency currencyFrom, BigDecimal amountFrom, Currency currencyTo,BigDecimal amountTo){
+        if (!this.canReceiveCurrency()) {
+            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
+        if(!hasEnough(currencyFrom, amountFrom)){
+            return Result.failure("Account doesn't have sufficient founds for exchange", ErrorCode.INSUFFICIENT_FUNDS);
+        }
+
+                Result<Void> withdrawResult = withdraw(currencyFrom, amountFrom);
+                if (!withdrawResult.isSuccess()) {
+                    return withdrawResult;
+                }
+
+                // Depositar en la moneda objetivo
+                Result<Void> depositResult = deposit(currencyTo, amountTo);
+                if (!depositResult.isSuccess()) {
+                    return depositResult;
+                }
+
+            return Result.success(null);
+
     }
 
     public void setBalances(List<Balance> balances) {

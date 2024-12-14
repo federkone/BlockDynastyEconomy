@@ -1,6 +1,8 @@
 package me.BlockDynasty.Economy.aplication.listeners;
 
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -37,14 +39,18 @@ public class EconomyListener implements Listener {
         Player player = event.getPlayer();
         //if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) return;
         SchedulerUtils.run(() -> {
-            try{
-               Account account = getAccountsUseCase.getAccount(player.getUniqueId()); //traer y cargar en cache
-                accountCache.addAccountToCache(account); //se agrega a cache por que se conecta
-            }catch(AccountNotFoundException e){
-                createAccountUseCase.execute(player.getUniqueId(),player.getName());  //sino crear
-            }catch (TransactionException e){
-                player.kickPlayer("Error al crear tu cuenta de economia, vuelve a ingresar al server, o contacta a un administrador"); //todo: si para el server es critico el plugin de economia, se debe impedir que juegue sin tener una cuenta, esto se podria hacer configurable
+            Result<Account> result = getAccountsUseCase.getAccount(player.getUniqueId());
+            if (result.isSuccess()) {
+                accountCache.addAccountToCache(result.getValue());
+            } else {
+                Result <Void> resultCreation = createAccountUseCase.execute(player.getUniqueId(), player.getName());
+                if (!resultCreation.isSuccess()){
+                    if(resultCreation.getErrorCode() == ErrorCode.DATA_BASE_ERROR){
+                        player.kickPlayer("Error al crear tu cuenta de economia, vuelve a ingresar al server, o contacta a un administrador");
+                    }
+                }
             }
+
         });
 
            /* acc = getAccountsUseCase.getAccount(player.getUniqueId());
@@ -61,12 +67,11 @@ public class EconomyListener implements Listener {
 
         // Caching
         SchedulerUtils.run(() -> {
-            try {
-                Account account  = getAccountsUseCase.getAccount(player.getUniqueId());  //todo: ya deberia devolver la cuenta de la cache
-                accountCache.addAccountToCache(account);
-            }catch (AccountNotFoundException e) {
+            Result<Account> resultAccount = getAccountsUseCase.getAccount(player.getUniqueId());
+            if (!resultAccount.isSuccess()) {
                 player.kickPlayer("Error al cargar tu cuenta de economia vuelve a ingresar al server, o contacta a un administrador");
-            }
+            }else { accountCache.addAccountToCache(resultAccount.getValue());}
+
 
         });
 

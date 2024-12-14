@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
@@ -33,32 +35,69 @@ public class ExchangeUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        Account account = getAccountsUseCase.getAccount(accountUuid);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
-        Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
+    public Result<Void> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+        //Account account = getAccountsUseCase.getAccount(accountUuid);
+        //Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
+        //Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
 
-        performExchange(account,currencyFrom,currencyTo,amountFrom,amountTo);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(accountUuid);
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult = getCurrencyUseCase.getCurrency(currencyFromName);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult = getCurrencyUseCase.getCurrency(currencyToname);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performExchange(accountResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
+
 
     }
 
-    public void execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        Account account = getAccountsUseCase.getAccount(accountString);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
-        Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
+    public Result<Void> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+        //Account account = getAccountsUseCase.getAccount(accountString);
+        //Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
+        //Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
 
-        performExchange(account,currencyFrom,currencyTo,amountFrom,amountTo);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(accountString);
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult = getCurrencyUseCase.getCurrency(currencyFromName);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult = getCurrencyUseCase.getCurrency(currencyToname);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performExchange(accountResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
     }
 
     //todo, probablemente me convenga reutilizar el caso de uso TradeCurrency, solo que se hace el trade con sigo mismo, por ej: account, account,currencyFrom,currencyTo,amountFrom,amountTo
-    private void performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+    private Result<Void> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
 
 
         //TODO:aca se puede calcular el ratio de impuesto a cobrar antes de preguntar si tiene suficiente fondos
 
         //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-        account.withdraw(currencyFrom, amountFrom);
-        account.deposit(currencyTo, amountTo);
+
+        //account.withdraw(currencyFrom, amountFrom);
+        //account.deposit(currencyTo, amountTo);
+
+        Result<Void> result =account.exchange(currencyFrom,amountFrom,currencyTo,amountTo);
+        if(!result.isSuccess()){
+            return result;
+        }
 
         try {
             dataStore.saveAccount(account);
@@ -66,7 +105,9 @@ public class ExchangeUseCase {
             economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
         } catch (TransactionException e) {
             // Manejo de errores (puedes lanzar la excepción o manejarla de otra manera)
-            throw new TransactionException("Failed to perform exchange: " + e.getMessage(), e);
+            //throw new TransactionException("Failed to perform exchange: " + e.getMessage(), e);
+            return Result.failure("Failed to perform exchange: " , ErrorCode.DATA_BASE_ERROR);
         }
+        return Result.success(null);
     }
 }

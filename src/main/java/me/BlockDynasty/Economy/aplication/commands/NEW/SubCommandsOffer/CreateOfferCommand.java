@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsOffer;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.config.file.MessageService;
@@ -67,28 +68,37 @@ public class CreateOfferCommand implements CommandExecutor {
         //si entre el target y el vendedor no hay una distancia de 5 bloques informar error
 
         //INTENTA CREAR LA OFERTA
-        try {
-            createOfferUseCase.execute(player.getUniqueId(), target.getUniqueId(),tipoCantidad, BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto));
+        Result<Void> result =createOfferUseCase.execute(player.getUniqueId(), target.getUniqueId(),tipoCantidad, BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto));
+        if(result.isSuccess()){
             player.sendMessage(messageService.getOfferSendMessage(target.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //player.sendMessage("has ofertado a "+target.getName() +" "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             target.sendMessage(messageService.getOfferReceiveMessage(player.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());  //todo: podria dejar que una persona reciba varias ofertas de varias persoanas
-        } catch (AccountNotFoundException e) {
-            player.sendMessage("§cNo existe la cuenta de "+ target.getName());
-        }catch (OffertAlreadyExist offertAlreadyExist){
-            player.sendMessage("§cYa existe una oferta entre "+player.getName()+" y "+target.getName());
-        }catch (CurrencyNotFoundException e){
-            player.sendMessage("§cNo existe la moneda que intentas ofertar");
-        }catch (CurrencyAmountNotValidException e){
-            player.sendMessage(messageService.getUnvalidAmount());
-        }catch (InsufficientFundsException e){
-            player.sendMessage("§cNo tienes suficiente dinero para ofertar");
-        }catch (AccountCanNotReciveException e){
-            player.sendMessage("§cEl jugador no puede recibir la oferta");
-        }catch (Exception e){
-            player.sendMessage("§cError inesperado");
-            e.printStackTrace();
+        }else{
+            switch (result.getErrorCode()){
+                case ACCOUNT_NOT_FOUND:
+                    player.sendMessage("§cNo existe la cuenta de "+ player.getName());
+                    break;
+                case OFFER_ALREADY_EXISTS:
+                    player.sendMessage("§cYa existe una oferta entre "+player.getName()+" y "+target.getName());
+                    break;
+                case CURRENCY_NOT_FOUND:
+                    player.sendMessage("§cNo existe la moneda que intentas ofertar");
+                    break;
+                case INVALID_AMOUNT:
+                    player.sendMessage(messageService.getUnvalidAmount());
+                    break;
+                case INSUFFICIENT_FUNDS:
+                    player.sendMessage("§cNo tienes suficiente dinero para ofertar");
+                    break;
+                case ACCOUNT_CAN_NOT_RECEIVE:
+                    player.sendMessage("§cEl jugador no puede recibir la oferta");
+                    break;
+                default:
+                    player.sendMessage("§cError inesperado");
+                    break;
+            }
         }
 
         return false;

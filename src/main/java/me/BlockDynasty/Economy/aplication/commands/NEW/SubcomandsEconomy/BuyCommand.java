@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubcomandsEconomy;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import me.BlockDynasty.Economy.config.file.F;
@@ -63,25 +64,34 @@ public class BuyCommand implements CommandExecutor {
             cmdBuilder.append(args[i]).append(" ");
         }
         String cmd = cmdBuilder.toString().trim();
-
-
-            try{
-                withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
+            Result<Void> result =withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
+            if(result.isSuccess()){
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
                 player.sendMessage("§aCcompra realizada con exito!");
-            }catch (AccountNotFoundException e) {
-                sender.sendMessage(messageService.getAccountNotFoundMessage());
-            } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
-            } catch (CurrencyAmountNotValidException | DecimalNotSupportedException e) {
-                sender.sendMessage(messageService.getUnvalidAmount());
-            }catch (InsufficientFundsException e){
-                player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
-            } catch (TransactionException e) {
-                sender.sendMessage("§cError inesperado al realizar transacción");
-            } catch (Exception e) {
-                sender.sendMessage(messageService.getUnexpectedErrorMessage()+e.getMessage());
-                e.printStackTrace();
+            }else{
+                switch (result.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND:
+                        player.sendMessage(messageService.getAccountNotFoundMessage());
+                        break;
+                    case CURRENCY_NOT_FOUND:
+                        player.sendMessage(F.getUnknownCurrency());
+                        break;
+                    case INVALID_AMOUNT:
+                        player.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case DECIMAL_NOT_SUPPORTED:
+                        player.sendMessage(messageService.getUnvalidAmount());
+                        break;
+                    case INSUFFICIENT_FUNDS:
+                        player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
+                        break;
+                    case DATA_BASE_ERROR:
+                        player.sendMessage("§cError inesperado al realizar transacción");
+                        break;
+                    default:
+                        player.sendMessage(messageService.getUnexpectedErrorMessage());
+                        break;
+                }
             }
 
         return false;

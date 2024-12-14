@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
@@ -50,9 +51,6 @@ public class ExchangeCommandV2 implements CommandExecutor {
         try {
             toExchangeAmount = Double.parseDouble(args[1]);
             toReceiveAmount = Double.parseDouble(args[3]);
-            if (toExchangeAmount <= 0.0 || toReceiveAmount <= 0) {
-                throw new NumberFormatException();
-            }
         } catch (NumberFormatException ex) {
             sender.sendMessage(F.getUnvalidAmount());
             return true;
@@ -66,53 +64,40 @@ public class ExchangeCommandV2 implements CommandExecutor {
 
         Player targetPlayer = Bukkit.getPlayer(player); //para informar al jugador que hace el exchange
         SchedulerUtils.runAsync(() -> {
-            try
-            {
-                exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
-
+            Result<Void> result =exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
+            if (result.isSuccess()){
                 if( targetPlayer != null){
                     targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,BigDecimal.valueOf( finalToExchangeAmount), toReceive));
                 }else{
                     sender.sendMessage(messageService.getExchangeSuccess( toExchange, BigDecimal.valueOf(finalToExchangeAmount), toReceive));
                 }
-
-            }
-            catch (CurrencyNotFoundException e)
-            {
-                sender.sendMessage(F.getUnknownCurrency());
-            }
-            catch (AccountNotFoundException e)
-            {
-                sender.sendMessage(messageService.getAccountNotFoundMessage());
-            }
-            catch (DecimalNotSupportedException e)
-            {
-                sender.sendMessage(F.getUnvalidAmount());
-            }
-            catch (InsufficientFundsException e)
-            {
-                if( targetPlayer != null){
-                    targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                }else {
-                    sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                }
-            }
-            catch (TransactionException e)
-            {
-                if( targetPlayer != null){
-                    targetPlayer.sendMessage("§cError en el proceso de exchange");
-                    //console log informate about the error or another log
-                }else {
-                    sender.sendMessage("§cError en el proceso de exchange");
+            }else {
+                switch (result.getErrorCode()){
+                    case ACCOUNT_CAN_NOT_RECEIVE -> sender.sendMessage("§cEl jugador no puede recibir la moneda");
+                    case ACCOUNT_NOT_FOUND -> sender.sendMessage(messageService.getAccountNotFoundMessage());
+                    case CURRENCY_NOT_FOUND ->  sender.sendMessage(F.getUnknownCurrency());
+                    case DECIMAL_NOT_SUPPORTED -> sender.sendMessage(F.getUnvalidAmount());
+                    case INVALID_AMOUNT -> sender.sendMessage(F.getUnvalidAmount());
+                    case INSUFFICIENT_FUNDS -> {
+                        if( targetPlayer != null){
+                            targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                        }else {
+                            sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                        }
+                        }
+                    case DATA_BASE_ERROR -> {
+                        if( targetPlayer != null){
+                            targetPlayer.sendMessage("§cError en el proceso de exchange");
+                            //console log informate about the error or another log
+                        }else {
+                            sender.sendMessage("§cError en el proceso de exchange");
+                        }
+                    }
+                    default -> sender.sendMessage(messageService.getUnexpectedErrorMessage());
                 }
 
             }
-            catch (Exception e)
-            {
-                sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                //console log informate about the error
-                e.printStackTrace();
-            }
+
         });
         return true;
     }

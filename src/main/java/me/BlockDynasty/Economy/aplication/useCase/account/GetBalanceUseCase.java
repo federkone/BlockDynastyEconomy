@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
@@ -20,24 +22,29 @@ public class GetBalanceUseCase {
     }
 
 
-    public List<Balance> getBalances(String accountName) {
-        Account account = getAccountsUseCase.getAccount(accountName);
-        return performGetBalances(account);
-    }
-
-    public List<Balance> getBalances(UUID accountUUID) {
-        Account account = getAccountsUseCase.getAccount(accountUUID);
-        return performGetBalances(account);
-    }
-
-    private List<Balance> performGetBalances(Account account) {
-        if(account == null) {
-            throw new AccountNotFoundException("Account not found");
+    public Result<List<Balance>> getBalances(String accountName) {
+        //Account account = getAccountsUseCase.getAccount(accountName);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(accountName);
+        if(!accountResult.isSuccess()) {
+            return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
         }
+        return performGetBalances(accountResult.getValue());
+    }
+
+    public Result<List<Balance>> getBalances(UUID accountUUID) {
+        //Account account = getAccountsUseCase.getAccount(accountUUID);
+        Result<Account> accountResult = getAccountsUseCase.getAccount(accountUUID);
+        if(!accountResult.isSuccess()) {
+            return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
+        }
+        return performGetBalances(accountResult.getValue());
+    }
+
+    private Result<List<Balance>> performGetBalances(Account account) {
         if(account.getBalances().isEmpty()) {
-            throw new CurrencyNotFoundException("Account has no balances");
+            return Result.failure("Account has no balances", ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
 
-        return account.getBalances();
+        return Result.success(account.getBalances());
     }
 }

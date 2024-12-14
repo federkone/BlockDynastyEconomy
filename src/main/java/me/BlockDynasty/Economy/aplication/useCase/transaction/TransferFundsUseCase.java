@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -29,28 +31,50 @@ public class TransferFundsUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public void execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currency);
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
 
-        performTransfer(accountFrom, accountTo, currencyFrom, amount);
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currency);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+
+        return performTransfer(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
     }
 
-    public void execute (String userFrom, String userTo, String currency, BigDecimal amount) {
-        Account accountFrom = getAccountsUseCase.getAccount(userFrom);
-        Account accountTo = getAccountsUseCase.getAccount(userTo);
-        Currency currencyFrom = getCurrencyUseCase.getCurrency(currency);
+    public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
+        Result<Account> accountFromResult = getAccountsUseCase.getAccount(userFrom);
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
 
-        performTransfer(accountFrom, accountTo, currencyFrom, amount);
+        Result<Account> accountToResult = getAccountsUseCase.getAccount(userTo);
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currency);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+        return performTransfer(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
     }
 
-    private void performTransfer(Account accountFrom, Account accountTo, Currency currencyFrom, BigDecimal amount){
-
-//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-
-        accountFrom.withdraw(currencyFrom, amount);
-        accountTo.deposit(currencyFrom, amount);
+    private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currencyFrom, BigDecimal amount){
+        Result<Void> result = accountFrom.transfer(accountTo,currencyFrom,amount);
+        if(!result.isSuccess()){
+            return result;
+        }
 
         try {
             dataStore.transfer(accountFrom, accountTo);
@@ -61,7 +85,9 @@ public class TransferFundsUseCase {
                         currencyFrom.format(amount) + " to " + accountTo.getNickname());
             }
         } catch (TransactionException e) {
-            throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
+            //throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
+            return Result.failure("Failed to perform transfer: " , ErrorCode.DATA_BASE_ERROR);
         }
+        return Result.success(null);
     }
 }

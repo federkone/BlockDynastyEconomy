@@ -1,5 +1,7 @@
 package useCaseTest.transaction;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
@@ -56,7 +58,7 @@ public class WithdrawUseCaseTest {
 
 
         withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, repository,null,null);
-        System.out.println("default currency: " +getCurrencyUseCase.getDefaultCurrency().getSingular());
+        System.out.println("default currency: " +getCurrencyUseCase.getDefaultCurrency().getValue().getSingular());
         System.out.println("cantidad de monedas en cache: " +currencyCache.getCurrencies().size());
 
     }
@@ -64,35 +66,52 @@ public class WithdrawUseCaseTest {
     @Test
     void withdrawUseCaseTestWithFounds() {
         withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(5000));
-        assertEquals(BigDecimal.valueOf(0), getAccountsUseCase.getAccount("nullplague").getBalance(dinero).getBalance());
+        assertEquals(BigDecimal.valueOf(0), getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
     }
 
     @Test
     void withdrawUseCaseTestWithoutFounds(){
-        assertThrows(InsufficientFundsException.class, () -> {
+       /* assertThrows(InsufficientFundsException.class, () -> {
             withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
     }
 
     @Test
     void withdrawUseCaseTestWithNegativeAmount(){
-        assertThrows(CurrencyAmountNotValidException.class, () -> {
+        /*assertThrows(CurrencyAmountNotValidException.class, () -> {
             withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(-10000));
-        });
+        });*/
+        Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(-10000));
+        assertEquals(ErrorCode.INVALID_AMOUNT, result.getErrorCode());
     }
 
     @Test
     void withdrawUseCaseTestWithNullAccount(){
-        assertThrows(AccountNotFoundException.class, () -> {
+        /*assertThrows(AccountNotFoundException.class, () -> {
             withdrawUseCase.execute("cris", "dinero", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = withdrawUseCase.execute("cris", "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, result.getErrorCode());
     }
 
     @Test
     void withdrawUseCaseTestWithNullCurrency(){
-        assertThrows(CurrencyNotFoundException.class, () -> {
+       /* assertThrows(CurrencyNotFoundException.class, () -> {
             withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
-        });
+        });*/
+        Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode());
+    }
+
+    @Test
+    void withdrawUseCaseTestWithNullBalance(){
+        //todo: EL GETACCOUNTUSECASE ESTA AGREGANDO/CHEQUEADO AUTOMATICAMENTE LAS MONEDAS DEL SISTEMA AL USUARIO EN CADA CONSULTA, POR LO TANTO SIEMPRE VA A TENER LOS TIPOS DE MONEDAS QUE EXISTAN EN EL SISTEMA
+        currencyCache.add(new Currency(UUID.randomUUID(),"oro","oro"));
+        Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
+        //assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode());
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
     }
 
     @AfterEach

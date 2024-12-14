@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsOffer;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertNotFoundException;
@@ -36,25 +37,33 @@ public class AcceptOfferCommand  implements CommandExecutor {
             sender.sendMessage(F.getOfflinePlayer());
             return false;
         }
-        try {
-            acceptOfferUseCase.execute(player.getUniqueId(),playerFrom.getUniqueId());  //playerFrom.getUniqueId() //aca podemos mandar el id del player al que quiere aceptarle la oferta
+
+        Result<Void> result = acceptOfferUseCase.execute(player.getUniqueId(),playerFrom.getUniqueId());  //playerFrom.getUniqueId() //aca podemos mandar el id del player al que quiere aceptarle la oferta
+        if(result.isSuccess()){
             //player.sendMessage("Tu oferta para "+playerFrom.getName()+" ha sido aceptada");
             playerFrom.sendMessage(messageService.getOfferAcceptMessage(player.getName()));
             //playerFrom.sendMessage("Oferta de "+player.getName()+" aceptada");
             player.sendMessage(messageService.getOfferAcceptToMessage(playerFrom.getName()));
-        } catch (OffertNotFoundException e) {
-            sender.sendMessage(F.getNotOffers());
-        }catch (InsufficientFundsException e){
-            sender.sendMessage("No tienes suficiente dinero para aceptar la oferta");
-            playerFrom.sendMessage("§cEl jugador no tiene suficiente dinero para aceptar la oferta");
-        }catch (TransactionException e){
-            sender.sendMessage("§cError al intentar la transaccion");
-            playerFrom.sendMessage("§cError al intentar la transaccion");
-        }catch (Exception e){
-            sender.sendMessage("§cError inesperado");
-            playerFrom.sendMessage("§cError inesperado");
-            e.printStackTrace();
+        }else{
+            switch (result.getErrorCode()){
+                case OFFER_NOT_FOUND:
+                    sender.sendMessage(F.getNotOffers());
+                    break;
+                case INSUFFICIENT_FUNDS:
+                    sender.sendMessage("No tienes suficiente dinero para aceptar la oferta");
+                    playerFrom.sendMessage("§cEl jugador no tiene suficiente dinero para aceptar la oferta");
+                    break;
+                case DATA_BASE_ERROR:
+                    sender.sendMessage("§cError al intentar la transaccion");
+                    playerFrom.sendMessage("§cError al intentar la transaccion");
+                    break;
+                default:
+                    sender.sendMessage("§cError inesperado");
+                    playerFrom.sendMessage("§cError inesperado");
+                    break;
+            }
         }
+
 
 
         return false;

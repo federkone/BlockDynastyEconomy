@@ -1,5 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.offer;
 
+import me.BlockDynasty.Economy.aplication.result.ErrorCode;
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.Offers.OfferManager;
 import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertNotFoundException;
 
@@ -12,13 +14,14 @@ public class CancelOfferUseCase {
         this.offerManager = offerManager;
     }
 
-    public void execute (UUID playerCancel){
+    public Result<Void> execute (UUID playerCancel){
 
         boolean deleted = offerManager.removeOffer(playerCancel);
 
         if (!deleted ) {
-            throw new OffertNotFoundException("Offer not found for cancer offer");
+            return Result.failure("Offer not found for cancer offer", ErrorCode.OFFER_NOT_FOUND);
+            //throw new OffertNotFoundException("Offer not found for cancer offer");
         }
-
+        return Result.success(null);
     }
 }
