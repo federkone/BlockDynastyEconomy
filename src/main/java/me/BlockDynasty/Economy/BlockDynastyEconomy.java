@@ -151,7 +151,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
     }
     private void initCoreServices() {
-        accountCache = new AccountCache();
+        accountCache = new AccountCache(getConfig().getInt("expireCacheTopMinutes"));
         currencyCache = new CurrencyCache(repository);
         economyLogger = new EconomyLogger(this);
         vaultLogger = new VaultLogger(this);
@@ -167,7 +167,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         updateForwarder = new UpdateForwarder(this,getAccountsUseCase);
         withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
         depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyCache, updateForwarder,getDataStore());
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyCache,getAccountsUseCase, updateForwarder,getDataStore());
         setBalanceUseCase = new SetBalanceUseCase( getCurrencyUseCase, getAccountsUseCase,getDataStore(), updateForwarder, economyLogger);
         payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
         exchangeUseCase = new ExchangeUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
@@ -175,7 +175,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache,getAccountsUseCase, getDataStore());
         tradeCurrenciesUseCase = new TradeCurrenciesUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
         transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase, getDataStore(), updateForwarder, economyLogger);
-        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyCache,getDataStore(),updateForwarder);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyCache,getAccountsUseCase,getDataStore(),updateForwarder);
         editCurrencyUseCase = new EditCurrencyUseCase(currencyCache,updateForwarder,getDataStore());
         toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyCache,getDataStore(),updateForwarder);
         createOfferUseCase = new CreateOfferUseCase(offerManager,getCurrencyUseCase,getAccountsUseCase);
@@ -195,10 +195,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     }
     private void registerCommands(){
-        CommandRegistration.registerCommands(this,payUseCase,exchangeUseCase,balanceUseCase, withdrawUseCase,
+        CommandRegistration.registerCommands(this,getAccountsUseCase,payUseCase,exchangeUseCase,balanceUseCase, withdrawUseCase,
                                             setBalanceUseCase, depositUseCase,createCurrencyUseCase, messageService,getCurrencyUseCase,
                                             deleteCurrencyUseCase,editCurrencyUseCase,toggleFeaturesUseCase,createOfferUseCase,acceptOfferUseCase,cancelOfferUseCase);
-        //todo: comando trade, el cual eliminaria la necesidad del comando vender de la extension que hice
     }
 
     private void registerEvents() {
@@ -216,7 +215,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         // PlaceholderAPI
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new BlockdynastyEconomyExpansion(this,getAccountsUseCase,getCurrencyUseCase).register();
+            new BlockdynastyEconomyExpansion(getAccountsUseCase,getCurrencyUseCase).register();
             getLogger().info("PlaceholderAPI Expansion registered successfully!");
         } else {
             getLogger().warning("PlaceholderAPI not found. Expansion won't be loaded.");

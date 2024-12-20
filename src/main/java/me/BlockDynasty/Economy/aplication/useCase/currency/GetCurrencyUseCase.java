@@ -4,7 +4,6 @@ import me.BlockDynasty.Economy.aplication.result.ErrorCode;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
@@ -21,13 +20,11 @@ public class GetCurrencyUseCase {
 
     public Result<Currency> getCurrency(String name) {
         Currency currency = currencyCache.getCurrency(name);
-        //System.out.println("el currency manager encontro " + currency.getSingular());
         if (currency == null) {
             List<Currency> currencies = datastore.loadCurrencies(Criteria.create().filter("singular", name).filter("plural",name).limit(1));
             if(!currencies.isEmpty()){
                 currency = currencies.get(0);
             }else {
-                //throw new CurrencyNotFoundException("Currency not found");
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
@@ -42,7 +39,6 @@ public class GetCurrencyUseCase {
             if(!currencies.isEmpty()){
                 defaultCurrency = currencies.get(0);
             }else {
-               // throw new CurrencyNotFoundException("Default currency not found");
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }

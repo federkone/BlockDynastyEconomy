@@ -42,7 +42,7 @@ public class VaultHandler {
     public void hook() {
         try {
             if (this.economy == null) {
-                this.economy = new GEVaultHook(plugin, createAccountUseCase, getAccountsUseCase, getCurrencyUseCase, depositUseCase, withdrawUseCase);
+                this.economy = new GEVaultHook(createAccountUseCase, getAccountsUseCase, getCurrencyUseCase, depositUseCase, withdrawUseCase);
             }
 
             if(plugin.getCurrencyManager().getDefaultCurrency() == null){

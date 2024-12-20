@@ -23,7 +23,7 @@ public class CreateAccountUseCaseTest {
     @BeforeEach
     void setUp() {
         repository = new RepositoryTest();
-        accountCache = new AccountCache();
+        accountCache = new AccountCache(5);
         currencyCache = new CurrencyCache(repository);
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
         createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache,getAccountsUseCase,repository);

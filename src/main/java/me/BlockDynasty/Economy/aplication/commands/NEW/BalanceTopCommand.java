@@ -1,10 +1,8 @@
 package me.BlockDynasty.Economy.aplication.commands.NEW;
 
+import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.RepositoryNotSupportTopException;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
+import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.utils.SchedulerUtils;
@@ -13,7 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
+import java.util.List;
 
 
 //TODO PENSAR SI USAR CACHE O NO. QUIZAS NO ES NECESARIO
@@ -33,23 +31,43 @@ public class BalanceTopCommand implements CommandExecutor {
             return true;
         }
 
-        String nameCurrency = args.length > 0 ? args[0] : "default";
-        LinkedList<CachedTopListEntry> cache = null;
-        SchedulerUtils.runAsync(() -> {
+        if (args.length == 0) {
+            sender.sendMessage("Usage: /baltop <currency> [limit]");
+            return false;
+        }
+        String nameCurrency =  args[0];
+        int limit = 10;
+        if (args.length>1){
             try {
-                //cache = getAccountsUseCase.getTopAccounts(nameCurrency);
-
-                sender.sendMessage(messageService.getBalanceTopMessaje(cache));
-            } catch (TransactionException e) {
-                sender.sendMessage("Error en la consulta");
-            } catch (RepositoryNotSupportTopException e) {
-                sender.sendMessage("No support top");
-            } catch (AccountNotFoundException e) {
-                sender.sendMessage(F.getBalanceTopEmpty()); //cuentas no encotradas para moneda
-            }catch (Exception e){
-                sender.sendMessage("Error inesperado");
-                e.printStackTrace();
+                limit = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("El segundo argumento debe ser un numero");
+                return false;
             }
+
+        }
+
+
+        int finalLimit = limit;
+        SchedulerUtils.runAsync(() -> {
+            Result<List<Account>> resultAccounts =getAccountsUseCase.getTopAccounts(nameCurrency, finalLimit,0);
+            if (resultAccounts.isSuccess()){
+                sender.sendMessage("Top "+ finalLimit +" "+ nameCurrency+" : ");
+                sender.sendMessage(messageService.getBalanceTopMessage(resultAccounts.getValue(),nameCurrency));
+                //for (Account account : resultAccounts.getValue()) {
+                //    sender.sendMessage(account.getNickname() + " " + account.getBalance(nameCurrency).getBalance());
+                //}
+
+            }else{
+                switch (resultAccounts.getErrorCode()){
+                    case ACCOUNT_NOT_FOUND ->   sender.sendMessage(F.getBalanceTopEmpty());
+                    case INVALID_ARGUMENT ->  sender.sendMessage("invalid argument");
+                    case REPOSITORY_NOT_SUPPORT_TOP ->sender.sendMessage("No support top");
+                    case DATA_BASE_ERROR ->   sender.sendMessage("Error in query");
+                    default -> sender.sendMessage("Unknown error");
+                }
+            }
+
         });
 
         return false;

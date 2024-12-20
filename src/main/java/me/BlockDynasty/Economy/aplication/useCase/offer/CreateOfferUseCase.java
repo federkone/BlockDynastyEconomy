@@ -6,13 +6,8 @@ import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.Offers.Offer;
 import me.BlockDynasty.Economy.domain.Offers.OfferManager;
-import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertAlreadyExist;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
-
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -72,6 +67,10 @@ public class CreateOfferUseCase {
     // si la moneda soporta decimales y el monto no es entero
         if (!currencyValueResult.getValue().isDecimalSupported() && amountCurrencyValue.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
            return Result.failure("Amount must be an integer", ErrorCode.INVALID_AMOUNT);
+        }
+
+        if (!accountSenderResult.getValue().hasEnough(currencyValueResult.getValue(), amountCurrencyValue)) {
+            return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
         }
 
 

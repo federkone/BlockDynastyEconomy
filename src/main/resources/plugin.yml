@@ -15,7 +15,7 @@ commands:
     aliases: [bal, money]
   baltop:
     description: Shows the top balances of the server
-    usage: /baltop (currency) (page)
+    usage: /baltop (currency) (cant)
     aliases: [gmoneytop, gecotop, gtop, gbaltop]
   currency:
     description: Manage the currencies.

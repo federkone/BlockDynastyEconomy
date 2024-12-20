@@ -4,8 +4,6 @@ import me.BlockDynasty.Economy.aplication.result.ErrorCode;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountExeption;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
@@ -53,7 +51,7 @@ public class CreateAccountUseCase {
 
     private void initializeAccountWithDefaultCurrencies(Account account) {
         List<Balance> balances = currencyCache.getCurrencies().stream()
-                .map(currency -> new Balance(currency))
+                .map(Balance::new)
                 .collect(Collectors.toList());
         account.setBalances(balances);
     }

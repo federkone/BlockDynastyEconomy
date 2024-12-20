@@ -38,21 +38,21 @@ public class BuyCommand implements CommandExecutor {
         }
 
         if (args.length < 3) {
-            sender.sendMessage("/eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar>");
+            sender.sendMessage(F.getBuyCommandUsage());
             return false;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
 
         if(player==null) {
-            sender.sendMessage("§cEl jugador no está en línea.");
+            sender.sendMessage(F.getBuyCommandOffline());
             return false;
         }
         double cantidadDemoneda;
         try {
             cantidadDemoneda = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            player.sendMessage("invalid_number");
+            player.sendMessage(F.getUnvalidAmount());
             return false;
         }
 
@@ -67,7 +67,7 @@ public class BuyCommand implements CommandExecutor {
             Result<Void> result =withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
             if(result.isSuccess()){
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-                player.sendMessage("§aCcompra realizada con exito!");
+                player.sendMessage(F.getBuyCommandSuccess());
             }else{
                 switch (result.getErrorCode()){
                     case ACCOUNT_NOT_FOUND:
@@ -86,7 +86,7 @@ public class BuyCommand implements CommandExecutor {
                         player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
                         break;
                     case DATA_BASE_ERROR:
-                        player.sendMessage("§cError inesperado al realizar transacción");
+                        player.sendMessage(messageService.getUnexpectedErrorMessage());
                         break;
                     default:
                         player.sendMessage(messageService.getUnexpectedErrorMessage());

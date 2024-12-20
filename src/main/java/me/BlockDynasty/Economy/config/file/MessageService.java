@@ -1,10 +1,11 @@
 package me.BlockDynasty.Economy.config.file;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
+import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
+import java.util.List;
 
 public class MessageService {
 
@@ -177,7 +178,40 @@ public class MessageService {
         return F.getBalanceNone().replace("{player}", name);
     }
 
-    public String getBalanceTopMessaje(LinkedList<CachedTopListEntry> cache){
-    return "";// F.getBalanceTop().replace("{number}", String.valueOf(num)).replace("{currencycolor}", "" + curr.getColor()).replace("{player}", entry.getName()).replace("{balance}", curr.format(balance));
+    public String getBalanceTopMessage(List<Account> accounts,String nameCurrency) {
+        StringBuilder aux = new StringBuilder();
+        for (int i = 0; i < accounts.size(); i++) {
+            Account account = accounts.get(i);
+            Balance balance = account.getBalance(nameCurrency);
+            Currency currency = balance.getCurrency();
+            BigDecimal balanceValue = balance.getBalance();
+            //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
+            aux.append(F.getBalanceTop()
+                    .replace("{number}", String.valueOf(i+1))
+                    .replace("{currencycolor}", "" + currency.getColor())
+                    .replace("{player}", account.getNickname())
+                    .replace("{balance}", currency.format(balanceValue)))
+            .append("\n");
+        }
+        //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
+    return aux.toString(); //F.getBalanceTop().replace("{number}", String.valueOf(num)).replace("{currencycolor}", "" + curr.getColor()).replace("{player}", entry.getName()).replace("{balance}", curr.format(balance));
+    }
+
+    public String getWithdrawSuccess(String currencyName, BigDecimal amount) {
+        Currency currency = currencyCache.getCurrency(currencyName);
+        return F.getWithdrawSuccess()
+                .replace("{amount}", currency.format(amount));
+    }
+
+    public String getDepositSuccess(String currencyName, BigDecimal amount) {
+        Currency currency = currencyCache.getCurrency(currencyName);
+        return F.getDepositSuccess()
+                .replace("{amount}", currency.format(amount));
+    }
+
+    public String getSetSuccess( String currencyName, BigDecimal amount) {
+        Currency currency = currencyCache.getCurrency(currencyName);
+        return F.getSetSuccess()
+                .replace("{amount}", currency.format(amount));
     }
 }

@@ -45,9 +45,9 @@ public class EconomyListener implements Listener {
             } else {
                 Result <Void> resultCreation = createAccountUseCase.execute(player.getUniqueId(), player.getName());
                 if (!resultCreation.isSuccess()){
-                    if(resultCreation.getErrorCode() == ErrorCode.DATA_BASE_ERROR){
+                    //if(resultCreation.getErrorCode() == ErrorCode.DATA_BASE_ERROR){
                         player.kickPlayer("Error al crear tu cuenta de economia, vuelve a ingresar al server, o contacta a un administrador");
-                    }
+                    //}
                 }
             }
 

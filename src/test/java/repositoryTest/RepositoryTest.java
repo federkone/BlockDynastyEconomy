@@ -1,13 +1,13 @@
 package repositoryTest;
 
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Callback;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +51,9 @@ public class RepositoryTest implements IRepository {
 
     @Override
     public void deleteCurrency(Currency currency) {//todo create
+        accounts.forEach(account -> account.getBalances().remove(currency.getSingular()));
+
+        currencies.remove(currency);
 
     }
 
@@ -81,6 +84,7 @@ public class RepositoryTest implements IRepository {
 
     @Override
     public void saveAccount(Account account) {
+        this.accounts.removeIf(a -> a.getUuid().equals(account.getUuid()));
         this.accounts.add(account);
     }
 
@@ -92,23 +96,28 @@ public class RepositoryTest implements IRepository {
         accounts.add(userTo);
     }
 
-    @Override
-    public void getTopList(Currency currency, int offset, int amount, Callback<LinkedList<CachedTopListEntry>> callback) {
-
-    }
 
     @Override
-    public List<Account> getAccountsByCurrency(String currencyName, int limit, int offset) {
-        // Simulate getting accounts by currency
+    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
         return accounts.stream()
+                // Filtrar cuentas que contienen la moneda especificada
                 .filter(account -> account.haveCurrency(currencyName))
+                // Ordenar por balance en la moneda especificada, en orden descendente
+                .sorted((a1, a2) -> {
+                    BigDecimal balance1 = a1.getBalance(currencyName).getBalance();
+                    BigDecimal balance2 = a2.getBalance(currencyName).getBalance();
+                    return balance2.compareTo(balance1); // Orden descendente
+                })
+                // Aplicar paginación
                 .skip(offset)
                 .limit(limit)
+                // Colectar los resultados
                 .collect(Collectors.toList());
     }
+
     @Override
     public boolean isTopSupported() {
-        return false;
+        return true;
     }
 
     @Override
@@ -123,6 +132,7 @@ public class RepositoryTest implements IRepository {
 
     @Override
     public void clearAll() {
-
+        this.accounts.clear();
+        this.currencies.clear();
     }
 }

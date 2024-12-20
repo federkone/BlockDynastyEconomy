@@ -4,40 +4,51 @@ import me.BlockDynasty.Economy.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import java.util.List;
+
 public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
+    //private BlockDynastyEconomy blockDynastyEconomy= null;;
     private final GetAccountsUseCase getAccountsUseCase;
     private final GetCurrencyUseCase getCurrencyUseCase;
-    private final BlockDynastyEconomy economy;
 
-    public BlockdynastyEconomyExpansion(BlockDynastyEconomy plugin,GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase) {
+    public BlockdynastyEconomyExpansion(GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase) {
         this.getAccountsUseCase = getAccountsUseCase;
         this.getCurrencyUseCase = getCurrencyUseCase;
-        this.economy = plugin;
     }
-    //private BlockDynastyEconomy economy = null;
 
     @Override
     public boolean register() {
         if(!canRegister()){
             return false;
         }
+       /* blockDynastyEconomy = (BlockDynastyEconomy) Bukkit.getPluginManager().getPlugin(this.getRequiredPlugin());
 
-        if (economy == null) {
+        if (blockDynastyEconomy == null) {
             return false;
-        }
+        }*/
+
+        //getUsesCases();
 
         return super.register();
     }
 
+    /*private void getUsesCases(){
+        getAccountsUseCase = blockDynastyEconomy.getGetAccountsUseCase();
+        getCurrencyUseCase = blockDynastyEconomy.getGetCurrencyUseCase();
+    }*/
+
     @Override
     public boolean canRegister() {
-        return Bukkit.getPluginManager().getPlugin(this.getRequiredPlugin()) != null;
+        return true;
+        //return Bukkit.getPluginManager().getPlugin(this.getRequiredPlugin()) != null;
     }
 
     @Override
@@ -62,46 +73,163 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String s) {
-        if (player == null) {
+        if (player == null || s == null) {
             return "";
         }
 
-        Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
-        if (!accountResult.isSuccess()) {
-            return  "Player data not found";
-        }
-        Result<Currency> defaultcurrencyResult = getCurrencyUseCase.getDefaultCurrency();
-        if (!defaultcurrencyResult.isSuccess()) {
-            return  "Default currency not found";
-        }
-
-        Account a = accountResult.getValue();
-        Currency dc = defaultcurrencyResult.getValue();
-
+        // Normalizar la entrada del placeholder
         s = s.toLowerCase();
 
-        if(s.equalsIgnoreCase("balance_default")){
-            String amount = "";
-            return amount + Math.round(a.getBalance(dc).getBalance().doubleValue());
-        }else if(s.equalsIgnoreCase("balance_default_formatted")){
-            return dc.format(a.getBalance(dc).getBalance());
+        // Placeholder para "top" (ejemplo: %blockdynastyeconomy_top_dinero_10%)
+        if (s.startsWith("top_")) {
+            return handleTopPlaceholder(s);
         }
 
-        else if(s.startsWith("balance_") || !s.startsWith("balance_default")) {
-            String[] currencyArray = s.split("_");
-            Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyArray[1]);
-            if (!currencyResult.isSuccess()) {
-                return "Currency not found";
-            }
-            Currency c = currencyResult.getValue();
-            if (s.equalsIgnoreCase("balance_" + currencyArray[1] + "_formatted")) {
-                return c.format(a.getBalance(c).getBalance());
-            } else {
-                String amount = "";
-                return amount + Math.round(a.getBalance(c).getBalance().doubleValue());
-            }
+        // Obtener la cuenta del jugador
+        Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
+        if (!accountResult.isSuccess()) {
+            return "Player data not found";
         }
 
-        return null;
+        // Obtener la moneda predeterminada
+        Result<Currency> defaultCurrencyResult = getCurrencyUseCase.getDefaultCurrency();
+        if (!defaultCurrencyResult.isSuccess()) {
+            return "Default currency not found";
+        }
+
+        Account account = accountResult.getValue();
+        Currency defaultCurrency = defaultCurrencyResult.getValue();
+
+        // Placeholder para balance (ejemplo: %blockdynastyeconomy_balance_dinero%)
+        if (s.startsWith("balance_")) {
+            return handleBalancePlaceholder(s, account, defaultCurrency);
+        }
+
+        return null; // Placeholder desconocido
     }
+
+    // Manejar el placeholder "top"
+    //ejemplo de usos : %blockdynastyeconomy_top_dinero_10%
+    // %blockdynastyeconomy_top_dinero_10_1%
+    // %blockdynastyeconomy_top_dinero_10_2%
+    // %blockdynastyeconomy_top_dinero_10_3%
+    private String handleTopPlaceholder(String placeholder) {
+        String[] parts = placeholder.split("_");
+        if (parts.length < 3) {
+            return "Invalid placeholder format";
+        }
+
+        String currencyName = parts[1];
+        int limit;
+        try {
+            limit = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            return "Invalid limit number";
+        }
+
+        // Determinar si se solicita una posición específica
+        int position = -1; // -1 indica que no se solicitó una posición específica
+        if (parts.length >= 4) {
+            try {
+                position = Integer.parseInt(parts[3]) - 1; // Ajustar a índice basado en 0
+            } catch (NumberFormatException e) {
+                return "Invalid position number";
+            }
+        }
+
+        // Obtener las cuentas principales
+        Result<List<Account>> resultTopAccounts =getAccountsUseCase.getTopAccounts(currencyName, limit, 0);
+        if (!resultTopAccounts.isSuccess()){
+            switch (resultTopAccounts.getErrorCode()){
+                case ACCOUNT_NOT_FOUND, INVALID_ARGUMENT, DATA_BASE_ERROR,REPOSITORY_NOT_SUPPORT_TOP -> {
+                    return resultTopAccounts.getErrorMessage();
+                }
+            }
+        }
+
+        List<Account> topAccounts = resultTopAccounts.getValue();
+        if (topAccounts.isEmpty()) {
+
+        }
+
+        if (position >= 0) {
+            // Validar que la posición solicitada esté dentro del rango
+            if (position >= topAccounts.size()) {
+                return "Position out of range";
+            }
+
+            // Retornar solo la cuenta en la posición específica
+            Account account = topAccounts.get(position);
+            /*return (position + 1) + ". " + account.getNickname() + ": " +
+                    account.getBalance(currencyName).getBalance() + " " + currencyName;*/
+
+            return F.getBalanceTop()
+                    .replace("{number}", String.valueOf(position + 1))
+                    .replace("{currencycolor}", "" + account.getBalance(currencyName).getCurrency().getColor())
+                    .replace("{player}", account.getNickname())
+                    .replace("{balance}", account.getBalance(currencyName).getCurrency().format(account.getBalance(currencyName).getBalance()));
+        }
+
+        // Construir el resultado completo si no se solicitó una posición específica
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < topAccounts.size(); i++) {
+            Account account = topAccounts.get(i);
+            Balance balance = account.getBalance(currencyName);
+            result.append(F.getBalanceTop()
+                    .replace("{number}", String.valueOf(i + 1))
+                    .replace("{currencycolor}", "" + balance.getCurrency().getColor())
+                    .replace("{player}", account.getNickname())
+                    .replace("{balance}", balance.getCurrency().format(balance.getBalance())));
+            /*result.append(i + 1).append(". ")
+                    .append(account.getNickname()).append(": ")
+                    //.append(balance.getBalance()).append(" ").append(balance.getCurrency().format());
+                    .append(balance.getCurrency().format(balance.getBalance()));
+                    //.append(account.getBalance(currencyName).getBalance()).append(" ").append(currencyName);*/
+            if (i < topAccounts.size() - 1) {
+                result.append("\n");
+            }
+        }
+
+        return result.toString();
+    }
+
+
+    // Manejar el placeholder "balance"
+    //ejemplo de usos : %blockdynastyeconomy_balance_dinero%
+    // %blockdynastyeconomy_balance_dinero_formatted%
+    private String handleBalancePlaceholder(String placeholder, Account account, Currency defaultCurrency) {
+        if (placeholder.equals("balance_default")) {
+            return String.valueOf(Math.round(account.getBalance(defaultCurrency).getBalance().doubleValue()));
+        }
+
+        if (placeholder.equals("balance_default_formatted")) {
+            return defaultCurrency.format(account.getBalance(defaultCurrency).getBalance());
+        }
+
+        // Manejar balances de otras monedas (ejemplo: %blockdynastyeconomy_balance_dinero%)
+        String[] parts = placeholder.split("_");
+        if (parts.length < 2) {
+            return "Invalid placeholder format";
+        }
+
+        String currencyName = parts[1];
+        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return "Currency not found";
+        }
+
+        Currency currency = currencyResult.getValue();
+
+
+
+
+        if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
+           // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
+            return currency.format(account.getBalance(currency).getBalance());//%BlockDynastyEconomy_balance_Dinero_formatted%
+        } else {
+            //return currency.format(account.getBalance(currency).getBalance());
+            return String.valueOf(account.getBalance(currency).getBalance().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
+        }
+    }
+
 }

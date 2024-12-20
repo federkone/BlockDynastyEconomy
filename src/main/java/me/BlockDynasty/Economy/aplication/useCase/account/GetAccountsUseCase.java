@@ -8,6 +8,7 @@ import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundExceptio
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import org.bukkit.entity.Player;
 
@@ -98,53 +99,57 @@ public class GetAccountsUseCase {
         return accountCache.getAccounts();
     }
 
-   //TODO: TOP 10 ACC, añadir uso de la cache de CachedTopList class
-    //todo: puedo tomar como criterio que la lista de tops sean los que mas suma de todas las monedas tienen
-   /*lic LinkedList<CachedTopListEntry> getTopAccounts(String currency) {
-        List<Account> accounts = new ArrayList<>();
-        LinkedList<CachedTopListEntry> cache = new LinkedList<>();
-
-        if (!dataStore.isTopSupported()){
-            throw new RepositoryNotSupportTopException("Repository not support top");
-        }
-
-        //cache = cachedTopList.getResults(); //busco en la cache
-
-        if(cache.isEmpty()){ //si la cache esta vacia, buscar en la db
-            try{
-                if (currency.equals("default")){
-                    accounts = dataStore.getAccountsByCurrency(currencyManager.getDefaultCurrency().getSingular() ,10,0);
-
-                }else{
-                    accounts = dataStore.getAccountsByCurrency(currency,10,0);
-
-                }
-                //AGREGAR A CACHE PARA LUEGO RETORNAR
-                for(Account account : accounts){
-                    cache.add(new CachedTopListEntry(account.getNickname(), account.getBalance(currency))); //añado a la cache los datos encontrados
-
-                }
-            }catch (TransactionException e){
-                throw new TransactionException("Error in transaction");
+    public void updateAccountsCache(){ //todo, test
+        Set<Account> accounts = accountCache.getAccounts();   //todas las cuentas de cache
+        for (Account account : accounts) {
+            updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
+            try {
+                dataStore.saveAccount(account); //guardar en db los cambios hechos sobre sus balances, ya sea haber agregado, o quitado
+            } catch (TransactionException e) {
+                throw new TransactionException("Error in transaction", e);
             }
         }
-
-
-
-        //if(CachedTopList != null && CachedTopList.getTopList() != null){
-        //    return CachedTopList.getTopList();
-        //}
-
-        if (cache.isEmpty()){
-            throw new AccountNotFoundException("not found ");
-        }
-
-
-        return cache;
     }
+   public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {
+       if (limit <= 0) {
+           //throw new IllegalArgumentException("Limit must be greater than 0");
+           return Result.failure("Limit must be greater than 0", ErrorCode.INVALID_ARGUMENT);
+       }
 
-/*
-    */
+       List<Account> cache = accountCache.getAccountsTopList(currency);
+
+       if (!cache.isEmpty() && cache.size() >= limit + offset) {
+           //System.out.println("Cache hit");
+           return Result.success(cache.subList(offset, Math.min(offset + limit, cache.size())));
+       }
+
+       if (!dataStore.isTopSupported()) {
+           //throw new RepositoryNotSupportTopException("Repository not support top");
+           return Result.failure("Repository not support top", ErrorCode.REPOSITORY_NOT_SUPPORT_TOP);
+       }
+
+       List<Account> accounts;
+       try {
+           //System.out.println("DATABASE HIT");
+           accounts = dataStore.getAccountsTopByCurrency(currency, limit, offset);
+           for (Account account : accounts) {
+               accountCache.addAccountToTopList(account, currency);
+           }
+       } catch (TransactionException e) {
+           //throw new TransactionException("Error in transaction", e);
+           return Result.failure("Error in transaction", ErrorCode.DATA_BASE_ERROR);
+       }
+
+       if (accounts.isEmpty()) {
+           //throw new AccountNotFoundException("No accounts found for currency: " + currency);
+           return Result.failure("No accounts found for currency: "+ currency, ErrorCode.ACCOUNT_NOT_FOUND);
+       }
+
+       return Result.success(accounts);
+   }
+
+
+
     private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
         List<Balance> updatedBalances = currencyCache.getCurrencies().stream()
                 .map(systemCurrency ->

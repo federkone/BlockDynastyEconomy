@@ -6,6 +6,7 @@ import me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsOffer.CancelOf
 import me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsOffer.CreateOfferCommand;
 import me.BlockDynasty.Economy.aplication.commands.NEW.SubCommandsOffer.DenyOfferCommand;
 import me.BlockDynasty.Economy.aplication.commands.NEW.SubcomandsEconomy.*;
+import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.*;
 import me.BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
@@ -17,7 +18,7 @@ import me.BlockDynasty.Economy.config.file.MessageService;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandRegistration {
-    public static void registerCommands(JavaPlugin plugin, PayUseCase payUseCase, ExchangeUseCase exchangeUseCase,
+    public static void registerCommands(JavaPlugin plugin, GetAccountsUseCase getAccountsUseCase, PayUseCase payUseCase, ExchangeUseCase exchangeUseCase,
                                         GetBalanceUseCase balanceUseCase, WithdrawUseCase withdrawUseCase, SetBalanceUseCase setBalanceUseCase ,
                                         DepositUseCase depositUseCase, CreateCurrencyUseCase createCurrencyUseCase, MessageService messageService, GetCurrencyUseCase getCurrencyUseCase,
                                         DeleteCurrencyUseCase deleteCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, ToggleFeaturesUseCase toggleFeaturesUseCase, CreateOfferUseCase createOfferUseCase,
@@ -43,6 +44,9 @@ public class CommandRegistration {
         AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(acceptOfferUseCase,messageService);
         DenyOfferCommand denyOfferCommand = new DenyOfferCommand(cancelOfferUseCase,messageService);
         BuyCommand buyCommand = new BuyCommand(withdrawUseCase, messageService);
+        EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(editCurrencyUseCase);
+        EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(editCurrencyUseCase);
+
 
         OfferCommand offerCommand = new OfferCommand();
         EconomyCommand economyCommand = new EconomyCommand();
@@ -64,6 +68,8 @@ public class CommandRegistration {
         currencyCommand.registerSubCommand("symbol",editSymbolCommand);
         currencyCommand.registerSubCommand("list", listCommand);
         currencyCommand.registerSubCommand("default",setDefaultCommand);
+        currencyCommand.registerSubCommand("plural",editPluralNameCommand);
+        currencyCommand.registerSubCommand("singular",editSingularNameCommand);
 
 
 
@@ -83,7 +89,7 @@ public class CommandRegistration {
 
         plugin.getCommand("exchange").setExecutor(new ExchangeCommandV2(exchangeUseCase, messageService));
         plugin.getCommand("balance").setExecutor(new BalanceCommand(balanceUseCase, messageService));
-        //plugin.getCommand("baltop").setExecutor(new BalanceTopCommand(getAccountsUseCase, messageService));
+        plugin.getCommand("baltop").setExecutor(new BalanceTopCommand(getAccountsUseCase, messageService));
 
 
     }

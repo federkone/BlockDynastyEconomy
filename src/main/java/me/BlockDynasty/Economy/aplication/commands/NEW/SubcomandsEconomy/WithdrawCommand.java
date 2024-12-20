@@ -67,15 +67,16 @@ public class WithdrawCommand implements CommandExecutor {
                 sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
+                   // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
+                    targetPlayer.sendMessage(messageService.getWithdrawSuccess( currencyName, BigDecimal.valueOf(finalMount)));
                 }
             }else{
                 switch (result.getErrorCode()){
                     case ACCOUNT_NOT_FOUND:
                         sender.sendMessage(messageService.getAccountNotFoundMessage());
                         break;
-                    case ACCOUNT_NOT_HAVE_BALANCE:
-                        sender.sendMessage("El usuario no cuenta con esta moneda");
+                    case ACCOUNT_NOT_HAVE_BALANCE: //todo: insufficent founds
+                        sender.sendMessage(F.getInsufficientFunds());
                         break;
                     case INVALID_AMOUNT:
                         sender.sendMessage(messageService.getUnvalidAmount());
@@ -87,7 +88,7 @@ public class WithdrawCommand implements CommandExecutor {
                         sender.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
                         break;
                     case DATA_BASE_ERROR:
-                        sender.sendMessage("Error inesperado al realizar transacción");
+                        sender.sendMessage(messageService.getUnexpectedErrorMessage());
                         break;
                     default:
                         sender.sendMessage(messageService.getUnexpectedErrorMessage());

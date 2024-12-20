@@ -2,7 +2,6 @@ package me.BlockDynasty.Economy.domain.repository;
 
 import jakarta.persistence.criteria.*;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;
@@ -19,7 +18,7 @@ import java.util.function.Consumer;
 public class RepositoryCriteriaApi implements IRepository
 {
     private final SessionFactory sessionFactory;
-    private boolean topSupported = false;
+    private boolean topSupported = true;
 
     public RepositoryCriteriaApi(ConnectionHibernate connectionHibernate) {
 
@@ -41,7 +40,17 @@ public class RepositoryCriteriaApi implements IRepository
 
     @Override
     public void deleteCurrency(Currency currency) {
-        executeInsideTransaction(session -> session.remove(currency));
+        executeInsideTransaction(session -> {
+            // Eliminar los balances asociados primero
+            Query deleteQuery = session.createQuery(
+                    "DELETE FROM Balance WHERE currency = :currency"
+            );
+            deleteQuery.setParameter("currency", currency);
+            deleteQuery.executeUpdate();
+
+            // Luego eliminar la moneda
+            session.remove(currency);
+        });
     }
 
     @Override
@@ -67,10 +76,6 @@ public class RepositoryCriteriaApi implements IRepository
         });
     }
 
-    @Override
-    public void getTopList(Currency currency, int offset, int amount, Callback<LinkedList<CachedTopListEntry>> callback) {
-
-    }
 
     @Override
     public boolean isTopSupported() {
@@ -201,44 +206,43 @@ public class RepositoryCriteriaApi implements IRepository
         }
     }
 
-    public List<Account> getAccountsByCurrency(String currencyName, int limit, int offset) throws TransactionException {
+    /*public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
+            // HQL para obtener las cuentas ordenadas por balance según el nombre de la moneda
+            String hql = "SELECT a FROM Account a " +
+                    "JOIN a.balances b " +
+                    "JOIN b.currency c " +
+                    "WHERE c.singular = :currencyName OR c.plural = :currencyName " +
+                    "ORDER BY b.amount DESC";
 
-            // Query to get the Currency object by name (singular or plural)
-            CriteriaQuery<Currency> currencyQuery = cb.createQuery(Currency.class);
-            Root<Currency> currencyRoot = currencyQuery.from(Currency.class);
-            Predicate singularPredicate = cb.equal(currencyRoot.get("singular"), currencyName);
-            Predicate pluralPredicate = cb.equal(currencyRoot.get("plural"), currencyName);
-            currencyQuery.select(currencyRoot)
-                    .where(cb.or(singularPredicate, pluralPredicate));
-            Currency currency = session.createQuery(currencyQuery).getSingleResult();
-
-            // Query to get the Accounts by Currency
-            CriteriaQuery<Object[]> accountQuery = cb.createQuery(Object[].class);
-            Root<Account> accountRoot = accountQuery.from(Account.class);
-            MapJoin<Account, Currency, Double> balancesJoin = accountRoot.joinMap("balances");
-
-            accountQuery.multiselect(accountRoot, balancesJoin.value())
-                    .where(cb.equal(balancesJoin.key(), currency))
-                    .orderBy(cb.asc(balancesJoin.value()))
-                    .distinct(true);
-
-            Query<Object[]> query = session.createQuery(accountQuery);
-            query.setMaxResults(limit);
-            query.setFirstResult(offset);
-            List<Object[]> resultList = query.getResultList();
-
-            // Extract Account objects from the result list
-            List<Account> accounts = new ArrayList<>();
-            for (Object[] result : resultList) {
-                accounts.add((Account) result[0]);
-            }
-            return accounts;
+            return session.createQuery(hql, Account.class)
+                    .setParameter("currencyName", currencyName) // Vincula el nombre de la moneda al parámetro
+                    .setFirstResult(offset) // Establece el desplazamiento
+                    .setMaxResults(limit) // Establece el límite
+                    .getResultList(); // Ejecuta la consulta y devuelve la lista de resultados
         } catch (Exception e) {
-            throw new TransactionException(e.getMessage());
+            throw new TransactionException("Error retrieving accounts by currency", e);
+        }
+    }*/
+    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
+        try (Session session = sessionFactory.openSession()) {
+            // HQL con fetch join para evitar el problema N+1
+            String hql = "SELECT DISTINCT a FROM Account a " +
+                    "JOIN FETCH a.balances b " +
+                    "JOIN FETCH b.currency c " +
+                    "WHERE c.singular = :currencyName OR c.plural = :currencyName " +
+                    "ORDER BY b.amount DESC";
+
+            return session.createQuery(hql, Account.class)
+                    .setParameter("currencyName", currencyName) // Vincula el nombre de la moneda al parámetro
+                    .setFirstResult(offset) // Establece el desplazamiento
+                    .setMaxResults(limit) // Establece el límite
+                    .getResultList(); // Ejecuta la consulta y devuelve la lista de resultados
+        } catch (Exception e) {
+            throw new TransactionException("Error retrieving accounts by currency", e);
         }
     }
+
 
     @Override
     public void clearAll() throws TransactionException{

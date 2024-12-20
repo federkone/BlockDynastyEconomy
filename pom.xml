@@ -130,9 +130,11 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.11.6</version> <!-- Cambia por la versión actual si es diferente -->
+            <version>2.11.6</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- MONGODB INTEGRATION-->
 
 
         <!-- TEST-->

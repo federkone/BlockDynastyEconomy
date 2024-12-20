@@ -46,7 +46,7 @@ public class DepositUseCaseTest {
         repository.saveAccount(nullplague);
 
         currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache();
+        accountCache = new AccountCache(5);
 
 
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, repository);

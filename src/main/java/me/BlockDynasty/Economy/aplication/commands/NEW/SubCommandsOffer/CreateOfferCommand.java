@@ -58,10 +58,19 @@ public class CreateOfferCommand implements CommandExecutor {
             sender.sendMessage(F.getOfflinePlayer());
             return false;
         }
+
         Player player = (Player) sender;
 
+        if(F.getEnableDistanceLimitOffer()){
+            double distance =F.getDistanceLimitOffer();
+            if(player.getLocation().distance(target.getLocation())>distance){
+                sender.sendMessage(F.getTooFar(distance));
+                return false;
+            }
+        }
+
         if(player.getName().equals(target.getName())){        // SI SE ESTA INTENTANDO OFRECER A SI MISMO
-            sender.sendMessage("No puedes ofertar a ti mismo");
+            sender.sendMessage(F.getOfferYourself());
             return false;
         }
 
@@ -74,29 +83,29 @@ public class CreateOfferCommand implements CommandExecutor {
             //player.sendMessage("has ofertado a "+target.getName() +" "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             target.sendMessage(messageService.getOfferReceiveMessage(player.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
-            target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());  //todo: podria dejar que una persona reciba varias ofertas de varias persoanas
+            //target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());
         }else{
             switch (result.getErrorCode()){
                 case ACCOUNT_NOT_FOUND:
-                    player.sendMessage("§cNo existe la cuenta de "+ player.getName());
+                    player.sendMessage(messageService.getAccountNotFoundMessage());
                     break;
                 case OFFER_ALREADY_EXISTS:
-                    player.sendMessage("§cYa existe una oferta entre "+player.getName()+" y "+target.getName());
+                    player.sendMessage(F.getAlreadyOffer());
                     break;
                 case CURRENCY_NOT_FOUND:
-                    player.sendMessage("§cNo existe la moneda que intentas ofertar");
+                    player.sendMessage(F.getUnknownCurrency());
                     break;
                 case INVALID_AMOUNT:
                     player.sendMessage(messageService.getUnvalidAmount());
                     break;
                 case INSUFFICIENT_FUNDS:
-                    player.sendMessage("§cNo tienes suficiente dinero para ofertar");
+                    player.sendMessage(messageService.getInsufficientFundsMessage(tipoCantidad));
                     break;
                 case ACCOUNT_CAN_NOT_RECEIVE:
-                    player.sendMessage("§cEl jugador no puede recibir la oferta");
+                    player.sendMessage(F.getCannotReceive());
                     break;
                 default:
-                    player.sendMessage("§cError inesperado");
+                    player.sendMessage(messageService.getUnexpectedErrorMessage());
                     break;
             }
         }

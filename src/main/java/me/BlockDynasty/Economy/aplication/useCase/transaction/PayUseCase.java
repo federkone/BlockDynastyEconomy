@@ -8,7 +8,6 @@ import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotPayableException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
@@ -81,7 +80,6 @@ public class PayUseCase {
 
         try {
             dataStore.transfer(accountFrom, accountTo);
-
             if(updateForwarder != null && economyLogger != null){ //todo , lo puse para testear y ommitir esto
                 updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
                 updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
@@ -89,10 +87,8 @@ public class PayUseCase {
                         currency.format(amount) + " to " + accountTo.getNickname());
             }
         } catch (TransactionException e) {
-            //throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
             return Result.failure("Failed to perform transfer: " , ErrorCode.DATA_BASE_ERROR);
         }
-
         return Result.success(null);
     }
 }

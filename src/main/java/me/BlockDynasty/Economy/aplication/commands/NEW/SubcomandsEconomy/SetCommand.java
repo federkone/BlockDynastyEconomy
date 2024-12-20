@@ -65,7 +65,8 @@ public class SetCommand implements CommandExecutor {
                 sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage("§7Se ha seteado tu balance a " + finalMount + " de " + currencyName);
+                    //targetPlayer.sendMessage("§7Se ha seteado tu balance a " + finalMount + " de " + currencyName);
+                    targetPlayer.sendMessage(messageService.getSetSuccess( currencyName, BigDecimal.valueOf(finalMount)));
                 }
             }else{
                 switch (result.getErrorCode()){
@@ -82,7 +83,7 @@ public class SetCommand implements CommandExecutor {
                         sender.sendMessage(F.getUnvalidAmount());
                         break;
                     case DATA_BASE_ERROR:
-                        sender.sendMessage("Error inesperado al realizar transacción");
+                        sender.sendMessage(messageService.getUnexpectedErrorMessage());
                         break;
                     default:
                         sender.sendMessage(messageService.getUnexpectedErrorMessage());

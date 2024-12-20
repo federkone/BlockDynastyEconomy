@@ -1,7 +1,6 @@
 package me.BlockDynasty.Economy.domain.repository;
 
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 
@@ -22,9 +21,7 @@ public interface IRepository {
     //void deleteAccount(Account account);
     public void transfer(Account userFrom, Account userTo);
 
-    //get top list se va a eliminar ude jar
-    void getTopList(Currency currency, int offset, int amount, Callback<LinkedList<CachedTopListEntry>> callback);
-    List<Account> getAccountsByCurrency(String currencyName, int limit, int offset);
+    List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset);
 
     boolean isTopSupported();
     String getName();

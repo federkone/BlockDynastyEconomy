@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 
 import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAlreadyExist;
@@ -15,9 +16,11 @@ public class CreateCurrencyUseCase {
     private final CurrencyCache currencyCache;
     private final IRepository dataStore;
     private final UpdateForwarder updateForwarder;
+    private final GetAccountsUseCase getAccountsUseCase;
 
-    public CreateCurrencyUseCase(CurrencyCache currencyCache, UpdateForwarder updateForwarder, IRepository dataStore) {
+    public CreateCurrencyUseCase(CurrencyCache currencyCache, GetAccountsUseCase getAccountsUseCase,UpdateForwarder updateForwarder, IRepository dataStore) {
         this.currencyCache = currencyCache;
+        this.getAccountsUseCase = getAccountsUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
@@ -36,171 +39,13 @@ public class CreateCurrencyUseCase {
         try {
             dataStore.saveCurrency(currency);
             currencyCache.add(currency);//cache
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-
-    }
-
-    /*public List<Currency> getCurrencies(){
-        return currencyManager.getCurrencies();
-    } //todo ,no va aca
-
-    public Currency getCurrency(String name){
-        return currencyManager.getCurrency(name);
-    } //todo, no va aca
-
-    public void editStartBal(String name, double startBal){
-        Currency currency = currencyManager.getCurrency(name);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-
-        if (!currency.isDecimalSupported() && startBal % 1 != 0) {
-            throw new DecimalNotSupportedException("Currency does not support decimals");
-        }
-
-        currency.setStartBalance(startBal);
-        try {
-            dataStore.saveCurrency(currency);
-            //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }
-
-    public void editColor(String nameCurrency, String colorString){
-        Currency currency = currencyManager.getCurrency(nameCurrency);
-
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-
-        ChatColor color = ChatColor.valueOf(colorString);
-        if (color.isFormat()) {
-            throw new CurrencyColorUnformat("currency color is not a format");
-        }
-
-        currency.setColor(color);
-        try {
-            dataStore.saveCurrency(currency);
-            //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-
-    }
-
-    public void editSymbol(String nameCurrency,String symbol){
-            Currency currency = currencyManager.getCurrency(nameCurrency);
-
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-
-        currency.setSymbol(symbol);
-        try {
-            dataStore.saveCurrency(currency);
-            //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }
-
-    public void setDefaultCurrency(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-
-        if (currency.isDefaultCurrency()){
-            return;
-        }
-
-        currencyManager.getCurrencies().forEach(c -> {
-            if (c.isDefaultCurrency()){
-                c.setDefaultCurrency(false);
-                try {
-                    dataStore.saveCurrency(c);
-                    updateForwarder.sendUpdateMessage("currency", c.getUuid().toString());
-                }catch (TransactionException e){
-                    throw new TransactionException("Error creating currency");
-                }
+            getAccountsUseCase.updateAccountsCache();
+            if (updateForwarder != null){
+                updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }
-        });
-
-        currency.setDefaultCurrency(true);
-        try {
-            dataStore.saveCurrency(currency);
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
         }
+
     }
-
-    public void togglePayable(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-        currency.setPayable(!currency.isPayable());
-        try {
-            dataStore.saveCurrency(currency);
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }
-
-    public void toggleDecimals(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-        currency.setDecimalSupported(!currency.isDecimalSupported());
-        try {
-            dataStore.saveCurrency(currency);
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }
-
-    //todo abstraer a otro caso de uso?
-    public void deleteCurrency(String currencyName){
-        Currency currency = currencyManager.getCurrency(currencyName);
-
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-        if (currency.isDefaultCurrency()){
-            throw new CurrencyNotFoundException("Currency is default");
-        }
-        try {
-            dataStore.deleteCurrency(currency);
-            //plugin.getAccountManager().getAccounts().stream().filter(account -> account.getBalances().containsKey(currency)).forEach(account -> account.getBalances().remove(currency)); //TODO: ELIMINAR LAS CURRENCY Y BALANCE DE TODOS LOS USUARIOS?
-            currencyManager.remove(currency);
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }
-
-    public void setCurrencyRate(String currencyName, double rate){
-        Currency currency = currencyManager.getCurrency(currencyName);
-        if (currency == null){
-            throw new CurrencyNotFoundException("Currency not found");
-        }
-        currency.setExchangeRate(rate);
-        try {
-            dataStore.saveCurrency(currency);
-            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
-        }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
-        }
-    }*/
 }

@@ -5,8 +5,6 @@ import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
 import me.BlockDynasty.Economy.domain.Offers.Offer;
 import me.BlockDynasty.Economy.domain.Offers.OfferManager;
-import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertNotFoundException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 
 import java.util.UUID;
 
@@ -25,11 +23,11 @@ public class AcceptOfferUseCase {
 
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
-            //throw new OffertNotFoundException("Este usuario no te ha ofrecido nada");
         }
 
         Result<Void> tradeResult = tradeCurrenciesUseCase.execute(offer.getVendedor(), offer.getComprador(),  offer.getTipoCantidad().getSingular(), offer.getTipoMonto().getSingular(),offer.getCantidad(), offer.getMonto());
         if (!tradeResult.isSuccess()) {
+            offerManager.removeOffer(playerAccetp);
             return Result.failure(tradeResult.getErrorMessage(), tradeResult.getErrorCode());
         }
         offerManager.removeOffer(playerAccetp);

@@ -8,21 +8,14 @@
 
 package me.BlockDynasty.Economy.aplication.vault;
 
-import me.BlockDynasty.Economy.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.utils.UtilServer;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -41,15 +34,15 @@ public class GEVaultHook extends AbstractEconomy {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final DepositUseCase depositUseCase;
     private final WithdrawUseCase withdrawUseCase;
-    private final BlockDynastyEconomy plugin;
+    //private final BlockDynastyEconomy plugin;
 
-    public GEVaultHook(BlockDynastyEconomy plugin,CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase,DepositUseCase depositUseCase, WithdrawUseCase withdrawUseCase) {
+    public GEVaultHook(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase,DepositUseCase depositUseCase, WithdrawUseCase withdrawUseCase) {
         this.getAccountsUseCase = getAccountsUseCase;
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.depositUseCase = depositUseCase;
         this.withdrawUseCase = withdrawUseCase;
         this.createAccountUseCase = createAccountUseCase;
-        this.plugin = plugin;
+        //this.plugin = plugin;
     }
     @Override
     public boolean isEnabled() {
@@ -126,12 +119,14 @@ public class GEVaultHook extends AbstractEconomy {
 
     @Override
     public double getBalance(OfflinePlayer player) {
-        //if(plugin.isDebug())UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
+       // UtilServer.consoleLog("Lookup name: " + player.getName() + "(" + player.getUniqueId() + ")");
         Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
         Result<Currency> currency = getCurrencyUseCase.getDefaultCurrency();
         if(accountResult.isSuccess() && currency.isSuccess()){
+           // UtilServer.consoleLog("ENCONTRADO "+ accountResult.getValue().getNickname()+" CON "+accountResult.getValue().getBalance(currency.getValue()).getBalance().doubleValue());
             return accountResult.getValue().getBalance(currency.getValue()).getBalance().doubleValue();
         }
+        //UtilServer.consoleLog("NO ENCONTRADO ");
         return 0;
     }
 

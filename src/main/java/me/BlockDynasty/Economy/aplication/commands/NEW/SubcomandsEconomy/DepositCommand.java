@@ -66,7 +66,8 @@ public class DepositCommand implements CommandExecutor {
                 sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                 Player targetPlayer = Bukkit.getPlayer(target);
                 if (targetPlayer != null) {
-                    targetPlayer.sendMessage("§aHas recibido " + finalMount + " " + currencyName);
+                    targetPlayer.sendMessage(messageService.getDepositSuccess( currencyName, BigDecimal.valueOf(finalMount)));
+                    //targetPlayer.sendMessage("§aHas recibido " + finalMount + " " + currencyName);
                 }
             }else{
                 switch (result.getErrorCode()){
@@ -83,7 +84,7 @@ public class DepositCommand implements CommandExecutor {
                         sender.sendMessage(F.getUnvalidAmount());
                         break;
                     case DATA_BASE_ERROR:
-                        sender.sendMessage("Error inesperado al realizar transacción");
+                        sender.sendMessage(messageService.getUnexpectedErrorMessage());
                         break;
                     default:
                         sender.sendMessage(messageService.getUnexpectedErrorMessage());

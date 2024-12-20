@@ -125,13 +125,43 @@ public class EditCurrencyUseCase {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
-            throw new TransactionException("Error creating currency");
+            throw new TransactionException("Error saving currency");
         }
 
     }
 
-    public void changeName(String actualName, String newName){
+    public void setSingularName(String actualName, String newName){
         //todo: cambiar nombre de la moneda, verificar si existe el actualname tanto plural como singualr, y actualizar el mismo campo plural o singular
+        Currency currency = currencyCache.getCurrency(actualName);
+
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+
+        currency.setSingular(newName);
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error saving currency");
+        }
+    }
+
+    public void setPluralName(String actualName, String newName){
+        Currency currency = currencyCache.getCurrency(actualName);
+
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+
+        currency.setPlural(newName);
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error saving currency");
+        }
+
     }
 
 }

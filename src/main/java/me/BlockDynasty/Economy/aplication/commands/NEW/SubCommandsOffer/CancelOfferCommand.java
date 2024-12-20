@@ -48,8 +48,8 @@ public class CancelOfferCommand implements CommandExecutor {
                     sender.sendMessage(F.getNotOffers());
                     break;
                 default:
-                    sender.sendMessage("§cError inesperado");
-                    playerFrom.sendMessage("§cError inesperado");
+                    sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                    playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
                     break;
             }
         }

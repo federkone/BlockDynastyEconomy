@@ -50,7 +50,7 @@ public class WithdrawUseCaseTest {
         repository.saveAccount(nullplague);
 
         currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache();
+        accountCache = new AccountCache(5);
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
 
@@ -58,8 +58,7 @@ public class WithdrawUseCaseTest {
 
 
         withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, repository,null,null);
-        System.out.println("default currency: " +getCurrencyUseCase.getDefaultCurrency().getValue().getSingular());
-        System.out.println("cantidad de monedas en cache: " +currencyCache.getCurrencies().size());
+
 
     }
 
@@ -111,7 +110,7 @@ public class WithdrawUseCaseTest {
         currencyCache.add(new Currency(UUID.randomUUID(),"oro","oro"));
         Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
         //assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode());
-        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //en el core agrega el balance inexistente a la cuenta con sus balances por defecto de la currency
     }
 
     @AfterEach

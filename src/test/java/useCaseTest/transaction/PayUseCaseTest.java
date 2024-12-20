@@ -61,7 +61,7 @@ public class PayUseCaseTest {
 
 
         currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache();
+        accountCache = new AccountCache(5);
 
         //accountManager.addAccountToCache(account1); //se conecto el player1
         //accountManager.addAccountToCache(account2); //se conecto el player2

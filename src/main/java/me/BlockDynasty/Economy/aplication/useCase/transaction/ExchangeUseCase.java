@@ -35,11 +35,7 @@ public class ExchangeUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public Result<Void> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        //Account account = getAccountsUseCase.getAccount(accountUuid);
-        //Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
-        //Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
-
+    public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
         Result<Account> accountResult = getAccountsUseCase.getAccount(accountUuid);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
@@ -60,11 +56,7 @@ public class ExchangeUseCase {
 
     }
 
-    public Result<Void> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        //Account account = getAccountsUseCase.getAccount(accountString);
-        //Currency currencyFrom = getCurrencyUseCase.getCurrency(currencyFromName);
-        //Currency currencyTo = getCurrencyUseCase.getCurrency(currencyToname);
-
+    public Result<BigDecimal> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
         Result<Account> accountResult = getAccountsUseCase.getAccount(accountString);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
@@ -83,18 +75,20 @@ public class ExchangeUseCase {
         return performExchange(accountResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
     }
 
-    //todo, probablemente me convenga reutilizar el caso de uso TradeCurrency, solo que se hace el trade con sigo mismo, por ej: account, account,currencyFrom,currencyTo,amountFrom,amountTo
-    private Result<Void> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+    private Result<BigDecimal> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
 
 
         //TODO:aca se puede calcular el ratio de impuesto a cobrar antes de preguntar si tiene suficiente fondos
 
-        //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-
         //account.withdraw(currencyFrom, amountFrom);
         //account.deposit(currencyTo, amountTo);
+        Result<BigDecimal> result;
+        if (amountFrom == null){
+            result =account.exchange(currencyFrom,currencyTo,amountTo);
+        }else{
+            result =account.exchange(currencyFrom,amountFrom,currencyTo,amountTo);
+        }
 
-        Result<Void> result =account.exchange(currencyFrom,amountFrom,currencyTo,amountTo);
         if(!result.isSuccess()){
             return result;
         }
@@ -102,12 +96,12 @@ public class ExchangeUseCase {
         try {
             dataStore.saveAccount(account);
             updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
-            economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
+            economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(result.getValue()) + " to " + currencyTo.format(amountTo));
         } catch (TransactionException e) {
             // Manejo de errores (puedes lanzar la excepción o manejarla de otra manera)
             //throw new TransactionException("Failed to perform exchange: " + e.getMessage(), e);
             return Result.failure("Failed to perform exchange: " , ErrorCode.DATA_BASE_ERROR);
         }
-        return Result.success(null);
+        return result;
     }
 }

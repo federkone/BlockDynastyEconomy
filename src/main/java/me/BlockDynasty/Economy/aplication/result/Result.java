@@ -19,6 +19,10 @@ public class Result<T> {
         return new Result<>(null, errorMessage, errorCode);
     }
 
+    public static <T> Result<T> failure(T value,String errorMessage, ErrorCode errorCode) {
+        return new Result<>(value, errorMessage, errorCode);
+    }
+
     public boolean isSuccess() {
         return errorMessage == null;
     }

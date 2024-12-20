@@ -1,7 +1,6 @@
 package me.BlockDynasty.Economy.domain.repository;
 
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.CachedTopListEntry;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;
@@ -140,13 +139,10 @@ public class RepositoryHibernate implements IRepository {
 
     }
 
-    @Override
-    public void getTopList(Currency currency, int offset, int amount, Callback<LinkedList<CachedTopListEntry>> callback) {
 
-    }
 
     @Override
-    public List<Account> getAccountsByCurrency(String currencyName, int limit, int offset) {
+    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
         return null;
     }
 

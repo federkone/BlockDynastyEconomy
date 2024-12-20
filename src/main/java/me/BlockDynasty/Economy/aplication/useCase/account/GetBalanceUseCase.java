@@ -3,14 +3,9 @@ package me.BlockDynasty.Economy.aplication.useCase.account;
 import me.BlockDynasty.Economy.aplication.result.ErrorCode;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class GetBalanceUseCase {
@@ -23,7 +18,6 @@ public class GetBalanceUseCase {
 
 
     public Result<List<Balance>> getBalances(String accountName) {
-        //Account account = getAccountsUseCase.getAccount(accountName);
         Result<Account> accountResult = getAccountsUseCase.getAccount(accountName);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
@@ -32,7 +26,6 @@ public class GetBalanceUseCase {
     }
 
     public Result<List<Balance>> getBalances(UUID accountUUID) {
-        //Account account = getAccountsUseCase.getAccount(accountUUID);
         Result<Account> accountResult = getAccountsUseCase.getAccount(accountUUID);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());

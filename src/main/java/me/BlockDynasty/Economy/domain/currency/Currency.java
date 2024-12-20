@@ -64,7 +64,7 @@ public class Currency {
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
-        this.exchangeRate = 0.0;
+        this.exchangeRate = 1; //1
         this.color = ChatColor.WHITE;
         this.decimalSupported = true;
         this.payable = true;
@@ -76,24 +76,22 @@ public class Currency {
 
     public Currency() {
         this.defaultBalance = BigDecimal.ZERO;
-        this.exchangeRate = 0.0;
+        this.exchangeRate = 1; //1
         this.color = ChatColor.WHITE;
         this.decimalSupported = true;
         this.payable = true;
         this.defaultCurrency = false;
     }
 
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid.toString();
+    }
     public void setSingular(String singular) {
         this.singular = singular;
     }
 
     public void setPlural(String plural) {
         this.plural = plural;
-    }
-
-    public void setDefaultBalance(BigDecimal defaultBalance) {
-
-        this.defaultBalance = defaultBalance;
     }
 
     public UUID getUuid() {
@@ -115,21 +113,23 @@ public class Currency {
 
     public String format(BigDecimal amount) {
         StringBuilder amt = new StringBuilder();
-        if (this.getSymbol() != null) {
-            amt.append(this.getSymbol());
-        }
         if (this.isDecimalSupported()) {
-            amount = amount.setScale(2, RoundingMode.HALF_UP); // Limitar a 2 decimales
+            amount = amount.setScale(2, RoundingMode.HALF_UP); // Limitar a 2 decimales para mostrar
             amt.append(NumberFormat.getInstance().format(amount));
         } else {
             String s = amount.setScale(0, RoundingMode.HALF_UP).toPlainString();
             amt.append(NumberFormat.getInstance().format(Double.parseDouble(s)));
         }
         amt.append(" ");
-        if (amount.compareTo(BigDecimal.ONE) != 0) {
-            amt.append(this.getPlural().replace("_", " "));
-        } else {
-            amt.append(this.getSingular().replace("_", " "));
+
+        if (this.getSymbol() != null) {
+            amt.append(this.getSymbol()); //si tiene simbolo usarlo
+        }else { //sino usar nombre
+            if (amount.compareTo(BigDecimal.ONE) != 0) {
+                amt.append(this.getPlural().replace("_", " ")); //si es mayor a 1 usar nombre plural
+            } else {
+                amt.append(this.getSingular().replace("_", " ")); //si es igual a 1 usar nombre singular
+            }
         }
         return amt.toString();
     }

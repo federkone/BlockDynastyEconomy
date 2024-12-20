@@ -32,6 +32,15 @@ public class Offer {
         this.tipoMonto = tipoMonto;
     }
 
+    public Offer(Offer offer) {
+        this.vendedor = offer.getVendedor();
+        this.comprador = offer.getComprador();
+        this.cantidad = offer.getCantidad();
+        this.tipoCantidad = offer.getTipoCantidad();
+        this.monto = offer.getMonto();
+        this.tipoMonto = offer.getTipoMonto();
+    }
+
     public void setVendedor(UUID vendedor) {
         this.vendedor=vendedor;
     }

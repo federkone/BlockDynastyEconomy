@@ -70,22 +70,21 @@ public class TransferFundsUseCase {
         return performTransfer(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
     }
 
-    private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currencyFrom, BigDecimal amount){
-        Result<Void> result = accountFrom.transfer(accountTo,currencyFrom,amount);
+    private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
+        Result<Void> result = accountFrom.transfer(accountTo,currency,amount);
         if(!result.isSuccess()){
             return result;
         }
 
         try {
             dataStore.transfer(accountFrom, accountTo);
-            if(updateForwarder != null && economyLogger != null) { //todo , lo puse para testear y ommitir esto
+            if(updateForwarder != null && economyLogger != null){ //todo , lo puse para testear y ommitir esto
                 updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
                 updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
                 economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " transferred " +
-                        currencyFrom.format(amount) + " to " + accountTo.getNickname());
+                        currency.format(amount) + " to " + accountTo.getNickname());
             }
         } catch (TransactionException e) {
-            //throw new TransactionException("Failed to perform transfer: " + e.getMessage(), e);
             return Result.failure("Failed to perform transfer: " , ErrorCode.DATA_BASE_ERROR);
         }
         return Result.success(null);

@@ -34,7 +34,7 @@ public class ExchangeCommandV2 implements CommandExecutor {
             return true;
         }
 
-        if (args.length < 4) {
+       /* if (args.length < 4) {
             F.getExchangeHelp(sender);
             return true;
         }
@@ -61,22 +61,50 @@ public class ExchangeCommandV2 implements CommandExecutor {
 
         double finalToExchangeAmount = toExchangeAmount;
         double finalToReceiveAmount = toReceiveAmount;
+        */
+        if (args.length < 3) {
+            F.getExchangeHelp(sender);
+            return true;
+        }
+        String player;
+        if (args.length > 3) {
+            player = args[3];
+        }else {
+            player =  sender.getName();
+        }
 
-        Player targetPlayer = Bukkit.getPlayer(player); //para informar al jugador que hace el exchange
+        double toReceiveAmount = 0;
+
+        try {
+            toReceiveAmount = Double.parseDouble(args[2]);
+        } catch (NumberFormatException ex) {
+            sender.sendMessage(F.getUnvalidAmount());
+            return true;
+        }
+
+        String toExchange = args[0];
+        String toReceive = args[1];
+
+        double finalToReceiveAmount = toReceiveAmount;
+        Player targetPlayer = Bukkit.getPlayer(player);
         SchedulerUtils.runAsync(() -> {
-            Result<Void> result =exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
+            //todo temp exchange without toExchange
+           // Result<Void> result =exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
+            Result<BigDecimal> result =exchange.execute(player, toExchange, toReceive, null,BigDecimal.valueOf( finalToReceiveAmount));
             if (result.isSuccess()){
                 if( targetPlayer != null){
-                    targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,BigDecimal.valueOf( finalToExchangeAmount), toReceive));
+                   // targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,BigDecimal.valueOf( finalToExchangeAmount), toReceive));
+                    targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,result.getValue(), toReceive));
                 }else{
-                    sender.sendMessage(messageService.getExchangeSuccess( toExchange, BigDecimal.valueOf(finalToExchangeAmount), toReceive));
+                    //sender.sendMessage(messageService.getExchangeSuccess( toExchange, BigDecimal.valueOf(finalToExchangeAmount), toReceive));
+                    sender.sendMessage(messageService.getExchangeSuccess( toExchange, result.getValue(), toReceive));
                 }
             }else {
                 switch (result.getErrorCode()){
-                    case ACCOUNT_CAN_NOT_RECEIVE -> sender.sendMessage("§cEl jugador no puede recibir la moneda");
+                    case ACCOUNT_CAN_NOT_RECEIVE -> sender.sendMessage(F.getCannotReceive());
                     case ACCOUNT_NOT_FOUND -> sender.sendMessage(messageService.getAccountNotFoundMessage());
                     case CURRENCY_NOT_FOUND ->  sender.sendMessage(F.getUnknownCurrency());
-                    case DECIMAL_NOT_SUPPORTED -> sender.sendMessage(F.getUnvalidAmount());
+                    case DECIMAL_NOT_SUPPORTED -> sender.sendMessage("Intercambio invalido"+" no se puede extraer "+result.getValue()+" "+toExchange+" intenta con otro monto en "+toReceive);
                     case INVALID_AMOUNT -> sender.sendMessage(F.getUnvalidAmount());
                     case INSUFFICIENT_FUNDS -> {
                         if( targetPlayer != null){
@@ -87,10 +115,10 @@ public class ExchangeCommandV2 implements CommandExecutor {
                         }
                     case DATA_BASE_ERROR -> {
                         if( targetPlayer != null){
-                            targetPlayer.sendMessage("§cError en el proceso de exchange");
+                            targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
                             //console log informate about the error or another log
                         }else {
-                            sender.sendMessage("§cError en el proceso de exchange");
+                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
                         }
                     }
                     default -> sender.sendMessage(messageService.getUnexpectedErrorMessage());

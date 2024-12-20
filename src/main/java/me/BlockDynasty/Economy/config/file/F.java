@@ -226,9 +226,36 @@ public class F {
     public static String getOfferCancel() {return get("Messages.cancel_offer");}
     public static String getOfferCancelTo() {return get("Messages.cancel_offer_to");}
     public static String getNotOffers() {return get("Messages.not_offers");}
+    public static String getAlreadyOffer() {return get("Messages.already_offer");}
     public static String getOfflinePlayer() { return get("Messages.offline"); }
     public static String getOfferExpired(String name){return get("Messages.offerExpired").replace("{player}",name);}
     public static String getOfferExpiredTo(String name){return get("Messages.offerExpiredTo").replace("{player}",name);}
+    public static String getOfferYourself() { return get("Messages.offer_yourself"); }
+    public static boolean getEnableDistanceLimitOffer(){
+        return cfg.getBoolean("enableDistanceLimitOffer");
+    }
+
+    public static double getDistanceLimitOffer(){
+        return cfg.getDouble("maxDistanceOffer");
+    }
+
+    public static String getTooFar(double limit) {
+        return getPrefix() + colorize(cfg.getString("Messages.too_far")).replace("{limit}", String.valueOf(limit));
+    }
+
+    public static String getBuyCommandUsage() {
+        return  getPrefix() + colorize(cfg.getString("Messages.usage.buy_usage"));
+    }
+
+
+
+    public static String getBuyCommandSuccess() {
+        return  getPrefix() + colorize(cfg.getString("Messages.buy_success"));
+    }
+
+    public static String getBuyCommandOffline() {
+        return getPrefix() + colorize(cfg.getString("Messages.buy_no_player"));
+    }
 
     public static void sendCurrencyUsage(CommandSender sender){
         for(String s : getList("Messages.help.currency_command")){
@@ -238,6 +265,18 @@ public class F {
 
     public static String getExchangeSuccess(){
         return getPrefix() + colorize(cfg.getString("Messages.exchange_success"));
+    }
+
+    public static String getWithdrawSuccess(){
+        return getPrefix() + colorize(cfg.getString("Messages.withdraw_success"));
+    }
+
+    public static String getDepositSuccess(){
+        return getPrefix() + colorize(cfg.getString("Messages.deposit_success"));
+    }
+
+    public static String getSetSuccess(){
+        return getPrefix() + colorize(cfg.getString("Messages.setbalance_success"));
     }
 
     public static String getExchangeSuccessCustom(){
@@ -259,4 +298,6 @@ public class F {
     public static String getExchangeNoPermPreset(){
         return getPrefix() + colorize(cfg.getString("Messages.exchange_command.no_perms.preset"));
     }
+//-----------------------
+
 }

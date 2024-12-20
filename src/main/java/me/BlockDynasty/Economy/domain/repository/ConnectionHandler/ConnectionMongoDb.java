@@ -1,8 +1,25 @@
 package me.BlockDynasty.Economy.domain.repository.ConnectionHandler;
 
-public class ConnectionMongoDb {
+/*import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;*/
 
-    public ConnectionMongoDb(String url) {
+public class ConnectionMongoDb {
+ /*   private MongoClient mongoClient;
+    private MongoDatabase database;
+
+    public ConnectionMongoDb(String uri,String dbName) {
+        this.mongoClient = MongoClients.create(uri);
+        this.database = mongoClient.getDatabase(dbName);
         //create connection
     }
+    public MongoDatabase getDatabase() {
+        return this.database;
+    }
+
+    public void close() {
+        if (mongoClient != null) {
+            mongoClient.close();
+        }
+    }*/
 }

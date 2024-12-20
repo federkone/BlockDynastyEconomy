@@ -34,8 +34,11 @@ public class Configuration {
                 + "\n"
                 + "Developer(s): " + plugin.getDescription().getAuthors()
                 + "\n\n"
-                + "You have three valid storage methods, yaml, mysql or sqlite. If you choose mysql you would have to enter the database credentials down below."
+                + "You have three valid storage methods, json,mongodb, mysql or sqlite/h2. If you choose mysql or mongodb you would have to enter the database credentials down below."
                 + "\n"
+                + "enableDistanceLimitOffer true,maxDistanceOffer is the maximum distance in blocks that a player can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc."
+                + "\n"
+                + "expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire. example: 5 minutes, 10 minutes, etc."
                 );
 
         String path = "Messages.";
@@ -56,7 +59,9 @@ public class Configuration {
         config.addDefault("mongoUri", "mongodb://localhost:27017");
       //  config.addDefault("sqlite.file", "database.sqlite");
 
-        config.addDefault("maxDistanceTrade", 5.0);
+        config.addDefault("enableDistanceLimitOffer", true);
+        config.addDefault("maxDistanceOffer", 5.0);
+        config.addDefault("expireCacheTopMinutes",5);
         config.addDefault("cheque.material", Material.PAPER.toString());
         config.addDefault("cheque.name", "&aBank Note");
         config.addDefault("cheque.lore", Arrays.asList("&7Worth: {value}.", "&7&oWritten by {player}"));
@@ -98,7 +103,7 @@ public class Configuration {
         config.addDefault(path + "balance.list", "&a&l>> {currencycolor}{format}");
         config.addDefault(path + "balance.none", "&7No balances to show for &c{player}&7.");
 
-        config.addDefault(path + "balance_top.balance", "&a&l-> {number}. {currencycolor}{player} &7- {currencycolor}{balance}");
+        config.addDefault(path + "balance_top.balance", "&a&l-> {number}. &b{player} &7- {currencycolor}{balance}");
         config.addDefault(path + "balance_top.header", "&f----- {currencycolor} Top Balances for {currencyplural} &7(Page {page})&f -----");
         config.addDefault(path + "balance_top.empty", "&7No accounts to display.");
         config.addDefault(path + "balance_top.next", "{currencycolor}/gbaltop {currencyplural} {page} &7for more.");
@@ -107,6 +112,10 @@ public class Configuration {
         config.addDefault(path + "cheque.success", "&7Cheque successfully written.");
         config.addDefault(path + "cheque.redeemed", "&7Cheque has been cashed in.");
         config.addDefault(path + "cheque.invalid", "&7This is not a valid cheque.");
+
+        config.addDefault(path+"withdraw_success","&7Se ha retirado {amount} &7de tu cuenta.");
+        config.addDefault(path+"deposit_success","&7Se ha depositado {amount} &7en tu cuenta.");
+        config.addDefault(path+"setbalance_success","&7Se ha establecido tu balance a {amount}.");
 
         config.addDefault(path + "help.eco_command", Arrays.asList(
                 "{prefix}&e&lEconomy Help",
@@ -162,10 +171,13 @@ public class Configuration {
         config.addDefault(path + "usage.currency_startbal", "&2&l>> &a/currency startbal <plural> <amount> &8- &7Set the starting balance for a currency.");
         config.addDefault(path + "usage.currency_setrate", "&2&l>> &a/currency setrate <plural> <amount> &8- &7Sets the currency's exchange rate.");
 
+
         //--------------------------new--Offer-----------------------------------------------------
-        config.addDefault(path+"too_far","&cEl jugador objetivo está demasiado lejos. Deben estar dentro de 5 bloques de distancia." );
+        config.addDefault(path+"too_far","&cEl jugador objetivo está demasiado lejos. Deben estar dentro de {limit} bloques de distancia." );
+        config.addDefault(path+"offer_yourself","&cNo puedes ofrecerte a ti mismo." );
         config.addDefault(path+"offline","&cEl jugador que te hizo la oferta ya no está en línea.");
         config.addDefault(path+"not_offers","&cNo tienes ofertas pendientes.");
+        config.addDefault(path+"already_offer","&cYa tienes una oferta pendiente para este jugador.");
         config.addDefault(path+"only_players","&2&l>> &cSolo los jugadores pueden hacer esto.");
         config.addDefault(path+"usage.offer","&2&l>> &aUso: /offer <create/accept/deny/cancel>");
         config.addDefault(path+"usage.offer_create","&2&l>> &aUso: /offer create <cantidad> <tipoMoneda> <monto> <tipoMoneda> <Ajugador>");
@@ -174,7 +186,7 @@ public class Configuration {
         config.addDefault(path+"usage.offer_cancel","&2&l>> &aUso: /offer cancel <Ajugador>");
 
         config.addDefault(path + "send_offer", "&7Has ofrecido{currencycolorOffert} {amountOffert} &7por{currencycolorValue} {amountValue} &7a &a{player}&7.");
-        config.addDefault(path + "receive_offer", "&7Has recibido una oferta de{currencycolorOffert} {amountOffert} &7por{currencycolorValue} {amountValue} &7del jugador &a{player}&7.");
+        config.addDefault(path + "receive_offer", "&7Has recibido una oferta de{currencycolorOffert} {amountOffert} &7por{currencycolorValue} {amountValue} &7del jugador &a{player}&7. Usa /offer accept {player}, o /offer accept {player}."); //todo aqui
         config.addDefault(path + "accept_offer_to", "&7Has aceptado la oferta de &a{player}&7.");
         config.addDefault(path + "accept_offer", "&7Tu oferta para &a{player}&7 ha sido aceptada.");
         config.addDefault(path+ "cancel_offer_to","&7Has cancelado la oferta para &a{player}&7."); //cancelado
@@ -186,7 +198,13 @@ public class Configuration {
         config.addDefault(path+"offerExpired","&7Tu oferta a &a{player}&7 ha expirado."); //expirado
 
 
-       //------------------------------------------------------------------------------------------
+       //-----------------------------------buy command-------------------------------------------------------
+
+        config.addDefault(path+"buy_success","&7Compra realizada con exito!");
+        config.addDefault(path+"buy_no_perms","&7No tienes permiso para ejecutar el comando de compra.");
+        config.addDefault(path+"buy_usage","&2&l>> &aUso: /eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar>");
+        config.addDefault(path+"buy_no_player","&cEl jugador no está en línea.");
+
 
         config.options().copyDefaults(true);
         plugin.saveConfig();

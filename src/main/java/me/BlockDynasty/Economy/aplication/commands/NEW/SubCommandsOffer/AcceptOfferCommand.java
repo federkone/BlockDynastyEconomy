@@ -4,6 +4,7 @@ import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.config.file.F;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.domain.Offers.Exceptions.OffertNotFoundException;
+import me.BlockDynasty.Economy.domain.Offers.Offer;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import org.bukkit.Bukkit;
@@ -38,6 +39,14 @@ public class AcceptOfferCommand  implements CommandExecutor {
             return false;
         }
 
+        if(F.getEnableDistanceLimitOffer()){
+            double distance =F.getDistanceLimitOffer();
+            if(player.getLocation().distance(playerFrom.getLocation())>distance){
+                sender.sendMessage(F.getTooFar(distance));
+                return false;
+            }
+        }
+
         Result<Void> result = acceptOfferUseCase.execute(player.getUniqueId(),playerFrom.getUniqueId());  //playerFrom.getUniqueId() //aca podemos mandar el id del player al que quiere aceptarle la oferta
         if(result.isSuccess()){
             //player.sendMessage("Tu oferta para "+playerFrom.getName()+" ha sido aceptada");
@@ -50,16 +59,16 @@ public class AcceptOfferCommand  implements CommandExecutor {
                     sender.sendMessage(F.getNotOffers());
                     break;
                 case INSUFFICIENT_FUNDS:
-                    sender.sendMessage("No tienes suficiente dinero para aceptar la oferta");
-                    playerFrom.sendMessage("§cEl jugador no tiene suficiente dinero para aceptar la oferta");
+                    sender.sendMessage("El jugador no tiene suficiente dinero para  la oferta");
+                    playerFrom.sendMessage("No tienes suficientes fondos para esta oferta");
                     break;
                 case DATA_BASE_ERROR:
-                    sender.sendMessage("§cError al intentar la transaccion");
-                    playerFrom.sendMessage("§cError al intentar la transaccion");
+                    sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                    playerFrom.sendMessage(F.getOfferCancel());
                     break;
                 default:
-                    sender.sendMessage("§cError inesperado");
-                    playerFrom.sendMessage("§cError inesperado");
+                    sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                    playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
                     break;
             }
         }

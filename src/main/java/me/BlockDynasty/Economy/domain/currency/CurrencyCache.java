@@ -16,6 +16,14 @@ public class CurrencyCache {
     public CurrencyCache(IRepository repository) {
         this.currencies = new ArrayList<>();
         this.currencies = repository.loadCurrencies(Criteria.create());
+
+        if(currencies.isEmpty()){
+            Currency defaultCurrency = new Currency(UUID.randomUUID(), "Default", "Default");
+            defaultCurrency.setDefaultCurrency(true);
+            repository.saveCurrency(defaultCurrency);
+            currencies.add(defaultCurrency);
+        }
+
         updateDefaultCurrency();
 
     }
