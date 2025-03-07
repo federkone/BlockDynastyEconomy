@@ -14,8 +14,8 @@ import org.hibernate.query.Query;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RepositoryHibernate implements IRepository {
-    private SessionFactory sessionFactory;
+public class RepositoryHibernate  {
+    /*private SessionFactory sessionFactory;
 
     public RepositoryHibernate(ConnectionHibernate connectionHibernate) {
         this.sessionFactory = connectionHibernate.getSession();
@@ -164,5 +164,5 @@ public class RepositoryHibernate implements IRepository {
     @Override
     public void clearAll() {
 
-    }
+    }*/
 }

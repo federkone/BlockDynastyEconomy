@@ -3,6 +3,9 @@ package me.BlockDynasty.Economy.domain.repository.ConnectionHandler;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.repository.Models.Hibernate.AccountMapper;
+import me.BlockDynasty.Economy.domain.repository.Models.Hibernate.BalanceMapper;
+import me.BlockDynasty.Economy.domain.repository.Models.Hibernate.CurrencyMapper;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 //todo, podemos configurar hibernate desde aqui, como cache, etc etc
@@ -18,14 +21,14 @@ public class ConnectionHibernate {
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
         configuration.setProperty("hibernate.connection.autocommit", "true");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
-        configuration.setProperty("hibernate.show_sql", "true"); //todo: setup for debug
-        configuration.setProperty("hibernate.format_sql", "true");  //todo: setup for debug
-        configuration.setProperty("hibernate.use_sql_comments", "true");//todo: setup for debug
+        configuration.setProperty("hibernate.show_sql", "false"); //todo: setup for debug
+        configuration.setProperty("hibernate.format_sql", "false");  //todo: setup for debug
+        configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
 
         // Añadir mapeos manualmente
-        configuration.addAnnotatedClass(Currency.class);
-        configuration.addAnnotatedClass(Account.class);
-        configuration.addAnnotatedClass(Balance.class);
+        configuration.addAnnotatedClass(CurrencyMapper.class);
+        configuration.addAnnotatedClass(AccountMapper.class);
+        configuration.addAnnotatedClass(BalanceMapper.class);
 
         try {
             sessionFactory = configuration.buildSessionFactory();

@@ -1,49 +1,33 @@
 package me.BlockDynasty.Economy.domain.account;
 
-
-import jakarta.persistence.*;
 import me.BlockDynasty.Economy.aplication.result.Result;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.aplication.result.ErrorCode;
 
-import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-
-@Entity
-@Table(name = "accounts")
 public class Account {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private int id;
-
-    @Id
-    @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-   //@Convert(converter = UUIDConverter.class)
     private String uuid;
-
-    @Column(name = "nickname")
     private String nickname;
-
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
     private List<Balance> balances;
-
-    @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency = true;
 
-
-    public Account(){
-
+    public Account() {
     }
     public Account(UUID uuid, String nickname) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
         this.balances = new ArrayList<>();
+    }
+
+    public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
+        this.uuid = uuid.toString();
+        this.nickname = nickname;
+        this.balances = balanceList;
+        this.canReceiveCurrency = canReceiveCurrency;
     }
 
     public Result<Void> deposit(Currency currency, BigDecimal amount) {
@@ -237,6 +221,13 @@ public class Account {
     public void createBalance(Currency currency, BigDecimal amount) {
         Balance balance = new Balance(currency, amount);
         balances.add(balance);
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid.toString();
+    }
+    public void setNickname(String nickname) {
+         this.nickname = nickname;
     }
 
     public String getNickname() {

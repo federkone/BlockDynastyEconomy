@@ -2,7 +2,6 @@ package repositoryTest;
 
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.repository.Callback;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;

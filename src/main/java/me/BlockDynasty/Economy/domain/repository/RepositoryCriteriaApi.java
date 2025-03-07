@@ -3,9 +3,12 @@ package me.BlockDynasty.Economy.domain.repository;
 import jakarta.persistence.criteria.*;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyException;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;
 import me.BlockDynasty.Economy.domain.repository.ConnectionHandler.ConnectionHibernate;
+import me.BlockDynasty.Economy.domain.repository.Models.Hibernate.AccountMapper;
+import me.BlockDynasty.Economy.domain.repository.Models.Hibernate.CurrencyMapper;
 import org.hibernate.*;
 import org.hibernate.query.Query;
 
@@ -21,7 +24,6 @@ public class RepositoryCriteriaApi implements IRepository
     private boolean topSupported = true;
 
     public RepositoryCriteriaApi(ConnectionHibernate connectionHibernate) {
-
         this.sessionFactory = connectionHibernate.getSession();
     }
     @Override
@@ -30,49 +32,57 @@ public class RepositoryCriteriaApi implements IRepository
 
     @Override
     public List<Currency> loadCurrencies(Criteria criteria) {
-        return createQueryWithOr(Currency.class,criteria);
+        List<CurrencyMapper> currencies= createQueryWithOr(CurrencyMapper.class,criteria);
+        return currencies.stream().map(CurrencyMapper::toEntity).toList();
     }
 
     @Override
     public void saveCurrency(Currency currency) {
-        executeInsideTransaction(session -> session.merge(currency));
+        CurrencyMapper currencyMapper = new CurrencyMapper(currency);
+        executeInsideTransaction(session -> session.merge(currencyMapper));
     }
 
     @Override
     public void deleteCurrency(Currency currency) {
+        CurrencyMapper currencyMapper = new CurrencyMapper(currency);
         executeInsideTransaction(session -> {
             // Eliminar los balances asociados primero
             Query deleteQuery = session.createQuery(
-                    "DELETE FROM Balance WHERE currency = :currency"
+                    "DELETE FROM BalanceMapper WHERE currencyMapper = :currencyMapper"
             );
-            deleteQuery.setParameter("currency", currency);
+            deleteQuery.setParameter("currency", currencyMapper);
             deleteQuery.executeUpdate();
 
             // Luego eliminar la moneda
-            session.remove(currency);
+            session.remove(currencyMapper);
         });
     }
 
     @Override
     public List<Account> loadAccounts(Criteria criteria)throws TransactionException {
-        return createQuery(Account.class,criteria);
+        List<AccountMapper> accounts = createQueryWithOr(AccountMapper.class,criteria);
+        return accounts.stream().map(AccountMapper::toEntity).toList();
     }
 
     @Override
     public void createAccount(Account account)throws TransactionException {
-        executeInsideTransaction(session -> session.persist(account));
+        AccountMapper accountMapper = new AccountMapper(account);
+        executeInsideTransaction(session -> session.persist(accountMapper));
     }
 
     @Override
     public void saveAccount(Account account) throws TransactionException{
-        executeInsideTransaction(session -> session.merge(account));
+        AccountMapper accountMapper = new AccountMapper(account);
+        executeInsideTransaction(session -> session.merge(accountMapper));
     }
 
     @Override
     public void transfer(Account userFrom, Account userTo)throws TransactionException {
+        AccountMapper userFromMapper = new AccountMapper(userFrom);
+        AccountMapper userToMapper = new AccountMapper(userTo);
         executeInsideTransaction(session -> {
-            session.merge(userFrom);
-            session.merge(userTo);
+            session.merge(userFromMapper);
+            session.merge(userToMapper);
         });
     }
 
@@ -227,17 +237,18 @@ public class RepositoryCriteriaApi implements IRepository
     public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
             // HQL con fetch join para evitar el problema N+1
-            String hql = "SELECT DISTINCT a FROM Account a " +
+            String hql = "SELECT DISTINCT a FROM AccountMapper a " +
                     "JOIN FETCH a.balances b " +
-                    "JOIN FETCH b.currency c " +
+                    "JOIN FETCH b.currencyMapper c " +
                     "WHERE c.singular = :currencyName OR c.plural = :currencyName " +
                     "ORDER BY b.amount DESC";
 
-            return session.createQuery(hql, Account.class)
+            List<AccountMapper> accounts = session.createQuery(hql, AccountMapper.class)
                     .setParameter("currencyName", currencyName) // Vincula el nombre de la moneda al parámetro
                     .setFirstResult(offset) // Establece el desplazamiento
                     .setMaxResults(limit) // Establece el límite
                     .getResultList(); // Ejecuta la consulta y devuelve la lista de resultados
+            return accounts.stream().map(AccountMapper::toEntity).toList(); //traduzco la lista de AccountMapper a Account
         } catch (Exception e) {
             throw new TransactionException("Error retrieving accounts by currency", e);
         }
@@ -249,13 +260,13 @@ public class RepositoryCriteriaApi implements IRepository
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            session.createQuery("DELETE FROM Balance").executeUpdate();
+            session.createQuery("DELETE FROM BalanceMapper").executeUpdate();
 
             // Eliminar todas las entidades de la tabla Account
-            session.createQuery("DELETE FROM Account").executeUpdate();
+            session.createQuery("DELETE FROM AccountMapper").executeUpdate();
 
             // Eliminar todas las entidades de la tabla Currency
-            session.createQuery("DELETE FROM Currency").executeUpdate();
+            session.createQuery("DELETE FROM CurrencyMapper").executeUpdate();
 
             // Añadir más tablas si es necesario
             // session.createQuery("DELETE FROM OtraTabla").executeUpdate();
