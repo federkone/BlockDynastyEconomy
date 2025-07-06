@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
@@ -12,13 +12,13 @@ public class ToggleFeaturesUseCase {
         private final IRepository dataStore;
         private final UpdateForwarder updateForwarder;
 
-        public ToggleFeaturesUseCase(CurrencyCache currencyCache, IRepository dataStore, UpdateForwarder updateForwarder){
+     public ToggleFeaturesUseCase(CurrencyCache currencyCache, IRepository dataStore, UpdateForwarder updateForwarder){
             this.currencyCache = currencyCache;
             this.dataStore = dataStore;
             this.updateForwarder = updateForwarder;
-        }
+     }
 
-        public void togglePayable(String currencyName){
+    public void togglePayable(String currencyName){
         Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");

@@ -1,10 +1,3 @@
-/*
- * Copyright Xanium Development (c) 2013-2018. All Rights Reserved.
- * Any code contained within this document, and any associated APIs with similar branding
- * are the sole property of Xanium Development. Distribution, reproduction, taking snippets or claiming
- * any contents as your own will break the terms of the license, and void any agreements with you, the third party.
- * Thank you.
- */
 
 package me.BlockDynasty.Economy.config.file;
 
@@ -20,9 +13,7 @@ public class F {
     private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance(); //TODO: REVISAR LA NECEISTAD DE TENER UNA REFERENCIA
     private static FileConfiguration cfg = plugin.getConfig();
 
-    public F(BlockDynastyEconomy plugin){
-        F.plugin = plugin;
-        cfg=plugin.getConfig();
+    public F(){
     }
 
     private static String get(String path){

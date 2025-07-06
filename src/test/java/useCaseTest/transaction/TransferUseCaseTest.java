@@ -18,6 +18,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
+import useCaseTest.transaction.MoksStubs.LoggerTest;
+import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -65,7 +67,7 @@ public class TransferUseCaseTest {
 
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
-        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,null,null);
+        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new UpdateForwarderTest(),new LoggerTest());
     }
 
     @Test

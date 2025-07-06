@@ -1,10 +1,3 @@
-/*
- * Copyright Xanium Development (c) 2013-2018. All Rights Reserved.
- * Any code contained within this document, and any associated APIs with similar branding
- * are the sole property of Xanium Development. Distribution, reproduction, taking snippets or claiming
- * any contents as your own will break the terms of the license, and void any agreements with you, the third party.
- * Thank you.
- */
 
 package me.BlockDynasty.Economy.utils;
 
@@ -19,7 +12,7 @@ import java.net.URLConnection;
 
 public class Updater {
 
-    private int project = 19655;
+    private int project = 0;
     private URL checkURL;
     private String newVersion;
     private String currentVersion;

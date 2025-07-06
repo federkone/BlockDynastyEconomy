@@ -3,12 +3,15 @@ package me.BlockDynasty.Economy.domain.repository;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.domain.result.Result;
+import me.BlockDynasty.Economy.domain.result.TransferResult;
 
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
-public interface IRepository {
-
+//todo: evaluar hacer solo operaciones CRUD
+public interface IRepository extends ITransactions {
     void loadCurrencies(); //todas las monedas all()
     List<Currency> loadCurrencies(Criteria criteria);
     void saveCurrency(Currency currency); //hace de update tambien
@@ -19,7 +22,6 @@ public interface IRepository {
     void createAccount(Account account);
     void saveAccount(Account account);
     //void deleteAccount(Account account);
-    public void transfer(Account userFrom, Account userTo);
 
     List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset);
 

@@ -1,7 +1,7 @@
 package useCaseTest.account;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
@@ -10,22 +10,17 @@ import me.BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import me.BlockDynasty.Economy.config.file.MessageService;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.ConnectionHandler.ConnectionHibernate;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
-import me.BlockDynasty.Economy.domain.repository.RepositoryCriteriaApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
-import me.BlockDynasty.Economy.config.file.F;
 
 
 import java.math.BigDecimal;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,16 +84,16 @@ public class GetAccountsUseCaseTest {
         Account luca = new Account(UUID.randomUUID(),"luca");
         Account pri = new Account(UUID.randomUUID(),"pri");
         Account facu = new Account(UUID.randomUUID(),"facu");
-        robert.deposit(defaultCurrency,BigDecimal.valueOf(1000));
-        nullplague.deposit(defaultCurrency,BigDecimal.valueOf(2000));
-        Cris.deposit(defaultCurrency,BigDecimal.valueOf(3000));
-        Javi.deposit(defaultCurrency,BigDecimal.valueOf(4000));
-        fedrakon.deposit(defaultCurrency,BigDecimal.valueOf(5000));
-        xabier.deposit(defaultCurrency,BigDecimal.valueOf(6000));
-        jose.deposit(defaultCurrency,BigDecimal.valueOf(7000));
-        luca.deposit(defaultCurrency,BigDecimal.valueOf(8000));
-        pri.deposit(defaultCurrency,BigDecimal.valueOf(9000));
-        facu.deposit(defaultCurrency,BigDecimal.valueOf(10000));
+        robert.setBalance(defaultCurrency,BigDecimal.valueOf(1000));
+        nullplague.setBalance(defaultCurrency,BigDecimal.valueOf(2000));
+        Cris.setBalance(defaultCurrency,BigDecimal.valueOf(3000));
+        Javi.setBalance(defaultCurrency,BigDecimal.valueOf(4000));
+        fedrakon.setBalance(defaultCurrency,BigDecimal.valueOf(5000));
+        xabier.setBalance(defaultCurrency,BigDecimal.valueOf(6000));
+        jose.setBalance(defaultCurrency,BigDecimal.valueOf(7000));
+        luca.setBalance(defaultCurrency,BigDecimal.valueOf(8000));
+        pri.setBalance(defaultCurrency,BigDecimal.valueOf(9000));
+        facu.setBalance(defaultCurrency,BigDecimal.valueOf(10000));
         repository.saveAccount(robert);
         repository.saveAccount(nullplague);
         repository.saveAccount(Cris);

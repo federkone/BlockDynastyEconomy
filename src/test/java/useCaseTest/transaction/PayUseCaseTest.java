@@ -2,8 +2,8 @@ package useCaseTest.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
@@ -22,6 +22,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
+import useCaseTest.transaction.MoksStubs.LoggerTest;
+import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -63,12 +65,12 @@ public class PayUseCaseTest {
         currencyCache = new CurrencyCache(repository);
         accountCache = new AccountCache(5);
 
-        //accountManager.addAccountToCache(account1); //se conecto el player1
-        //accountManager.addAccountToCache(account2); //se conecto el player2
+        accountCache.addAccountToCache(nullplague); //se conecto el player1
+        accountCache.addAccountToCache(cris); //se conecto el player2
 
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
-        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,null,null);
+        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new UpdateForwarderTest(),new LoggerTest());
     }
 
     @Test
@@ -141,10 +143,7 @@ public class PayUseCaseTest {
 
         assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
         assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getBalance());
-
-
     }
-
 
 
     @AfterEach

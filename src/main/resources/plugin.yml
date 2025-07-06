@@ -7,7 +7,7 @@ load: STARTUP
 api-version: 1.15
 loadbefore:
   - ItemFrameShops
-softdepend: [Vault, NBTAPI]
+softdepend: [Vault, PlaceholderAPI]
 commands:
   balance:
     description: Shows your balances
@@ -16,28 +16,22 @@ commands:
   baltop:
     description: Shows the top balances of the server
     usage: /baltop (currency) (cant)
-    aliases: [gmoneytop, gecotop, gtop, gbaltop]
-  currency:
-    description: Manage the currencies.
-    usage: /currency
-    aliases: [currencies]
+    aliases: [top, balancetop, moneytop]
   economy:
     description: Give, set or take currency.
-    #usage: /eco <set|take|give> <account> <amount> (currency)
     aliases: [eco, blockdynastyeconomy]
   pay:
     description: Pays another account
     usage: /pay <account> <amount> (currency)
     aliases: [pagar]
-  cheque:
-    usage: /cheque
-    description: Write or Redeem a cheque.
-    aliases: [note, banknote]
   exchange:
     usage: /exchange
     description: Exchange currencies.
     aliases: [intercambiar]
   offer:
-    #usage: /offer
     description: Offer currency to another player.
     aliases: [ofertar,ofrecer]
+  balancegui:
+    description: Opens the balance GUI.
+    usage: /balancegui
+    aliases: [balgui, moneygui]

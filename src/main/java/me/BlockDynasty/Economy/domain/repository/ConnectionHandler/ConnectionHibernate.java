@@ -26,10 +26,13 @@ public class ConnectionHibernate {
         configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
 
         // Añadir mapeos manualmente
-        configuration.addAnnotatedClass(CurrencyMapper.class);
+        /*configuration.addAnnotatedClass(CurrencyMapper.class);
         configuration.addAnnotatedClass(AccountMapper.class);
-        configuration.addAnnotatedClass(BalanceMapper.class);
+        configuration.addAnnotatedClass(BalanceMapper.class);*/
 
+        configuration.addAnnotatedClass(Currency.class);
+        configuration.addAnnotatedClass(Account.class);
+        configuration.addAnnotatedClass(Balance.class);
         try {
             sessionFactory = configuration.buildSessionFactory();
             //sessionFactory = new Configuration().configure().buildSessionFactory(); //bildea la sesion con los parametros del archivo hibernate.cfg.xml

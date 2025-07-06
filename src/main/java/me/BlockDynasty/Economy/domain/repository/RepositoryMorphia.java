@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RepositoryMorphia implements IRepository{
+/*public class RepositoryMorphia implements IRepository{
     private static Datastore datastore;
 
     public RepositoryMorphia(ConnectionMorphia connectionMorphia) {
@@ -140,4 +140,4 @@ public class RepositoryMorphia implements IRepository{
     public void clearAll() {
 
     }
-}
+}*/

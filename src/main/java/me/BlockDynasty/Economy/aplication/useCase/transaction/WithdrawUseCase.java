@@ -1,12 +1,12 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
@@ -22,8 +22,7 @@ public class WithdrawUseCase {
     private final AbstractLogger logger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public WithdrawUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                           UpdateForwarder updateForwarder, AbstractLogger logger){
+    public WithdrawUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, UpdateForwarder updateForwarder, AbstractLogger logger){
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
@@ -36,12 +35,7 @@ public class WithdrawUseCase {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
-
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
+        return execute(accountResult.getValue(), currencyName, amount);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
@@ -49,32 +43,50 @@ public class WithdrawUseCase {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
+        return execute(accountResult.getValue(), currencyName, amount);
+    }
 
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+    public Result<Void> execute(UUID targetUUID, BigDecimal amount) {
+        return execute(targetUUID, null, amount);
+    }
+
+    public Result<Void> execute(String targetName, BigDecimal amount) {
+        return execute(targetName, null, amount);
+    }
+
+    private Result<Currency> getCurrency(String currencyName) {
+        if (currencyName == null) {
+            return getCurrencyUseCase.getDefaultCurrency();
+        }
+        return getCurrencyUseCase.getCurrency(currencyName);
+    }
+
+    private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
+        Result<Currency> currencyResult = getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
-
-        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performWithdraw(account, currencyResult.getValue(), amount);
     }
 
     private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {
-        Result<Void> result = account.withdraw(currency, amount); //todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-        if(!result.isSuccess()){
-            return result;
+        if(amount.doubleValue() <= 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
+        }
+        if(!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        try {
-            dataStore.saveAccount(account);
-            if(updateForwarder != null && logger != null) { //todo , lo puse para testear y ommitir esto
-                updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-                logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
-            }
-        } catch (TransactionException e) {
-            //throw new TransactionException("Error saving account",e);
-            return Result.failure("Error saving account", ErrorCode.DATA_BASE_ERROR);
+        Result<Account> result = dataStore.withdraw(account.getUuid().toString(), currency, amount);
+        if(!result.isSuccess()){
+            logger.log("[WITHDRAW Failure] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular()+ " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
+            return Result.failure( result.getErrorMessage(), result.getErrorCode());
         }
+
+        getAccountsUseCase.updateAccountCache(result.getValue());
+        updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
+
     return Result.success(null);
     }
-
 }

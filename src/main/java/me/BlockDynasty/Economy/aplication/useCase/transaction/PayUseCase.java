@@ -1,12 +1,13 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Economy.domain.result.TransferResult;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
@@ -68,27 +69,44 @@ public class PayUseCase {
         return performPay(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
     }
 
+
     private Result<Void> performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         if(!currency.isPayable()){
             return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }
 
-        Result<Void> result = accountFrom.transfer(accountTo,currency,amount);
-        if(!result.isSuccess()){
-            return result;
+        //se realizo un cambio de paradigma:
+        //se validan opciones estaticas de cache, como monedas y cuentas.
+        //y luego se realiza la transaccion, la cual valida de manera atomica, INSUFFICENT:FOUNDS,DATABASE_ERROR.
+        //de esta manera tengo un control de errores hibrido, donde dejo de tener en cuenta la caché para hacer la transaccion
+
+        if(amount.doubleValue() <= 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
+        }
+        if(!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        try {
-            dataStore.transfer(accountFrom, accountTo);
-            if(updateForwarder != null && economyLogger != null){ //todo , lo puse para testear y ommitir esto
-                updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-                updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
-                economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " transferred " +
-                        currency.format(amount) + " to " + accountTo.getNickname());
-            }
-        } catch (TransactionException e) {
-            return Result.failure("Failed to perform transfer: " , ErrorCode.DATA_BASE_ERROR);
+        if (!accountTo.canReceiveCurrency()) {
+            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
+
+        Result<TransferResult> result = dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
+        if(!result.isSuccess()){
+            economyLogger.log("[Pay failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
+
+        //actualizar cache con las cuentas contenidas en result
+        getAccountsUseCase.updateAccountCache(result.getValue().getTo());
+        getAccountsUseCase.updateAccountCache(result.getValue().getFrom());
+
+        //.................
+        updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
+        updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        economyLogger.log("[Pay] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
+        //................
+
         return Result.success(null);
     }
 }

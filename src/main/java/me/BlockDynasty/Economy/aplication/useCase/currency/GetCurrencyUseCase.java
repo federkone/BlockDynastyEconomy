@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
@@ -46,10 +46,7 @@ public class GetCurrencyUseCase {
 
     }
 
-
     public List<Currency> getCurrencies(){
         return currencyCache.getCurrencies();
     }
-
-
 }

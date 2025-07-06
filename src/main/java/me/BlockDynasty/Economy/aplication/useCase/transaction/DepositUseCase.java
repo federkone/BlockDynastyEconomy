@@ -1,12 +1,12 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
@@ -28,66 +28,70 @@ public class DepositUseCase {
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
-
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        //Account account = getAccountsUseCase.getAccount(targetUUID);
-        //Currency currency = getCurrencyUseCase.getCurrency(currencyName);
-
         Result<Account> accountResult = getAccountsUseCase.getAccount(targetUUID);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
-
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-        return performDeposit(accountResult.getValue(), currencyResult.getValue(), amount);
+        return excecute(accountResult.getValue(), currencyName, amount);
     }
 
-
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        //Account account = getAccountsUseCase.getAccount(targetName);
-        //Currency currency = getCurrencyUseCase.getCurrency(currencyName);
-
         Result<Account> accountResult = getAccountsUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
+        return excecute(accountResult.getValue(), currencyName, amount);
+    }
 
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+    public Result<Void> execute(UUID targetUUID, BigDecimal amount) {
+        return execute(targetUUID, null, amount);
+    }
+
+    public Result<Void> execute(String targetName, BigDecimal amount) {
+        return execute(targetName, null, amount);
+    }
+
+    private Result<Currency> getCurrency(String currencyName) {
+        if (currencyName == null) {
+            return getCurrencyUseCase.getDefaultCurrency();
+        }
+        return getCurrencyUseCase.getCurrency(currencyName);
+    }
+
+    private Result<Void> excecute(Account account, String currencyName, BigDecimal amount) {
+        Result<Currency> currencyResult = getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
-
-        return performDeposit(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performDeposit(account, currencyResult.getValue(), amount);
     }
 
-
-    //TODO: PREGUNTAR SI EL USUSARIO TIENE LA MONEDA? .DE MOMENTO TODAS LAS CUENTAS CUENTAN CON TODOS LOS TIPOS DE MONEDAS INICIALIZADAS
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
+        if (!account.canReceiveCurrency()) {
+            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
 
-//todo: revisar metodos de actualizar valores antes de guardar en db, verificar condiciones de carrera
-        Result<Void> result = account.deposit(currency, amount);
+        if(amount.doubleValue() <= 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
+        }
+
+        if(!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
+        }
+
+        Result<Account> result = dataStore.deposit(account.getUuid().toString(), currency, amount);
         if(!result.isSuccess()){
-            return result;
+            economyLogger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        try {
-            dataStore.saveAccount(account);
-            if(updateForwarder != null && economyLogger != null) { //todo , lo puse para testear y ommitir esto
-                updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-                economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
-            }
-        } catch (TransactionException e) {
-            //throw new TransactionException("Error saving account",e);
-            return Result.failure("Error saving account", ErrorCode.DATA_BASE_ERROR);
-        }
+        getAccountsUseCase.updateAccountCache(result.getValue());
+        updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
 
         return Result.success(null);
     }
-
 }

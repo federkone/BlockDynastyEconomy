@@ -20,9 +20,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+//todo: para utilizar la feature cheque, debemos declarar como dependencia a NBTAPI para manejar items del juego
 public class ChequeManager {
-
+/*
     private final BlockDynastyEconomy plugin;
     private final ItemStack chequeBaseItem;
 
@@ -76,11 +76,12 @@ public class ChequeManager {
      * @param itemstack - The Cheque.
      * @return - Currency it represents.
      */
+    /*
     public Currency getCurrency(ItemStack itemstack) {
         ChequeStorage storage = ChequeStorage.read(itemstack);
         if(storage != null){
             return plugin.getCurrencyManager().getCurrency(storage.getCurrency());
         }
         return plugin.getCurrencyManager().getDefaultCurrency();
-    }
+    }*/
 }

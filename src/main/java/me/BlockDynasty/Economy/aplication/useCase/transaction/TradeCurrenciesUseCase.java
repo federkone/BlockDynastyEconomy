@@ -1,12 +1,13 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Economy.domain.result.TransferResult;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
@@ -86,21 +87,37 @@ public class TradeCurrenciesUseCase {
     }
 
     private Result<Void> performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
-        Result<Void> result =accountFrom.trade(accountTo,currencyFrom,currencyTo,amountFrom,amountTo);
-        if(!result.isSuccess()){
-            return result;
+
+        if(!accountTo.canReceiveCurrency()){
+            return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
-        try {
-            dataStore.transfer(accountFrom, accountTo); //actualizo ambos accounts de manera atomica, en una operacion segun hibernate
-            if(updateForwarder != null && economyLogger != null) { //todo , lo puse para testear y ommitir esto
-                updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());// esto es para bungee
-                updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());// esto es para bungee
-                economyLogger.log("[TRADE] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo));
-            }
-        } catch (TransactionException e) {
-            return Result.failure("Failed to perform trade: " , ErrorCode.DATA_BASE_ERROR);
+        if(amountFrom.doubleValue() <= 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
+        if(!currencyFrom.isDecimalSupported() && amountFrom.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
+        }
+
+        if(amountTo.doubleValue() <= 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
+        }
+        if(!currencyTo.isDecimalSupported() && amountTo.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
+        }
+
+        Result<TransferResult> result = dataStore.trade( accountFrom.getUuid().toString(), accountTo.getUuid().toString(), currencyFrom, currencyTo, amountFrom, amountTo);
+        if(!result.isSuccess()){
+            economyLogger.log("[TRADE failed] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo) + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
+
+        getAccountsUseCase.updateAccountCache(result.getValue().getTo());
+        getAccountsUseCase.updateAccountCache(result.getValue().getFrom());
+        updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
+        updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        economyLogger.log("[TRADE] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo));
+
         return Result.success(null);
     }
 }

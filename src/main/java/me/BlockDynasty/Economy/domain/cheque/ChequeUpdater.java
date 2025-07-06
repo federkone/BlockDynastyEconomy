@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.domain.cheque;
 
-import de.tr7zw.nbtapi.NBTItem;
+//import de.tr7zw.nbtapi.NBTItem;
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.utils.UtilString;
 import org.apache.commons.lang.StringUtils;
@@ -8,11 +8,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 public class ChequeUpdater {
-    private static boolean nbtApiInstalled;
+   /* private static boolean nbtApiInstalled;
     private static BlockDynastyEconomy plugin=BlockDynastyEconomy.getInstance();//TODO: REVISAR
 
-    public ChequeUpdater(BlockDynastyEconomy plugin){
-        ChequeUpdater.plugin = plugin;
+    public ChequeUpdater(){
+        // Constructor is not needed, but can be used for initialization if required
     }
     static {
         nbtApiInstalled = Bukkit.getPluginManager().getPlugin("NBTAPI") != null;
@@ -52,5 +52,5 @@ public class ChequeUpdater {
         } catch (Throwable throwable) {
             return null;
         }
-    }
+    }*/
 }

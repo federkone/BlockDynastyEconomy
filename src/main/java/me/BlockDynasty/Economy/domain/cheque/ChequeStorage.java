@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Objects;
 
 public class ChequeStorage {
-    private String issuer;
+    /*private String issuer;
     private String currency;
     private double value;
     public static BlockDynastyEconomy plugin;
@@ -60,6 +60,6 @@ public class ChequeStorage {
        if(storage == null)
            storage = ChequeUpdater.tryUpdate(itemStack);
        return storage;
-    }
+    }*/
 
 }

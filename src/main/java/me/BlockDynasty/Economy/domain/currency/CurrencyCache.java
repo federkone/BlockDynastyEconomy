@@ -1,6 +1,5 @@
 package me.BlockDynasty.Economy.domain.currency;
 
-
 import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.domain.currency.Currency;

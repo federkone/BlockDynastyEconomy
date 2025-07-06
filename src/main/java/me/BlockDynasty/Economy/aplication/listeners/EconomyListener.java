@@ -1,15 +1,12 @@
 package me.BlockDynasty.Economy.aplication.listeners;
 
 import me.BlockDynasty.Economy.BlockDynastyEconomy;
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.config.file.F;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.utils.SchedulerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

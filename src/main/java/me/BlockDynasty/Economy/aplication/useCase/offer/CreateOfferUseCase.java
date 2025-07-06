@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.offer;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.Offers.Offer;
@@ -72,7 +72,6 @@ public class CreateOfferUseCase {
         if (!accountSenderResult.getValue().hasEnough(currencyValueResult.getValue(), amountCurrencyValue)) {
             return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
         }
-
 
         Offer offer = new Offer(playerSender, playerReciber, amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
         offerManager.addOffer(offer);

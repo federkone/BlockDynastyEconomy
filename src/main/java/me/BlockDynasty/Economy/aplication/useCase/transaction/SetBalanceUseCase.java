@@ -1,12 +1,12 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
@@ -61,20 +61,23 @@ public class SetBalanceUseCase {
     }
 
     private Result<Void> performSet(Account account, Currency currency, BigDecimal amount) {
-        Result<Void> result = account.setBalance(currency, amount);
-        if (!result.isSuccess()) {
-            return result; // Propagar el error si ocurre
+        if(amount.doubleValue() < 0){
+            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
 
-        try {
-            dataStore.saveAccount(account);
-            if(updateForwarder != null && economyLogger != null) { //todo , lo puse para testear y ommitir esto
-                updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-                economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
-            }
-        } catch (TransactionException e) {
-           return Result.failure(e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        if(!currency.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
+
+        Result<Account> result = dataStore.setBalance(account.getUuid().toString(), currency, amount);
+        if (!result.isSuccess()) {
+            economyLogger.log("[BALANCE SET failed] Account: " + account.getNickname() + " were set to: " + currency.format(amount) + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
+
+        getAccountsUseCase.updateAccountCache(result.getValue());
+        updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
 
         return Result.success(null);
     }

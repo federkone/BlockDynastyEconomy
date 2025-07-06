@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
@@ -24,7 +24,6 @@ public class DeleteCurrencyUseCase {
     }
     public void deleteCurrency(String currencyName){
         Currency currency = currencyCache.getCurrency(currencyName);
-
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }

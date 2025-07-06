@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.function.Consumer;
 //TODO: PODEMOS IMPLEMENTAR UN SISTEMA DE RETRY NATIVO DE HIBERNATE, INVESTIGAR
 //TODO: TAMBIEN PODEMOS AGREGAR UNA CACHE NIVEL 1 PARA CACHCEAR CONSULTAR Y AUMENTAR PERFORMANCE
-public class RepositoryCriteriaApi implements IRepository
+/*public class RepositoryCriteriaApi implements IRepository
 {
     private final SessionFactory sessionFactory;
     private boolean topSupported = true;
@@ -233,7 +233,7 @@ public class RepositoryCriteriaApi implements IRepository
         } catch (Exception e) {
             throw new TransactionException("Error retrieving accounts by currency", e);
         }
-    }*/
+    }
     public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
             // HQL con fetch join para evitar el problema N+1
@@ -276,4 +276,4 @@ public class RepositoryCriteriaApi implements IRepository
             throw new TransactionException(e.getMessage());
         }
     }
-}
+}*/

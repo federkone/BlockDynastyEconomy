@@ -1,14 +1,13 @@
 package useCaseTest.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAmountNotValidException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 
 import repositoryTest.RepositoryTest;
+import useCaseTest.transaction.MoksStubs.LoggerTest;
+import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class SetBalanceUseCaseTest {
 
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
-        setBalanceUseCase = new SetBalanceUseCase(getCurrencyUseCase,getAccountsUseCase, repository,null,null);
+        setBalanceUseCase = new SetBalanceUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new UpdateForwarderTest(),new LoggerTest());
     }
 
     @Test

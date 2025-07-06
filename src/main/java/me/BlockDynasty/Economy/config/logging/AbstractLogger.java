@@ -25,6 +25,18 @@ public abstract class AbstractLogger {
     private final Set<String> toAdd;
     private volatile boolean zipping;
 
+    public AbstractLogger() {
+        this.plugin = null;
+        this.folder = null;
+        this.latest = null;
+        this.toAdd = null;
+        this.zipping = false;
+    }
+    /**
+     * Constructor for AbstractLogger.
+     *
+     * @param plugin The BlockDynastyEconomy plugin instance.
+     */
     public AbstractLogger(BlockDynastyEconomy plugin) {
         this.plugin = plugin;
         this.folder = new File(plugin.getDataFolder() + File.separator + "logs");

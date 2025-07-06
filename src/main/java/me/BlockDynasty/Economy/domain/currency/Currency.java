@@ -1,13 +1,8 @@
-/*
- * Copyright Xanium Development (c) 2013-2018. All Rights Reserved.
- * Any code contained within this document, and any associated APIs with similar branding
- * are the sole property of Xanium Development. Distribution, reproduction, taking snippets or claiming
- * any contents as your own will break the terms of the license, and void any agreements with you, the third party.
- * Thank you.
- */
 
 package me.BlockDynasty.Economy.domain.currency;
 
+import jakarta.persistence.*;
+import me.BlockDynasty.Economy.utils.ChatColorConverter;
 import org.bukkit.ChatColor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,8 +10,47 @@ import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Currency {
+@Entity
+@Table(name = "currencies")
+//@Converter(autoApply = true)
+public class Currency{
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private int id;
+
+    @Id
+    @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
+    //@Convert(converter = UUIDConverter.class)
     private String uuid;
+
+    @Column(name = "name_singular")
+    private String singular;
+
+    @Column(name = "name_plural")
+    private String plural;
+
+    @Column(name = "symbol")
+    private String symbol ;
+
+    @Column(name = "color")
+    @Convert(converter = ChatColorConverter.class)
+    private ChatColor color ;
+
+    @Column(name = "decimal_supported")
+    private boolean decimalSupported ;
+
+    @Column(name = "payable")
+    private boolean payable ;
+
+    @Column(name = "default_currency")
+    private boolean defaultCurrency ;
+
+    @Column(name = "default_balance")
+    private BigDecimal defaultBalance ;
+
+    @Column(name = "exchange_rate")
+    private double exchangeRate ;
+    /*private String uuid;
     private String singular;
     private String plural;
     private String symbol ;
@@ -26,7 +60,7 @@ public class Currency {
                                              //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
     private boolean defaultCurrency ;
     private BigDecimal defaultBalance ;
-    private double exchangeRate ;
+    private double exchangeRate ;*/
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;

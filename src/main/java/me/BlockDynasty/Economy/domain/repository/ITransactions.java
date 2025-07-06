@@ -1,0 +1,17 @@
+package me.BlockDynasty.Economy.domain.repository;
+
+import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.result.Result;
+import me.BlockDynasty.Economy.domain.result.TransferResult;
+
+import java.math.BigDecimal;
+
+public interface ITransactions {
+    Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount);
+    Result<Account> withdraw(String accountUuid, Currency currency, BigDecimal amount);
+    Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount);
+    Result<Account> exchange(String fromUuid, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo);
+    Result<TransferResult> trade(String fromUuid, String toUuid, Currency fromCurrency, Currency toCurrency, BigDecimal amountFrom, BigDecimal amountTo);
+    Result<Account> setBalance(String accountUuid, Currency currency, BigDecimal amount);
+}

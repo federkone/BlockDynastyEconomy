@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
@@ -29,11 +29,9 @@ public class EditCurrencyUseCase {
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-
         if (!currency.isDecimalSupported() && startBal % 1 != 0) {
             throw new DecimalNotSupportedException("Currency does not support decimals");
         }
-
         currency.setStartBalance(BigDecimal.valueOf(startBal));
         try {
             dataStore.saveCurrency(currency);
@@ -44,7 +42,7 @@ public class EditCurrencyUseCase {
         }
     }
 
-        public void setCurrencyRate(String currencyName, double rate){
+    public void setCurrencyRate(String currencyName, double rate){
         Currency currency = currencyCache.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
@@ -59,18 +57,15 @@ public class EditCurrencyUseCase {
     }
 
 
-       public void editColor(String nameCurrency, String colorString){
+    public void editColor(String nameCurrency, String colorString){
         Currency currency = currencyCache.getCurrency(nameCurrency);
-
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-
         ChatColor color = ChatColor.valueOf(colorString);
         if (color.isFormat()) {
             throw new CurrencyColorUnformat("currency color is not a format");
         }
-
         currency.setColor(color);
         try {
             dataStore.saveCurrency(currency);
@@ -79,16 +74,13 @@ public class EditCurrencyUseCase {
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
         }
-
     }
 
     public void editSymbol(String nameCurrency,String symbol){
             Currency currency = currencyCache.getCurrency(nameCurrency);
-
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-
         currency.setSymbol(symbol);
         try {
             dataStore.saveCurrency(currency);
@@ -99,13 +91,11 @@ public class EditCurrencyUseCase {
         }
     }
 
-        public void setDefaultCurrency(String currencyName){
+    public void setDefaultCurrency(String currencyName){
         Currency currency = currencyCache.getCurrency(currencyName);
-
         if (currency.isDefaultCurrency()){
             return;
         }
-
         currencyCache.getCurrencies().forEach(c -> {
             if (c.isDefaultCurrency()){
                 c.setDefaultCurrency(false);
@@ -117,27 +107,22 @@ public class EditCurrencyUseCase {
                 }
             }
         });
-
         currency.setDefaultCurrency(true);
         currencyCache.updateDefaultCurrency();
-
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error saving currency");
         }
-
     }
 
     public void setSingularName(String actualName, String newName){
         //todo: cambiar nombre de la moneda, verificar si existe el actualname tanto plural como singualr, y actualizar el mismo campo plural o singular
         Currency currency = currencyCache.getCurrency(actualName);
-
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-
         currency.setSingular(newName);
         try {
             dataStore.saveCurrency(currency);
@@ -149,11 +134,9 @@ public class EditCurrencyUseCase {
 
     public void setPluralName(String actualName, String newName){
         Currency currency = currencyCache.getCurrency(actualName);
-
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-
         currency.setPlural(newName);
         try {
             dataStore.saveCurrency(currency);
@@ -161,7 +144,5 @@ public class EditCurrencyUseCase {
         }catch (TransactionException e){
             throw new TransactionException("Error saving currency");
         }
-
     }
-
 }

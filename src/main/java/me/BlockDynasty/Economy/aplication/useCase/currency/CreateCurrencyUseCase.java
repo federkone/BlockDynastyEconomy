@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
@@ -29,13 +29,11 @@ public class CreateCurrencyUseCase {
         if (currencyCache.currencyExist(singular) || currencyCache.currencyExist(plural)){
             throw new CurrencyAlreadyExist("Currency already exist");
         }
-
         Currency currency = new Currency(UUID.randomUUID(), singular, plural);
         currency.setExchangeRate(1.0);
         if(currencyCache.getCurrencies().isEmpty()) {  //setear por defecto si es la unica moneda en el sistema
             currency.setDefaultCurrency(true);
         }
-
         try {
             dataStore.saveCurrency(currency);
             currencyCache.add(currency);//cache
@@ -46,6 +44,5 @@ public class CreateCurrencyUseCase {
         }catch (TransactionException e){
             throw new TransactionException("Error creating currency");
         }
-
     }
 }

@@ -1,17 +1,18 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.config.logging.AbstractLogger;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.aplication.bungee.UpdateForwarder;
+import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 
@@ -36,7 +37,9 @@ public class ExchangeUseCase {
     }
 
     public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+
         Result<Account> accountResult = getAccountsUseCase.getAccount(accountUuid);
+
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -52,8 +55,6 @@ public class ExchangeUseCase {
         }
 
         return performExchange(accountResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
-
-
     }
 
     public Result<BigDecimal> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
@@ -76,32 +77,37 @@ public class ExchangeUseCase {
     }
 
     private Result<BigDecimal> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        if(!currencyTo.isDecimalSupported() && amountTo.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
+        }
 
+        if (!account.canReceiveCurrency()) {
+            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
 
-        //TODO:aca se puede calcular el ratio de impuesto a cobrar antes de preguntar si tiene suficiente fondos
+        Result<Account> result;
+        if (amountFrom == null){ //calculo atumatico segun el ratio
+                amountFrom = amountTo.multiply(BigDecimal.valueOf(currencyFrom.getExchangeRate()))
+                    .divide(BigDecimal.valueOf(currencyTo.getExchangeRate()),4, RoundingMode.HALF_UP);
 
-        //account.withdraw(currencyFrom, amountFrom);
-        //account.deposit(currencyTo, amountTo);
-        Result<BigDecimal> result;
-        if (amountFrom == null){
-            result =account.exchange(currencyFrom,currencyTo,amountTo);
+            if(!currencyFrom.isDecimalSupported() && amountFrom.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0){
+                return Result.failure("Decimal not supported for currency " , ErrorCode.DECIMAL_NOT_SUPPORTED);
+            }
+
+            result = dataStore.exchange( account.getUuid().toString(), currencyFrom, amountFrom, currencyTo, amountTo);
         }else{
-            result =account.exchange(currencyFrom,amountFrom,currencyTo,amountTo);
+            result =dataStore.exchange(account.getUuid().toString(),currencyFrom,amountFrom,currencyTo,amountTo);
         }
 
         if(!result.isSuccess()){
-            return result;
+            economyLogger.log("[EXCHANGE failed] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo) + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        try {
-            dataStore.saveAccount(account);
-            updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
-            economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(result.getValue()) + " to " + currencyTo.format(amountTo));
-        } catch (TransactionException e) {
-            // Manejo de errores (puedes lanzar la excepción o manejarla de otra manera)
-            //throw new TransactionException("Failed to perform exchange: " + e.getMessage(), e);
-            return Result.failure("Failed to perform exchange: " , ErrorCode.DATA_BASE_ERROR);
-        }
-        return result;
+        getAccountsUseCase.updateAccountCache(result.getValue());
+        updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
+        economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
+
+        return Result.success(amountFrom);
     }
 }

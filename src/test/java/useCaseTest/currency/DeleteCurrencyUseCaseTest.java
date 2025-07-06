@@ -1,6 +1,6 @@
 package useCaseTest.currency;
 
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
@@ -8,10 +8,8 @@ import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.account.AccountCache;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.ConnectionHandler.ConnectionHibernate;
 import me.BlockDynasty.Economy.domain.repository.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.repository.RepositoryCriteriaApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;

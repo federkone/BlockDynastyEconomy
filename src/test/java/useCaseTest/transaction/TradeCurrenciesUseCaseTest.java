@@ -1,7 +1,7 @@
 package useCaseTest.transaction;
 
-import me.BlockDynasty.Economy.aplication.result.ErrorCode;
-import me.BlockDynasty.Economy.aplication.result.Result;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
@@ -21,6 +21,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
+import useCaseTest.transaction.MoksStubs.LoggerTest;
+import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -74,7 +76,7 @@ public class TradeCurrenciesUseCaseTest {
         getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
 
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(getCurrencyUseCase,getAccountsUseCase,repository,null,null);
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new UpdateForwarderTest(),new LoggerTest());
     }
 
     @Test
