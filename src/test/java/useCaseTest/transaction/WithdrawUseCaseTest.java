@@ -1,21 +1,21 @@
 package useCaseTest.transaction;
 
+import Integrations.CourierTest;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
 import useCaseTest.transaction.MoksStubs.LoggerTest;
-import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -27,8 +27,8 @@ public class WithdrawUseCaseTest {
     Account nullplague;
     Currency dinero;
     IRepository repository;
-    CurrencyCache currencyCache;
-    AccountCache accountCache;
+    CurrencyService currencyService;
+    AccountService accountService;
     WithdrawUseCase withdrawUseCase;
     GetAccountsUseCase getAccountsUseCase;
     GetCurrencyUseCase getCurrencyUseCase;
@@ -46,13 +46,13 @@ public class WithdrawUseCaseTest {
         repository.saveCurrency(dinero);
         repository.saveAccount(nullplague);
 
-        currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache(5);
-        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
+        currencyService = new CurrencyService(repository);
+        accountService = new AccountService(5);
+        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
+        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
 
 
-        withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new UpdateForwarderTest(),new LoggerTest());
+        withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new CourierTest(),new LoggerTest());
 
 
     }
@@ -102,7 +102,7 @@ public class WithdrawUseCaseTest {
     @Test
     void withdrawUseCaseTestWithNullBalance(){
         //todo: EL GETACCOUNTUSECASE ESTA AGREGANDO/CHEQUEADO AUTOMATICAMENTE LAS MONEDAS DEL SISTEMA AL USUARIO EN CADA CONSULTA, POR LO TANTO SIEMPRE VA A TENER LOS TIPOS DE MONEDAS QUE EXISTAN EN EL SISTEMA
-        currencyCache.add(new Currency(UUID.randomUUID(),"oro","oro"));
+        currencyService.add(new Currency(UUID.randomUUID(),"oro","oro"));
         Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
         //assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode());
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //en el core agrega el balance inexistente a la cuenta con sus balances por defecto de la currency

@@ -1,5 +1,6 @@
 package useCaseTest.account;
 
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
@@ -7,12 +8,11 @@ import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
-import me.BlockDynasty.Economy.config.file.MessageService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
@@ -29,8 +29,8 @@ public class GetAccountsUseCaseTest {
     IRepository repository;
     GetAccountsUseCase getAccountsUseCase;
     CreateAccountUseCase createAccountUseCase;
-    AccountCache accountCache;
-    CurrencyCache currencyCache;
+    AccountService accountService;
+    CurrencyService currencyService;
     DepositUseCase depositUseCase;
     GetCurrencyUseCase getCurrencyUseCase;
     CreateCurrencyUseCase createCurrencyUseCase;
@@ -39,14 +39,14 @@ public class GetAccountsUseCaseTest {
     @BeforeEach
     void setUp() {
         repository = new RepositoryTest();
-        accountCache = new AccountCache(5);
-        currencyCache = new CurrencyCache(repository);
-        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache,getAccountsUseCase,repository);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyCache, getAccountsUseCase,null, repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
+        accountService = new AccountService(5);
+        currencyService = new CurrencyService(repository);
+        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,getAccountsUseCase,repository);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, getAccountsUseCase,null, repository);
+        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
         depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase, repository, null, null);
-        messageService = new MessageService(currencyCache);
+        messageService = new MessageService(currencyService);
 
         //createCurrencyUseCase.createCurrency("dinero", "dinero");
 

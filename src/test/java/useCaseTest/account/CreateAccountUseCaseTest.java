@@ -1,9 +1,9 @@
 package useCaseTest.account;
 
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
@@ -17,16 +17,16 @@ public class CreateAccountUseCaseTest {
     IRepository repository;
     GetAccountsUseCase getAccountsUseCase;
     CreateAccountUseCase createAccountUseCase;
-    AccountCache accountCache;
-    CurrencyCache currencyCache;
+    AccountService accountService;
+    CurrencyService currencyService;
 
     @BeforeEach
     void setUp() {
         repository = new RepositoryTest();
-        accountCache = new AccountCache(5);
-        currencyCache = new CurrencyCache(repository);
-        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache,getAccountsUseCase,repository);
+        accountService = new AccountService(5);
+        currencyService = new CurrencyService(repository);
+        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,getAccountsUseCase,repository);
     }
 
     @Test

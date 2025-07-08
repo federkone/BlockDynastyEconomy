@@ -1,9 +1,9 @@
 package APITest;
 
-import me.BlockDynasty.Economy.aplication.useCase.UsesCase;
-import me.BlockDynasty.Economy.aplication.useCase.account.GetBalanceUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Integrations.vault.VaultHook;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.vault.VaultHook;
 import me.BlockDynasty.Economy.domain.result.Result;
 import org.bukkit.OfflinePlayer;
 import org.junit.jupiter.api.Test;
@@ -18,9 +18,9 @@ class VaultHookTest {
     @Test
     void testGetBalance() {
         // Mock dependencies
-        UsesCase usesCase = mock(UsesCase.class);
+        UsesCaseFactory usesCaseFactory = mock(UsesCaseFactory.class);
         GetBalanceUseCase getBalanceUseCase = mock(GetBalanceUseCase.class);
-        when(usesCase.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
+        when(usesCaseFactory.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
 
         // Mock balance result
         Balance balance = mock(Balance.class);
@@ -28,7 +28,7 @@ class VaultHookTest {
         when(getBalanceUseCase.getBalance("player")).thenReturn(Result.success(balance));
 
         // Create VaultHook
-        VaultHook vaultHook = new VaultHook(usesCase);
+        VaultHook vaultHook = new VaultHook(usesCaseFactory);
 
         // Test getBalance
         double result = vaultHook.getBalance("player");
@@ -38,9 +38,9 @@ class VaultHookTest {
     @Test
     void testGetBalanceWithOfflinePlayer() {
         // Mock dependencies
-        UsesCase usesCase = mock(UsesCase.class);
+        UsesCaseFactory usesCaseFactory = mock(UsesCaseFactory.class);
         GetBalanceUseCase getBalanceUseCase = mock(GetBalanceUseCase.class);
-        when(usesCase.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
+        when(usesCaseFactory.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
 
         // Mock balance result
         Balance balance = mock(Balance.class);
@@ -52,7 +52,7 @@ class VaultHookTest {
         when(offlinePlayer.getName()).thenReturn("playerName");
 
         // Create VaultHook
-        VaultHook vaultHook = new VaultHook(usesCase);
+        VaultHook vaultHook = new VaultHook(usesCaseFactory);
 
         // Test getBalance with OfflinePlayer
         double result = vaultHook.getBalance(offlinePlayer);

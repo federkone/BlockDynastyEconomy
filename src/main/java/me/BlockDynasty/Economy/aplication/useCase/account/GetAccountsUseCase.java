@@ -1,26 +1,25 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
-import org.checkerframework.checker.units.qual.A;
+import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.domain.services.IAccountService;
+import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GetAccountsUseCase {
-    private final AccountCache accountCache;
+    private final IAccountService accountService;
     private final IRepository dataStore;
-    private final CurrencyCache currencyCache;
-    //private final CachedTopList cachedTopList;
-
+    private final ICurrencyService currencyService;
 
 //TODO: PENSAR EN ESTA LOGICA, DONDED SE DETECTA UN CAMBIO DE NOMBRE SEGUN LA OBTENCION DE JUGADOR POR UUID
     /* acc = getAccountsUseCase.getAccount(player.getUniqueId());
@@ -30,21 +29,21 @@ public class GetAccountsUseCase {
    plugin.getDataStore().saveAccount(acc);  */
     //TODO----------------------------------------------------------------
 
-    public GetAccountsUseCase(AccountCache accountCache, CurrencyCache currencyCache, IRepository dataStore) {
-        this.accountCache = accountCache;
+    public GetAccountsUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
+        this.accountService = accountService;
         this.dataStore = dataStore;
-        this.currencyCache = currencyCache;
-        //this.cachedTopList = cachedTopList;
+        this.currencyService = currencyService;
     }
 
+    //todo: se esta tomando como lectura siempre en cache
     public Result<Account> getAccount(String name) {
-        Account account = accountCache.getAccount(name);
+        Account account = this.accountService.getAccountCache(name);
        if(account == null){
             Criteria criteria = Criteria.create().filter("nickname", name).limit(1); //prepare for get account with uuid
-            List<Account> accounts = dataStore.loadAccounts(criteria);
+            List<Account> accounts = this.dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
-                updateAccountBalances(account);//AUTOMATICAMENTE CHEQUEA SI EL BALANCE DE LA CUENTA ESTA ACTUALIZADO CON LAS MONEDAS DEL SISTEMA
+                this.updateAccountBalances(account);//AUTOMATICAMENTE CHEQUEA SI EL BALANCE DE LA CUENTA ESTA ACTUALIZADO CON LAS MONEDAS DEL SISTEMA
             }else{
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
@@ -52,15 +51,16 @@ public class GetAccountsUseCase {
        return Result.success(account);
     }
 
+    //todo: se esta tomando como lectura siempre en cache
     public Result<Account> getAccount(UUID uuid) {
-        Account account = accountCache.getAccount(uuid);
+        Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
 
             Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
-            List<Account> accounts = dataStore.loadAccounts(criteria);
+            List<Account> accounts =  this.dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
                 account = accounts.get(0);
-                updateAccountBalances(account);
+                this.updateAccountBalances(account);
                 //accountManager.addAccountToCache(account); //añadir a cache??
             }else{
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
@@ -71,7 +71,7 @@ public class GetAccountsUseCase {
 
     public void updateAccountCache(Account account) {
         UUID uuid = account.getUuid();
-        Account cachedAccount = this.accountCache.getAccount(uuid);
+        Account cachedAccount = this.accountService.getAccountCache(uuid);
         if (cachedAccount != null) {
             // Actualiza solo los balances que vienen en account
             for (Balance updatedBalance : account.getBalances()) {
@@ -87,13 +87,13 @@ public class GetAccountsUseCase {
 
 
     public void updateAccountCache(UUID uuid){
-        Account accountCache = this.accountCache.getAccount(uuid);
+        Account accountCache = this.accountService.getAccountCache(uuid);
         Account accountDb = null;
         Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
-        List<Account> accounts = dataStore.loadAccounts(criteria);
+        List<Account> accounts =  this.dataStore.loadAccounts(criteria);
         if (!accounts.isEmpty() && accountCache != null){
             accountDb = accounts.get(0);
-            updateAccountBalances(accountDb);
+            this.updateAccountBalances(accountDb);
             accountCache.setBalances(accountDb.getBalances( ));
         }else {
             throw new AccountNotFoundException("Account not found");
@@ -101,18 +101,18 @@ public class GetAccountsUseCase {
     }
 
     public List<Account> getAllAccounts() {
-        return dataStore.loadAccounts(Criteria.create());
+        return  this.dataStore.loadAccounts(Criteria.create());
     }
 
     public Set<Account> getOnlineAccounts() {
-        return accountCache.getAccounts();
+        return  this.accountService.getAccountsCache();
     }
 
     @Deprecated
     public void updateAccountsCache(){ //todo, test
-        Set<Account> accounts = accountCache.getAccounts();   //todas las cuentas de cache
+        Set<Account> accounts =  this.accountService.getAccountsCache();   //todas las cuentas de cache
         for (Account account : accounts) {
-            updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
+            this.updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
             try {
                 dataStore.saveAccount(account); //guardar en db los cambios hechos sobre sus balances, ya sea haber agregado, o quitado
             } catch (TransactionException e) {
@@ -126,7 +126,7 @@ public class GetAccountsUseCase {
            //throw new IllegalArgumentException("Limit must be greater than 0");
            return Result.failure("Limit must be greater than 0", ErrorCode.INVALID_ARGUMENT);
        }
-       List<Account> cache = accountCache.getAccountsTopList(currency);
+       List<Account> cache =  this.accountService.getAccountsTopList(currency);
        if (!cache.isEmpty() && cache.size() >= limit + offset) {
            //System.out.println("Cache hit");
            return Result.success(cache.subList(offset, Math.min(offset + limit, cache.size())));
@@ -138,9 +138,9 @@ public class GetAccountsUseCase {
        List<Account> accounts;
        try {
            //System.out.println("DATABASE HIT");
-           accounts = dataStore.getAccountsTopByCurrency(currency, limit, offset);
+           accounts =  this.dataStore.getAccountsTopByCurrency(currency, limit, offset);
            for (Account account : accounts) {
-               accountCache.addAccountToTopList(account, currency);
+               this.accountService.addAccountToTopList(account, currency);
            }
        } catch (TransactionException e) {
            //throw new TransactionException("Error in transaction", e);
@@ -154,7 +154,7 @@ public class GetAccountsUseCase {
    }
 
     private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
-        List<Balance> updatedBalances = currencyCache.getCurrencies().stream()
+        List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
                 .map(systemCurrency ->
                         account.getBalances().stream()
                                 .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))

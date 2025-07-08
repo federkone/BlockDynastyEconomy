@@ -1,25 +1,26 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.util.List;
 
 public class GetCurrencyUseCase {
-    private final CurrencyCache currencyCache;
+    private final ICurrencyService currencyService;
     private final IRepository datastore;
 
-    public GetCurrencyUseCase(CurrencyCache currencyCache, IRepository datastore) {
-        this.currencyCache = currencyCache;
+    public GetCurrencyUseCase(ICurrencyService currencyService, IRepository datastore) {
+        this.currencyService = currencyService;
         this.datastore = datastore;
     }
 
     public Result<Currency> getCurrency(String name) {
-        Currency currency = currencyCache.getCurrency(name);
+        Currency currency = currencyService.getCurrency(name);
         if (currency == null) {
             List<Currency> currencies = datastore.loadCurrencies(Criteria.create().filter("singular", name).filter("plural",name).limit(1));
             if(!currencies.isEmpty()){
@@ -32,7 +33,7 @@ public class GetCurrencyUseCase {
     }
 
     public Result<Currency>  getDefaultCurrency() {
-        Currency defaultCurrency = currencyCache.getDefaultCurrency();
+        Currency defaultCurrency = currencyService.getDefaultCurrency();
         if(defaultCurrency == null){
             System.out.println("la moneda por defecto no esta en cache");
             List<Currency> currencies = datastore.loadCurrencies(Criteria.create().filter("defaultCurrency", true).limit(1));
@@ -47,6 +48,6 @@ public class GetCurrencyUseCase {
     }
 
     public List<Currency> getCurrencies(){
-        return currencyCache.getCurrencies();
+        return currencyService.getCurrencies();
     }
 }

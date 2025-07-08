@@ -2,7 +2,7 @@
 package me.BlockDynasty.Economy.domain.currency;
 
 import jakarta.persistence.*;
-import me.BlockDynasty.Economy.utils.ChatColorConverter;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.ChatColorConverter;
 import org.bukkit.ChatColor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,10 +14,6 @@ import java.util.UUID;
 @Table(name = "currencies")
 //@Converter(autoApply = true)
 public class Currency{
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private int id;
-
     @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
     //@Convert(converter = UUIDConverter.class)
@@ -50,17 +46,9 @@ public class Currency{
 
     @Column(name = "exchange_rate")
     private double exchangeRate ;
-    /*private String uuid;
-    private String singular;
-    private String plural;
-    private String symbol ;
-    private ChatColor color ;
-    private boolean decimalSupported ;
-    private boolean payable ; //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
+
+    //private boolean payable ; //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
                                              //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
-    private boolean defaultCurrency ;
-    private BigDecimal defaultBalance ;
-    private double exchangeRate ;*/
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
@@ -145,6 +133,13 @@ public class Currency{
             }
         }
         return amt.toString();
+    }
+
+    public boolean isValidAmount(BigDecimal amount) {
+        if (!this.isDecimalSupported() && amount.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+            return false; // Invalid if decimal not supported and has decimal part
+        }
+        return true;
     }
 
     public boolean isDefaultCurrency() {

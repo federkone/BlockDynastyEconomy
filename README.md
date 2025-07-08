@@ -1,13 +1,18 @@
+Arquitectura - modelo Cache-Aside (Look-aside cache) con validación transaccional final en la DB.
+
+    -Cache-aside (lazy-loading cache)
+        Se lee primero de caché, pero la DB es la fuente de la verdad.
+
+    -Write-through fallback
+        Escribes en la DB y luego sincronizas la caché si todo salió bien.
+
 Todo list:
-    - usar como fuente de la verdad siempre la DB para los balances. todas las operaciones de lectura(validacion de saldo,etc) y escritura(actualizacion de saldos) seran sobre la DB, y en caso de escritura en db exitosa, actualizar la cache.
-    - consumiendo la cache PARA LA GUI como placeholder(solo lectura),
-    - separando estos casos se soluciona el problema de desyncronizacion de balances entre la cache y la DB.
 
     -refactor config file, add message file
     -create command for edit accountCanReciveCurrency attribute
     -complete use case and comand for delete account 
     -complete use case delete currency and command //deleting a currency will be delete all balances of that currency- check
-    -add rate for exchange/trade/transfer currency, its all ready usesCase/atributes for implement this feature
+    -add rate for exchange/trade/transfer currency, its all ready usesCaseFactory/atributes for implement this feature
     -complete use case for balTop and command, this command will show the top X balances of a currency, ej: eco top 10, eco top 5 etc
 
     -add/complete all test for use cases

@@ -3,9 +3,9 @@ package repositoryTest;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.repository.Criteria.Criteria;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
-import me.BlockDynasty.Economy.domain.repository.Criteria.Filter;
+import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Filter;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.result.TransferResult;
@@ -261,7 +261,7 @@ public class RepositoryTest implements IRepository {
     public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
         return accounts.stream()
                 // Filtrar cuentas que contienen la moneda especificada
-                .filter(account -> account.haveCurrency(currencyName))
+                .filter(account -> account.hasCurrency(currencyName))
                 // Ordenar por balance en la moneda especificada, en orden descendente
                 .sorted((a1, a2) -> {
                     BigDecimal balance1 = a1.getBalance(currencyName).getBalance();

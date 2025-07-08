@@ -1,5 +1,5 @@
 name: BlockDynastyEconomy
-main: me.BlockDynasty.Economy.BlockDynastyEconomy
+main: me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy
 version: 1.0
 author: Nullplague
 description: A multi-currency economy plugin for spigot servers!

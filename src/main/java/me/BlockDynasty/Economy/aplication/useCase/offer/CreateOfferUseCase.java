@@ -4,49 +4,48 @@ import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.Offers.Offer;
-import me.BlockDynasty.Economy.domain.Offers.OfferManager;
+import me.BlockDynasty.Economy.Infrastructure.services.OfferService;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.services.IOfferService;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class CreateOfferUseCase {
-    private final OfferManager offerManager;
+    private final IOfferService offerService;
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final GetAccountsUseCase getAccountsUseCase;
 
     //todo: crear oferta si, solo si no existe una pendiente entre enviador y receptor. primero tengo que obtener ambos jugadores con GetplayerUseCase y asegurarse que existan, ,GetCurrencyUseCase y asegurarse que la moneda existente exista, y luego crear la oferta guardandola en el OfferManager
-    public CreateOfferUseCase(OfferManager offerManager, GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase) {
-        this.offerManager = offerManager;
+    public CreateOfferUseCase(IOfferService offerService, GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase) {
+        this.offerService = offerService;
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.getAccountsUseCase = getAccountsUseCase;
-
     }
 
     public Result<Void> execute (UUID playerSender, UUID playerReciber, String currencyNameValue, BigDecimal amountCurrencyValue, String currencyNameOffer, BigDecimal amountCurrencyOffer) {
-        Result<Account> accountSenderResult = getAccountsUseCase.getAccount(playerSender);
+        Result<Account> accountSenderResult = this.getAccountsUseCase.getAccount(playerSender);
         if (!accountSenderResult.isSuccess()) {
             return Result.failure(accountSenderResult.getErrorMessage(), accountSenderResult.getErrorCode());
         }
 
-        Result<Account> accountReciberResult = getAccountsUseCase.getAccount(playerReciber);
+        Result<Account> accountReciberResult = this.getAccountsUseCase.getAccount(playerReciber);
         if (!accountReciberResult.isSuccess()) {
             return Result.failure(accountReciberResult.getErrorMessage(), accountReciberResult.getErrorCode());
         }
 
-        Result<Currency> currencyValueResult = getCurrencyUseCase.getCurrency(currencyNameValue);
+        Result<Currency> currencyValueResult = this.getCurrencyUseCase.getCurrency(currencyNameValue);
         if (!currencyValueResult.isSuccess()) {
             return Result.failure(currencyValueResult.getErrorMessage(), currencyValueResult.getErrorCode());
         }
-        Result<Currency> currencyOfferResult = getCurrencyUseCase.getCurrency(currencyNameOffer);
+        Result<Currency> currencyOfferResult = this.getCurrencyUseCase.getCurrency(currencyNameOffer);
         if (!currencyOfferResult.isSuccess()) {
             return Result.failure(currencyOfferResult.getErrorMessage(), currencyOfferResult.getErrorCode());
         }
 
 
-        if(offerManager.hasOfferTo(playerReciber)){
+        if(this.offerService.hasOfferTo(playerReciber)){
             return Result.failure("There is already an offer pending", ErrorCode.OFFER_ALREADY_EXISTS);
         }
 
@@ -60,12 +59,12 @@ public class CreateOfferUseCase {
         }
 
     // si la moneda soporta decimales y el monto no es entero
-        if (!currencyOfferResult.getValue().isDecimalSupported() && amountCurrencyOffer.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+        if (!currencyOfferResult.getValue().isValidAmount(amountCurrencyOffer)) {
             return Result.failure("Amount must be an integer", ErrorCode.INVALID_AMOUNT);
         }
 
     // si la moneda soporta decimales y el monto no es entero
-        if (!currencyValueResult.getValue().isDecimalSupported() && amountCurrencyValue.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+        if (!currencyValueResult.getValue().isValidAmount(amountCurrencyValue)) {
            return Result.failure("Amount must be an integer", ErrorCode.INVALID_AMOUNT);
         }
 
@@ -73,8 +72,7 @@ public class CreateOfferUseCase {
             return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
         }
 
-        Offer offer = new Offer(playerSender, playerReciber, amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
-        offerManager.addOffer(offer);
+        offerService.addOffer(playerSender, playerReciber, amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
         return Result.success(null);
     }
 }

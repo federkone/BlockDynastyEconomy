@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.result.ErrorCode;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -12,18 +11,12 @@ import java.util.*;
 @Entity
 @Table(name = "accounts")
 public class Account {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private int id;
-
     @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-    //@Convert(converter = UUIDConverter.class)
     private String uuid;
 
     @Column(name = "nickname")
     private String nickname;
-
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
@@ -34,6 +27,7 @@ public class Account {
 
     public Account() {
     }
+
     public Account(UUID uuid, String nickname) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
@@ -63,12 +57,11 @@ public class Account {
     public void setBalances(List<Balance> balances) {
         this.balances = balances;
     }
-
     public List<Balance> getBalances() {
         return balances;
     }
 
-    public boolean haveCurrency( String currencyName){
+    public boolean hasCurrency( String currencyName){
         return balances.stream().anyMatch(b ->
                 b.getCurrency().getSingular().equals(currencyName) || b.getCurrency().getPlural().equals(currencyName));
     }
@@ -93,15 +86,17 @@ public class Account {
                 .findFirst()
                 .orElse(null);
     }
-
+//tiene monto
     public boolean hasEnough(Currency currency, BigDecimal amount){
         Balance balance = getBalance(currency);
         return balance != null && balance.getBalance().compareTo(amount) >= 0;
     };
+
     public boolean hasEnough(BigDecimal amount){
         Balance balance = getBalance();
         return balance != null && balance.getBalance().compareTo(amount) >= 0;
     };
+
     public void createBalance(Currency currency, BigDecimal amount) {
         Balance balance = new Balance(currency, amount);
         balances.add(balance);
@@ -117,11 +112,6 @@ public class Account {
     public String getNickname() {
         return nickname;
     }
-
-    public void changeName(String newName){
-        this.nickname = newName;
-    }
-
     public UUID getUuid() {
         return UUID.fromString(uuid);
     }
@@ -129,7 +119,6 @@ public class Account {
     public void setCanReceiveCurrency(boolean canReceiveCurrency) {
         this.canReceiveCurrency = canReceiveCurrency;
     }
-
     public boolean canReceiveCurrency() {
         return canReceiveCurrency;
     }

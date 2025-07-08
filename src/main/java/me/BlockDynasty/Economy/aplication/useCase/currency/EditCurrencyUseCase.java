@@ -1,31 +1,32 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
-import me.BlockDynasty.Integrations.bungee.UpdateForwarder;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
-import me.BlockDynasty.Economy.domain.repository.Exceptions.TransactionException;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
 
 public class EditCurrencyUseCase {
-    private final CurrencyCache currencyCache;
+    private final ICurrencyService currencyService;
     private final IRepository dataStore;
-    private final UpdateForwarder updateForwarder;
+    private final Courier updateForwarder;
 
-    public EditCurrencyUseCase(CurrencyCache currencyCache, UpdateForwarder updateForwarder, IRepository dataStore) {
-        this.currencyCache = currencyCache;
+    public EditCurrencyUseCase(ICurrencyService currencyService, Courier updateForwarder, IRepository dataStore) {
+        this.currencyService = currencyService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
 
 
     public void editStartBal(String name, double startBal){
-        Currency currency = currencyCache.getCurrency(name);
+        Currency currency = currencyService.getCurrency(name);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -43,7 +44,7 @@ public class EditCurrencyUseCase {
     }
 
     public void setCurrencyRate(String currencyName, double rate){
-        Currency currency = currencyCache.getCurrency(currencyName);
+        Currency currency = currencyService.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -58,7 +59,7 @@ public class EditCurrencyUseCase {
 
 
     public void editColor(String nameCurrency, String colorString){
-        Currency currency = currencyCache.getCurrency(nameCurrency);
+        Currency currency = currencyService.getCurrency(nameCurrency);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -77,7 +78,7 @@ public class EditCurrencyUseCase {
     }
 
     public void editSymbol(String nameCurrency,String symbol){
-            Currency currency = currencyCache.getCurrency(nameCurrency);
+            Currency currency = currencyService.getCurrency(nameCurrency);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -92,11 +93,11 @@ public class EditCurrencyUseCase {
     }
 
     public void setDefaultCurrency(String currencyName){
-        Currency currency = currencyCache.getCurrency(currencyName);
+        Currency currency = currencyService.getCurrency(currencyName);
         if (currency.isDefaultCurrency()){
             return;
         }
-        currencyCache.getCurrencies().forEach(c -> {
+        currencyService.getCurrencies().forEach(c -> {
             if (c.isDefaultCurrency()){
                 c.setDefaultCurrency(false);
                 try {
@@ -108,7 +109,7 @@ public class EditCurrencyUseCase {
             }
         });
         currency.setDefaultCurrency(true);
-        currencyCache.updateDefaultCurrency();
+        currencyService.updateDefaultCurrency();
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
@@ -119,7 +120,7 @@ public class EditCurrencyUseCase {
 
     public void setSingularName(String actualName, String newName){
         //todo: cambiar nombre de la moneda, verificar si existe el actualname tanto plural como singualr, y actualizar el mismo campo plural o singular
-        Currency currency = currencyCache.getCurrency(actualName);
+        Currency currency = currencyService.getCurrency(actualName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -133,7 +134,7 @@ public class EditCurrencyUseCase {
     }
 
     public void setPluralName(String actualName, String newName){
-        Currency currency = currencyCache.getCurrency(actualName);
+        Currency currency = currencyService.getCurrency(actualName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }

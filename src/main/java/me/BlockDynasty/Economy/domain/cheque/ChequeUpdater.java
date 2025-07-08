@@ -1,11 +1,6 @@
 package me.BlockDynasty.Economy.domain.cheque;
 
 //import de.tr7zw.nbtapi.NBTItem;
-import me.BlockDynasty.Economy.BlockDynastyEconomy;
-import me.BlockDynasty.Economy.utils.UtilString;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
 
 public class ChequeUpdater {
    /* private static boolean nbtApiInstalled;

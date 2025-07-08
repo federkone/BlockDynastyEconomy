@@ -1,0 +1,137 @@
+package me.BlockDynasty.Economy.aplication.useCase;
+
+
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.Log;
+import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.*;
+import me.BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
+import me.BlockDynasty.Economy.Infrastructure.services.OfferService;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.domain.services.IAccountService;
+import me.BlockDynasty.Economy.domain.services.ICurrencyService;
+import me.BlockDynasty.Economy.domain.services.IOfferService;
+
+public class UsesCaseFactory {
+    private final WithdrawUseCase withdrawUseCase ;
+    private final DepositUseCase depositUseCase ;
+    private final SetBalanceUseCase setBalanceUseCase ;
+    private final PayUseCase payUseCase ;
+    private final ExchangeUseCase exchangeUseCase ;
+    private final TransferFundsUseCase transferFundsUseCase ;
+    private final TradeCurrenciesUseCase tradeCurrenciesUseCase ;
+
+    private final GetAccountsUseCase getAccountsUseCase ;
+    private final GetCurrencyUseCase getCurrencyUseCase ;
+    private final GetBalanceUseCase getBalanceUseCase ;
+    private final CreateAccountUseCase createAccountUseCase ;
+
+    private final CreateCurrencyUseCase createCurrencyUseCase ;
+    private final DeleteCurrencyUseCase deleteCurrencyUseCase ;
+    private final EditCurrencyUseCase editCurrencyUseCase ;
+    private final ToggleFeaturesUseCase toggleFeaturesUseCase ;
+
+    private final CreateOfferUseCase createOfferUseCase ;
+    private final AcceptOfferUseCase acceptOfferUseCase ;
+    private final CancelOfferUseCase cancelOfferUseCase ;
+
+    public UsesCaseFactory(IAccountService accountService, ICurrencyService currencyService, Log economyLogger, IOfferService offerService, IRepository repository, Courier courier) {
+        this.getCurrencyUseCase = new GetCurrencyUseCase(currencyService,repository);
+        this.getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
+        this.withdrawUseCase = new WithdrawUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.depositUseCase = new DepositUseCase( this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger);
+        this.createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, this.getAccountsUseCase, courier,repository);
+        this.setBalanceUseCase = new SetBalanceUseCase(  this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger);
+        this.payUseCase = new PayUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.exchangeUseCase = new ExchangeUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, this.getAccountsUseCase, repository);
+        this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.transferFundsUseCase = new TransferFundsUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, this.getAccountsUseCase,repository,courier);
+        this.editCurrencyUseCase = new EditCurrencyUseCase(currencyService,courier,repository);
+        this.toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyService,repository,courier);
+        this.createOfferUseCase = new CreateOfferUseCase(offerService, this.getCurrencyUseCase, this.getAccountsUseCase);
+        this.acceptOfferUseCase = new AcceptOfferUseCase(offerService, this.tradeCurrenciesUseCase);
+        this.cancelOfferUseCase = new CancelOfferUseCase(offerService);
+        this.getBalanceUseCase = new GetBalanceUseCase( this.getAccountsUseCase);
+    }
+
+    public WithdrawUseCase getWithdrawUseCase() {
+        return withdrawUseCase;
+    }
+
+    public DepositUseCase getDepositUseCase() {
+        return depositUseCase;
+    }
+
+    public SetBalanceUseCase getSetBalanceUseCase() {
+        return setBalanceUseCase;
+    }
+
+    public PayUseCase getPayUseCase() {
+        return payUseCase;
+    }
+
+    public ExchangeUseCase getExchangeUseCase() {
+        return exchangeUseCase;
+    }
+
+    public TransferFundsUseCase getTransferFundsUseCase() {
+        return transferFundsUseCase;
+    }
+
+    public TradeCurrenciesUseCase getTradeCurrenciesUseCase() {
+        return tradeCurrenciesUseCase;
+    }
+
+    public GetAccountsUseCase getAccountsUseCase() {
+        return getAccountsUseCase;
+    }
+
+    public GetCurrencyUseCase getCurrencyUseCase() {
+        return getCurrencyUseCase;
+    }
+
+    public GetBalanceUseCase getGetBalanceUseCase() {
+        return getBalanceUseCase;
+    }
+
+    public CreateAccountUseCase getCreateAccountUseCase() {
+        return createAccountUseCase;
+    }
+
+    public CreateCurrencyUseCase getCreateCurrencyUseCase() {
+        return createCurrencyUseCase;
+    }
+
+    public DeleteCurrencyUseCase deleteCurrencyUseCase() {
+        return deleteCurrencyUseCase;
+    }
+
+    public EditCurrencyUseCase getEditCurrencyUseCase() {
+        return editCurrencyUseCase;
+    }
+
+    public ToggleFeaturesUseCase getToggleFeaturesUseCase() {
+        return toggleFeaturesUseCase;
+    }
+
+    public CreateOfferUseCase getCreateOfferUseCase() {
+        return createOfferUseCase;
+    }
+
+    public AcceptOfferUseCase getAcceptOfferUseCase() {
+        return acceptOfferUseCase;
+    }
+
+    public CancelOfferUseCase getCancelOfferUseCase() {
+        return cancelOfferUseCase;
+    }
+}

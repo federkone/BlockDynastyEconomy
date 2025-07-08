@@ -5,10 +5,10 @@ import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DeleteCurrencyUseCaseTest {
     IRepository repository;
-    CurrencyCache currencyCache;
-    AccountCache accountCache;
+    CurrencyService currencyService;
+    AccountService accountService;
     DeleteCurrencyUseCase deleteCurrencyUseCase;
     CreateCurrencyUseCase createCurrencyUseCase;
     CreateAccountUseCase createAccountUseCase;
@@ -30,12 +30,12 @@ public class DeleteCurrencyUseCaseTest {
     @BeforeEach
     public void setUp() {
         repository = new RepositoryTest();
-        currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache(5);
-        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache, repository);
-        deleteCurrencyUseCase = new DeleteCurrencyUseCase( currencyCache,getAccountsUseCase,repository,null);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyCache,getAccountsUseCase, null,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountCache, currencyCache, getAccountsUseCase ,repository);
+        currencyService = new CurrencyService(repository);
+        accountService = new AccountService(5);
+        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService,getAccountsUseCase,repository,null);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService,getAccountsUseCase, null,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, getAccountsUseCase ,repository);
 
     }
 

@@ -1,25 +1,25 @@
 package useCaseTest.transaction;
 
+import Integrations.CourierTest;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.TransferFundsUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.AccountCache;
+import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.CurrencyCache;
+import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotPayableException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
-import me.BlockDynasty.Economy.domain.repository.IRepository;
+import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.RepositoryTest;
 import useCaseTest.transaction.MoksStubs.LoggerTest;
-import useCaseTest.transaction.MoksStubs.UpdateForwarderTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -31,8 +31,8 @@ public class TransferUseCaseTest {
     Account nullplague;
     Account cris;
     IRepository repository;
-    CurrencyCache currencyCache;
-    AccountCache accountCache;
+    CurrencyService currencyService;
+    AccountService accountService;
     GetAccountsUseCase getAccountsUseCase;
     GetCurrencyUseCase getCurrencyUseCase;
     TransferFundsUseCase transferFundsUseCase;
@@ -59,15 +59,15 @@ public class TransferUseCaseTest {
         repository.saveAccount(nullplague);
         repository.saveAccount(cris);
 
-        currencyCache = new CurrencyCache(repository);
-        accountCache = new AccountCache(5);
+        currencyService = new CurrencyService(repository);
+        accountService = new AccountService(5);
 
         //accountManager.addAccountToCache(account1); //se conecto el player1
         //accountManager.addAccountToCache(account2); //se conecto el player2
 
-        getAccountsUseCase = new GetAccountsUseCase(accountCache, currencyCache,repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyCache, repository);
-        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new UpdateForwarderTest(),new LoggerTest());
+        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
+        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
+        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest());
     }
 
     @Test

@@ -45,9 +45,12 @@ public class Balance {
         return currency;
     }
 
+    public boolean hasEnough(BigDecimal amount){
+        return this.amount.compareTo(amount) >= 0;
+    };
+
     public Result<Void> setBalance(BigDecimal amount){
         if(amount.doubleValue() < 0){
-            //throw new CurrencyAmountNotValidException("Amount must be greater than -1");
             return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
         }
         this.amount = amount;
