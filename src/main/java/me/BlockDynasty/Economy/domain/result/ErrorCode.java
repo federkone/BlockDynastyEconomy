@@ -10,7 +10,6 @@ public enum ErrorCode {
     INVALID_AMOUNT,  //validacion de montos
     DECIMAL_NOT_SUPPORTED, //validacion de montos
 
-
     CURRENCY_NOT_FOUND,
     CURRENCY_ALREADY_EXISTS,
     CURRENCY_NOT_PAYABLE,
@@ -19,6 +18,12 @@ public enum ErrorCode {
 
     OFFER_NOT_FOUND,
     OFFER_ALREADY_EXISTS,
+
+    BANK_NOT_FOUND,
+    BANK_ALREADY_EXISTS,
+    BANK_NOT_HAVE_BALANCE,
+    BANK_NOT_HAVE_CURRENCY,
+    BANK_NAME_CANNOT_BE_EMPTY,
 
     UNKNOWN_ERROR,
     DATA_BASE_ERROR,

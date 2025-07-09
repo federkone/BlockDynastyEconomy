@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Offer {
     private UUID vendedor;
     private UUID comprador;
-    private BigDecimal cantidad;
+    private BigDecimal cantidad;  //puede ser de tipo balance, compuesto por currency y cantidad.
     private Currency tipoCantidad;
     private BigDecimal monto;
     private Currency tipoMonto;

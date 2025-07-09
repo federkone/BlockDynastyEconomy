@@ -1,10 +1,8 @@
 package me.BlockDynasty.Economy.aplication.useCase.account;
 
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
@@ -35,9 +33,9 @@ public class GetAccountsUseCase {
         this.currencyService = currencyService;
     }
 
-    //todo: se esta tomando como lectura siempre en cache
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
+        //if result.isSuccess()) {}
        if(account == null){
             Criteria criteria = Criteria.create().filter("nickname", name).limit(1); //prepare for get account with uuid
             List<Account> accounts = this.dataStore.loadAccounts(criteria);
@@ -51,11 +49,9 @@ public class GetAccountsUseCase {
        return Result.success(account);
     }
 
-    //todo: se esta tomando como lectura siempre en cache
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
-
             Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
             List<Account> accounts =  this.dataStore.loadAccounts(criteria);
             if(!accounts.isEmpty()) {
@@ -84,7 +80,6 @@ public class GetAccountsUseCase {
             }
         }
     }
-
 
     public void updateAccountCache(UUID uuid){
         Account accountCache = this.accountService.getAccountCache(uuid);

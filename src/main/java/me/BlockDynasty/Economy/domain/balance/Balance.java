@@ -57,4 +57,22 @@ public class Balance {
         return Result.success(null);
     }
 
+    public Result<Void> subtract(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
+        }
+        if (!this.hasEnough(amount)) {
+            return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
+        }
+        this.amount = this.amount.subtract(amount);
+        return Result.success(null);
+    }
+
+    public Result<Void> add(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
+        }
+        this.amount = this.amount.add(amount);
+        return Result.success(null);
+    }
 }

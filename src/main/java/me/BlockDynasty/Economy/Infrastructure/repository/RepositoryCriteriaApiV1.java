@@ -91,16 +91,18 @@ public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency 
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .uniqueResult();
 
-        // Validación y mutación
-        Balance fromBal = from.getBalance(currency);
-        if (!from.hasEnough(currency,amount)) {
-            tx.rollback(); //para liberar el bloqueo pesimista
-            return Result.failure("Saldo insuficiente", ErrorCode.INSUFFICIENT_FUNDS);
+        if (from == null || to == null) {
+            tx.rollback();
+            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        fromBal.setBalance(fromBal.getBalance().subtract(amount));
 
-        Balance toBal = to.getBalance(currency);
-        toBal.setBalance(toBal.getBalance().add(amount));
+
+        Result<Void> result  = from.subtract(currency, amount);
+        if (!result.isSuccess()) {
+            tx.rollback(); //para liberar el bloqueo pesimista
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
+        to.add(currency, amount);
 
         tx.commit();
         return Result.success(new TransferResult(from,to)); //todo: retornar las cuentas resultantes actualizadas para la cache
@@ -108,6 +110,7 @@ public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency 
         return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
     }
 }
+
 @Override
 public Result<Account> withdraw(String accountUuid, Currency currency, BigDecimal amount) {
     try (Session session = sessionFactory.openSession()) {
@@ -126,13 +129,11 @@ public Result<Account> withdraw(String accountUuid, Currency currency, BigDecima
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Balance balance = account.getBalance(currency);
-        if (balance.getBalance().compareTo(amount) < 0) {
+        Result<Void> result = account.subtract(currency,amount);
+        if (!result.isSuccess()) {
             tx.rollback();
-            return Result.failure("Saldo insuficiente", ErrorCode.INSUFFICIENT_FUNDS);
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
-
-        balance.setBalance(balance.getBalance().subtract(amount));
 
         tx.commit();
         return Result.success(account);
@@ -140,6 +141,8 @@ public Result<Account> withdraw(String accountUuid, Currency currency, BigDecima
         return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
     }
 }
+
+//retornar entidad de modelo de infraestructura
 @Override
 public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount) {
     try (Session session = sessionFactory.openSession()) {
@@ -158,8 +161,11 @@ public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Balance balance = account.getBalance(currency);
-        balance.setBalance(balance.getBalance().add(amount));
+        Result<Void> result = account.subtract(currency, amount);
+        if (!result.isSuccess()){
+            tx.rollback();
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
 
         tx.commit();
         return Result.success(account);
@@ -186,8 +192,12 @@ public Result<Account> setBalance(String accountUuid, Currency currency, BigDeci
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Balance balance = account.getBalance(currency);
-        balance.setBalance(amount);
+        Result<Void> result = account.setBalance(currency, amount);
+
+       if (!result.isSuccess()) {
+            tx.rollback();
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+       }
 
         tx.commit();
         return Result.success(account);
@@ -196,46 +206,38 @@ public Result<Account> setBalance(String accountUuid, Currency currency, BigDeci
     }
     }
 @Override
-public Result<Account> exchange(String fromUuid, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo) {
+public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo) {
     try (Session session = sessionFactory.openSession()) {
         Transaction tx = session.beginTransaction();
 
-        Account from = session.createQuery(
+        Account player = session.createQuery(
                         "SELECT a FROM Account a " +
                                 "JOIN FETCH a.balances " +  // Fetch all balances
                                 "WHERE a.uuid = :uuid", Account.class)
-                .setParameter("uuid", fromUuid)
+                .setParameter("uuid", playerUUID)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .uniqueResult();
 
 
-        if ( from == null) {
+        if ( player == null) {
             tx.rollback();
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Balance fromBal = from.getBalance(fromCurrency);
-        if (fromBal == null){
+        Result<Void> resultSubtract = player.subtract(fromCurrency, amountFrom);
+        if (!resultSubtract.isSuccess()) {
             tx.rollback();
-            return Result.failure("Cuenta no tiene balance para la moneda de origen", ErrorCode.CURRENCY_NOT_FOUND);
-        }
-        if (fromBal.getBalance().compareTo(amountFrom) < 0) {
-            tx.rollback();
-
-            return Result.failure("Saldo insuficiente", ErrorCode.INSUFFICIENT_FUNDS);
+            return Result.failure(resultSubtract.getErrorMessage(), resultSubtract.getErrorCode());
         }
 
-        fromBal.setBalance(fromBal.getBalance().subtract(amountFrom));
-
-        Balance toBal = from.getBalance(toCurrency);
-        if (toBal == null){
+       Result<Void> resultAdd = player.add(toCurrency, amountTo);
+        if (!resultAdd.isSuccess()) {
             tx.rollback();
-            return Result.failure("Cuenta no tiene balance para la moneda a entregar", ErrorCode.CURRENCY_NOT_FOUND);
+            return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
         }
-        toBal.setBalance(toBal.getBalance().add(amountTo));
 
         tx.commit();
-        return Result.success(from);
+        return Result.success(player);
     } catch (Exception e) {
         return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
     }
@@ -268,28 +270,26 @@ public Result<Account> exchange(String fromUuid, Currency fromCurrency, BigDecim
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
 
-            // Get balances for both currencies for both accounts
-            Balance fromFromBal = from.getBalance(fromCurrency);//esta
-            Balance fromToBal = from.getBalance(toCurrency);//no esta
-            Balance toFromBal = to.getBalance(fromCurrency);//no esta
-            Balance toToBal = to.getBalance(toCurrency);//esta
-
-            // Check sufficient funds
-            if (fromFromBal.getBalance().compareTo(amountFrom) < 0) {
+            Result<Void> resultSubtractFrom = from.subtract(fromCurrency, amountFrom);
+            if (!resultSubtractFrom.isSuccess()) {
                 tx.rollback();
-                return Result.failure("Saldo insuficiente en la cuenta de origen", ErrorCode.INSUFFICIENT_FUNDS);
+                return Result.failure(resultSubtractFrom.getErrorMessage(), resultSubtractFrom.getErrorCode());
             }
-            if (toToBal.getBalance().compareTo(amountTo) < 0) {
+            Result<Void> resultSubtractTo = to.subtract(toCurrency, amountTo);
+            if (!resultSubtractTo.isSuccess()) {
                 tx.rollback();
-                return Result.failure("Saldo insuficiente en la cuenta de destino", ErrorCode.INSUFFICIENT_FUNDS);
+                return Result.failure(resultSubtractTo.getErrorMessage(), resultSubtractTo.getErrorCode());
             }
-
-            // Perform the trade
-            fromFromBal.setBalance(fromFromBal.getBalance().subtract(amountFrom)); // from loses fromCurrency
-            fromToBal.setBalance(fromToBal.getBalance().add(amountTo));            // from gains toCurrency
-
-            toToBal.setBalance(toToBal.getBalance().subtract(amountTo));           // to loses toCurrency
-            toFromBal.setBalance(toFromBal.getBalance().add(amountFrom));          // to gains fromCurrency
+            Result<Void> resultAddFrom = from.add(toCurrency, amountTo);
+            if (!resultAddFrom.isSuccess()) {
+                tx.rollback();
+                return Result.failure(resultAddFrom.getErrorMessage(), resultAddFrom.getErrorCode());
+            }
+            Result<Void> resultAddTo = to.add(fromCurrency, amountFrom);
+            if (!resultAddTo.isSuccess()) {
+                tx.rollback();
+                return Result.failure(resultAddTo.getErrorMessage(), resultAddTo.getErrorCode());
+            }
 
             tx.commit();
             return Result.success(new TransferResult(from, to));

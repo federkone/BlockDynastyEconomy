@@ -3,7 +3,7 @@ package me.BlockDynasty.Economy.domain.currency;
 
 import jakarta.persistence.*;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.ChatColorConverter;
-import org.bukkit.ChatColor;
+import org.bukkit.ChatColor;  //extraer a interfaz para separar de capa de dominio
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -30,7 +30,7 @@ public class Currency{
 
     @Column(name = "color")
     @Convert(converter = ChatColorConverter.class)
-    private ChatColor color ;
+    private ChatColor color ;//extraer a interfaz para separar de capa de dominio
 
     @Column(name = "decimal_supported")
     private boolean decimalSupported ;
@@ -87,6 +87,7 @@ public class Currency{
     public void setUuid(UUID uuid) {
         this.uuid = uuid.toString();
     }
+
     public void setSingular(String singular) {
         this.singular = singular;
     }

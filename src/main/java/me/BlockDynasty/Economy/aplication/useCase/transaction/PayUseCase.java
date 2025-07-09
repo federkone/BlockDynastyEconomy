@@ -81,6 +81,7 @@ public class PayUseCase {
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
+
         if(!currency.isValidAmount(amount)){
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }

@@ -1,5 +1,5 @@
 
-package me.BlockDynasty.Economy.domain.cheque;
+package me.BlockDynasty.Economy.Infrastructure.services;
 
 //todo: para utilizar la feature cheque, debemos declarar como dependencia a NBTAPI para manejar items del juego
 public class ChequeService {

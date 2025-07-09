@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.domain.account;
 
 import jakarta.persistence.*;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
@@ -39,6 +40,31 @@ public class Account {
         this.nickname = nickname;
         this.balances = balanceList;
         this.canReceiveCurrency = canReceiveCurrency;
+    }
+
+    public Result<Void> subtract(Currency currency, BigDecimal amount){
+        Balance balance = getBalance(currency);
+        if (balance == null) {
+            return Result.failure("No balance found for currency" , ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
+        }
+        Result<Void> result = balance.subtract(amount);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        return Result.success(null);
+    }
+
+    public Result<Void> add(Currency currency, BigDecimal amount) {
+        Balance balance = getBalance(currency);
+        if (balance == null) {
+            return Result.failure("No balance found for currency" , ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
+        } else {
+            Result<Void> result = balance.add(amount);
+            if (!result.isSuccess()) {
+                return result;
+            }
+        }
+        return Result.success(null);
     }
 
     public Result<Void> setBalance(Currency currency, BigDecimal amount) {
@@ -89,12 +115,12 @@ public class Account {
 //tiene monto
     public boolean hasEnough(Currency currency, BigDecimal amount){
         Balance balance = getBalance(currency);
-        return balance != null && balance.getBalance().compareTo(amount) >= 0;
+        return balance.hasEnough(amount);
     };
 
     public boolean hasEnough(BigDecimal amount){
         Balance balance = getBalance();
-        return balance != null && balance.getBalance().compareTo(amount) >= 0;
+        return balance.hasEnough(amount);
     };
 
     public void createBalance(Currency currency, BigDecimal amount) {

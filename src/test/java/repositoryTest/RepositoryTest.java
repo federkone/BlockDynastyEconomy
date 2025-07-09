@@ -106,24 +106,15 @@ public class RepositoryTest implements IRepository {
         Account toAccount = accounts.stream().filter(a -> a.getUuid().toString().equals(userTo)).findFirst().orElse(null);
 
 
-        if (fromAccount == null){
-            return Result.failure("From account not found", ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-        if (toAccount == null){
-            return Result.failure("To account not found", ErrorCode.ACCOUNT_NOT_FOUND);
+        if (fromAccount== null || toAccount == null) {
+            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        if (!fromAccount.hasEnough(currency,amount)){
-            return Result.failure("To account from not have balance", ErrorCode.INSUFFICIENT_FUNDS);
-        }
-
-        Result<Void> result =fromAccount.setBalance(currency, fromAccount.getBalance(currency).getBalance().subtract(amount));
+        Result<Void> result =fromAccount.subtract(currency, amount);
         if (!result.isSuccess()) {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
-
-        toAccount.setBalance(currency, toAccount.getBalance(currency).getBalance().add(amount));
-
+        toAccount.add(currency, amount);
         return Result.success(new TransferResult(fromAccount, toAccount));
     }
 
@@ -137,13 +128,10 @@ public class RepositoryTest implements IRepository {
             return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Balance balance = account.getBalance(currency.getSingular());
-
-        if(balance.getBalance().compareTo(amount) <0){
-            return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
+        Result<Void> result =account.subtract(currency, amount);
+        if (!result.isSuccess()) {
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
-        BigDecimal newBalance = balance.getBalance().subtract(amount);
-        balance.setBalance(newBalance);
         return Result.success(account);
 
     }
@@ -157,13 +145,12 @@ public class RepositoryTest implements IRepository {
         if (account == null) {
             return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        //depositar el balance
-        Balance balance = account.getBalance(currency.getSingular());
-        if (balance !=null){
-            account.setBalance(currency, account.getBalance(currency).getBalance().add(amount));
-            return Result.success(account);
-        }else {return Result.failure("Insufficient funds", ErrorCode.CURRENCY_NOT_FOUND); }
 
+        Result<Void> result = account.add(currency, amount);
+        if (!result.isSuccess()) {
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
+        }
+        return Result.success(account);
     }
 
     @Override
@@ -175,25 +162,20 @@ public class RepositoryTest implements IRepository {
         if (account == null) {
             return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        // Verificar si el balance es suficiente
-        Balance fromBalance = account.getBalance(fromCurrency.getSingular());
-        if (fromBalance == null || fromBalance.getBalance().compareTo(amountFrom) < 0) {
-            return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
-        }
-        // Verificar si la moneda de destino existe
-        Balance toBalance = account.getBalance(toCurrency.getSingular());
-        if (toBalance == null) {
-            return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
-        }
-        // Realizar la transacción
-        fromBalance.setBalance(fromBalance.getBalance().subtract(amountFrom));
-        toBalance.setBalance(toBalance.getBalance().add(amountTo));
-        // Actualizar la cuenta
-        accounts.remove(account);
-        accounts.add(account);
-        // Retornar el resultado
-        return Result.success(account);
 
+        Result<Void> resultSubtract = account.subtract(fromCurrency, amountFrom);
+        if (!resultSubtract.isSuccess()) {
+
+            return Result.failure(resultSubtract.getErrorMessage(), resultSubtract.getErrorCode());
+        }
+
+        Result<Void> resultAdd = account.add(toCurrency, amountTo);
+        if (!resultAdd.isSuccess()) {
+
+            return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
+        }
+
+        return Result.success(account);
     }
 
     @Override
@@ -207,33 +189,29 @@ public class RepositoryTest implements IRepository {
                 .findFirst()
                 .orElse(null);
 
-        if (fromAccount == null) {
+        if (fromAccount == null || toAccount == null) {
             return Result.failure("From account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        if (toAccount == null) {
-            return Result.failure("To account not found", ErrorCode.ACCOUNT_NOT_FOUND);
+
+        Result<Void> resultSubtractFrom = fromAccount.subtract(fromCurrency, amountFrom);
+        if (!resultSubtractFrom.isSuccess()) {
+
+            return Result.failure(resultSubtractFrom.getErrorMessage(), resultSubtractFrom.getErrorCode());
+        }
+        Result<Void> resultSubtractTo = toAccount.subtract(toCurrency, amountTo);
+        if (!resultSubtractTo.isSuccess()) {
+            return Result.failure(resultSubtractTo.getErrorMessage(), resultSubtractTo.getErrorCode());
+        }
+        Result<Void> resultAddFrom = fromAccount.add(toCurrency, amountTo);
+        if (!resultAddFrom.isSuccess()) {
+            return Result.failure(resultAddFrom.getErrorMessage(), resultAddFrom.getErrorCode());
+        }
+        Result<Void> resultAddTo = toAccount.add(fromCurrency, amountFrom);
+        if (!resultAddTo.isSuccess()) {
+            return Result.failure(resultAddTo.getErrorMessage(), resultAddTo.getErrorCode());
         }
 
-        Balance fromBalance = fromAccount.getBalance(fromCurrency.getSingular());
-        if (fromBalance == null || fromBalance.getBalance().compareTo(amountFrom) < 0) {
-            return Result.failure("Insufficient funds in the from account", ErrorCode.INSUFFICIENT_FUNDS);
-        }
-        Balance toBalance = toAccount.getBalance(toCurrency.getSingular());
-        if (toBalance == null || toBalance.getBalance().compareTo(amountTo) < 0) {
-            return Result.failure("Insufficient funds in the to account", ErrorCode.INSUFFICIENT_FUNDS);
-        }
-        // Perform the trade
-        // fromAccount: pierde fromCurrency, gana toCurrency
-        fromBalance.setBalance(fromBalance.getBalance().subtract(amountFrom));
-        Balance fromToBalance = fromAccount.getBalance(toCurrency.getSingular());
-        fromToBalance.setBalance(fromToBalance.getBalance().add(amountTo));
 
-// toAccount: pierde toCurrency, gana fromCurrency
-        Balance toFromBalance = toAccount.getBalance(fromCurrency.getSingular());
-        toFromBalance.setBalance(toFromBalance.getBalance().add(amountFrom));
-        toBalance.setBalance(toBalance.getBalance().subtract(amountTo));
-
-        // Return the transfer result
         return Result.success(new TransferResult(fromAccount, toAccount));
     }
 
@@ -246,14 +224,13 @@ public class RepositoryTest implements IRepository {
         if (account == null) {
             return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        // Establecer el balance
-        Balance balance = account.getBalance(currency.getSingular());
-        if (balance != null) {
-            balance.setBalance(amount);
-            return Result.success(account);
-        } else {
-            return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
+        Result<Void> result = account.setBalance(currency, amount);
+
+        if (!result.isSuccess()) {
+            return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
+
+        return Result.success(account);
     }
 
 

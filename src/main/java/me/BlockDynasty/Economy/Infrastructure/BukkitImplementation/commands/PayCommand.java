@@ -82,6 +82,7 @@ public class PayCommand implements CommandExecutor {
                         targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));
                     }
                 } else {
+                    //player.sendMessage(result.getErrorMessage());
                     switch (result.getErrorCode()){
                         case ACCOUNT_NOT_FOUND:
                             player.sendMessage(messageService.getAccountNotFoundMessage());

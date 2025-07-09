@@ -20,8 +20,7 @@ public class DepositUseCase {
     private final Log economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public DepositUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                          Courier updateForwarder, Log economyLogger){
+    public DepositUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger){
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
