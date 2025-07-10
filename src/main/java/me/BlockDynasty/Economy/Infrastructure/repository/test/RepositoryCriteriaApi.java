@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository;
+package me.BlockDynasty.Economy.Infrastructure.repository.test;
 
 //TODO: PODEMOS IMPLEMENTAR UN SISTEMA DE RETRY NATIVO DE HIBERNATE, INVESTIGAR
 //TODO: TAMBIEN PODEMOS AGREGAR UNA CACHE NIVEL 1 PARA CACHCEAR CONSULTAR Y AUMENTAR PERFORMANCE

@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository;
+package me.BlockDynasty.Economy.Infrastructure.repository.test;
 
 //import dev.morphia.query.filters.Filters;
 

@@ -115,15 +115,21 @@ public class Account {
 //tiene monto
     public boolean hasEnough(Currency currency, BigDecimal amount){
         Balance balance = getBalance(currency);
+        if (balance == null) {
+            return false;
+        }
         return balance.hasEnough(amount);
     };
 
     public boolean hasEnough(BigDecimal amount){
         Balance balance = getBalance();
+        if (balance == null) {
+            return false;
+        }
         return balance.hasEnough(amount);
     };
 
-    public void createBalance(Currency currency, BigDecimal amount) {
+    private void createBalance(Currency currency, BigDecimal amount) {
         Balance balance = new Balance(currency, amount);
         balances.add(balance);
     }

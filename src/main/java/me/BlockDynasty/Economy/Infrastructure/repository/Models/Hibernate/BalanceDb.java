@@ -2,11 +2,12 @@ package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.balance.Balance;
+
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "account_balances")
-public class BalanceDb {
+public class BalanceDb  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -23,10 +24,10 @@ public class BalanceDb {
     public BalanceDb(Balance balance){
         this.currencyMapper = new CurrencyDb(balance.getCurrency());
         this.amount = balance.getBalance();
-
     }
 
     public Balance toEntity(){
         return new Balance(currencyMapper.toEntity(), amount);
     }
+
 }

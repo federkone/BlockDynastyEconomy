@@ -5,7 +5,7 @@
  * any contents as your own will break the terms of the license, and void any agreements with you, the third party.
  * Thank you.
  */
-package me.BlockDynasty.Economy.Infrastructure.repository;
+package me.BlockDynasty.Economy.Infrastructure.repository.test;
 
 public class YamlStorage {
     /*public final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();

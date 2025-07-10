@@ -3,18 +3,14 @@ package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.balance.Balance;
+
 import java.util.*;
 
 @Entity
 @Table(name = "accounts")
 public class AccountDb {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private int id;
-
     @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-    //@Convert(converter = UUIDConverter.class)
     private String uuid;
 
     @Column(name = "nickname")
@@ -48,5 +44,6 @@ public class AccountDb {
         }
         return new Account(UUID.fromString(uuid), nickname, balanceList, canReceiveCurrency);
     }
+
 
 }

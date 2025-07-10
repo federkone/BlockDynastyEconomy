@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler;
+package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.MongoDb;
 
 /*import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

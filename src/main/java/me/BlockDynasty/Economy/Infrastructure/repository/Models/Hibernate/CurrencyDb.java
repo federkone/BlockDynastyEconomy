@@ -10,15 +10,9 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "currencies")
-//@Converter(autoApply = true)
 public class CurrencyDb {
-    //@Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    //private int id;
-
     @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-    //@Convert(converter = UUIDConverter.class)
     private String uuid;
 
     @Column(name = "name_singular")

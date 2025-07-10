@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository;
+package me.BlockDynasty.Economy.Infrastructure.repository.test;
 
 public class RepositoryMsql  {
     /*private HikariDataSource hikari;

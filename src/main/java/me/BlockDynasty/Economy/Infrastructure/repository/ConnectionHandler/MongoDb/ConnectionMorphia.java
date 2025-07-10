@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler;
+package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.MongoDb;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 
@@ -7,7 +7,6 @@ import com.mongodb.client.MongoClients;
 import me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb.AccountMongoDb;
 import me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb.BalanceMongoDb;
 import me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb.CurrencyMongoDb;
-import me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb.*;
 
 public class ConnectionMorphia {
     private static Datastore datastore;

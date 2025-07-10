@@ -73,7 +73,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         try {
             initRepository();
             initCoreServices();
@@ -104,7 +103,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     public void initRepository() {
         UtilServer.consoleLog("§a Initializing data store BlockDynastyEconomy...");
-        Result<IRepository> result = InitDatabase.init(getConfig());
+        Result<IRepository> result = InitDatabase.init(this);
         if (result.isSuccess()) {
             repository = result.getValue();
             UtilServer.consoleLog("§a Data store BlockDynastyEconomy initialized successfully.");

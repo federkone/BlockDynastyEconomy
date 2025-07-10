@@ -2,12 +2,11 @@ package me.BlockDynasty.Economy.Infrastructure.repository;
 
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.criteria.*;
+import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.balance.Balance;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Filter;
-import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.ConnectionHibernate;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
@@ -21,14 +20,14 @@ import java.util.List;
 import java.util.function.Consumer;
 //TODO: PODEMOS IMPLEMENTAR UN SISTEMA DE RETRY NATIVO DE HIBERNATE, INVESTIGAR
 //TODO: TAMBIEN PODEMOS AGREGAR UNA CACHE NIVEL 1 PARA CACHCEAR CONSULTAR Y AUMENTAR PERFORMANCE
-public class RepositoryCriteriaApiV1 implements IRepository
+public class RepositorySql implements IRepository
 {
     private final SessionFactory sessionFactory;
     private boolean topSupported = true;
 
-    public RepositoryCriteriaApiV1(ConnectionHibernate connectionHibernate) {
+    public RepositorySql(Connection connection) {
 
-        this.sessionFactory = connectionHibernate.getSession();
+        this.sessionFactory = connection.getSession();
     }
     @Override
     public void loadCurrencies() {
@@ -96,14 +95,14 @@ public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency 
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-
+        //---logica de negocio de la cuenta
         Result<Void> result  = from.subtract(currency, amount);
         if (!result.isSuccess()) {
             tx.rollback(); //para liberar el bloqueo pesimista
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
         to.add(currency, amount);
-
+        //---------------------------------------
         tx.commit();
         return Result.success(new TransferResult(from,to)); //todo: retornar las cuentas resultantes actualizadas para la cache
     } catch (Exception e) {
@@ -129,12 +128,13 @@ public Result<Account> withdraw(String accountUuid, Currency currency, BigDecima
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
+        //---logica de negocio de la cuenta
         Result<Void> result = account.subtract(currency,amount);
         if (!result.isSuccess()) {
             tx.rollback();
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
-
+       //--------------
         tx.commit();
         return Result.success(account);
     } catch (Exception e) {
@@ -147,7 +147,6 @@ public Result<Account> withdraw(String accountUuid, Currency currency, BigDecima
 public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount) {
     try (Session session = sessionFactory.openSession()) {
         Transaction tx = session.beginTransaction();
-
         Account account = session.createQuery(
                         "SELECT a FROM Account a JOIN FETCH a.balances b " +
                                 " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
@@ -161,11 +160,13 @@ public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        Result<Void> result = account.subtract(currency, amount);
+        //---logica de negocio de la cuenta
+        Result<Void> result = account.add(currency, amount);
         if (!result.isSuccess()){
             tx.rollback();
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
+       //-------------------------------
 
         tx.commit();
         return Result.success(account);
@@ -191,13 +192,13 @@ public Result<Account> setBalance(String accountUuid, Currency currency, BigDeci
             tx.rollback();
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-
+        //---logica de negocio de la cuenta
         Result<Void> result = account.setBalance(currency, amount);
-
        if (!result.isSuccess()) {
             tx.rollback();
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
        }
+      //-------------------------------------
 
         tx.commit();
         return Result.success(account);
@@ -224,6 +225,7 @@ public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDec
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
+        //---logica de negocio de la cuenta
         Result<Void> resultSubtract = player.subtract(fromCurrency, amountFrom);
         if (!resultSubtract.isSuccess()) {
             tx.rollback();
@@ -235,7 +237,7 @@ public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDec
             tx.rollback();
             return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
         }
-
+        //--------------------------------------------
         tx.commit();
         return Result.success(player);
     } catch (Exception e) {
@@ -269,7 +271,7 @@ public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDec
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
-
+            //---logica de negocio de la cuenta-------------------
             Result<Void> resultSubtractFrom = from.subtract(fromCurrency, amountFrom);
             if (!resultSubtractFrom.isSuccess()) {
                 tx.rollback();
@@ -290,7 +292,7 @@ public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDec
                 tx.rollback();
                 return Result.failure(resultAddTo.getErrorMessage(), resultAddTo.getErrorCode());
             }
-
+            //-----------------------------------------------------------
             tx.commit();
             return Result.success(new TransferResult(from, to));
         } catch (Exception e) {

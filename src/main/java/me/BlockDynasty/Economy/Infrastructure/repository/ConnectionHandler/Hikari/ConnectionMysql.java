@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler;
+package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hikari;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
