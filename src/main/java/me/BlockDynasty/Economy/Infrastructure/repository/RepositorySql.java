@@ -58,6 +58,9 @@ public class RepositorySql implements IRepository
             Account account= session.createQuery("SELECT a FROM Account a WHERE a.uuid = :uuid", Account.class)
                     .setParameter("uuid", uuid)
                     .uniqueResult();
+            if (account == null) {
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
             return Result.success(account);
         } catch (Exception e) {
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
@@ -70,6 +73,9 @@ public class RepositorySql implements IRepository
             Account account = session.createQuery("SELECT a FROM Account a WHERE a.nickname = :name", Account.class)
                     .setParameter("nickname", name)
                     .uniqueResult();
+            if (account == null) {
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
             return Result.success(account);
         } catch (Exception e) {
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);

@@ -14,7 +14,7 @@ public class UtilServer {
         if(debugEnabled) getServer().getConsoleSender().sendMessage(Console_Prefix + colorize(message));
     }
 
-    public static void consoleLog(Throwable message){
+    public static void consoleLogError(String message){
         getServer().getConsoleSender().sendMessage(Error_Prefix + message);
     }
 

@@ -27,7 +27,7 @@ public class CreateAccountUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
-    public Result<Void> execute(UUID userUuid , String userName) {
+    public Result<Account> execute(UUID userUuid , String userName) {
         Result<Account> accountResult =  this.getAccountsUseCase.getAccount(userUuid);
         if (accountResult.isSuccess()) {
             return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
@@ -41,7 +41,7 @@ public class CreateAccountUseCase {
         } catch (TransactionException t) {
             return Result.failure("Error creating account for: " + account.getNickname(), ErrorCode.DATA_BASE_ERROR);
         }
-        return Result.success(null);
+        return Result.success(account);
     }
 
     private void initializeAccountWithDefaultCurrencies(Account account) {

@@ -29,12 +29,12 @@ public class GetAccountsUseCase {
         Account account = this.accountService.getAccountCache(name);
        if(account == null){
             Result<Account> result = this.dataStore.loadAccountByName(name);
-            if(!result.isSuccess()) {
+            if(result.isSuccess()) {
+                account = result.getValue();
+                updateAccountBalances(account);
+            }else{
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
-           account = result.getValue();
-           this.accountService.addAccountToCache(account);
-           updateAccountBalances(account);
        }
        return Result.success(account);
     }
@@ -43,12 +43,12 @@ public class GetAccountsUseCase {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
             Result<Account> result = this.dataStore.loadAccountByUuid(uuid.toString());
-            if(!result.isSuccess()) {
+           if(result.isSuccess()) {
+                account = result.getValue();
+                updateAccountBalances(account);
+            }else{
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            account = result.getValue();
-            this.accountService.addAccountToCache(account);
-            updateAccountBalances(account);
        }
        return Result.success(account);
     }
