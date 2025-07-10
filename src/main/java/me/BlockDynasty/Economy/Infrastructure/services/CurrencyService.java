@@ -76,4 +76,9 @@ public class CurrencyService implements ICurrencyService {
                 .orElse(defaultCurrency);
     }
 
+    @Override
+    public boolean existsDefaultCurrency() {
+        return this.currencies.stream().anyMatch(Currency::isDefaultCurrency);
+    }
+
 }

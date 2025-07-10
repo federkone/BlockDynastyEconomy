@@ -15,4 +15,5 @@ public interface ICurrencyService {
     Currency getDefaultCurrency();
     boolean currencyExist(String name);
     void updateDefaultCurrency();
+    boolean existsDefaultCurrency();
 }

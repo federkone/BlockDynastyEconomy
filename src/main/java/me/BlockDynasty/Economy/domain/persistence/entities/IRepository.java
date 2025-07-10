@@ -4,6 +4,7 @@ import me.BlockDynasty.Economy.domain.persistence.transaction.ITransactions;
 import me.BlockDynasty.Economy.domain.account.Account;
 import me.BlockDynasty.Economy.domain.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.domain.result.Result;
 
 import java.util.List;
 
@@ -15,7 +16,8 @@ public interface IRepository extends ITransactions {
     void deleteCurrency(Currency currency);
 
     List<Account> loadAccounts(Criteria criteria); //una cuenta de un criterio
-    //void loadAccounts(Criteria criteria, Callback<Account> callback);
+    Result<Account> loadAccountByUuid(String uuid);
+    public Result<Account> loadAccountByName(String name);
     void createAccount(Account account);
     void saveAccount(Account account);
     //void deleteAccount(Account account);

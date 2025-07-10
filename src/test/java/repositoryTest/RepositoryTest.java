@@ -81,6 +81,24 @@ public class RepositoryTest implements IRepository {
     }
 
     @Override
+    public Result<Account> loadAccountByUuid(String uuid) {
+        return accounts.stream()
+                .filter(account -> account.getUuid().toString().equals(uuid))
+                .findFirst()
+                .map(Result::success)
+                .orElseGet(() -> Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND));
+    }
+
+    @Override
+    public Result<Account> loadAccountByName(String name) {
+        return accounts.stream()
+                .filter(account -> account.getNickname().equals(name))
+                .findFirst()
+                .map(Result::success)
+                .orElseGet(() -> Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND));
+    }
+
+    @Override
     public void createAccount(Account account) {
         this.accounts.add(account);
     }

@@ -18,8 +18,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-//TODO: PODEMOS IMPLEMENTAR UN SISTEMA DE RETRY NATIVO DE HIBERNATE, INVESTIGAR
-//TODO: TAMBIEN PODEMOS AGREGAR UNA CACHE NIVEL 1 PARA CACHCEAR CONSULTAR Y AUMENTAR PERFORMANCE
+
 public class RepositorySql implements IRepository
 {
     private final SessionFactory sessionFactory;
@@ -54,6 +53,30 @@ public class RepositorySql implements IRepository
     }
 
     @Override
+    public Result<Account> loadAccountByUuid(String uuid) throws TransactionException {
+        try (Session session = sessionFactory.openSession()) {
+            Account account= session.createQuery("SELECT a FROM Account a WHERE a.uuid = :uuid", Account.class)
+                    .setParameter("uuid", uuid)
+                    .uniqueResult();
+            return Result.success(account);
+        } catch (Exception e) {
+            return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+
+    @Override
+    public Result<Account> loadAccountByName(String name) throws TransactionException {
+        try (Session session = sessionFactory.openSession()) {
+            Account account = session.createQuery("SELECT a FROM Account a WHERE a.nickname = :name", Account.class)
+                    .setParameter("nickname", name)
+                    .uniqueResult();
+            return Result.success(account);
+        } catch (Exception e) {
+            return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+
+    @Override
     public void createAccount(Account account)throws TransactionException {
         executeInsideTransaction(session -> session.persist(account));
     }
@@ -63,120 +86,117 @@ public class RepositorySql implements IRepository
         executeInsideTransaction(session -> session.merge(account));
     }
 
+    //-----------transactions-------------------
     public void transfer(Account userFrom, Account userTo)throws TransactionException {
         executeInsideTransaction(session -> {
             session.merge(userFrom);
             session.merge(userTo);
         });
     }
-@Override
-public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount) {
-    try (Session session = sessionFactory.openSession()) {
-        Transaction tx = session.beginTransaction();
-
-        Account from = session.createQuery(
-                        "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
-                .setParameter("uuid", fromUuid)
-                .setParameter("currency", currency)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .uniqueResult();
-
-        Account to = session.createQuery(
-                        "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
-                .setParameter("uuid", toUuid)
-                .setParameter("currency", currency)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .uniqueResult();
-
-        if (from == null || to == null) {
-            tx.rollback();
-            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-
-        //---logica de negocio de la cuenta
-        Result<Void> result  = from.subtract(currency, amount);
-        if (!result.isSuccess()) {
-            tx.rollback(); //para liberar el bloqueo pesimista
-            return Result.failure(result.getErrorMessage(), result.getErrorCode());
-        }
-        to.add(currency, amount);
-        //---------------------------------------
-        tx.commit();
-        return Result.success(new TransferResult(from,to)); //todo: retornar las cuentas resultantes actualizadas para la cache
-    } catch (Exception e) {
-        return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
-    }
-}
-
-@Override
-public Result<Account> withdraw(String accountUuid, Currency currency, BigDecimal amount) {
-    try (Session session = sessionFactory.openSession()) {
-        Transaction tx = session.beginTransaction();
-
-        Account account = session.createQuery(
-                        "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
-                .setParameter("uuid", accountUuid)
-                .setParameter("currency", currency)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .uniqueResult();
-
-        if (account == null) {
-            tx.rollback();
-            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-
-        //---logica de negocio de la cuenta
-        Result<Void> result = account.subtract(currency,amount);
-        if (!result.isSuccess()) {
-            tx.rollback();
-            return Result.failure(result.getErrorMessage(), result.getErrorCode());
-        }
-       //--------------
-        tx.commit();
-        return Result.success(account);
-    } catch (Exception e) {
-        return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
-    }
-}
-
-//retornar entidad de modelo de infraestructura
-@Override
-public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount) {
-    try (Session session = sessionFactory.openSession()) {
-        Transaction tx = session.beginTransaction();
-        Account account = session.createQuery(
-                        "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
-                .setParameter("uuid", accountUuid)
-                .setParameter("currency", currency)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .uniqueResult();
-
-        if (account == null) {
-            tx.rollback();
-            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
-        }
-
-        //---logica de negocio de la cuenta
-        Result<Void> result = account.add(currency, amount);
-        if (!result.isSuccess()){
-            tx.rollback();
-            return Result.failure(result.getErrorMessage(), result.getErrorCode());
-        }
-       //-------------------------------
-
-        tx.commit();
-        return Result.success(account);
-    } catch (Exception e) {
-        return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
-    }
-}
-//set balance va a reemplazar su balance por el recibido por parametro
     @Override
-public Result<Account> setBalance(String accountUuid, Currency currency, BigDecimal amount) {
+    public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+
+            Account from = session.createQuery(
+                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+                    .setParameter("uuid", fromUuid)
+                    .setParameter("currency", currency)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .uniqueResult();
+
+            Account to = session.createQuery(
+                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+                    .setParameter("uuid", toUuid)
+                    .setParameter("currency", currency)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .uniqueResult();
+
+            if (from == null || to == null) {
+                tx.rollback();
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+
+            //---logica de negocio de la cuenta
+            Result<Void> result  = from.subtract(currency, amount);
+            if (!result.isSuccess()) {
+                tx.rollback(); //para liberar el bloqueo pesimista
+                return Result.failure(result.getErrorMessage(), result.getErrorCode());
+            }
+            to.add(currency, amount);
+            //---------------------------------------
+            tx.commit();
+            return Result.success(new TransferResult(from,to)); //todo: retornar las cuentas resultantes actualizadas para la cache
+        } catch (Exception e) {
+            return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+    @Override
+    public Result<Account> withdraw(String accountUuid, Currency currency, BigDecimal amount) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+
+            Account account = session.createQuery(
+                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+                    .setParameter("uuid", accountUuid)
+                    .setParameter("currency", currency)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .uniqueResult();
+
+            if (account == null) {
+                tx.rollback();
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+
+            //---logica de negocio de la cuenta
+            Result<Void> result = account.subtract(currency,amount);
+            if (!result.isSuccess()) {
+                tx.rollback();
+                return Result.failure(result.getErrorMessage(), result.getErrorCode());
+            }
+           //--------------
+            tx.commit();
+            return Result.success(account);
+        } catch (Exception e) {
+            return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+    @Override
+    public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            Account account = session.createQuery(
+                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+                    .setParameter("uuid", accountUuid)
+                    .setParameter("currency", currency)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .uniqueResult();
+
+            if (account == null) {
+                tx.rollback();
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+
+            //---logica de negocio de la cuenta
+            Result<Void> result = account.add(currency, amount);
+            if (!result.isSuccess()){
+                tx.rollback();
+                return Result.failure(result.getErrorMessage(), result.getErrorCode());
+            }
+           //-------------------------------
+
+            tx.commit();
+            return Result.success(account);
+        } catch (Exception e) {
+            return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+    @Override
+    public Result<Account> setBalance(String accountUuid, Currency currency, BigDecimal amount) {
     try (Session session = sessionFactory.openSession()) {
         Transaction tx = session.beginTransaction();
 
@@ -206,44 +226,44 @@ public Result<Account> setBalance(String accountUuid, Currency currency, BigDeci
         return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
     }
     }
-@Override
-public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo) {
-    try (Session session = sessionFactory.openSession()) {
-        Transaction tx = session.beginTransaction();
+    @Override
+    public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
 
-        Account player = session.createQuery(
-                        "SELECT a FROM Account a " +
-                                "JOIN FETCH a.balances " +  // Fetch all balances
-                                "WHERE a.uuid = :uuid", Account.class)
-                .setParameter("uuid", playerUUID)
-                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                .uniqueResult();
+            Account player = session.createQuery(
+                            "SELECT a FROM Account a " +
+                                    "JOIN FETCH a.balances " +  // Fetch all balances
+                                    "WHERE a.uuid = :uuid", Account.class)
+                    .setParameter("uuid", playerUUID)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                    .uniqueResult();
 
 
-        if ( player == null) {
-            tx.rollback();
-            return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            if ( player == null) {
+                tx.rollback();
+                return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
+            }
+
+            //---logica de negocio de la cuenta
+            Result<Void> resultSubtract = player.subtract(fromCurrency, amountFrom);
+            if (!resultSubtract.isSuccess()) {
+                tx.rollback();
+                return Result.failure(resultSubtract.getErrorMessage(), resultSubtract.getErrorCode());
+            }
+
+           Result<Void> resultAdd = player.add(toCurrency, amountTo);
+            if (!resultAdd.isSuccess()) {
+                tx.rollback();
+                return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
+            }
+            //--------------------------------------------
+            tx.commit();
+            return Result.success(player);
+        } catch (Exception e) {
+            return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
-
-        //---logica de negocio de la cuenta
-        Result<Void> resultSubtract = player.subtract(fromCurrency, amountFrom);
-        if (!resultSubtract.isSuccess()) {
-            tx.rollback();
-            return Result.failure(resultSubtract.getErrorMessage(), resultSubtract.getErrorCode());
-        }
-
-       Result<Void> resultAdd = player.add(toCurrency, amountTo);
-        if (!resultAdd.isSuccess()) {
-            tx.rollback();
-            return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
-        }
-        //--------------------------------------------
-        tx.commit();
-        return Result.success(player);
-    } catch (Exception e) {
-        return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
     }
-}
     @Override
     public Result<TransferResult> trade(String fromUuid, String toUuid, Currency fromCurrency, Currency toCurrency, BigDecimal amountFrom, BigDecimal amountTo) {
         try (Session session = sessionFactory.openSession()) {
@@ -299,6 +319,7 @@ public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDec
             return Result.failure("Error en la base de datos: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
     }
+    //-----------------------------------------------------------
     @Override
     public boolean isTopSupported() {
         return topSupported;

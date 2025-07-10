@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.aplication.event;
+package me.BlockDynasty.Economy.domain.event;
 
 public class PayEvent{//} extends Event implements Cancellable {
 

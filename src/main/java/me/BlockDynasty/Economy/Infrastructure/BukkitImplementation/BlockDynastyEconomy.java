@@ -3,6 +3,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.BalanceGUICommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.PayGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
@@ -78,12 +79,11 @@ public class BlockDynastyEconomy extends JavaPlugin {
             initCoreServices();
             registerCommands();
             registerEvents();
-            //registerGUI();
+            registerGUI();
             setupIntegrations();
-            UtilServer.consoleLog("Plugin enabled successfully!");  //utilServer.consoleLog("Plugin enabled successfully!");
+            UtilServer.consoleLog("Plugin enabled successfully!");
         } catch (Exception e) {
-            UtilServer.consoleLog("An error occurred during plugin initialization: " + e.getMessage()); //utilServer.consoleLog("An error occurred during plugin initialization: " + e.getMessage());
-            e.printStackTrace();
+            UtilServer.consoleLog("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -139,6 +139,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         this.guiService = new GUIService();
         // Register BalanceGUI command
         this.getCommand("balancegui").setExecutor(new BalanceGUICommand(this));
+        this.getCommand("paygui").setExecutor(new PayGUICommand(this, usesCaseFactory.getPayUseCase(), currencyService));
 
         // Register GUI event listener
         getServer().getPluginManager().registerEvents(
@@ -147,7 +148,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new EconomyListener(this, usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService), this);
+        getServer().getPluginManager().registerEvents(new EconomyListener( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService), this);
     }
     private void setupIntegrations() {
         // Configuración de Vault

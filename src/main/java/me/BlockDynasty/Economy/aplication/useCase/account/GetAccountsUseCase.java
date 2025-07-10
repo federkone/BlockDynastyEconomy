@@ -19,14 +19,6 @@ public class GetAccountsUseCase {
     private final IRepository dataStore;
     private final ICurrencyService currencyService;
 
-//TODO: PENSAR EN ESTA LOGICA, DONDED SE DETECTA UN CAMBIO DE NOMBRE SEGUN LA OBTENCION DE JUGADOR POR UUID
-    /* acc = getAccountsUseCase.getAccount(player.getUniqueId());
-   if(!acc.getNickname().equals(player.getName()))
-       acc.setNickname(player.getName());
-   UtilServer.consoleLog("Account name changes detected, updating: " + player.getName());
-   plugin.getDataStore().saveAccount(acc);  */
-    //TODO----------------------------------------------------------------
-
     public GetAccountsUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
         this.accountService = accountService;
         this.dataStore = dataStore;
@@ -35,16 +27,14 @@ public class GetAccountsUseCase {
 
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
-        //if result.isSuccess()) {}
        if(account == null){
-            Criteria criteria = Criteria.create().filter("nickname", name).limit(1); //prepare for get account with uuid
-            List<Account> accounts = this.dataStore.loadAccounts(criteria);
-            if(!accounts.isEmpty()) {
-                account = accounts.get(0);
-                this.updateAccountBalances(account);//AUTOMATICAMENTE CHEQUEA SI EL BALANCE DE LA CUENTA ESTA ACTUALIZADO CON LAS MONEDAS DEL SISTEMA
-            }else{
+            Result<Account> result = this.dataStore.loadAccountByName(name);
+            if(!result.isSuccess()) {
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
+           account = result.getValue();
+           this.accountService.addAccountToCache(account);
+           updateAccountBalances(account);
        }
        return Result.success(account);
     }
@@ -52,17 +42,23 @@ public class GetAccountsUseCase {
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
-            Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
-            List<Account> accounts =  this.dataStore.loadAccounts(criteria);
-            if(!accounts.isEmpty()) {
-                account = accounts.get(0);
-                this.updateAccountBalances(account);
-                //accountManager.addAccountToCache(account); //añadir a cache??
-            }else{
+            Result<Account> result = this.dataStore.loadAccountByUuid(uuid.toString());
+            if(!result.isSuccess()) {
                 return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
             }
+            account = result.getValue();
+            this.accountService.addAccountToCache(account);
+            updateAccountBalances(account);
        }
        return Result.success(account);
+    }
+
+    public List<Account> getDbAccounts() {
+        return  this.dataStore.loadAccounts(Criteria.create());
+    }
+
+    public Set<Account> getOnlineAccounts() {
+        return  this.accountService.getAccountsCache();
     }
 
     public void updateAccountCache(Account account) {
@@ -80,7 +76,17 @@ public class GetAccountsUseCase {
             }
         }
     }
-
+    public void updateAccountsCache(){ //todo, test
+        Set<Account> accounts =  this.accountService.getAccountsCache();   //todas las cuentas de cache
+        for (Account account : accounts) {
+            this.updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
+            try {
+                dataStore.saveAccount(account); //guardar en db los cambios hechos sobre sus balances, ya sea haber agregado, o quitado
+            } catch (TransactionException e) {
+                throw new TransactionException("Error in transaction", e);
+            }
+        }
+    }
     public void updateAccountCache(UUID uuid){
         Account accountCache = this.accountService.getAccountCache(uuid);
         Account accountDb = null;
@@ -94,26 +100,17 @@ public class GetAccountsUseCase {
             throw new AccountNotFoundException("Account not found");
         }
     }
-
-    public List<Account> getAllAccounts() {
-        return  this.dataStore.loadAccounts(Criteria.create());
-    }
-
-    public Set<Account> getOnlineAccounts() {
-        return  this.accountService.getAccountsCache();
-    }
-
-    @Deprecated
-    public void updateAccountsCache(){ //todo, test
-        Set<Account> accounts =  this.accountService.getAccountsCache();   //todas las cuentas de cache
-        for (Account account : accounts) {
-            this.updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
-            try {
-                dataStore.saveAccount(account); //guardar en db los cambios hechos sobre sus balances, ya sea haber agregado, o quitado
-            } catch (TransactionException e) {
-                throw new TransactionException("Error in transaction", e);
-            }
-        }
+    private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
+        List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
+                .map(systemCurrency ->
+                        account.getBalances().stream()
+                                .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
+                                .findFirst() // Busca si ya existe el balance para esta moneda
+                                .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
+                                    return new Balance(systemCurrency);
+                                }))
+                .collect(Collectors.toList());
+        account.setBalances(updatedBalances);
     }
 
    public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {
@@ -148,16 +145,4 @@ public class GetAccountsUseCase {
        return Result.success(accounts);
    }
 
-    private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
-        List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
-                .map(systemCurrency ->
-                        account.getBalances().stream()
-                                .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
-                                .findFirst() // Busca si ya existe el balance para esta moneda
-                                .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
-                                    return new Balance(systemCurrency);
-                                }))
-                .collect(Collectors.toList());
-        account.setBalances(updatedBalances);
-    }
 }

@@ -1,14 +1,16 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import me.BlockDynasty.Economy.domain.services.IAccountService;
+import me.BlockDynasty.Economy.domain.services.ICurrencyService;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,16 +19,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-//todo:refactorizar, se podria hacer uso solo de los casos de uso, sin los Servicios
-public class EconomyListener implements Listener {
 
-    private final BlockDynastyEconomy plugin ;
+public class EconomyListener implements Listener {
+    private final ICurrencyService currencyService;
     private final CreateAccountUseCase createAccountUseCase;
     private final GetAccountsUseCase getAccountsUseCase;
     private final IAccountService accountService;
 
-    public EconomyListener(BlockDynastyEconomy plugin, CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService) {
-        this.plugin = plugin;
+    public EconomyListener(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService, ICurrencyService currencyService) {
+        this.currencyService = currencyService;
         this.createAccountUseCase = createAccountUseCase;
         this.getAccountsUseCase = getAccountsUseCase;
         this.accountService = accountService;
@@ -38,12 +39,10 @@ public class EconomyListener implements Listener {
 
         SchedulerUtils.run(() -> {
             Result<Account> result = this.getAccountsUseCase.getAccount(player.getUniqueId());
-            if (result.isSuccess()) {
-                this.accountService.addAccountToCache(result.getValue());
-            } else {
+            if (!result.isSuccess() && result.getErrorCode() == ErrorCode.ACCOUNT_NOT_FOUND) {
                 Result <Void> resultCreation = this.createAccountUseCase.execute(player.getUniqueId(), player.getName());
                 if (!resultCreation.isSuccess()){
-                        player.kickPlayer("Error al crear tu cuenta de economia, vuelve a ingresar al server, o contacta a un administrador");
+                    player.kick(Component.text("Error al crear tu cuenta de economía, vuelve a ingresar al server, o contacta a un administrador"));
                 }
             }
         });
@@ -58,16 +57,18 @@ public class EconomyListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        // Caching
         SchedulerUtils.run(() -> {
-            Result<Account> resultAccount = this.getAccountsUseCase.getAccount(player.getUniqueId());
-            if (!resultAccount.isSuccess()) {
-                player.kickPlayer("Error al cargar tu cuenta de economia vuelve a ingresar al server, o contacta a un administrador");
-            }else { this.accountService.addAccountToCache(resultAccount.getValue());}
+            Result<Account> result = this.getAccountsUseCase.getAccount(player.getUniqueId());
+            if (!result.isSuccess() && result.getErrorCode() == ErrorCode.ACCOUNT_NOT_FOUND) {
+                Result <Void> resultCreation = this.createAccountUseCase.execute(player.getUniqueId(), player.getName());
+                if (!resultCreation.isSuccess()){
+                    player.kick(Component.text("Error al cargar tu cuenta de economía vuelve a ingresar al server, o contacta a un administrador"));
+                }
+            }
         });
 
         SchedulerUtils.runLater(40L, () -> {
-            if (plugin.getCurrencyManager().getDefaultCurrency() == null && (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
+            if (currencyService.existsDefaultCurrency() && (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
                 player.sendMessage(F.getPrefix() + "§cYou have not made a default currency yet. Please do so by \"§e/currency§c\".");
             }
         });
