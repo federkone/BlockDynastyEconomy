@@ -74,6 +74,7 @@ public class DepositUseCaseTest {
         assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode());
     }
 
+
     @AfterEach
     void clearDb(){
         //repository.clearAll();

@@ -51,10 +51,7 @@ public class WithdrawUseCaseTest {
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
 
-
         withdrawUseCase = new WithdrawUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new CourierTest(),new LoggerTest());
-
-
     }
 
     @Test
@@ -108,6 +105,13 @@ public class WithdrawUseCaseTest {
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //en el core agrega el balance inexistente a la cuenta con sus balances por defecto de la currency
     }
 
+    @Test
+    void withdrawUseCaseTestWithCurrencyNoSupportDecimals(){
+        dinero.setDecimalSupported(false);
+
+        Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(1000.50));
+        assertEquals(ErrorCode.DECIMAL_NOT_SUPPORTED, result.getErrorCode());
+    }
     @AfterEach
     void clearDb(){
         //repository.clearAll();

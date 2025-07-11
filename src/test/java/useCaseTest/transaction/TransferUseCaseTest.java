@@ -15,6 +15,8 @@ import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundExcept
 import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotPayableException;
 import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
+import me.BlockDynasty.Economy.domain.result.Result;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,8 +74,8 @@ public class TransferUseCaseTest {
 
     @Test
     void TransferTest (){
-        try {
-            transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
+    /*try {
+
         }catch (AccountNotFoundException e){
             fail("Account not found");
         }catch (InsufficientFundsException e){
@@ -86,11 +88,40 @@ public class TransferUseCaseTest {
             fail("Currency not payable");
         }catch (DecimalNotSupportedException e){
             fail("Decimal not supported");
-        }
+        }*/
+        Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
 
         assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getBalance().setScale(2));
         assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance("dinero").getBalance().setScale(2));
+    }
 
+    @Test
+    void TransferTestWithNegativeAmount (){
+        Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(-1));
+        assertEquals(result.getErrorCode(), ErrorCode.INVALID_AMOUNT);
+    }
+
+    @Test
+    void TransferTestWithZeroAmount (){
+        Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(0));
+        assertEquals(result.getErrorCode(), ErrorCode.INVALID_AMOUNT);
+    }
+    @Test
+    void TransferTestWithInsufficientFunds (){
+        Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(100000));
+        assertEquals(result.getErrorCode(),ErrorCode.INSUFFICIENT_FUNDS);
+    }
+
+    @Test
+    void TransferTestWithNullAccount (){
+        Result<Void> result = transferFundsUseCase.execute("nullplague","tom","dinero", BigDecimal.valueOf(10000));
+        assertEquals(result.getErrorCode(),ErrorCode.ACCOUNT_NOT_FOUND);
+    }
+
+    @Test
+    void TransferTestWithNullCurrency (){
+        Result<Void> result = transferFundsUseCase.execute("nullplague","cris","plata", BigDecimal.valueOf(10000));
+        assertEquals(result.getErrorCode(),ErrorCode.CURRENCY_NOT_FOUND);
     }
 
     @AfterEach
