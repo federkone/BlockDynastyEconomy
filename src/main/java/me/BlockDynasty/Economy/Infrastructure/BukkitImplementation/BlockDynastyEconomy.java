@@ -1,4 +1,3 @@
-
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
@@ -89,7 +88,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         //registrar api
         api = new BlockDynastyEconomyApi(usesCaseFactory);
-        getServer().getServicesManager().register(Api.class, api, this, ServicePriority.Normal);
+        getServer().getServicesManager().register(BlockDynastyEconomyApi.class, (BlockDynastyEconomyApi)api, this, ServicePriority.Normal);
     }
 
     @Override
@@ -191,6 +190,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static BlockDynastyEconomy getInstance() {
         return instance;
     }
+
     public static Api getApi() {
         return api;
     }

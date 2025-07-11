@@ -27,7 +27,6 @@ public class AccountService implements IAccountService {
 
     public void addAccountToCache(Account account) {
         if (this.accountsOnline.contains(account)) return;
-
         this.accountsOnline.add(account);
     }
 

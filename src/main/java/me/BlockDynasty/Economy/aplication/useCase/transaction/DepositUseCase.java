@@ -33,7 +33,7 @@ public class DepositUseCase {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
-        return excecute(accountResult.getValue(), currencyName, amount);
+        return execute(accountResult.getValue(), currencyName, amount);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
@@ -41,7 +41,7 @@ public class DepositUseCase {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
-        return excecute(accountResult.getValue(), currencyName, amount);
+        return execute(accountResult.getValue(), currencyName, amount);
     }
 
     public Result<Void> execute(UUID targetUUID, BigDecimal amount) {
@@ -59,7 +59,7 @@ public class DepositUseCase {
         return  this.getCurrencyUseCase.getCurrency(currencyName);
     }
 
-    private Result<Void> excecute(Account account, String currencyName, BigDecimal amount) {
+    private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
         Result<Currency> currencyResult = this.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());

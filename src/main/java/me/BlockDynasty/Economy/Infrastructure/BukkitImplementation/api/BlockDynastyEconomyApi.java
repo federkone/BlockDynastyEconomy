@@ -24,7 +24,6 @@ public class BlockDynastyEconomyApi implements Api {
     private final TradeCurrenciesUseCase tradeCurrenciesUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
 
-
     public BlockDynastyEconomyApi(UsesCaseFactory usesCaseFactory) {
         this.depositUseCase = usesCaseFactory.getDepositUseCase();
         this.withdrawUseCase = usesCaseFactory.getWithdrawUseCase();
@@ -35,13 +34,11 @@ public class BlockDynastyEconomyApi implements Api {
         this.getBalanceUseCase = usesCaseFactory.getGetBalanceUseCase();
     }
 
-
     public void deposit(UUID uuid, double amount){
         SchedulerUtils.runAsync(() -> {
             this.depositUseCase.execute(uuid, BigDecimal.valueOf(amount));
         });
     }
-
 
     public void deposit(UUID uuid, double amount, String currency){
         SchedulerUtils.runAsync(() -> {
@@ -88,7 +85,6 @@ public class BlockDynastyEconomyApi implements Api {
             this.transferFundsUseCase.execute(userFrom,userTo,currency,BigDecimal.valueOf(amount));
         });
     }
-
 
     public void trade(UUID userFrom, UUID userTo, String currencyFrom, String currencyTo, double amountFrom, double amountTo){
         SchedulerUtils.runAsync(() -> {

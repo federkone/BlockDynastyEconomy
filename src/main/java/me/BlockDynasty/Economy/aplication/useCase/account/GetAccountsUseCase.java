@@ -33,7 +33,7 @@ public class GetAccountsUseCase {
                 account = result.getValue();
                 updateAccountBalances(account);
             }else{
-                return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
+                return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
        }
        return Result.success(account);
@@ -47,7 +47,7 @@ public class GetAccountsUseCase {
                 account = result.getValue();
                 updateAccountBalances(account);
             }else{
-                return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
+                return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
        }
        return Result.success(account);
@@ -64,7 +64,7 @@ public class GetAccountsUseCase {
     public void updateAccountCache(Account account) {
         UUID uuid = account.getUuid();
         Account cachedAccount = this.accountService.getAccountCache(uuid);
-        if (cachedAccount != null) {
+        if (cachedAccount != null) { //si está cacheada, actualiza los balances
             // Actualiza solo los balances que vienen en account
             for (Balance updatedBalance : account.getBalances()) {
                 Balance cachedBalance = cachedAccount.getBalance(updatedBalance.getCurrency());
