@@ -2,9 +2,9 @@ package me.BlockDynasty.Economy.aplication.useCase.account;
 
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;

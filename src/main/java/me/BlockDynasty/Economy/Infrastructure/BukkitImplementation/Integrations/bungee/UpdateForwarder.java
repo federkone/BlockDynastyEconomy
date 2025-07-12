@@ -5,7 +5,7 @@ import java.io.DataInputStream;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilServer;

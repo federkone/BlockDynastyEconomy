@@ -2,7 +2,6 @@ package me.BlockDynasty.Economy.aplication.useCase.offer;
 
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.Infrastructure.services.OfferService;
 import me.BlockDynasty.Economy.domain.services.IOfferService;
 
 import java.util.UUID;

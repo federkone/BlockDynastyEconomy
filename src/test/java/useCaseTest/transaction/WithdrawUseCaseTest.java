@@ -1,21 +1,23 @@
 package useCaseTest.transaction;
 
-import Integrations.CourierTest;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import mockClass.CourierTest;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
-import useCaseTest.transaction.MoksStubs.LoggerTest;
+import mockClass.repositoryTest.RepositoryTest;
+import mockClass.LoggerTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -56,8 +58,10 @@ public class WithdrawUseCaseTest {
 
     @Test
     void withdrawUseCaseTestWithFounds() {
-        withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(5000));
-        assertEquals(BigDecimal.valueOf(0), getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getBalance());
+        Result<Void> result =withdrawUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
+        assertEquals(true, result.isSuccess());
+        Result<Account> result1 = getAccountsUseCase.getAccount(nullplague.getUuid());
+        assertEquals( BigDecimal.valueOf(0) , result1.getValue().getBalance(dinero).getBalance());
     }
 
     @Test
@@ -65,8 +69,8 @@ public class WithdrawUseCaseTest {
        /* assertThrows(InsufficientFundsException.class, () -> {
             withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(10000));
         });*/
-        Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(10000));
-        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
+        Result<Void> result = withdrawUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode() );
     }
 
     @Test
@@ -74,7 +78,7 @@ public class WithdrawUseCaseTest {
         /*assertThrows(CurrencyAmountNotValidException.class, () -> {
             withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(-10000));
         });*/
-        Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(-10000));
+        Result<Void> result = withdrawUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(-10000));
         assertEquals(ErrorCode.INVALID_AMOUNT, result.getErrorCode());
     }
 
@@ -100,14 +104,15 @@ public class WithdrawUseCaseTest {
     void withdrawUseCaseTestWithNullBalance(){
         //todo: EL GETACCOUNTUSECASE ESTA AGREGANDO/CHEQUEADO AUTOMATICAMENTE LAS MONEDAS DEL SISTEMA AL USUARIO EN CADA CONSULTA, POR LO TANTO SIEMPRE VA A TENER LOS TIPOS DE MONEDAS QUE EXISTAN EN EL SISTEMA
         currencyService.add(new Currency(UUID.randomUUID(),"oro","oro"));
-        Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
+        Result<Void> result = withdrawUseCase.execute(nullplague.getUuid(), "oro", BigDecimal.valueOf(10000));
         //assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode());
-        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //en el core agrega el balance inexistente a la cuenta con sus balances por defecto de la currency
+        assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode(), result.getErrorMessage() ); //en el core agrega el balance inexistente a la cuenta con sus balances por defecto de la currency
     }
 
     @Test
     void withdrawUseCaseTestWithCurrencyNoSupportDecimals(){
         dinero.setDecimalSupported(false);
+        repository.saveCurrency(dinero);
 
         Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(1000.50));
         assertEquals(ErrorCode.DECIMAL_NOT_SUPPORTED, result.getErrorCode());

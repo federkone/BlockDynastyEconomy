@@ -1,12 +1,12 @@
 package useCaseTest.account;
 
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
+import mockClass.repositoryTest.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;

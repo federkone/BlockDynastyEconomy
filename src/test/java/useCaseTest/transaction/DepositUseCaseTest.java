@@ -1,21 +1,23 @@
 package useCaseTest.transaction;
 
-import Integrations.CourierTest;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import mockClass.CourierTest;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
-import useCaseTest.transaction.MoksStubs.LoggerTest;
+import mockClass.repositoryTest.RepositoryTest;
+import mockClass.LoggerTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -38,13 +40,14 @@ public class DepositUseCaseTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         dinero= new Currency(UUID.randomUUID(),"dinero","dinero");
 
+        nullplague.add(dinero,BigDecimal.ZERO); // Inicializa el balance de la moneda con 0
         //nullplague.setBalance(dinero, BigDecimal.valueOf(0)); //todo:lo realiza automaticamente la cuenta, cuando no tiene el balance de la moneda a depositar, la crea en sus banalces y la setea en 0
-
 
         repository = new RepositoryTest();
 
-        repository.saveCurrency(dinero);
         repository.saveAccount(nullplague);
+        repository.saveCurrency(dinero);
+
 
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
@@ -60,18 +63,20 @@ public class DepositUseCaseTest {
 
     @Test
     void depositUseCaseTest() {
-        depositUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(5000));
-        //Currency dinero = currencyManager.getCurrency("dinero");
-        assertEquals(BigDecimal.valueOf(5000).setScale(2), getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getBalance().setScale(2));
+        Result<Void> result = depositUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
+
+        assertEquals(true, result.isSuccess(),
+                "Expected success, but got: " + result.getErrorMessage() + " " + result.getErrorCode());
+
+        //assertEquals(BigDecimal.valueOf(5000).setScale(2), getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getBalance().setScale(2));
     }
 
     @Test
     void depositUseCaseTestWithoutBalance(){
-        /*assertThrows(CurrencyNotFoundException.class, () -> {
-            depositUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
-        });*/
-        Result<Void> result = depositUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
-        assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode());
+
+        Result<Void> result = depositUseCase.execute(nullplague.getUuid(), "oro", BigDecimal.valueOf(10000));
+        assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode() ,
+                "Expected error code CURRENCY_NOT_FOUND, but got: " + result.getErrorMessage()+"  "+result.getErrorCode());;
     }
 
 

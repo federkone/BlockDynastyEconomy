@@ -1,8 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.math.BigDecimal;

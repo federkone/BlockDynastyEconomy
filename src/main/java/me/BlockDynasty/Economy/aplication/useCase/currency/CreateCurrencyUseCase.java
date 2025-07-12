@@ -1,11 +1,10 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyAlreadyExist;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;

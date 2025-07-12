@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb;
 import dev.morphia.annotations.*;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class CurrencyMongoDb {
     private double exchangeRate;
 
     // Constructor para convertir desde la entidad
-    public CurrencyMongoDb(me.BlockDynasty.Economy.domain.currency.Currency currency) {
+    public CurrencyMongoDb(Currency currency) {
         this.uuid = currency.getUuid().toString();
         this.singular = currency.getSingular();
         this.plural = currency.getPlural();
@@ -53,7 +53,7 @@ public class CurrencyMongoDb {
     }
 
     public Currency toEntity() {
-        Currency currency = new me.BlockDynasty.Economy.domain.currency.Currency();
+        Currency currency = new Currency();
         currency.setUuid(java.util.UUID.fromString(this.uuid));
         currency.setSingular(this.singular);
         currency.setPlural(this.plural);

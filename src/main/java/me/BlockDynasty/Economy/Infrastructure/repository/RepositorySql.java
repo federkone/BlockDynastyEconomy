@@ -3,8 +3,8 @@ package me.BlockDynasty.Economy.Infrastructure.repository;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.criteria.*;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Filter;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -70,7 +70,7 @@ public class RepositorySql implements IRepository
     @Override
     public Result<Account> loadAccountByName(String name) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
-            Account account = session.createQuery("SELECT a FROM Account a WHERE a.nickname = :name", Account.class)
+            Account account = session.createQuery("SELECT a FROM Account a WHERE a.nickname = :nickname", Account.class)
                     .setParameter("nickname", name)
                     .uniqueResult();
             if (account == null) {
@@ -78,6 +78,7 @@ public class RepositorySql implements IRepository
             }
             return Result.success(account);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
     }

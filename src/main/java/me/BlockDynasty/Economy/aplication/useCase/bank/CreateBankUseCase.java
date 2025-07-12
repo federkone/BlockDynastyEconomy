@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase.bank;
 
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.services.IBankService;

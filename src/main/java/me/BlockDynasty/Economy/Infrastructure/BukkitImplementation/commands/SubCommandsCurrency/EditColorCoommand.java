@@ -1,8 +1,8 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsCurrency;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyColorUnformat;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import org.bukkit.command.Command;

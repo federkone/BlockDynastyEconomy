@@ -1,8 +1,8 @@
 package me.BlockDynasty.Economy.domain.persistence.entities;
 
 import me.BlockDynasty.Economy.domain.persistence.transaction.ITransactions;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.result.Result;
 
@@ -17,7 +17,7 @@ public interface IRepository extends ITransactions {
 
     List<Account> loadAccounts(Criteria criteria); //una cuenta de un criterio
     Result<Account> loadAccountByUuid(String uuid);
-    public Result<Account> loadAccountByName(String name);
+    Result<Account> loadAccountByName(String name);
     void createAccount(Account account);
     void saveAccount(Account account);
     //void deleteAccount(Account account);

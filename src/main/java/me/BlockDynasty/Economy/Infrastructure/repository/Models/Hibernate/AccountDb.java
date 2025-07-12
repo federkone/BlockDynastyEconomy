@@ -1,8 +1,8 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.util.*;
 

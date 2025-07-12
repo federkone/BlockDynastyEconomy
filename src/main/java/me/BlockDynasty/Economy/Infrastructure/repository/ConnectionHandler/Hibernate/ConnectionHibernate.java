@@ -1,8 +1,8 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate;
 
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

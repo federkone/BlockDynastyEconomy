@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb;
 import  dev.morphia.annotations.*;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.math.BigDecimal;
 
@@ -23,7 +23,7 @@ public class BalanceMongoDb {
     }
 
     public Balance toEntity() {
-        Balance balance = new me.BlockDynasty.Economy.domain.balance.Balance();
+        Balance balance = new Balance();
         balance.setCurrency(this.currency.toEntity());
         balance.setBalance(this.amount);
         return balance;

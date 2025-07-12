@@ -1,23 +1,23 @@
 package useCaseTest.transaction;
 
-import Integrations.CourierTest;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import mockClass.CourierTest;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
-import repositoryTest.RepositoryTest;
-import useCaseTest.transaction.MoksStubs.LoggerTest;
+import mockClass.repositoryTest.RepositoryTest;
+import mockClass.LoggerTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;

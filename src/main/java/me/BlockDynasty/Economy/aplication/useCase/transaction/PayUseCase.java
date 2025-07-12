@@ -1,14 +1,14 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.Log;
+import me.BlockDynasty.Economy.domain.services.courier.Courier;
+import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.result.TransferResult;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;

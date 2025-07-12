@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilServer;
+import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

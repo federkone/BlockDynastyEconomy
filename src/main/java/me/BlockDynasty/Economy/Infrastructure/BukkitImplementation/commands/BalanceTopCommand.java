@@ -2,7 +2,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands;
 
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;

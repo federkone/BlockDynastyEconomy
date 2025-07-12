@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.domain.result;
 
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
 
 public class TransferResult {
     private final Account from;

@@ -4,20 +4,21 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIServic
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.BalanceGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.PayGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
+import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.Log;
+import me.BlockDynasty.Economy.domain.services.log.Log;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.OfferListenerImpl;
 import me.BlockDynasty.Economy.aplication.api.Api;
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.VaultLogger;
-import me.BlockDynasty.Economy.Infrastructure.services.OfferService;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
+import me.BlockDynasty.Economy.aplication.services.OfferService;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.api.BlockDynastyEconomyApi;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.CommandRegistration;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.Configuration;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.EconomyListener;
@@ -118,7 +119,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         this.economyLogger = new EconomyLogger(this);
         this.vaultLogger = new VaultLogger(this);
-        this.offerService = new OfferService(this);
+        this.offerService = new OfferService(new OfferListenerImpl());
         this.courier = new CourierImpl(this);
 
         this.usesCaseFactory = new UsesCaseFactory(accountService, currencyService, economyLogger, offerService, getDataStore(), courier);

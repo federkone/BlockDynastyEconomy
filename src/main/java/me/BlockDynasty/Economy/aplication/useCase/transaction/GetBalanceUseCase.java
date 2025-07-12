@@ -3,8 +3,8 @@ package me.BlockDynasty.Economy.aplication.useCase.transaction;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.util.List;
 import java.util.UUID;

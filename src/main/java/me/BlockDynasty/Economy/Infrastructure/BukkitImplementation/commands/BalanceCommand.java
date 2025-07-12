@@ -2,8 +2,8 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands;
 
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
-import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;

@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.domain.services;
 
-import me.BlockDynasty.Economy.domain.bank.Bank;
+import me.BlockDynasty.Economy.domain.entities.bank.Bank;
 
 import java.util.List;
 

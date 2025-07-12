@@ -1,21 +1,22 @@
 package useCaseTest.transaction;
 
-
-import Integrations.CourierTest;
+import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import mockClass.CourierTest;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
-import useCaseTest.transaction.MoksStubs.LoggerTest;
+import mockClass.repositoryTest.RepositoryTest;
+import mockClass.LoggerTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -88,6 +89,10 @@ public class ExchangeUseCaseTest {
         assertEquals(BigDecimal.valueOf(101), updatedAccount.getBalance(coin).getBalance());
         assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getBalance(dinero).getBalance().doubleValue());
     }
+
+    //errores a evaluar:  cuenta no encontrada,moneda no encontrada, monto negativo, saldo insuficiente.
+    //pd:estos intercambios se calculan de manera automatica segun el rate de las monedas. O tambien se aceptan 2 montos de entradas para cambiar lo solicitado
+
     @AfterEach
     void clearDb() {
         // Optional cleanup

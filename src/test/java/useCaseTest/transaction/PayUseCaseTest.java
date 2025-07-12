@@ -2,28 +2,30 @@ package useCaseTest.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import Integrations.CourierTest;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import mockClass.CourierTest;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountCanNotReciveException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.account.Exceptions.InsufficientFundsException;
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.CurrencyNotPayableException;
-import me.BlockDynasty.Economy.domain.currency.Exceptions.DecimalNotSupportedException;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountCanNotReciveException;
+import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
+import me.BlockDynasty.Economy.domain.entities.account.Exceptions.InsufficientFundsException;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotPayableException;
+import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
-import useCaseTest.transaction.MoksStubs.LoggerTest;
+import mockClass.repositoryTest.RepositoryTest;
+import mockClass.LoggerTest;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -115,9 +117,6 @@ public class PayUseCaseTest {
 
     @Test
     void payUseCseTestWithoutFounds(){
-       /* assertThrows(InsufficientFundsException.class, () -> {
-            payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10001));
-        });*/
         Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10001));
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
@@ -125,9 +124,7 @@ public class PayUseCaseTest {
     @Test
     void payUseCaseTestWithCurrencyNotPayable(){
         dinero.setPayable(false);
-        /*assertThrows(CurrencyNotPayableException.class, () -> {
-            payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
-        });*/
+
         Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.CURRENCY_NOT_PAYABLE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }
@@ -135,9 +132,6 @@ public class PayUseCaseTest {
     @Test
     void setPayUseCaseTestAccountCanNotRecibe(){
         cris.setCanReceiveCurrency(false);
-        /*assertThrows(AccountCanNotReciveException.class, () -> {
-            payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
-        });*/
         Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
 

@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.ChatColorConverter;
 import org.bukkit.ChatColor;
 

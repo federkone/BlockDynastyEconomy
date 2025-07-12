@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.aplication.api;
 
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.util.UUID;
 

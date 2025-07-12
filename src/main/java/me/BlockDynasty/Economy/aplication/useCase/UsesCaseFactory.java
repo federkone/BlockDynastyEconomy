@@ -1,8 +1,8 @@
 package me.BlockDynasty.Economy.aplication.useCase;
 
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.Courier;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.Log;
+import me.BlockDynasty.Economy.domain.services.courier.Courier;
+import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
@@ -11,9 +11,6 @@ import me.BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
-import me.BlockDynasty.Economy.Infrastructure.services.OfferService;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.IAccountService;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;

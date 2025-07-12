@@ -3,6 +3,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log;
 import com.google.common.collect.Sets;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilTime;
+import me.BlockDynasty.Economy.domain.services.log.Log;
 
 import java.io.*;
 import java.util.Set;

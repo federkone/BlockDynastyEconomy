@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.domain.persistence.transaction;
 
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.result.TransferResult;
 

@@ -6,8 +6,8 @@ import me.BlockDynasty.Economy.domain.result.Result;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
-import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.domain.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 
 import java.math.BigDecimal;

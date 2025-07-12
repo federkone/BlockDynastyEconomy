@@ -4,7 +4,7 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyE
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

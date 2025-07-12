@@ -4,15 +4,15 @@ import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import me.BlockDynasty.Economy.domain.account.Account;
-import me.BlockDynasty.Economy.Infrastructure.services.AccountService;
-import me.BlockDynasty.Economy.domain.balance.Balance;
-import me.BlockDynasty.Economy.Infrastructure.services.CurrencyService;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.aplication.services.AccountService;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
+import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import repositoryTest.RepositoryTest;
+import mockClass.repositoryTest.RepositoryTest;
 
 import java.util.UUID;
 

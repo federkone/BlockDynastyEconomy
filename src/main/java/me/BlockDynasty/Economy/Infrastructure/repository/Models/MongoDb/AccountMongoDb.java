@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb;
 import  dev.morphia.annotations.*;
-import me.BlockDynasty.Economy.domain.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Account;
 
 import java.util.List;
 import java.util.UUID;

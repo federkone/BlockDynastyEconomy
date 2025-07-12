@@ -2,7 +2,7 @@ package APITest;
 
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
-import me.BlockDynasty.Economy.domain.balance.Balance;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.vault.VaultHook;
 import me.BlockDynasty.Economy.domain.result.Result;
 import org.bukkit.OfflinePlayer;

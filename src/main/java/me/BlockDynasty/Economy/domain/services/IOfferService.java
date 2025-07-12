@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.domain.services;
 
-import me.BlockDynasty.Economy.domain.currency.Currency;
-import me.BlockDynasty.Economy.domain.offers.Offer;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.offers.Offer;
 
 import java.math.BigDecimal;
 import java.util.UUID;
