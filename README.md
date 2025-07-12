@@ -10,7 +10,7 @@ Todo list:
 
     -refactor config file, add message file
     -create command for edit accountCanReciveCurrency attribute
-    -complete use case and comand for delete account 
+    -complete use case and comand for delete accountDb 
     -complete use case delete currency and command //deleting a currency will be delete all balances of that currency- check
     -add rate for exchange/trade/transfer currency, its all ready usesCaseFactory/atributes for implement this feature
     -complete use case for balTop and command, this command will show the top X balances of a currency, ej: eco top 10, eco top 5 etc
@@ -32,11 +32,11 @@ Todo list:
 [10:52:14 INFO]: Cris[/190.19.225.15:42124] logged in with entity id 107 at ([world]434.5, -34.0, 422.5)
 [10:52:14 INFO]: + Cris Connected
 [10:52:22 INFO]: Nullplague lost connection: Disconnected
-[10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: account = 55e72bac-6481-3abe-9c9b-94cefed85271
+[10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: accountDb = 55e72bac-6481-3abe-9c9b-94cefed85271
 [10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - User is not online. Skipping update.
-[10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: account = 05a671e1-fce9-4f7d-80f2-4d03b1b4ed89
+[10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: accountDb = 05a671e1-fce9-4f7d-80f2-4d03b1b4ed89
 [10:52:43 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - User is not online. Skipping update.
-[10:55:12 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: account = 05a671e1-fce9-4f7d-80f2-4d03b1b4ed89
+[10:55:12 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - Received: accountDb = 05a671e1-fce9-4f7d-80f2-4d03b1b4ed89
 [10:55:12 INFO]: [BlockDynastyEconomy] BlockDynastyEconomy Data Channel - User is not online. Skipping update.
 
 tengo que trabajar si o si en el plugin de economia basandome en el nombre del jugador.

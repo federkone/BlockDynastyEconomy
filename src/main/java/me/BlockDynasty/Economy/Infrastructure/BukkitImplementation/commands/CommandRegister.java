@@ -3,11 +3,14 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsCurrency.*;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsOffer.*;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsTransactions.BalanceCommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsTransactions.ExchangeCommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsTransactions.PayCommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubcomandsEconomy.*;
 
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 
-public class CommandRegistration {
+public class CommandRegister {
 
     public static void registerCommands(BlockDynastyEconomy plugin)
     {

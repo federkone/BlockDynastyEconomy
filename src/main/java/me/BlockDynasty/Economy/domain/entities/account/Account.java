@@ -1,6 +1,5 @@
 package me.BlockDynasty.Economy.domain.entities.account;
 
-import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
@@ -9,21 +8,10 @@ import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import java.math.BigDecimal;
 import java.util.*;
 
-@Entity
-@Table(name = "accounts")
 public class Account {
-    @Id
-    @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
     private String uuid;
-
-    @Column(name = "nickname")
     private String nickname;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
     private List<Balance> balances;
-
-    @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency = true;
 
     public Account() {

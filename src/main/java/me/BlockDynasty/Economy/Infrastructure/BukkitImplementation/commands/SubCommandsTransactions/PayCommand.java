@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsTransactions;
 
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;

@@ -16,7 +16,7 @@ import me.BlockDynasty.Economy.aplication.services.OfferService;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.api.BlockDynastyEconomyApi;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.UpdateForwarder;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.CommandRegistration;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.CommandRegister;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.Configuration;
@@ -132,7 +132,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         //}
     }
     private void registerCommands(){
-        CommandRegistration.registerCommands(this);
+        CommandRegister.registerCommands(this);
     }
 
     private void registerGUI(){

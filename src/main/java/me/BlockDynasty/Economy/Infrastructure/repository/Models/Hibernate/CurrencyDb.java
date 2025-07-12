@@ -62,4 +62,16 @@ public class CurrencyDb {
     public Currency toEntity(){
         return new Currency(UUID.fromString(uuid), singular, plural, symbol, color, decimalSupported, payable, defaultCurrency, defaultBalance, exchangeRate);
     }
+
+    public void updateFromEntity(Currency currency) {
+        this.singular = currency.getSingular();
+        this.plural = currency.getPlural();
+        this.symbol = currency.getSymbol();
+        this.color = currency.getColor();
+        this.decimalSupported = currency.isDecimalSupported();
+        this.payable = currency.isPayable();
+        this.defaultCurrency = currency.isDefaultCurrency();
+        this.defaultBalance = currency.getDefaultBalance();
+        this.exchangeRate = currency.getExchangeRate();
+    }
 }

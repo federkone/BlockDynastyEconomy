@@ -1,6 +1,9 @@
 package mockClass.repositoryTest.ConnectionHandler;
 
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.AccountDb;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.BalanceDb;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.CurrencyDb;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -27,9 +30,9 @@ public class MockConnectionHibernateH2 implements Connection {
         configuration.setProperty("hibernate.show_sql", "false");
         configuration.setProperty("hibernate.format_sql", "false");
         configuration.setProperty("hibernate.use_sql_comments", "false");
-        configuration.addAnnotatedClass(Currency.class);
-        configuration.addAnnotatedClass(Account.class);
-        configuration.addAnnotatedClass(Balance.class);
+        configuration.addAnnotatedClass(CurrencyDb.class);
+        configuration.addAnnotatedClass(AccountDb.class);
+        configuration.addAnnotatedClass(BalanceDb.class);
         // Initialize the session factory
         try {
             this.sessionFactory = this.configuration.buildSessionFactory();

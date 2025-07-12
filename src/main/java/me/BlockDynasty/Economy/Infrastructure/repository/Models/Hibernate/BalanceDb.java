@@ -14,7 +14,7 @@ public class BalanceDb  {
 
     @ManyToOne
     @JoinColumn(name = "currency_id")
-    private CurrencyDb currencyMapper;
+    private CurrencyDb currency;
 
     @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount;
@@ -22,12 +22,12 @@ public class BalanceDb  {
     public BalanceDb() {
     }
     public BalanceDb(Balance balance){
-        this.currencyMapper = new CurrencyDb(balance.getCurrency());
+        this.currency = new CurrencyDb(balance.getCurrency());
         this.amount = balance.getBalance();
     }
 
     public Balance toEntity(){
-        return new Balance(currencyMapper.toEntity(), amount);
+        return new Balance(currency.toEntity(), amount);
     }
 
 }

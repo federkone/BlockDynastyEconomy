@@ -27,7 +27,7 @@ public class AccountDb {
     public AccountDb() {
     }
 
-    public AccountDb(Account account){
+    public AccountDb(me.BlockDynasty.Economy.domain.entities.account.Account account){
         this.uuid = account.getUuid().toString();
         this.nickname = account.getNickname();
         this.balances = new ArrayList<>();
@@ -37,7 +37,7 @@ public class AccountDb {
         this.canReceiveCurrency = account.canReceiveCurrency();
     }
 
-    public Account toEntity(){
+    public me.BlockDynasty.Economy.domain.entities.account.Account toEntity(){
         List<Balance> balanceList = new ArrayList<>();
         for (BalanceDb balanceMapper : balances){
             balanceList.add(balanceMapper.toEntity());
@@ -45,5 +45,14 @@ public class AccountDb {
         return new Account(UUID.fromString(uuid), nickname, balanceList, canReceiveCurrency);
     }
 
+    public void updateFromEntity(Account account) {
+        this.uuid = account.getUuid().toString();
+        this.nickname = account.getNickname();
+        this.canReceiveCurrency = account.canReceiveCurrency();
+        this.balances.clear();
+        for (Balance balance : account.getBalances()) {
+            this.balances.add(new BalanceDb(balance));
+        }
+    }
 
 }

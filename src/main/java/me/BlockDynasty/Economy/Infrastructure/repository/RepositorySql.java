@@ -3,6 +3,8 @@ package me.BlockDynasty.Economy.Infrastructure.repository;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.criteria.*;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.AccountDb;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.CurrencyDb;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
@@ -25,7 +27,6 @@ public class RepositorySql implements IRepository
     private boolean topSupported = true;
 
     public RepositorySql(Connection connection) {
-
         this.sessionFactory = connection.getSession();
     }
     @Override
@@ -34,34 +35,45 @@ public class RepositorySql implements IRepository
 
     @Override
     public List<Currency> loadCurrencies(Criteria criteria) {
-        return createQueryWithOr(Currency.class,criteria);
+        List<CurrencyDb> currencyDbs = createQuery(CurrencyDb.class, criteria);
+        List<Currency> currencies = new ArrayList<>();
+        for (CurrencyDb currencyDb : currencyDbs) {
+            currencies.add(currencyDb.toEntity());
+        }
+        return currencies;
     }
 
     @Override
     public void saveCurrency(Currency currency) {
-        executeInsideTransaction(session -> session.merge(currency));
+        //sessionFactory.openSession().persist( new CurrencyDb(currency));
+        executeInsideTransaction(session -> session.merge(new CurrencyDb( currency)));
     }
 
     @Override
     public void deleteCurrency(Currency currency) {
-        executeInsideTransaction(session -> session.remove(currency));
+        executeInsideTransaction(session -> session.remove(new CurrencyDb(currency)));
     }
 
     @Override
     public List<Account> loadAccounts(Criteria criteria)throws TransactionException {
-        return createQueryWithOr(Account.class,criteria);
+        List<AccountDb> accountDbDbs = createQueryWithOr(AccountDb.class, criteria);
+        List<me.BlockDynasty.Economy.domain.entities.account.Account> accounts = new ArrayList<>();
+        for (AccountDb accountDb : accountDbDbs) {
+            accounts.add(accountDb.toEntity());
+        }
+        return accounts;
     }
 
     @Override
     public Result<Account> loadAccountByUuid(String uuid) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
-            Account account= session.createQuery("SELECT a FROM Account a WHERE a.uuid = :uuid", Account.class)
+            AccountDb accountDb = session.createQuery("SELECT a FROM AccountDb a WHERE a.uuid = :uuid", AccountDb.class)
                     .setParameter("uuid", uuid)
                     .uniqueResult();
-            if (account == null) {
+            if (accountDb == null) {
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            return Result.success(account);
+            return Result.success(accountDb.toEntity());
         } catch (Exception e) {
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
@@ -70,13 +82,13 @@ public class RepositorySql implements IRepository
     @Override
     public Result<Account> loadAccountByName(String name) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
-            Account account = session.createQuery("SELECT a FROM Account a WHERE a.nickname = :nickname", Account.class)
+            AccountDb accountDb = session.createQuery("SELECT a FROM AccountDb a WHERE a.nickname = :nickname", AccountDb.class)
                     .setParameter("nickname", name)
                     .uniqueResult();
-            if (account == null) {
+            if (accountDb == null) {
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
-            return Result.success(account);
+            return Result.success(accountDb.toEntity());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
@@ -85,47 +97,52 @@ public class RepositorySql implements IRepository
 
     @Override
     public void createAccount(Account account)throws TransactionException {
-        executeInsideTransaction(session -> session.persist(account));
+        //sessionFactory.openSession().persist(new AccountDb(account));
+        executeInsideTransaction(session -> session.persist(new AccountDb(account)));
     }
 
     @Override
     public void saveAccount(Account account) throws TransactionException{
-        executeInsideTransaction(session -> session.merge(account));
+        //sessionFactory.openSession().persist( new AccountDb(account));
+        executeInsideTransaction(session -> session.merge(new AccountDb(account)));
     }
 
     //-----------transactions-------------------
     public void transfer(Account userFrom, Account userTo)throws TransactionException {
         executeInsideTransaction(session -> {
-            session.merge(userFrom);
-            session.merge(userTo);
+            session.merge(new AccountDb(userFrom));
+            session.merge(new AccountDb(userTo));
         });
     }
     @Override
     public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount) {
+        CurrencyDb currencyDb = new CurrencyDb(currency);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
 
-            Account from = session.createQuery(
-                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+            AccountDb fromDb = session.createQuery(
+                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                     .setParameter("uuid", fromUuid)
-                    .setParameter("currency", currency)
+                    .setParameter("currency", currencyDb)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
-            Account to = session.createQuery(
-                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+            AccountDb toDb = session.createQuery(
+                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                     .setParameter("uuid", toUuid)
-                    .setParameter("currency", currency)
+                    .setParameter("currency", currencyDb)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
-            if (from == null || to == null) {
+            if (fromDb == null || toDb == null) {
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
 
+            me.BlockDynasty.Economy.domain.entities.account.Account from = fromDb.toEntity();
+            me.BlockDynasty.Economy.domain.entities.account.Account to = toDb.toEntity();
             //---logica de negocio de la cuenta
             Result<Void> result  = from.subtract(currency, amount);
             if (!result.isSuccess()) {
@@ -134,6 +151,10 @@ public class RepositorySql implements IRepository
             }
             to.add(currency, amount);
             //---------------------------------------
+            // Guardar las cuentas actualizadas
+            fromDb.updateFromEntity(from);
+            toDb.updateFromEntity(to);
+
             tx.commit();
             return Result.success(new TransferResult(from,to)); //todo: retornar las cuentas resultantes actualizadas para la cache
         } catch (Exception e) {
@@ -142,22 +163,24 @@ public class RepositorySql implements IRepository
     }
     @Override
     public Result<Account> withdraw(String accountUuid, Currency currency, BigDecimal amount) {
+        CurrencyDb currencyDb = new CurrencyDb(currency);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
 
-            Account account = session.createQuery(
-                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+            AccountDb accountDb = session.createQuery(
+                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                     .setParameter("uuid", accountUuid)
-                    .setParameter("currency", currency)
+                    .setParameter("currency", currencyDb)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
-            if (account == null) {
+            if (accountDb == null) {
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
 
+            Account account = accountDb.toEntity();
             //---logica de negocio de la cuenta
             Result<Void> result = account.subtract(currency,amount);
             if (!result.isSuccess()) {
@@ -165,6 +188,8 @@ public class RepositorySql implements IRepository
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
            //--------------
+            // Actualizar la cuenta en la base de datos
+            accountDb.updateFromEntity(account);
             tx.commit();
             return Result.success(account);
         } catch (Exception e) {
@@ -173,21 +198,23 @@ public class RepositorySql implements IRepository
     }
     @Override
     public Result<Account> deposit(String accountUuid, Currency currency, BigDecimal amount) {
+        CurrencyDb currencyDb = new CurrencyDb(currency);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
-            Account account = session.createQuery(
-                            "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                    " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+            AccountDb accountDb = session.createQuery(
+                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                                    " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                     .setParameter("uuid", accountUuid)
-                    .setParameter("currency", currency)
+                    .setParameter("currency", currencyDb)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
-            if (account == null) {
+            if (accountDb == null) {
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
 
+            Account account = accountDb.toEntity();
             //---logica de negocio de la cuenta
             Result<Void> result = account.add(currency, amount);
             if (!result.isSuccess()){
@@ -195,7 +222,8 @@ public class RepositorySql implements IRepository
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
            //-------------------------------
-
+            // Actualizar la cuenta en la base de datos
+            accountDb.updateFromEntity(account);
             tx.commit();
             return Result.success(account);
         } catch (Exception e) {
@@ -204,21 +232,24 @@ public class RepositorySql implements IRepository
     }
     @Override
     public Result<Account> setBalance(String accountUuid, Currency currency, BigDecimal amount) {
+        CurrencyDb currencyDb = new CurrencyDb(currency);
     try (Session session = sessionFactory.openSession()) {
         Transaction tx = session.beginTransaction();
 
-        Account account = session.createQuery(
-                        "SELECT a FROM Account a JOIN FETCH a.balances b " +
-                                " WHERE a.uuid = :uuid AND b.currency = :currency", Account.class)
+        AccountDb accountDb = session.createQuery(
+                        "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                                " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                 .setParameter("uuid", accountUuid)
-                .setParameter("currency", currency)
+                .setParameter("currency", currencyDb)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .uniqueResult();
 
-        if (account == null) {
+        if (accountDb == null) {
             tx.rollback();
             return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
         }
+
+        Account account = accountDb.toEntity();
         //---logica de negocio de la cuenta
         Result<Void> result = account.setBalance(currency, amount);
        if (!result.isSuccess()) {
@@ -226,7 +257,8 @@ public class RepositorySql implements IRepository
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
        }
       //-------------------------------------
-
+        // Actualizar la cuenta en la base de datos
+        accountDb.updateFromEntity(account);
         tx.commit();
         return Result.success(account);
     } catch (Exception e) {
@@ -234,24 +266,26 @@ public class RepositorySql implements IRepository
     }
     }
     @Override
-    public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDecimal amountFrom,  Currency toCurrency,BigDecimal amountTo) {
+    public Result<Account> exchange(String playerUUID, Currency fromCurrency, BigDecimal amountFrom, Currency toCurrency, BigDecimal amountTo) {
+        //CurrencyDb fromCurrencyDb = new CurrencyDb(fromCurrency);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
 
-            Account player = session.createQuery(
-                            "SELECT a FROM Account a " +
+            AccountDb playerDb = session.createQuery(
+                            "SELECT a FROM AccountDb a " +
                                     "JOIN FETCH a.balances " +  // Fetch all balances
-                                    "WHERE a.uuid = :uuid", Account.class)
+                                    "WHERE a.uuid = :uuid", AccountDb.class)
                     .setParameter("uuid", playerUUID)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
 
-            if ( player == null) {
+            if ( playerDb == null) {
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
 
+            Account player = playerDb.toEntity();
             //---logica de negocio de la cuenta
             Result<Void> resultSubtract = player.subtract(fromCurrency, amountFrom);
             if (!resultSubtract.isSuccess()) {
@@ -265,6 +299,8 @@ public class RepositorySql implements IRepository
                 return Result.failure(resultAdd.getErrorMessage(), resultAdd.getErrorCode());
             }
             //--------------------------------------------
+            // Actualizar la cuenta en la base de datos
+            playerDb.updateFromEntity(player);
             tx.commit();
             return Result.success(player);
         } catch (Exception e) {
@@ -273,31 +309,35 @@ public class RepositorySql implements IRepository
     }
     @Override
     public Result<TransferResult> trade(String fromUuid, String toUuid, Currency fromCurrency, Currency toCurrency, BigDecimal amountFrom, BigDecimal amountTo) {
+        //CurrencyDb fromCurrencyDb = new CurrencyDb(fromCurrency);
+        //CurrencyDb toCurrencyDb = new CurrencyDb(toCurrency);
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
 
-            Account from = session.createQuery(
-                            "SELECT a FROM Account a " +
+            AccountDb fromDb = session.createQuery(
+                            "SELECT a FROM AccountDb a " +
                                     "JOIN FETCH a.balances " +  // Fetch all balances
-                                    "WHERE a.uuid = :uuid", Account.class)
+                                    "WHERE a.uuid = :uuid", AccountDb.class)
                     .setParameter("uuid", fromUuid)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
 
-            Account to = session.createQuery(
-                            "SELECT a FROM Account a " +
+            AccountDb toDb = session.createQuery(
+                            "SELECT a FROM AccountDb a " +
                                     "JOIN FETCH a.balances " +  // Fetch all balances
-                                    "WHERE a.uuid = :uuid", Account.class)
+                                    "WHERE a.uuid = :uuid", AccountDb.class)
                     .setParameter("uuid", toUuid)
                     .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                     .uniqueResult();
 
 
-            if (from == null || to == null) {
+            if (fromDb == null || toDb == null) {
                 tx.rollback();
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
+            Account from = fromDb.toEntity();
+            Account to = toDb.toEntity();
             //---logica de negocio de la cuenta-------------------
             Result<Void> resultSubtractFrom = from.subtract(fromCurrency, amountFrom);
             if (!resultSubtractFrom.isSuccess()) {
@@ -320,6 +360,9 @@ public class RepositorySql implements IRepository
                 return Result.failure(resultAddTo.getErrorMessage(), resultAddTo.getErrorCode());
             }
             //-----------------------------------------------------------
+            // Actualizar las cuentas en la base de datos
+            fromDb.updateFromEntity(from);
+            toDb.updateFromEntity(to);
             tx.commit();
             return Result.success(new TransferResult(from, to));
         } catch (Exception e) {
@@ -460,17 +503,23 @@ public class RepositorySql implements IRepository
    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
             // HQL para obtener las cuentas ordenadas por balance según el nombre de la moneda
-            String hql = "SELECT a FROM Account a " +
+            String hql = "SELECT a FROM AccountDb a " +
                     "JOIN a.balances b " +
                     "JOIN b.currency c " +
                     "WHERE c.singular = :currencyName OR c.plural = :currencyName " +
                     "ORDER BY b.amount DESC";
 
-            return session.createQuery(hql, Account.class)
+            List<AccountDb> accountDbDbs =session.createQuery(hql, AccountDb.class)
                     .setParameter("currencyName", currencyName) // Vincula el nombre de la moneda al parámetro
                     .setFirstResult(offset) // Establece el desplazamiento
                     .setMaxResults(limit) // Establece el límite
                     .getResultList(); // Ejecuta la consulta y devuelve la lista de resultados
+
+            List<Account> accounts = new ArrayList<>();
+            for (AccountDb accountDb : accountDbDbs) {
+                accounts.add(accountDb.toEntity());
+            }
+            return accounts;
         } catch (Exception e) {
             throw new TransactionException("Error retrieving accounts by currency", e);
         }
@@ -481,13 +530,13 @@ public class RepositorySql implements IRepository
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            session.createQuery("DELETE FROM Balance").executeUpdate();
+            session.createQuery("DELETE FROM BalanceDb").executeUpdate();
 
             // Eliminar todas las entidades de la tabla Account
-            session.createQuery("DELETE FROM Account").executeUpdate();
+            session.createQuery("DELETE FROM AccountDb").executeUpdate();
 
             // Eliminar todas las entidades de la tabla Currency
-            session.createQuery("DELETE FROM Currency").executeUpdate();
+            session.createQuery("DELETE FROM CurrencyDb").executeUpdate();
 
             // Añadir más tablas si es necesario
             // session.createQuery("DELETE FROM OtraTabla").executeUpdate();

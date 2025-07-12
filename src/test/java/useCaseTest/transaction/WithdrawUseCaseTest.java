@@ -66,36 +66,24 @@ public class WithdrawUseCaseTest {
 
     @Test
     void withdrawUseCaseTestWithoutFounds(){
-       /* assertThrows(InsufficientFundsException.class, () -> {
-            withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(10000));
-        });*/
         Result<Void> result = withdrawUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode() );
     }
 
     @Test
     void withdrawUseCaseTestWithNegativeAmount(){
-        /*assertThrows(CurrencyAmountNotValidException.class, () -> {
-            withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(-10000));
-        });*/
         Result<Void> result = withdrawUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(-10000));
         assertEquals(ErrorCode.INVALID_AMOUNT, result.getErrorCode());
     }
 
     @Test
     void withdrawUseCaseTestWithNullAccount(){
-        /*assertThrows(AccountNotFoundException.class, () -> {
-            withdrawUseCase.execute("cris", "dinero", BigDecimal.valueOf(10000));
-        });*/
         Result<Void> result = withdrawUseCase.execute("cris", "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, result.getErrorCode());
     }
 
     @Test
     void withdrawUseCaseTestWithNullCurrency(){
-       /* assertThrows(CurrencyNotFoundException.class, () -> {
-            withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
-        });*/
         Result<Void> result = withdrawUseCase.execute("nullplague", "oro", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.CURRENCY_NOT_FOUND, result.getErrorCode());
     }

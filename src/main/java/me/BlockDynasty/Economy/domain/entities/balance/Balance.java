@@ -1,24 +1,13 @@
 package me.BlockDynasty.Economy.domain.entities.balance;
 
-import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "account_balances")
 public class Balance {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "currency_id")
     private Currency currency;
-
-    @Column(name = "amount", precision = 18, scale = 2)
     private BigDecimal amount;
 
     public  Balance(){

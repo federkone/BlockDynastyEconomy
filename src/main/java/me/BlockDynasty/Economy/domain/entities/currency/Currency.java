@@ -1,8 +1,5 @@
-
 package me.BlockDynasty.Economy.domain.entities.currency;
 
-import jakarta.persistence.*;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.ChatColorConverter;
 import org.bukkit.ChatColor;  //extraer a interfaz para separar de capa de dominio
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,41 +7,18 @@ import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity
-@Table(name = "currencies")
+
 //@Converter(autoApply = true)
 public class Currency{
-    @Id
-    @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
-    //@Convert(converter = UUIDConverter.class)
     private String uuid;
-
-    @Column(name = "name_singular")
     private String singular;
-
-    @Column(name = "name_plural")
     private String plural;
-
-    @Column(name = "symbol")
     private String symbol ;
-
-    @Column(name = "color")
-    @Convert(converter = ChatColorConverter.class)
     private ChatColor color ;//extraer a interfaz para separar de capa de dominio
-
-    @Column(name = "decimal_supported")
     private boolean decimalSupported ;
-
-    @Column(name = "payable")
     private boolean payable ;
-
-    @Column(name = "default_currency")
     private boolean defaultCurrency ;
-
-    @Column(name = "default_balance")
     private BigDecimal defaultBalance ;
-
-    @Column(name = "exchange_rate")
     private double exchangeRate ;
 
     //private boolean payable ; //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
