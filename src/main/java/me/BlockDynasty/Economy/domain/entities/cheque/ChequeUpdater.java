@@ -4,7 +4,7 @@ package me.BlockDynasty.Economy.domain.entities.cheque;
 
 public class ChequeUpdater {
    /* private static boolean nbtApiInstalled;
-    private static BlockDynastyEconomy plugin=BlockDynastyEconomy.getInstance();//TODO: REVISAR
+    private static BlockDynastyEconomy plugin=BlockDynastyEconomy.getInstance();
 
     public ChequeUpdater(){
         // Constructor is not needed, but can be used for initialization if required

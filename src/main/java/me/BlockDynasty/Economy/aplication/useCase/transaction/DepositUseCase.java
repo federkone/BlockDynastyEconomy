@@ -39,6 +39,7 @@ public class DepositUseCase {
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.getAccountsUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
+            //messageservice.sendMessage(result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
         return execute(accountResult.getValue(), currencyName, amount);
@@ -62,6 +63,7 @@ public class DepositUseCase {
     private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
         Result<Currency> currencyResult = this.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
+            //messageservice.sendMessage(result.getErrorMessage(), result.getErrorCode());
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
         return performDeposit(account, currencyResult.getValue(), amount);
@@ -69,26 +71,32 @@ public class DepositUseCase {
 
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
         if (!account.canReceiveCurrency()) {
+            //messageservice.sendMessage( account,currency,ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, "Target account can't receive currency");
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0){
+            //messageservice.sendMessage(account,currency,amount, ErrorCode.INVALID_AMOUNT, "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
 
         if(!currency.isValidAmount(amount)){
+            //messageservice.sendMessage(account,currency,amount, ErrorCode.DECIMAL_NOT_SUPPORTED, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         Result<Account> result = dataStore.deposit(account.getUuid().toString(), currency, amount);
         if(!result.isSuccess()){
+            //messageservice.sendMessage(account,currency,amount, result.getErrorCode(), "Deposit failed: " + result.getErrorMessage());
             this.economyLogger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
         this.getAccountsUseCase.updateAccountCache(result.getValue());
+        //messageservice.sendMessage(account,currency,amount, ErrorCode.DEPOSIT_SUCCESS, "Deposit successful: " + currency.format(amount) + " " + currency.getSingular());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
+
 
         return Result.success(null);
     }

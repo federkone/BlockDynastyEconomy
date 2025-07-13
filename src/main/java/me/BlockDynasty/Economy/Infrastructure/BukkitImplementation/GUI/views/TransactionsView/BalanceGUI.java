@@ -6,11 +6,14 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.component
 import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -19,6 +22,7 @@ public class BalanceGUI extends AbstractGUI {
     private final Player player;
     private final BlockDynastyEconomy plugin;
 
+    //CONSULTA SALDO
     public BalanceGUI(BlockDynastyEconomy plugin, Player player) {
         super("Balance de cuenta", 3);
         this.getBalanceUseCase = plugin.getUsesCase().getGetBalanceUseCase();
@@ -29,11 +33,43 @@ public class BalanceGUI extends AbstractGUI {
     }
 
     private void setupGUI() {
-        Result<Balance> result = getBalanceUseCase.getBalance(player.getUniqueId());
-        double balance = result.getValue().getBalance().doubleValue();
+        Result<List<Balance>> result = getBalanceUseCase.getBalances(player.getUniqueId());
 
-        setItem(13, createItem(Material.GOLD_INGOT, "§6Tu balance",
-                "§eBalance: §f" + balance), null);
+        if (result.isSuccess() && result.getValue() != null) {
+            List<Balance> balances = result.getValue();
+
+            // Add title item
+            setItem(4, createItem(Material.BOOK, "§6Balance de tu cuenta",
+                    "§7Tus saldos disponibles"), null);
+
+            // Display each balance in separate slots
+            int slot = 10;
+            for (Balance balance : balances) {
+                String currencyName = balance.getCurrency().getSingular();
+                BigDecimal amount = balance.getBalance();
+                Currency currency = balance.getCurrency();
+
+                setItem(slot, createItem(Material.GOLD_INGOT,
+                        "§6" + currencyName,
+                        "§eBalance: §f" + ChatColor.valueOf(currency.getColor())+  currency.format(amount)), null);
+
+                // Adjust slot position
+                slot++;
+                if (slot % 9 == 8) slot += 2;
+            }
+
+            // Add a close button
+            setItem(22, createItem(Material.BARRIER, "§cCerrar",
+                    "§7Click para cerrar"), unused -> player.closeInventory());
+        } else {
+            // Show error message if balances couldn't be retrieved
+            setItem(13, createItem(Material.BARRIER, "§cError",
+                    "§7No se pudieron obtener los balances"), null);
+        }
+    }
+
+
+    private void setupGUItest() {
 
        /* setItem(11, createItem(Material.EMERALD, "§aDepositar", "§7Click para depositar"), unused -> {
             player.closeInventory();

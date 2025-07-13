@@ -7,6 +7,7 @@ import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,7 +56,7 @@ public class BalanceCommand implements CommandExecutor {
                 for (Balance entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
                     BigDecimal balance = entry.getBalance();
-                    sender.sendMessage(F.getBalanceList().replace("{currencycolor}", currency.getColor() + "").replace("{format}", currency.format(balance)));
+                    sender.sendMessage(F.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));
                 }
             }else{
                 switch (resultBalances.getErrorCode()){

@@ -2,8 +2,6 @@ package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.ChatColorConverter;
-import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -25,8 +23,8 @@ public class CurrencyDb {
     private String symbol ;
 
     @Column(name = "color")
-    @Convert(converter = ChatColorConverter.class)
-    private ChatColor color ;
+    //@Convert(converter = ChatColorConverter.class)
+    private String color ;
 
     @Column(name = "decimal_supported")
     private boolean decimalSupported ;

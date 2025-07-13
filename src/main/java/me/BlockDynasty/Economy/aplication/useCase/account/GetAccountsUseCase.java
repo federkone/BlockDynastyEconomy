@@ -28,6 +28,7 @@ public class GetAccountsUseCase {
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
        if(account == null){
+           //System.out.println("DB HIT");
             Result<Account> result = this.dataStore.loadAccountByName(name);
             if(result.isSuccess()) {
                 account = result.getValue();
@@ -35,13 +36,14 @@ public class GetAccountsUseCase {
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }
+       }//else { System.out.println("CACHE HIT"); }
        return Result.success(account);
     }
 
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
+           //System.out.println("DB HIT");
             Result<Account> result = this.dataStore.loadAccountByUuid(uuid.toString());
            if(result.isSuccess()) {
                 account = result.getValue();
@@ -49,7 +51,7 @@ public class GetAccountsUseCase {
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }
+       }//else { System.out.println("CACHE HIT"); }
        return Result.success(account);
     }
 

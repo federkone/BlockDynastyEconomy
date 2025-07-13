@@ -1,33 +1,30 @@
 package me.BlockDynasty.Economy.domain.entities.currency;
 
-import org.bukkit.ChatColor;  //extraer a interfaz para separar de capa de dominio
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.UUID;
 
-
-//@Converter(autoApply = true)
-public class Currency{
+public class Currency implements ICurrency{
     private String uuid;
     private String singular;
     private String plural;
     private String symbol ;
-    private ChatColor color ;//extraer a interfaz para separar de capa de dominio
+    private String color ;//extraer a interfaz para separar de capa de dominio
     private boolean decimalSupported ;
     private boolean payable ;
     private boolean defaultCurrency ;
     private BigDecimal defaultBalance ;
     private double exchangeRate ;
 
-    //private boolean payable ; //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
-                                             //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
+     //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
+    //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
         this.exchangeRate = 1; //1
-        this.color = ChatColor.WHITE;
+        this.color = "WHITE";
         this.decimalSupported = true;
         this.payable = true;
         this.defaultCurrency = false;
@@ -39,13 +36,13 @@ public class Currency{
     public Currency() {
         this.defaultBalance = BigDecimal.ZERO;
         this.exchangeRate = 1; //1
-        this.color = ChatColor.WHITE;
+        this.color = "WHITE";
         this.decimalSupported = true;
         this.payable = true;
         this.defaultCurrency = false;
     }
 
-    public Currency(UUID uuid, String singular, String plural, String symbol, ChatColor color, boolean decimalSupported, boolean payable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate) {
+    public Currency(UUID uuid, String singular, String plural, String symbol, String color, boolean decimalSupported, boolean payable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate) {
         this.uuid = uuid.toString();
         this.singular = singular;
         this.plural = plural;
@@ -149,11 +146,11 @@ public class Currency{
         this.decimalSupported = decimalSupported;
     }
 
-    public ChatColor getColor() {
+    public String getColor() {
         return this.color;
     }
 
-    public void setColor(ChatColor color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

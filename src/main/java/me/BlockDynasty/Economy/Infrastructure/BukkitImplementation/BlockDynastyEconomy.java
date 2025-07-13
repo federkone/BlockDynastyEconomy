@@ -1,8 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.BalanceGUICommand;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.PayGUICommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.BankGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
@@ -138,9 +137,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void registerGUI(){
         this.guiService = new GUIService();
         // Register BalanceGUI command
-        this.getCommand("balancegui").setExecutor(new BalanceGUICommand(this));
-        this.getCommand("paygui").setExecutor(new PayGUICommand(this, usesCaseFactory.getPayUseCase(), currencyService));
-
+        //this.getCommand("balancegui").setExecutor(new BalanceGUICommand(this));
+        //this.getCommand("paygui").setExecutor(new PayGUICommand(this, usesCaseFactory.getPayUseCase(), usesCaseFactory.getCurrencyUseCase()));
+        this.getCommand("bank").setExecutor(new BankGUICommand(this));
         // Register GUI event listener
         getServer().getPluginManager().registerEvents(
                 new GUIListener(getGuiManager()), this

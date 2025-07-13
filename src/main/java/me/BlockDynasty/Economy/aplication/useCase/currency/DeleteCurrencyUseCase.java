@@ -1,6 +1,5 @@
 package me.BlockDynasty.Economy.aplication.useCase.currency;
 
-
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -16,6 +15,7 @@ public class DeleteCurrencyUseCase {
     private final IRepository dataStore;
     private final Courier updateForwarder;
 
+    //borrar una moneda del sistema implica que se tengan que borrar todos los balances de las cuentas que tengan esa moneda
     public DeleteCurrencyUseCase(ICurrencyService currencyService, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder){
         this.currencyService = currencyService;
         this.getAccountsUseCase = getAccountsUseCase;

@@ -39,21 +39,25 @@ public class TradeCurrenciesUseCase {
     public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Result<Account> accountFromResult =  this.getAccountsUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
+            //messageService.sendMessage(userFrom, accountFromResult.getErrorMessage());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult =  this.getAccountsUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
+            //messageService.sendMessage(userTo, accountToResult.getErrorMessage());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyFromResult =  this.getCurrencyUseCase.getCurrency(currencyFromS);
         if (!currencyFromResult.isSuccess()) {
+            //messageService.sendMessage(currencyFromS, currencyFromResult.getErrorMessage());
             return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
         }
 
         Result<Currency> currencyToResult =  this.getCurrencyUseCase.getCurrency(currencyToS);
         if (!currencyToResult.isSuccess()) {
+            //messageService.sendMessage(currencyToS, currencyToResult.getErrorMessage());
             return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
         }
 
@@ -64,21 +68,25 @@ public class TradeCurrenciesUseCase {
     public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Result<Account> accountFromResult =  this.getAccountsUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
+            //messageService.sendMessage(userFrom, accountFromResult.getErrorMessage());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult =  this.getAccountsUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
+            //messageService.sendMessage(userTo, accountToResult.getErrorMessage());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyFromResult =  this.getCurrencyUseCase.getCurrency(currencyFromS);
         if (!currencyFromResult.isSuccess()) {
+            //messageService.sendMessage(currencyFromS, currencyFromResult.getErrorMessage());
             return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
         }
 
         Result<Currency> currencyToResult =  this.getCurrencyUseCase.getCurrency(currencyToS);
         if (!currencyToResult.isSuccess()) {
+            //messageService.sendMessage(currencyToS, currencyToResult.getErrorMessage());
             return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
         }
 
@@ -88,32 +96,41 @@ public class TradeCurrenciesUseCase {
     private Result<Void> performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
 
         if(!accountTo.canReceiveCurrency()){
+            //messageService.sendMessage(accountTo, "Account can't receive currency");
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
         if(amountFrom.compareTo(BigDecimal.ZERO) <= 0){
+            //messageService.sendMessage(currencyFrom, "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
         if(amountTo.compareTo(BigDecimal.ZERO) <= 0){
+            //messageService.sendMessage(currencyTo, "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
 
         if(!currencyFrom.isValidAmount(amountFrom)){
+            //messageService.sendMessage(currencyFrom, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         if(!currencyTo.isValidAmount(amountTo)){
+            //messageService.sendMessage(currencyTo, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         Result<TransferResult> result = this.dataStore.trade( accountFrom.getUuid().toString(), accountTo.getUuid().toString(), currencyFrom, currencyTo, amountFrom, amountTo);
         if(!result.isSuccess()){
+            //messageService.sendMessage(accountFrom, result.getErrorMessage());
             this.economyLogger.log("[TRADE failed] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo) + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
         this.getAccountsUseCase.updateAccountCache(result.getValue().getTo());
         this.getAccountsUseCase.updateAccountCache(result.getValue().getFrom());
+
+        //messageService.sendMessage(TransferResult, ErrorCode.TRANSFER_SUCCESS);
+
         this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.economyLogger.log("[TRADE] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo));

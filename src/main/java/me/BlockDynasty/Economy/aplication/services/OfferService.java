@@ -31,7 +31,7 @@ public class OfferService implements IOfferService {
         ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
             ofertasPendientes.remove(offer);
             listener.onOfferExpired(offer);
-        }, this.delay, TimeUnit.SECONDS); // 60s
+        }, this.delay, TimeUnit.SECONDS);
         ofertasPendientes.put(offer, expirationTask);
     }
 

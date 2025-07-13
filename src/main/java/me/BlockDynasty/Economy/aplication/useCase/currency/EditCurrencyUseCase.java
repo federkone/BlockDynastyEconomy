@@ -8,7 +8,6 @@ import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.DecimalNotSup
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
-import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
 
@@ -62,11 +61,8 @@ public class EditCurrencyUseCase {
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-        ChatColor color = ChatColor.valueOf(colorString);
-        if (color.isFormat()) {
-            throw new CurrencyColorUnformat("currency color is not a format");
-        }
-        currency.setColor(color);
+
+        currency.setColor(colorString);
         try {
             dataStore.saveCurrency(currency);
             //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager

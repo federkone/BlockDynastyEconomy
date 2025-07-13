@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.bukkit.ChatColor;
 
 public class ViewCommand implements CommandExecutor {
     private final GetCurrencyUseCase getCurrencyUseCase;
@@ -32,13 +33,14 @@ public class ViewCommand implements CommandExecutor {
 
             Currency currency = resultCurrency.getValue();
             sender.sendMessage(F.getPrefix() + "§7ID: §c" + currency.getUuid().toString());
-            sender.sendMessage(F.getPrefix() + "§7Singular: §a" + currency.getSingular() + "§7, Plural: §a" + currency.getPlural());
-            sender.sendMessage(F.getPrefix() + "§7Start Balance: " + currency.getColor() + currency.format(currency.getDefaultBalance()) + "§7.");
+            sender.sendMessage(F.getPrefix() + "§7Singular: "+ChatColor.valueOf(currency.getColor()) + currency.getSingular() + "§7, Plural: " +ChatColor.valueOf(currency.getColor())+ currency.getPlural());
+            sender.sendMessage(F.getPrefix() + "§7Color: " +  ChatColor.valueOf(currency.getColor())+ currency.getColor());
+            sender.sendMessage(F.getPrefix() + "§7Symbol: " +  ChatColor.valueOf(currency.getColor())+ currency.getSymbol());
+            sender.sendMessage(F.getPrefix() + "§7Start Balance: " + ChatColor.valueOf(currency.getColor()) + currency.format(currency.getDefaultBalance()) + "§7.");
             sender.sendMessage(F.getPrefix() + "§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"));
             sender.sendMessage(F.getPrefix() + "§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"));
             sender.sendMessage(F.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
-            sender.sendMessage(F.getPrefix() + "§7Color: " + currency.getColor() + currency.getColor().name());
-            sender.sendMessage(F.getPrefix() + "§7Rate: " + currency.getColor() + currency.getExchangeRate());
+            sender.sendMessage(F.getPrefix() + "§7Rate: " + ChatColor.valueOf(currency.getColor()) + currency.getExchangeRate());
 
         });
         return false;

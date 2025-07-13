@@ -3,28 +3,21 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.IGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.BalanceGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.PayGUI;
-import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
-import me.BlockDynasty.Economy.domain.services.ICurrencyService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.BankGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PayGUICommand  implements CommandExecutor {
+public class BankGUICommand implements CommandExecutor {
     private final BlockDynastyEconomy plugin;
     private GUIService guiService;
-    private PayUseCase payUseCase;
-    private GetCurrencyUseCase getCurrencyUseCase;
 
-    public PayGUICommand(BlockDynastyEconomy plugin, PayUseCase payUseCase, GetCurrencyUseCase getCurrencyUseCase) {
-        this.plugin = plugin;
-        this.guiService = plugin.getGuiManager();
-        this.payUseCase = payUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public BankGUICommand(BlockDynastyEconomy plugin) {
+                this.plugin = plugin;
+            this.guiService = plugin.getGuiManager();
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -33,7 +26,7 @@ public class PayGUICommand  implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        IGUI gui = new PayGUI(plugin, payUseCase, player, getCurrencyUseCase);
+        IGUI gui = new BankGUI(plugin, player);
         this.guiService.registerGUI(player, gui);
         gui.open(player);
         return true;

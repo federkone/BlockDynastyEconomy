@@ -31,11 +31,7 @@ commands:
   offer:
     description: Offer currency to another player.
     aliases: [ofertar,ofrecer]
-  balancegui:
-    description: Opens the balance GUI.
-    usage: /balancegui
-    aliases: [balgui, moneygui]
-  paygui:
-    description: Opens the pay GUI.
-    usage: /paygui
-    aliases: [pagui, moneygui]
+  bank:
+    description: Opens the bank GUI.
+    usage: /bank
+    aliases: [bank, banco]

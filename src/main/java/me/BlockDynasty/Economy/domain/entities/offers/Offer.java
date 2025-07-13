@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Offer {
+public class Offer implements IOffer {
     private UUID vendedor;
     private UUID comprador;
     private BigDecimal cantidad;  //puede ser de tipo balance, compuesto por currency y cantidad.

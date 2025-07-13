@@ -8,6 +8,7 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
 import java.util.List;
@@ -148,7 +149,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
             return F.getBalanceTop()
                     .replace("{number}", String.valueOf(position + 1))
-                    .replace("{currencycolor}", "" + account.getBalance(currencyName).getCurrency().getColor())
+                    .replace("{currencycolor}", "" + ChatColor.valueOf(account.getBalance(currencyName).getCurrency().getColor()) )
                     .replace("{player}", account.getNickname())
                     .replace("{balance}", account.getBalance(currencyName).getCurrency().format(account.getBalance(currencyName).getBalance()));
         }
@@ -160,7 +161,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
             Balance balance = account.getBalance(currencyName);
             result.append(F.getBalanceTop()
                     .replace("{number}", String.valueOf(i + 1))
-                    .replace("{currencycolor}", "" + balance.getCurrency().getColor())
+                    .replace("{currencycolor}", "" + ChatColor.valueOf(balance.getCurrency().getColor()))
                     .replace("{player}", account.getNickname())
                     .replace("{balance}", balance.getCurrency().format(balance.getBalance())));
             /*result.append(i + 1).append(". ")

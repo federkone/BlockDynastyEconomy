@@ -6,7 +6,7 @@ import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
 
-public class Balance {
+public class Balance implements IBalance{
     private Currency currency;
     private BigDecimal amount;
 

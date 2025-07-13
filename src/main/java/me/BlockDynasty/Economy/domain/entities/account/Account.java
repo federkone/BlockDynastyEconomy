@@ -8,7 +8,7 @@ import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class Account {
+public class Account implements IAccount {
     private String uuid;
     private String nickname;
     private List<Balance> balances;
@@ -109,7 +109,7 @@ public class Account {
         return balance.hasEnough(amount);
     };
 
-    public boolean hasEnough(BigDecimal amount){
+    public boolean hasEnoughDefaultCurrency(BigDecimal amount){
         Balance balance = getBalance();
         if (balance == null) {
             return false;

@@ -1,7 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb;
 import dev.morphia.annotations.*;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
 
@@ -21,7 +20,7 @@ public class CurrencyMongoDb {
     private String symbol;
 
     @Transient // Ignorado si no se almacena directamente. O puedes manejarlo manualmente.
-    private ChatColor color;
+    private String color;
 
     @Property("decimal_supported") // Indicador si soporta decimales.
     private boolean decimalSupported;

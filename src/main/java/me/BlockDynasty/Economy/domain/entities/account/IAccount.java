@@ -19,8 +19,7 @@ public interface IAccount {
     Balance getBalance();
     Balance getBalance(String currencyName);
     boolean hasEnough(Currency currency, BigDecimal amount);
-    boolean hasEnough(BigDecimal amount);
-    void createBalance(Currency currency, BigDecimal amount);
+    boolean hasEnoughDefaultCurrency(BigDecimal amount);
     void setUuid(UUID uuid);
     void setNickname(String nickname);
     String getNickname();

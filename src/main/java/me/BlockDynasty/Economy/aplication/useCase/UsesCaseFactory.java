@@ -1,6 +1,5 @@
 package me.BlockDynasty.Economy.aplication.useCase;
 
-
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;

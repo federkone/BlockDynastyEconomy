@@ -2,12 +2,15 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.Tr
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
+import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,16 +27,18 @@ public class PayGUI extends AbstractGUI {
     private final BlockDynastyEconomy plugin;
     private final Player sender;
     private final PayUseCase payUseCase;
-    private final ICurrencyService currencyService;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private  MessageService messageService ;
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
 
-    public PayGUI(BlockDynastyEconomy plugin, PayUseCase payUseCase,Player sender, ICurrencyService currencyService) {
+    public PayGUI(BlockDynastyEconomy plugin, PayUseCase payUseCase,Player sender, GetCurrencyUseCase getCurrencyUseCase) {
         super("Seleccionar Jugador", 5);
         this.plugin = plugin;
         this.sender = sender;
         this.payUseCase = payUseCase;
-        this.currencyService = currencyService;
+        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.messageService = plugin.getMessageService();
 
         showPlayersPage();
     }
@@ -119,8 +124,9 @@ public class PayGUI extends AbstractGUI {
                         Result<Void> result = payUseCase.execute(sender.getUniqueId(), targetPlayer.getUniqueId(), currency.getSingular(), amount);
 
                         if (result.isSuccess()) {
-                            sender.sendMessage("§aHas pagado §f" + amount + " " +
-                                    currency.getSingular() + " §aa §f" + targetPlayer.getName());
+                            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getName(), currency.getSingular(), amount));
+                            targetPlayer.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
+
                             return List.of(AnvilGUI.ResponseAction.close());
                         } else {
                             return List.of(AnvilGUI.ResponseAction.replaceInputText(
@@ -148,7 +154,7 @@ public class PayGUI extends AbstractGUI {
         }
 
         private void setupCurrencyGUI() {
-            List<Currency> currencies = currencyService.getCurrencies();
+            List<Currency> currencies = getCurrencyUseCase.getCurrencies();
 
             int slot = 10;
             for (Currency currency : currencies) {
@@ -167,7 +173,7 @@ public class PayGUI extends AbstractGUI {
                     "§7Click para volver a selección de jugadores"), unused -> {
                 sender.closeInventory();
                 // Create a new PayGUI instance and open it
-                PayGUI payGUI = new PayGUI(plugin, payUseCase, sender, currencyService);
+                PayGUI payGUI = new PayGUI(plugin, payUseCase, sender, getCurrencyUseCase);
                 sender.openInventory(payGUI.getInventory());
 
                 // Register the new GUI with the GUIService

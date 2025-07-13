@@ -500,7 +500,7 @@ public class RepositorySql implements IRepository
     }
 
     @Override
-   public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
+    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) throws TransactionException {
         try (Session session = sessionFactory.openSession()) {
             // HQL para obtener las cuentas ordenadas por balance según el nombre de la moneda
             String hql = "SELECT a FROM AccountDb a " +

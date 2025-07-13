@@ -3,6 +3,7 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
+import org.bukkit.ChatColor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MessageService {
             return "Currency not found"; // Manejo de errores interno si no se encuentra la moneda
         }
         return F.getInsufficientFunds()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{currency}", currency.getPlural());
     }
 
@@ -51,7 +52,7 @@ public class MessageService {
             return "Currency not found";
         }
         return F.getCurrencyNotPayable()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{currency}", currency.getPlural());
     }
 
@@ -70,7 +71,7 @@ public class MessageService {
             return "Currency not found";
         }
         return F.getPayerMessage()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", targetName);
     }
@@ -81,7 +82,7 @@ public class MessageService {
             return "Currency not found";
         }
         return F.getPaidMessage()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", payerName);
     }
@@ -90,9 +91,9 @@ public class MessageService {
         Currency currencyTo = currencyService.getCurrency(toExchange);
         Currency currencyToRecive = currencyService.getCurrency(toReceive);
         return F.getExchangeSuccess()
-                .replace("{currencycolor}", "" + currencyTo.getColor())
+                .replace("{currencycolor}", "" + ChatColor.valueOf(currencyTo.getColor()))
                 .replace("{ex_curr}", currencyTo.format(toExchangeAmount))
-                .replace("{currencycolor2}", "" + currencyToRecive.getColor())
+                .replace("{currencycolor2}", "" + ChatColor.valueOf(currencyToRecive.getColor()))
                 .replace("{re_curr}", currencyToRecive.getPlural());
     }
     public String getWithdrawMessage(String target, String currencyName, BigDecimal amount) {
@@ -101,7 +102,7 @@ public class MessageService {
             return "Currency not found";
         }
         return F.getTakeMessage()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor())+ "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", target);
     }
@@ -112,7 +113,7 @@ public class MessageService {
             return "Currency not found";
         }
         return F.getAddMessage()
-                .replace("{currencycolor}", currency.getColor() + "")
+                .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", target);
     }
@@ -121,9 +122,9 @@ public class MessageService {
         Currency currency = currencyService.getCurrency(currencyName);
         Currency currency2 = currencyService.getCurrency(currencyName2);
         return F.getOfferSender()
-                .replace("{currencycolorOffert}", currency.getColor() + "")
+                .replace("{currencycolorOffert}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amountOffert}",  currency.format(amount))
-                .replace("{currencycolorValue}", currency2.getColor() + "")
+                .replace("{currencycolorValue}", ChatColor.valueOf(currency2.getColor()) + "")
                 .replace("{amountValue}", currency2.format(amount2))
                 .replace("{player}", target);
 
@@ -133,9 +134,9 @@ public class MessageService {
         Currency currency = currencyService.getCurrency(currencyName);
         Currency currency2 = currencyService.getCurrency(currencyName2);
         return F.getOfferReceiver()
-                .replace("{currencycolorOffert}", currency.getColor() + "")
+                .replace("{currencycolorOffert}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amountOffert}",  currency.format(amount))
-                .replace("{currencycolorValue}", currency2.getColor() + "")
+                .replace("{currencycolorValue}", ChatColor.valueOf(currency2.getColor()) + "")
                 .replace("{amountValue}", currency2.format(amount2))
                 .replace("{player}", target);
     }
@@ -188,7 +189,7 @@ public class MessageService {
             //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
             aux.append(F.getBalanceTop()
                     .replace("{number}", String.valueOf(i+1))
-                    .replace("{currencycolor}", "" + currency.getColor())
+                    .replace("{currencycolor}", "" + ChatColor.valueOf(currency.getColor()))
                     .replace("{player}", account.getNickname())
                     .replace("{balance}", currency.format(balanceValue)))
             .append("\n");

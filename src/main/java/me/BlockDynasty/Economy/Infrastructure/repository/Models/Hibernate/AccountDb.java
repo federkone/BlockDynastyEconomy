@@ -16,7 +16,6 @@ public class AccountDb {
     @Column(name = "nickname")
     private String nickname;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     private List<BalanceDb> balances;
@@ -27,7 +26,7 @@ public class AccountDb {
     public AccountDb() {
     }
 
-    public AccountDb(me.BlockDynasty.Economy.domain.entities.account.Account account){
+    public AccountDb(Account account){
         this.uuid = account.getUuid().toString();
         this.nickname = account.getNickname();
         this.balances = new ArrayList<>();
@@ -37,7 +36,7 @@ public class AccountDb {
         this.canReceiveCurrency = account.canReceiveCurrency();
     }
 
-    public me.BlockDynasty.Economy.domain.entities.account.Account toEntity(){
+    public Account toEntity(){
         List<Balance> balanceList = new ArrayList<>();
         for (BalanceDb balanceMapper : balances){
             balanceList.add(balanceMapper.toEntity());
