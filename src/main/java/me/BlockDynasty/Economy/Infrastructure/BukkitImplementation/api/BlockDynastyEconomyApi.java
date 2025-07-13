@@ -35,27 +35,27 @@ public class BlockDynastyEconomyApi implements Api {
     }
 
     public void deposit(UUID uuid, double amount){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.depositUseCase.execute(uuid, BigDecimal.valueOf(amount));
-        });
+        //});
     }
 
     public void deposit(UUID uuid, double amount, String currency){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.depositUseCase.execute(uuid,currency,  BigDecimal.valueOf(amount));
-        });
+        //});
     }
 
     public void withdraw(UUID uuid, double amount){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.withdrawUseCase.execute(uuid,  BigDecimal.valueOf(amount));
-        });
+        //});
     }
 
     public void withdraw(UUID uuid, double amount, String currency){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.withdrawUseCase.execute(uuid,currency, BigDecimal.valueOf(amount));
-        });
+        //});
     }
 
     public double getBalance(UUID uuid){
@@ -75,21 +75,21 @@ public class BlockDynastyEconomyApi implements Api {
     }
 
     public void exchange(UUID uuid, String currencyFrom, String currencyTo, double amountFrom,double ammountTo){
-        SchedulerUtils.runAsync(() -> {
+       // SchedulerUtils.runAsync(() -> {
             this.exchangeUseCase.execute(uuid,currencyFrom,currencyTo,BigDecimal.valueOf(amountFrom), BigDecimal.valueOf(ammountTo));
-        });
+        //});
     }
 
     public void transfer(UUID userFrom, UUID userTo, String currency, double amount){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.transferFundsUseCase.execute(userFrom,userTo,currency,BigDecimal.valueOf(amount));
-        });
+        //});
     }
 
     public void trade(UUID userFrom, UUID userTo, String currencyFrom, String currencyTo, double amountFrom, double amountTo){
-        SchedulerUtils.runAsync(() -> {
+        //SchedulerUtils.runAsync(() -> {
             this.tradeCurrenciesUseCase.execute(userFrom,userTo,currencyFrom,currencyTo,BigDecimal.valueOf(amountFrom),BigDecimal.valueOf(amountTo));
-        });
+        //});
 
     }
 

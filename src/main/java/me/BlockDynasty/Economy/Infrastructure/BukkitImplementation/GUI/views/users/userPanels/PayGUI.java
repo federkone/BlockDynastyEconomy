@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
@@ -7,10 +7,8 @@ import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

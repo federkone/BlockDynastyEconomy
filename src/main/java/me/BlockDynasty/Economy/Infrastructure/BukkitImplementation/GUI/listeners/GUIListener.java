@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;

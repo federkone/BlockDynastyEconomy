@@ -51,7 +51,30 @@ public class RepositorySql implements IRepository
 
     @Override
     public void deleteCurrency(Currency currency) {
-        executeInsideTransaction(session -> session.remove(new CurrencyDb(currency)));
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                // First delete all associated balances
+                session.createQuery("DELETE FROM BalanceDb WHERE currency.uuid = :uuid")
+                        .setParameter("uuid", currency.getUuid().toString())
+                        .executeUpdate();
+
+                // Then find and delete the currency by its string ID
+                CurrencyDb currencyDb = session.get(CurrencyDb.class, currency.getUuid().toString());
+                if (currencyDb != null) {
+                    session.remove(currencyDb);
+                }
+
+                tx.commit();
+            } catch (Exception e) {
+                if (tx != null) {
+                    tx.rollback();
+                }
+                throw new TransactionException("Error deleting currency: " + e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            throw new TransactionException("Session error: " + e.getMessage(), e);
+        }
     }
 
     @Override

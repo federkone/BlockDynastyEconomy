@@ -1,13 +1,13 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI.BankGUICommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.BankGUICommand;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.OfferListenerImpl;
-import me.BlockDynasty.Economy.aplication.api.Api;
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.VaultLogger;
@@ -35,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
-    private static Api api;
+    private static BlockDynastyEconomyApi api;
 
     private IRepository repository;
     private IAccountService accountService;
@@ -140,6 +140,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         //this.getCommand("balancegui").setExecutor(new BalanceGUICommand(this));
         //this.getCommand("paygui").setExecutor(new PayGUICommand(this, usesCaseFactory.getPayUseCase(), usesCaseFactory.getCurrencyUseCase()));
         this.getCommand("bank").setExecutor(new BankGUICommand(this));
+        this.getCommand("currencyPannel").setExecutor(new CurrencyPanelCommand(this));
         // Register GUI event listener
         getServer().getPluginManager().registerEvents(
                 new GUIListener(getGuiManager()), this
@@ -191,7 +192,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         return instance;
     }
 
-    public static Api getApi() {
+    public static BlockDynastyEconomyApi getApi() {
         return api;
     }
     public ICurrencyService getCurrencyManager() {

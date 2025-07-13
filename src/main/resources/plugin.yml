@@ -35,3 +35,7 @@ commands:
     description: Opens the bank GUI.
     usage: /bank
     aliases: [bank, banco]
+  currencyPannel:
+    description: Opens the currency panel GUI.
+    usage: /currencyPanel
+    aliases: [panelMonedas, monedas]

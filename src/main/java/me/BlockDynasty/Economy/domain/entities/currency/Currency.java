@@ -25,6 +25,7 @@ public class Currency implements ICurrency{
         this.defaultBalance = BigDecimal.ZERO;
         this.exchangeRate = 1; //1
         this.color = "WHITE";
+        this.symbol = "";
         this.decimalSupported = true;
         this.payable = true;
         this.defaultCurrency = false;
@@ -37,6 +38,7 @@ public class Currency implements ICurrency{
         this.defaultBalance = BigDecimal.ZERO;
         this.exchangeRate = 1; //1
         this.color = "WHITE";
+        this.symbol = "";
         this.decimalSupported = true;
         this.payable = true;
         this.defaultCurrency = false;
@@ -95,7 +97,7 @@ public class Currency implements ICurrency{
         }
         amt.append(" ");
 
-        if (this.getSymbol() != null) {
+        if (!this.getSymbol().isEmpty()) {
             amt.append(this.getSymbol()); //si tiene simbolo usarlo
         }else { //sino usar nombre
             if (amount.compareTo(BigDecimal.ONE) != 0) {

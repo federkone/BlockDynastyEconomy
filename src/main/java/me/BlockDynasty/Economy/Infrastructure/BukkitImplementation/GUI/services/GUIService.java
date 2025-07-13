@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.IGUI;
 import org.bukkit.entity.Player;

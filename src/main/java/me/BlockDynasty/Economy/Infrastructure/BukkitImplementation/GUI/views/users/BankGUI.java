@@ -1,8 +1,8 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.BalanceGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.PayGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.BalanceGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;

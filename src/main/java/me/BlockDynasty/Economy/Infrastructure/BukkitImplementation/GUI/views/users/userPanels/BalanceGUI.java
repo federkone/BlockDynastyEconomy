@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.domain.result.Result;

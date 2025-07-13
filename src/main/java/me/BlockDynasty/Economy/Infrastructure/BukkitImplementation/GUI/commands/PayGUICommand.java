@@ -1,13 +1,11 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.IGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.BalanceGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.PayGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
-import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

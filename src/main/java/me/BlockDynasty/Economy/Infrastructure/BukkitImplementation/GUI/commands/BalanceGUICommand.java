@@ -1,8 +1,8 @@
-package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commandsGUI;
+package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.GUIService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.TransactionsView.BalanceGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.BalanceGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.IGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

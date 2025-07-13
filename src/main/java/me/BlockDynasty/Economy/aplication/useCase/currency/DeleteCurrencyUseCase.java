@@ -28,7 +28,7 @@ public class DeleteCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         if (currency.isDefaultCurrency()){
-            throw new CurrencyNotFoundException("Currency is default");
+            throw new CurrencyNotFoundException(currency.getSingular()+" is default");
         }
         try {
             dataStore.deleteCurrency(currency);

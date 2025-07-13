@@ -31,7 +31,7 @@ public class DeleteCurrencyCommand implements CommandExecutor {
                 deleteCurrencyUseCase.deleteCurrency(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Deleted currency: §a" + currencyName);
             } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency() + e.getMessage()+" asegurate de tener otra moneda por defecto antes de eliminarla");
+                sender.sendMessage(F.getPrefix()+"§7"+ e.getMessage()+" asegurate de tener otra moneda por defecto antes de eliminarla");
             } catch (TransactionException e) {
                 sender.sendMessage(F.getPrefix() + "§cError while deleting currency: §4" + e.getMessage());
             }
