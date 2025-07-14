@@ -3,9 +3,7 @@ package me.BlockDynasty.Economy.aplication.useCase.account;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
-import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.IAccountService;
@@ -28,91 +26,81 @@ public class GetAccountsUseCase {
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
        if(account == null){
-           //System.out.println("DB HIT");
             Result<Account> result = this.dataStore.loadAccountByName(name);
             if(result.isSuccess()) {
                 account = result.getValue();
-                updateAccountBalances(account);
+                syncWalletWithSystemCurrencies(account);
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }//else { System.out.println("CACHE HIT"); }
+       }
        return Result.success(account);
     }
 
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
-           //System.out.println("DB HIT");
             Result<Account> result = this.dataStore.loadAccountByUuid(uuid.toString());
            if(result.isSuccess()) {
                 account = result.getValue();
-                updateAccountBalances(account);
+               syncWalletWithSystemCurrencies(account);
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }//else { System.out.println("CACHE HIT"); }
+       }
        return Result.success(account);
     }
 
-    public List<Account> getDbAccounts() {
-        return  this.dataStore.loadAccounts(Criteria.create());
-    }
-
-    public Set<Account> getOnlineAccounts() {
-        return  this.accountService.getAccountsCache();
-    }
-
-    public void updateAccountCache(Account account) {
+    public void syncCacheWithAccount(Account account) {
         UUID uuid = account.getUuid();
         Account cachedAccount = this.accountService.getAccountCache(uuid);
-        if (cachedAccount != null) { //si está cacheada, actualiza los balances
-            // Actualiza solo los balances que vienen en account
-            for (Balance updatedBalance : account.getBalances()) {
+        if (cachedAccount != null) {
+            for (Balance updatedBalance : account.getWallet()) {
                 Balance cachedBalance = cachedAccount.getBalance(updatedBalance.getCurrency());
                 if (cachedBalance != null) {
                     cachedBalance.setBalance(updatedBalance.getBalance());
                 } else {
-                    cachedAccount.getBalances().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getBalance()));
+                    cachedAccount.getWallet().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getBalance()));
                 }
             }
         }
     }
-    public void updateAccountsCache(){ //todo, test
-        Set<Account> accounts =  this.accountService.getAccountsCache();   //todas las cuentas de cache
+
+    public void syncDbWithCache() {
+        Collection<Account> accounts = this.accountService.getAccountsCache();
         for (Account account : accounts) {
-            this.updateAccountBalances(account);    //deberian volver a sincronizarse con las monedas del sistema, esto evita quedarse con los balances de las monedas que ya no estan en el sistema
+            syncWalletWithSystemCurrencies(account);
             try {
-                dataStore.saveAccount(account); //guardar en db los cambios hechos sobre sus balances, ya sea haber agregado, o quitado
+                dataStore.saveAccount(account);
+                System.out.println("Cuenta guardada con el nuevo balance.");
             } catch (TransactionException e) {
                 throw new TransactionException("Error in transaction", e);
             }
         }
-    }
-    public void updateAccountCache(UUID uuid){
+    } //este metodo se debe eliminar
+
+    public void syncCache(UUID uuid){
         Account accountCache = this.accountService.getAccountCache(uuid);
-        Account accountDb = null;
-        Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1); //prepare for get account with uuid
-        List<Account> accounts =  this.dataStore.loadAccounts(criteria);
-        if (!accounts.isEmpty() && accountCache != null){
-            accountDb = accounts.get(0);
-            this.updateAccountBalances(accountDb);
-            accountCache.setBalances(accountDb.getBalances( ));
-        }else {
-            throw new AccountNotFoundException("Account not found");
+        Result<Account> result =  this.dataStore.loadAccountByUuid(uuid.toString());
+        if (result.isSuccess()){
+            if (accountCache != null){
+                syncWalletWithSystemCurrencies(result.getValue());
+                accountCache.setWallet(result.getValue().getWallet());
+            }
         }
     }
-    private void updateAccountBalances(Account account) { //cada vez que traigo de la db la cuenta, le meto a la lista de balances sus balances correspondientes o le pone LAS CURRENCIES DEL SISTEMA/CAHCE/DB CON SUS VALORES POR DEFECTO
+
+    private void syncWalletWithSystemCurrencies(Account account) {
         List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
                 .map(systemCurrency ->
-                        account.getBalances().stream()
+                        account.getWallet().stream()
                                 .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
                                 .findFirst() // Busca si ya existe el balance para esta moneda
                                 .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
                                     return new Balance(systemCurrency);
                                 }))
                 .collect(Collectors.toList());
-        account.setBalances(updatedBalances);
+        account.setWallet(updatedBalances);
     }
 
    public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {

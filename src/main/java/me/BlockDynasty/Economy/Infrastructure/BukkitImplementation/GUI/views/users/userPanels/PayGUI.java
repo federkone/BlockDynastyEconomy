@@ -170,6 +170,7 @@ public class PayGUI extends AbstractGUI {
             setItem(22, createItem(Material.ARROW, "§aVolver",
                     "§7Click para volver a selección de jugadores"), unused -> {
                 sender.closeInventory();
+
                 // Create a new PayGUI instance and open it
                 PayGUI payGUI = new PayGUI(plugin, payUseCase, sender, getCurrencyUseCase);
                 sender.openInventory(payGUI.getInventory());

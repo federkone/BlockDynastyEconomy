@@ -16,18 +16,15 @@ public class BalanceMongoDb {
     @Property("amount") // Mapeo del campo con precisión decimal.
     private BigDecimal amount;
 
-    // Constructor para convertir desde la entidad
+
     public BalanceMongoDb(Balance balance) {
         this.currency = new CurrencyMongoDb(balance.getCurrency());
         this.amount = balance.getBalance();
     }
 
     public Balance toEntity() {
-        Balance balance = new Balance();
-        balance.setCurrency(this.currency.toEntity());
-        balance.setBalance(this.amount);
-        return balance;
+        return  new Balance(this.currency.toEntity(),this.amount);
     }
-    // Getters y Setters
+
 
 }

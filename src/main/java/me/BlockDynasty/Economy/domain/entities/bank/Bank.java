@@ -28,13 +28,13 @@ public class Bank {
     private String name;
     private String owner;
     private UUID ouwnerUUID;
-    private List<Balance> balances;
+    private List<Balance> vault;
 
     public Bank(String name,UUID ouwnerUUID, String owner) {
         this.ouwnerUUID = ouwnerUUID;
         this.name = name;
         this.owner = owner;
-        this.balances = new ArrayList<>();
+        this.vault = new ArrayList<>();
     }
 
     public String getName() {
@@ -42,11 +42,11 @@ public class Bank {
     }
 
     public void addBalance(Balance balance) {
-        this.balances.add(balance);
+        this.vault.add(balance);
     }
 
-    public void setBalances(List<Balance> balances) {
-        this.balances = balances;
+    public void setVault(List<Balance> balances) {
+        this.vault = balances;
     }
 
     public String getOwnerName() {
@@ -58,7 +58,7 @@ public class Bank {
     }
 
     public BigDecimal getBalance(Currency currency) {
-        for (Balance balance : balances) {
+        for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
                 return balance.getBalance();
             }
@@ -67,7 +67,7 @@ public class Bank {
     }
 
     public void deposit(Currency currency,BigDecimal amount) {
-        for (Balance balance : balances) {
+        for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
                 balance.setBalance(balance.getBalance().add(amount));
                 return;
@@ -76,7 +76,7 @@ public class Bank {
     }
 
     public void withdraw(Currency currency,BigDecimal amount) {
-        for (Balance balance : balances) {
+        for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
                 BigDecimal newBalance = balance.getBalance().subtract(amount);
                 if (newBalance.compareTo(BigDecimal.ZERO) >= 0) {

@@ -30,4 +30,12 @@ public class BalanceDb  {
         return new Balance(currency.toEntity(), amount);
     }
 
+    public CurrencyDb getCurrency() {
+        return this.currency;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
 }

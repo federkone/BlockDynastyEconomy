@@ -33,7 +33,7 @@ public class DeleteCurrencyUseCase {
         try {
             dataStore.deleteCurrency(currency);
             currencyService.remove(currency);
-            getAccountsUseCase.updateAccountsCache();
+            getAccountsUseCase.syncDbWithCache();
             if (updateForwarder != null){
                 updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }

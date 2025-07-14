@@ -72,4 +72,8 @@ public class CurrencyDb {
         this.defaultBalance = currency.getDefaultBalance();
         this.exchangeRate = currency.getExchangeRate();
     }
+
+    public String getUuid() {
+        return uuid;
+    }
 }

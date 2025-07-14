@@ -37,7 +37,7 @@ public class CreateCurrencyUseCase {
         try {
             dataStore.saveCurrency(currency);
             currencyService.add(currency);//cache
-            getAccountsUseCase.updateAccountsCache();
+            getAccountsUseCase.syncDbWithCache();
             if (updateForwarder != null){
                 updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }

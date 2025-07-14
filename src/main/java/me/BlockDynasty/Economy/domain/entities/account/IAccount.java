@@ -13,7 +13,7 @@ public interface IAccount {
     Result<Void> add(Currency currency, BigDecimal amount);
     Result<Void> setBalance(Currency currency, BigDecimal amount);
 
-    void setBalances(List<Balance> balances);
+    void setWallet(List<Balance> wallet);
     boolean hasCurrency( String currencyName);
     Balance getBalance(Currency currency);
     Balance getBalance();

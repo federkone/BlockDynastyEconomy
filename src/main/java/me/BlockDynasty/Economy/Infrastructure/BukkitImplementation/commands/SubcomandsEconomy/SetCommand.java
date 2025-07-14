@@ -66,26 +66,7 @@ public class SetCommand implements CommandExecutor {
                         targetPlayer.sendMessage(messageService.getSetSuccess( currencyName, BigDecimal.valueOf(finalMount)));
                     }
                 }else{
-                    switch (result.getErrorCode()){
-                        case ACCOUNT_NOT_FOUND:
-                            sender.sendMessage(messageService.getAccountNotFoundMessage());
-                            break;
-                        case CURRENCY_NOT_FOUND:
-                            sender.sendMessage(F.getUnknownCurrency());
-                            break;
-                        case INVALID_AMOUNT:
-                            sender.sendMessage(messageService.getUnvalidAmount());
-                            break;
-                        case DECIMAL_NOT_SUPPORTED:
-                            sender.sendMessage(F.getUnvalidAmount());
-                            break;
-                        case DATA_BASE_ERROR:
-                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            break;
-                        default:
-                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            break;
-                    }
+                    messageService.sendErrorMessage(result.getErrorCode(),sender,target);
                 }
             });
         });

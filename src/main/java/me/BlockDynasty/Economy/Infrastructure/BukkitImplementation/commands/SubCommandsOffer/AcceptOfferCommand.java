@@ -58,7 +58,6 @@ public class AcceptOfferCommand  implements CommandExecutor {
                             break;
                         case INSUFFICIENT_FUNDS:
                             sender.sendMessage("No tienes suficientes fondos para esta oferta");
-
                             playerFrom.sendMessage( "El jugador no tiene suficiente dinero para  la oferta");
                             break;
                         case DATA_BASE_ERROR:
@@ -67,11 +66,10 @@ public class AcceptOfferCommand  implements CommandExecutor {
                             break;
                         default:
                             sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
+                            //playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
                             break;
                     }
                 }
-
             });
         });
         return false;

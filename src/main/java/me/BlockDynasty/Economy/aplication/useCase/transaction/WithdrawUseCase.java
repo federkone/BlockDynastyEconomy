@@ -90,7 +90,7 @@ public class WithdrawUseCase {
             return Result.failure( result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.updateAccountCache(result.getValue());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         //messageservice.sendMessage(account,currency,amount, ErrorCode.SUCCESS, "Withdraw successful");
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());

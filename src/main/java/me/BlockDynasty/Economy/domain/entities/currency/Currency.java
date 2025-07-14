@@ -173,6 +173,21 @@ public class Currency implements ICurrency{
     }
 
     @Override
+    public String toString() {
+        return "Currency{" +
+                "uuid='" + uuid + '\'' +
+                ", singular='" + singular + '\'' +
+                ", plural='" + plural + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", color='" + color + '\'' +
+                ", decimalSupported=" + decimalSupported +
+                ", payable=" + payable +
+                ", defaultCurrency=" + defaultCurrency +
+                ", defaultBalance=" + defaultBalance +
+                ", exchangeRate=" + exchangeRate +
+                '}';
+    }
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

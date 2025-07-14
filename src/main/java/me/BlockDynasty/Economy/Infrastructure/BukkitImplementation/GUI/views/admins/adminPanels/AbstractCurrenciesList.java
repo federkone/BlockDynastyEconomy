@@ -11,14 +11,14 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class CurrencyListGUI extends AbstractGUI {
+public abstract class AbstractCurrenciesList extends AbstractGUI {
     private final BlockDynastyEconomy plugin;
     private final Player player;
     private final GetCurrencyUseCase getCurrencyUseCase;
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public CurrencyListGUI(BlockDynastyEconomy plugin, Player player) {
+    public AbstractCurrenciesList(BlockDynastyEconomy plugin, Player player) {
         super("Lista de Monedas", 5);
         this.plugin = plugin;
         this.player = player;
@@ -66,7 +66,7 @@ public class CurrencyListGUI extends AbstractGUI {
                             "§7Plural: " + color + currency.getPlural()),
                     unused -> {
                         player.closeInventory();
-                        openEditor(currency);
+                        openSubMenu(currency,player);
                     });
 
             // Adjust slot position
@@ -98,7 +98,6 @@ public class CurrencyListGUI extends AbstractGUI {
             openCurrencyEditorGUI();
         });
     }
-
     private void openCurrencyEditorGUI() {
         // Create and open the CurrencyEditorGUI
         CurrencyPanelGUI editorGUI =
@@ -108,12 +107,8 @@ public class CurrencyListGUI extends AbstractGUI {
         // Register GUI with manager
         plugin.getGuiManager().registerGUI(player, editorGUI);
     }
-    private void openEditor(Currency currency){
-        EditCurrencyGUI editCurrencyGUI = new EditCurrencyGUI(plugin, player,currency);
-        player.openInventory(editCurrencyGUI.getInventory());
 
-        // Register GUI with manager
-        plugin.getGuiManager().registerGUI(player, editCurrencyGUI);
+    public abstract void openSubMenu(Currency currency,Player player);
 
-    }
 }
+

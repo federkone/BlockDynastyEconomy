@@ -9,41 +9,46 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class AccountService implements IAccountService {
-    private final Set<Account> accountsOnline;
     private final Map<String,List<Account>> accountsTopList;
+    private final Map<UUID,Account> accountsOnlineUuid;
+    private final Map<String,Account> accountsOnlineName;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final int expireCacheTopMinutes ;
 
     public AccountService(int expireCacheTopMinutes) {
-        this.accountsOnline = new HashSet<>(); //para no repetir cuentas
+        this.accountsOnlineUuid = new HashMap<>();
+        this.accountsOnlineName = new HashMap<>();
         this.accountsTopList = new HashMap<>();
         this.expireCacheTopMinutes = expireCacheTopMinutes;
         startCacheClearingTask();
     }
 
     public void removeAccountFromCache(UUID uuid) {  //removeAccountFromCache
-        accountsOnline.removeIf(account -> account.getUuid().equals(uuid));
+        Account account = accountsOnlineUuid.remove(uuid);
+        if (account != null) {
+            accountsOnlineName.remove(account.getNickname().toLowerCase());
+        }
+    }
+    public void removeAccountFromCache(String name) {
+        Account account = accountsOnlineName.remove(name.toLowerCase());
+        if (account != null) {
+            accountsOnlineUuid.remove(account.getUuid());
+        }
     }
 
     public void addAccountToCache(Account account) {
-        if (this.accountsOnline.contains(account)) return;
-        this.accountsOnline.add(account);
+        this.accountsOnlineUuid.put(account.getUuid(), account);
+        this.accountsOnlineName.put(account.getNickname(), account);
     }
 
-    public Set<Account> getAccountsCache() {
-        return accountsOnline;
+    public Collection<Account> getAccountsCache() {
+        return this.accountsOnlineUuid.values();
     }
     public Account getAccountCache(String name){
-        return  accountsOnline.stream()
-                .filter(a -> name.equals(a.getNickname()))
-                .findFirst()
-                .orElse(null);
+        return  accountsOnlineName.getOrDefault(name,null);
     }
     public Account getAccountCache(UUID uuid){
-        return accountsOnline.stream()
-                .filter(a -> uuid.equals(a.getUuid()))
-                .findFirst()
-                .orElse(null);
+        return accountsOnlineUuid.getOrDefault(uuid,null);
     }
 
     public void addAccountToTopList(Account account,String currencyName) {

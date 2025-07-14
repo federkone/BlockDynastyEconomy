@@ -100,7 +100,7 @@ public class ExchangeUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.updateAccountCache(result.getValue());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
         this.economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
 

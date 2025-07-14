@@ -59,13 +59,14 @@ public class BalanceTopCommand implements CommandExecutor {
                 //}
 
             }else{
-                switch (resultAccounts.getErrorCode()){
+                messageService.sendErrorMessage(resultAccounts.getErrorCode(),sender, nameCurrency);
+                /*switch (resultAccounts.getErrorCode()){
                     case ACCOUNT_NOT_FOUND ->   sender.sendMessage(F.getBalanceTopEmpty());
                     case INVALID_ARGUMENT ->  sender.sendMessage("invalid argument");
                     case REPOSITORY_NOT_SUPPORT_TOP ->sender.sendMessage("No support top");
                     case DATA_BASE_ERROR ->   sender.sendMessage("Error in query");
                     default -> sender.sendMessage("Unknown error");
-                }
+                }*/
             }
 
         });

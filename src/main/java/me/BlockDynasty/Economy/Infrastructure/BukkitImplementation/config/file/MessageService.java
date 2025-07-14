@@ -2,18 +2,62 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class MessageService {
-
     private final ICurrencyService currencyService;
 
     public MessageService(ICurrencyService currencyService) {
         this.currencyService = currencyService;
+    }
+
+    public void sendErrorMessage(ErrorCode e, CommandSender sender, String currencyName){
+        switch (e) {
+            case ACCOUNT_NOT_FOUND:
+                sender.sendMessage(getAccountNotFoundMessage());
+                break;
+            case INSUFFICIENT_FUNDS:
+                sender.sendMessage(getInsufficientFundsMessage(currencyName));
+                break;
+            case ACCOUNT_NOT_HAVE_BALANCE:
+                sender.sendMessage(F.getInsufficientFunds());
+                break;
+            case CURRENCY_NOT_FOUND:
+                sender.sendMessage(F.getUnknownCurrency());
+                break;
+            case INVALID_AMOUNT:
+            case DECIMAL_NOT_SUPPORTED:
+                sender.sendMessage(getUnvalidAmount());
+                break;
+            case DATA_BASE_ERROR:
+                sender.sendMessage(getUnexpectedErrorMessage());
+                break;
+            case OFFER_ALREADY_EXISTS:
+                sender.sendMessage(F.getAlreadyOffer());
+                break;
+            case ACCOUNT_CAN_NOT_RECEIVE:
+                sender.sendMessage(F.getCannotReceive());
+                break;
+            case OFFER_NOT_FOUND:
+                sender.sendMessage(F.getNotOffers());
+                break;
+            case INVALID_ARGUMENT:
+                sender.sendMessage("invalid argument");
+            break;
+            case REPOSITORY_NOT_SUPPORT_TOP:
+                sender.sendMessage("No support top");
+            default:
+                sender.sendMessage(getUnexpectedErrorMessage());
+                break;
+        }
     }
 
     public String getPayNoPerms() {

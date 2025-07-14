@@ -4,7 +4,7 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyE
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CreateCurrencyGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListDelete;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListEdit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -58,11 +58,11 @@ public class CurrencyPanelGUI extends AbstractGUI {
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListGUI currencyListGUI = new CurrencyListGUI(plugin, player);
-        player.openInventory(currencyListGUI.getInventory());
+        CurrencyListEdit currencyListEdit = new CurrencyListEdit(plugin, player);
+        player.openInventory(currencyListEdit.getInventory());
 
         // Register the GUI with the GUIService
-        plugin.getGuiManager().registerGUI(player, currencyListGUI);
+        plugin.getGuiManager().registerGUI(player, currencyListEdit);
     }
 
     private void currencyListDelete() {

@@ -67,26 +67,7 @@ public class DepositCommand implements CommandExecutor {
                         //targetPlayer.sendMessage("§aHas recibido " + finalMount + " " + currencyName);
                     }
                 }else{
-                    switch (result.getErrorCode()){
-                        case ACCOUNT_NOT_FOUND:
-                            sender.sendMessage(messageService.getAccountNotFoundMessage());
-                            break;
-                        case CURRENCY_NOT_FOUND:
-                            sender.sendMessage(F.getUnknownCurrency());
-                            break;
-                        case INVALID_AMOUNT:
-                            sender.sendMessage(F.getUnvalidAmount());
-                            break;
-                        case DECIMAL_NOT_SUPPORTED:
-                            sender.sendMessage(F.getUnvalidAmount());
-                            break;
-                        case DATA_BASE_ERROR:
-                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            break;
-                        default:
-                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            break;
-                    }
+                    messageService.sendErrorMessage(result.getErrorCode(),sender,target);
                 }
             });
         });

@@ -5,6 +5,7 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "accounts")
@@ -21,7 +22,7 @@ public class AccountDb {
     private List<BalanceDb> balances;
 
     @Column(name = "can_receive_currency")
-    private boolean canReceiveCurrency = true;
+    private boolean canReceiveCurrency;
 
     public AccountDb() {
     }
@@ -30,27 +31,36 @@ public class AccountDb {
         this.uuid = account.getUuid().toString();
         this.nickname = account.getNickname();
         this.balances = new ArrayList<>();
-        for (Balance balance : account.getBalances()){
+        for (Balance balance : account.getWallet()){
             this.balances.add(new BalanceDb(balance));
         }
         this.canReceiveCurrency = account.canReceiveCurrency();
     }
 
     public Account toEntity(){
-        List<Balance> balanceList = new ArrayList<>();
-        for (BalanceDb balanceMapper : balances){
-            balanceList.add(balanceMapper.toEntity());
-        }
-        return new Account(UUID.fromString(uuid), nickname, balanceList, canReceiveCurrency);
+        return new Account(UUID.fromString(uuid), nickname, balancesToEntity(), canReceiveCurrency);
+    }
+
+    private List<Balance> balancesToEntity() {
+        return  this.balances.stream()
+                .map(BalanceDb::toEntity)
+                .collect(Collectors.toList());
     }
 
     public void updateFromEntity(Account account) {
-        this.uuid = account.getUuid().toString();
-        this.nickname = account.getNickname();
-        this.canReceiveCurrency = account.canReceiveCurrency();
-        this.balances.clear();
-        for (Balance balance : account.getBalances()) {
-            this.balances.add(new BalanceDb(balance));
+        Map<String, Balance> balanceMap = account.getWallet().stream()
+                .collect(Collectors.toMap(b -> b.getCurrency().getUuid().toString(), b -> b));
+
+        for (BalanceDb balanceDb : this.balances) {
+            Balance updatedBalance = balanceMap.get(balanceDb.getCurrency().getUuid());
+            if (updatedBalance != null) {
+                balanceDb.setAmount(updatedBalance.getBalance());
+                balanceMap.remove(balanceDb.getCurrency().getUuid());
+            }
+        }
+
+        for (Balance newBalance : balanceMap.values()) {
+            this.balances.add(new BalanceDb(newBalance));
         }
     }
 

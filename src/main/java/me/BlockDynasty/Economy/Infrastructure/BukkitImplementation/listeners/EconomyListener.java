@@ -1,7 +1,5 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners;
 
-
-import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
@@ -71,20 +69,14 @@ public class EconomyListener implements Listener {
 
     private void loadPlayerAccount(Player player) {
         Result<Account> result = getAccountsUseCase.getAccount(player.getUniqueId());
-
         if (result.isSuccess()) {
             accountService.addAccountToCache(result.getValue());
             return;
         }
-
-        if (result.getErrorCode() == ErrorCode.ACCOUNT_NOT_FOUND) {
-            Result<Account> creationResult = createAccountUseCase.execute(player.getUniqueId(), player.getName());
-            if (creationResult.isSuccess()) {
-                return;
-            }
+        Result<Account> creationResult = createAccountUseCase.execute(player.getUniqueId(), player.getName());
+        if (!creationResult.isSuccess()) {
+            player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
         }
-
-        player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
     }
 }
 

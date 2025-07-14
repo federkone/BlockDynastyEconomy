@@ -49,11 +49,11 @@ public class DeleteCurrencyUseCaseTest {
 
         Result<Account> account = getAccountsUseCase.getAccount("Nullplague");
 
-        for (Balance balance : account.getValue().getBalances()) {
+        for (Balance balance : account.getValue().getWallet()) {
             System.out.println(balance.getCurrency().getSingular());
         }
 
-        assertEquals(1, getAccountsUseCase.getAccount("Nullplague").getValue().getBalances().size()); //todo se borra en db pero no en local cache, el caso de uso deleteCurrency deberia llamar a actualizar toda la cache de alguna manera
+        assertEquals(1, getAccountsUseCase.getAccount("Nullplague").getValue().getWallet().size()); //todo se borra en db pero no en local cache, el caso de uso deleteCurrency deberia llamar a actualizar toda la cache de alguna manera
 
 
     }

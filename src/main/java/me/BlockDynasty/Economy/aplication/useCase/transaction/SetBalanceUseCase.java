@@ -80,7 +80,7 @@ public class SetBalanceUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.updateAccountCache(result.getValue());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         //messageService.serndMessage(account,currency,amount ErrorCode.SET_BALANCE_SUCCESS);
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));

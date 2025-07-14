@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log;
 
 import com.google.common.collect.Sets;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilTime;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 
@@ -67,7 +68,7 @@ public abstract class AbstractLogger implements Log {
     private void zipAndReplace() {
         zipping = true;
 
-       plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+       SchedulerUtils.runAsync( () -> {
             try {
                 String date = UtilTime.date();
                 date = date.replace("/", "-");

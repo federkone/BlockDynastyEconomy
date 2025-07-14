@@ -64,29 +64,7 @@ public class BuyCommand implements CommandExecutor {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
                 player.sendMessage(F.getBuyCommandSuccess());
             }else{
-                switch (result.getErrorCode()){
-                    case ACCOUNT_NOT_FOUND:
-                        player.sendMessage(messageService.getAccountNotFoundMessage());
-                        break;
-                    case CURRENCY_NOT_FOUND:
-                        player.sendMessage(F.getUnknownCurrency());
-                        break;
-                    case INVALID_AMOUNT:
-                        player.sendMessage(messageService.getUnvalidAmount());
-                        break;
-                    case DECIMAL_NOT_SUPPORTED:
-                        player.sendMessage(messageService.getUnvalidAmount());
-                        break;
-                    case INSUFFICIENT_FUNDS:
-                        player.sendMessage(messageService.getInsufficientFundsMessage(tipoDemoneda));
-                        break;
-                    case DATA_BASE_ERROR:
-                        player.sendMessage(messageService.getUnexpectedErrorMessage());
-                        break;
-                    default:
-                        player.sendMessage(messageService.getUnexpectedErrorMessage());
-                        break;
-                }
+                messageService.sendErrorMessage(result.getErrorCode(),player,tipoDemoneda);
             }
             });
         });

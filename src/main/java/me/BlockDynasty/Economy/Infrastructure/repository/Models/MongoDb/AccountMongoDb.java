@@ -1,11 +1,11 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.MongoDb;
 import  dev.morphia.annotations.*;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 
 @Entity("accounts") // Nombre de la colección
 public class AccountMongoDb {
@@ -19,28 +19,27 @@ public class AccountMongoDb {
     private List<BalanceMongoDb> balances;
 
     @Property("can_receive_currency") // Mapea el campo booleano.
-    private boolean canReceiveCurrency = true;
+    private boolean canReceiveCurrency ;
 
 
     // Constructor para convertir desde la entidad
     public AccountMongoDb(Account account) {
         this.uuid = account.getUuid();
         this.nickname = account.getNickname();
-        this.balances = account.getBalances().stream()
+        this.balances = account.getWallet().stream()
                 .map(balance -> new BalanceMongoDb(balance))
                 .collect(Collectors.toList());
         this.canReceiveCurrency = account.canReceiveCurrency();
     }
 
     public Account toEntity() {
-        Account account = new Account();
-        account.setUuid(this.uuid);
-        account.setNickname(this.nickname);
-        account.setBalances(this.balances.stream()
+        return new Account(this.uuid,this.nickname,balancesToEntity(), this.canReceiveCurrency);
+    }
+
+    private List<Balance> balancesToEntity() {
+        return this.balances.stream()
                 .map(BalanceMongoDb::toEntity)
-                .collect(Collectors.toList()));
-        account.setCanReceiveCurrency(this.canReceiveCurrency);
-        return account;
+                .collect(Collectors.toList());
     }
 
     // Getters y setters

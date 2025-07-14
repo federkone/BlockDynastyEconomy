@@ -104,8 +104,8 @@ public class PayUseCase {
         }
 
         //actualizar cache con las cuentas contenidas en result
-        this.getAccountsUseCase.updateAccountCache(result.getValue().getTo());
-        this.getAccountsUseCase.updateAccountCache(result.getValue().getFrom());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getTo());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getFrom());
 
         //messageService.sendMessage(TransferResult, currency, amount, "Pay successful");
 

@@ -10,9 +10,6 @@ public class Balance implements IBalance{
     private Currency currency;
     private BigDecimal amount;
 
-    public  Balance(){
-
-    }
     public Balance(Currency currency){
         this.currency= currency;
         this.amount = currency.getDefaultBalance();

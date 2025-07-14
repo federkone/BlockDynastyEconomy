@@ -126,8 +126,8 @@ public class TradeCurrenciesUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.updateAccountCache(result.getValue().getTo());
-        this.getAccountsUseCase.updateAccountCache(result.getValue().getFrom());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getTo());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getFrom());
 
         //messageService.sendMessage(TransferResult, ErrorCode.TRANSFER_SUCCESS);
 

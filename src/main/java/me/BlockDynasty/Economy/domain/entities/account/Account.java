@@ -11,22 +11,19 @@ import java.util.*;
 public class Account implements IAccount {
     private String uuid;
     private String nickname;
-    private List<Balance> balances;
+    private List<Balance> wallet;
     private boolean canReceiveCurrency = true;
-
-    public Account() {
-    }
 
     public Account(UUID uuid, String nickname) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
-        this.balances = new ArrayList<>();
+        this.wallet = new ArrayList<>();
     }
 
     public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
-        this.balances = balanceList;
+        this.wallet = balanceList;
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
@@ -68,34 +65,34 @@ public class Account implements IAccount {
         return Result.success(null);
     }
 
-    public void setBalances(List<Balance> balances) {
-        this.balances = balances;
+    public void setWallet(List<Balance> wallet) {
+        this.wallet = wallet;
     }
-    public List<Balance> getBalances() {
-        return balances;
+    public List<Balance> getWallet() {
+        return wallet;
     }
 
     public boolean hasCurrency( String currencyName){
-        return balances.stream().anyMatch(b ->
+        return wallet.stream().anyMatch(b ->
                 b.getCurrency().getSingular().equals(currencyName) || b.getCurrency().getPlural().equals(currencyName));
     }
 
     public Balance getBalance(Currency currency) {
-        return balances.stream()
+        return wallet.stream()
                 .filter(b -> b.getCurrency().equals(currency))
                 .findFirst()
                 .orElse(null);
     }
 
     public Balance getBalance(){
-        return balances.stream()
+        return wallet.stream()
                 .filter(b -> b.getCurrency().isDefaultCurrency())
                 .findFirst()
                 .orElse(null);
     }
 
     public Balance getBalance(String currencyName){
-        return balances.stream()
+        return wallet.stream()
                 .filter(b -> b.getCurrency().getSingular().equalsIgnoreCase(currencyName) || b.getCurrency().getPlural().equalsIgnoreCase(currencyName))
                 .findFirst()
                 .orElse(null);
@@ -119,7 +116,7 @@ public class Account implements IAccount {
 
     private void createBalance(Currency currency, BigDecimal amount) {
         Balance balance = new Balance(currency, amount);
-        balances.add(balance);
+        wallet.add(balance);
     }
 
     public void setUuid(UUID uuid) {

@@ -94,10 +94,12 @@ public class RepositorySql implements IRepository
                     .setParameter("uuid", uuid)
                     .uniqueResult();
             if (accountDb == null) {
+                System.out.println( "Cuenta no encontrada: " + uuid);
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
             return Result.success(accountDb.toEntity());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Result.failure("error al cargar la cuenta: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
     }
@@ -109,6 +111,7 @@ public class RepositorySql implements IRepository
                     .setParameter("nickname", name)
                     .uniqueResult();
             if (accountDb == null) {
+                System.out.println( "Cuenta no encontrada: " + name);
                 return Result.failure("Cuenta no encontrada", ErrorCode.ACCOUNT_NOT_FOUND);
             }
             return Result.success(accountDb.toEntity());
@@ -225,7 +228,7 @@ public class RepositorySql implements IRepository
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             AccountDb accountDb = session.createQuery(
-                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +
+                            "SELECT a FROM AccountDb a JOIN FETCH a.balances b " +   //la cuenta no tiene balances ni currency al momento de inicializar el server
                                     " WHERE a.uuid = :uuid AND b.currency = :currency", AccountDb.class)
                     .setParameter("uuid", accountUuid)
                     .setParameter("currency", currencyDb)

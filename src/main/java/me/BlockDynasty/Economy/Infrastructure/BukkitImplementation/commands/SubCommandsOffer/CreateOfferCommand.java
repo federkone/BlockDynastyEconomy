@@ -79,31 +79,8 @@ public class CreateOfferCommand implements CommandExecutor {
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             //target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());
         }else{
-            switch (result.getErrorCode()){
-                case ACCOUNT_NOT_FOUND:
-                    player.sendMessage(messageService.getAccountNotFoundMessage());
-                    break;
-                case OFFER_ALREADY_EXISTS:
-                    player.sendMessage(F.getAlreadyOffer());
-                    break;
-                case CURRENCY_NOT_FOUND:
-                    player.sendMessage(F.getUnknownCurrency());
-                    break;
-                case INVALID_AMOUNT:
-                    player.sendMessage(messageService.getUnvalidAmount());
-                    break;
-                case INSUFFICIENT_FUNDS:
-                    player.sendMessage(messageService.getInsufficientFundsMessage(tipoCantidad));
-                    break;
-                case ACCOUNT_CAN_NOT_RECEIVE:
-                    player.sendMessage(F.getCannotReceive());
-                    break;
-                default:
-                    player.sendMessage(messageService.getUnexpectedErrorMessage());
-                    break;
-            }
+            messageService.sendErrorMessage(result.getErrorCode(),player,target.getName());
         }
-
         return false;
     }
 }

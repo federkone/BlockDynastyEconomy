@@ -60,7 +60,7 @@ public class UpdateForwarder implements PluginMessageListener {
                         }
 
                         SchedulerUtils.runAsync(() -> {
-                            getAccountUseCase.updateAccountCache(uuid);
+                            getAccountUseCase.syncCache(uuid);
                             player.sendMessage("§a¡Cuenta bancaria actualizada, se ha realizado un depostio o extraccion en tu cuenta!");
                         });
 

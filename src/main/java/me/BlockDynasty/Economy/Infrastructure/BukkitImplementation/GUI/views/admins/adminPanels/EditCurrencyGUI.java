@@ -320,7 +320,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListGUI listGui = new CurrencyListGUI(plugin, player);
+        CurrencyListEdit listGui = new CurrencyListEdit(plugin, player);
         player.openInventory(listGui.getInventory());
         plugin.getGuiManager().registerGUI(player, listGui);
     }

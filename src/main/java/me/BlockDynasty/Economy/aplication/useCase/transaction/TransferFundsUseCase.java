@@ -98,8 +98,8 @@ public class TransferFundsUseCase {
         }
 
         //actualizar cache con las cuentas contenidas en result
-        this.getAccountsUseCase.updateAccountCache(accountTo);
-        this.getAccountsUseCase.updateAccountCache(accountFrom);
+        this.getAccountsUseCase.syncCacheWithAccount(accountTo);
+        this.getAccountsUseCase.syncCacheWithAccount(accountFrom);
 
         //messageService.sendMessage(TransferResult, currency, amount, "transfer successful");
         //.................

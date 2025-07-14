@@ -53,7 +53,7 @@ public class RepositoryTest implements IRepository {
 
     @Override
     public void deleteCurrency(Currency currency) {//todo create
-        accounts.forEach(account -> account.getBalances().remove(currency.getSingular()));
+        accounts.forEach(account -> account.getWallet().remove(currency.getSingular()));
 
         currencies.remove(currency);
 

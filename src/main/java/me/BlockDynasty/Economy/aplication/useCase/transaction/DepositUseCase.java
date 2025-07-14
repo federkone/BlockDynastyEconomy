@@ -92,11 +92,10 @@ public class DepositUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.updateAccountCache(result.getValue());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         //messageservice.sendMessage(account,currency,amount, ErrorCode.DEPOSIT_SUCCESS, "Deposit successful: " + currency.format(amount) + " " + currency.getSingular());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
-
 
         return Result.success(null);
     }
