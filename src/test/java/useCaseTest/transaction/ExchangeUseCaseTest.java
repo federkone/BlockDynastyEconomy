@@ -50,7 +50,7 @@ public class ExchangeUseCaseTest {
         player.setBalance(dinero, BigDecimal.valueOf(40000)); // Increase from 10 to 40000
 
         // Initialize repository and save data
-        repository = new RepositoryTest();
+        repository = new RepositorySql( new MockConnectionHibernateH2());
         repository.saveCurrency(coin);
         repository.saveCurrency(dinero);
 
@@ -86,8 +86,8 @@ public class ExchangeUseCaseTest {
 
         // Verify balances were updated correctly
         Account updatedAccount = getAccountsUseCase.getAccount("player").getValue();
-        assertEquals(BigDecimal.valueOf(101), updatedAccount.getBalance(coin).getBalance());
-        assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getBalance(dinero).getBalance().doubleValue());
+        assertEquals(BigDecimal.valueOf(101).setScale(2), updatedAccount.getBalance(coin).getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getBalance(dinero).getAmount().doubleValue());
     }
 
     //errores a evaluar:  cuenta no encontrada,moneda no encontrada, monto negativo, saldo insuficiente.

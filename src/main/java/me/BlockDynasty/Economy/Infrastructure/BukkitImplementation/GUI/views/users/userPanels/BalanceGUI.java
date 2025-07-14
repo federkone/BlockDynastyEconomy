@@ -46,7 +46,7 @@ public class BalanceGUI extends AbstractGUI {
             int slot = 10;
             for (Balance balance : balances) {
                 String currencyName = balance.getCurrency().getSingular();
-                BigDecimal amount = balance.getBalance();
+                BigDecimal amount = balance.getAmount();
                 Currency currency = balance.getCurrency();
 
                 setItem(slot, createItem(Material.GOLD_INGOT,

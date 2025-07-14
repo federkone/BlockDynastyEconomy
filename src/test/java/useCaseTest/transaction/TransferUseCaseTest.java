@@ -1,5 +1,6 @@
 package useCaseTest.transaction;
 
+import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
 import mockClass.CourierTest;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
@@ -11,6 +12,7 @@ import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
+import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,7 @@ public class TransferUseCaseTest {
         cris.setBalance(coin, BigDecimal.valueOf(0));
         cris.setBalance(dinero, BigDecimal.valueOf(0));
 
-        repository = new RepositoryTest();
+        repository = new RepositorySql( new MockConnectionHibernateH2());
 
         repository.saveCurrency(coin);
         repository.saveCurrency(dinero);
@@ -85,8 +87,8 @@ public class TransferUseCaseTest {
         }*/
         Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getBalance().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance("dinero").getBalance().setScale(2));
+        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance("dinero").getAmount().setScale(2));
     }
 
     @Test

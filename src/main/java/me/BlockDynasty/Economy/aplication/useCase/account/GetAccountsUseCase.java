@@ -58,9 +58,9 @@ public class GetAccountsUseCase {
             for (Balance updatedBalance : account.getWallet()) {
                 Balance cachedBalance = cachedAccount.getBalance(updatedBalance.getCurrency());
                 if (cachedBalance != null) {
-                    cachedBalance.setBalance(updatedBalance.getBalance());
+                    cachedBalance.setAmount(updatedBalance.getAmount());
                 } else {
-                    cachedAccount.getWallet().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getBalance()));
+                    cachedAccount.getWallet().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getAmount()));
                 }
             }
         }

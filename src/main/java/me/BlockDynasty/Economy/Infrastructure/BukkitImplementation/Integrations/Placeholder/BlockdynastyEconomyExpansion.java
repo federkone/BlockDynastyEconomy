@@ -151,7 +151,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
                     .replace("{number}", String.valueOf(position + 1))
                     .replace("{currencycolor}", "" + ChatColor.valueOf(account.getBalance(currencyName).getCurrency().getColor()) )
                     .replace("{player}", account.getNickname())
-                    .replace("{balance}", account.getBalance(currencyName).getCurrency().format(account.getBalance(currencyName).getBalance()));
+                    .replace("{balance}", account.getBalance(currencyName).getCurrency().format(account.getBalance(currencyName).getAmount()));
         }
 
         // Construir el resultado completo si no se solicitó una posición específica
@@ -163,7 +163,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
                     .replace("{number}", String.valueOf(i + 1))
                     .replace("{currencycolor}", "" + ChatColor.valueOf(balance.getCurrency().getColor()))
                     .replace("{player}", account.getNickname())
-                    .replace("{balance}", balance.getCurrency().format(balance.getBalance())));
+                    .replace("{balance}", balance.getCurrency().format(balance.getAmount())));
             /*result.append(i + 1).append(". ")
                     .append(account.getNickname()).append(": ")
                     //.append(balance.getBalance()).append(" ").append(balance.getCurrency().format());
@@ -181,11 +181,11 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
     // %blockdynastyeconomy_balance_dinero_formatted%
     private String handleBalancePlaceholder(String placeholder, Account account, Currency defaultCurrency) {
         if (placeholder.equals("balance_default")) {
-            return String.valueOf(Math.round(account.getBalance(defaultCurrency).getBalance().doubleValue()));
+            return String.valueOf(Math.round(account.getBalance(defaultCurrency).getAmount().doubleValue()));
         }
 
         if (placeholder.equals("balance_default_formatted")) {
-            return defaultCurrency.format(account.getBalance(defaultCurrency).getBalance());
+            return defaultCurrency.format(account.getBalance(defaultCurrency).getAmount());
         }
 
         // Manejar balances de otras monedas (ejemplo: %blockdynastyeconomy_balance_dinero%)
@@ -204,10 +204,10 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
            // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
-            return currency.format(account.getBalance(currency).getBalance());//%BlockDynastyEconomy_balance_Dinero_formatted%
+            return currency.format(account.getBalance(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
             //return currency.format(account.getBalance(currency).getBalance());
-            return String.valueOf(account.getBalance(currency).getBalance().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
+            return String.valueOf(account.getBalance(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
         }
     }
 

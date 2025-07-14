@@ -4,10 +4,8 @@ import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -229,7 +227,7 @@ public class MessageService {
             Account account = accounts.get(i);
             Balance balance = account.getBalance(nameCurrency);
             Currency currency = balance.getCurrency();
-            BigDecimal balanceValue = balance.getBalance();
+            BigDecimal balanceValue = balance.getAmount();
             //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
             aux.append(F.getBalanceTop()
                     .replace("{number}", String.valueOf(i+1))

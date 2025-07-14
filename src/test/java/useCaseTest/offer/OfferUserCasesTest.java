@@ -100,10 +100,10 @@ public class OfferUserCasesTest {
 
         assertEquals(true, result.isSuccess(), result.getErrorMessage()+ " " + result.getErrorCode());
         assertEquals(false, offerService.hasOfferTo(cris.getUuid()), "Offer should be removed after acceptance");
-        assertEquals(BigDecimal.valueOf(900), nullplague.getBalance(dollar).getBalance(), "Sender's dollar balance should be reduced");
-        assertEquals(BigDecimal.valueOf(1200), nullplague.getBalance(coin).getBalance(), "Sender's coin balance should be increased");
-        assertEquals(BigDecimal.valueOf(1100), cris.getBalance(dollar).getBalance(), "Receiver's dollar balance should be increased");
-        assertEquals(BigDecimal.valueOf(800), cris.getBalance(coin).getBalance(), "Receiver's coin balance should be reduced");
+        assertEquals(BigDecimal.valueOf(900), nullplague.getBalance(dollar).getAmount(), "Sender's dollar balance should be reduced");
+        assertEquals(BigDecimal.valueOf(1200), nullplague.getBalance(coin).getAmount(), "Sender's coin balance should be increased");
+        assertEquals(BigDecimal.valueOf(1100), cris.getBalance(dollar).getAmount(), "Receiver's dollar balance should be increased");
+        assertEquals(BigDecimal.valueOf(800), cris.getBalance(coin).getAmount(), "Receiver's coin balance should be reduced");
     }
 
     @Test

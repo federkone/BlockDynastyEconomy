@@ -8,7 +8,6 @@ import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.*;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -63,7 +62,7 @@ public class BlockDynastyEconomyApi implements Api {
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve default balance: " + balanceResult.getErrorMessage());
         }
-        return balanceResult.getValue().getBalance().doubleValue();
+        return balanceResult.getValue().getAmount().doubleValue();
     }
 
     public double getBalance(UUID uuid, String currency) {
@@ -71,7 +70,7 @@ public class BlockDynastyEconomyApi implements Api {
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance for currency '" + currency + "': " + balanceResult.getErrorMessage());
         }
-        return balanceResult.getValue().getBalance().doubleValue();
+        return balanceResult.getValue().getAmount().doubleValue();
     }
 
     public void exchange(UUID uuid, String currencyFrom, String currencyTo, double amountFrom,double ammountTo){

@@ -23,7 +23,7 @@ public class BalanceDb  {
     }
     public BalanceDb(Balance balance){
         this.currency = new CurrencyDb(balance.getCurrency());
-        this.amount = balance.getBalance();
+        this.amount = balance.getAmount();
     }
 
     public Balance toEntity(){

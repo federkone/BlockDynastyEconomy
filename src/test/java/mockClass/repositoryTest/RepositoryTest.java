@@ -263,8 +263,8 @@ public class RepositoryTest implements IRepository {
                 .filter(account -> account.hasCurrency(currencyName))
                 // Ordenar por balance en la moneda especificada, en orden descendente
                 .sorted((a1, a2) -> {
-                    BigDecimal balance1 = a1.getBalance(currencyName).getBalance();
-                    BigDecimal balance2 = a2.getBalance(currencyName).getBalance();
+                    BigDecimal balance1 = a1.getBalance(currencyName).getAmount();
+                    BigDecimal balance2 = a2.getBalance(currencyName).getAmount();
                     return balance2.compareTo(balance1); // Orden descendente
                 })
                 // Aplicar paginación

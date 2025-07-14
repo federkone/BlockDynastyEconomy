@@ -105,7 +105,7 @@ public class VaultHook extends AbstractEconomy {
         //UtilServer.consoleLog("Lookup name: " + playerName);
         Result<Balance> result = getBalanceUseCase.getBalance(playerName);
         if(result.isSuccess() ){
-            return result.getValue().getBalance().doubleValue();
+            return result.getValue().getAmount().doubleValue();
         }
         return 0;
     }
@@ -115,7 +115,7 @@ public class VaultHook extends AbstractEconomy {
     public double getBalance(OfflinePlayer player) {
         Result<Balance> result = getBalanceUseCase.getBalance(player.getName());
         if(result.isSuccess() ){
-            return result.getValue().getBalance().doubleValue();
+            return result.getValue().getAmount().doubleValue();
         }
         return 0;
     }

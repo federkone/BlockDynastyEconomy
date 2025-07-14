@@ -19,7 +19,7 @@ public class BalanceMongoDb {
 
     public BalanceMongoDb(Balance balance) {
         this.currency = new CurrencyMongoDb(balance.getCurrency());
-        this.amount = balance.getBalance();
+        this.amount = balance.getAmount();
     }
 
     public Balance toEntity() {

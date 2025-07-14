@@ -54,7 +54,7 @@ public class AccountDb {
         for (BalanceDb balanceDb : this.balances) {
             Balance updatedBalance = balanceMap.get(balanceDb.getCurrency().getUuid());
             if (updatedBalance != null) {
-                balanceDb.setAmount(updatedBalance.getBalance());
+                balanceDb.setAmount(updatedBalance.getAmount());
                 balanceMap.remove(balanceDb.getCurrency().getUuid());
             }
         }

@@ -57,7 +57,7 @@ public class Account implements IAccount {
         if (balance == null) {
             createBalance(currency, amount);
         }else{
-            Result<Void> result = balance.setBalance(amount);
+            Result<Void> result = balance.setAmount(amount);
             if (!result.isSuccess()) {
                 return result;
             }

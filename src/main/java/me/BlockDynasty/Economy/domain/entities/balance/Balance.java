@@ -23,7 +23,7 @@ public class Balance implements IBalance{
     public void setCurrency(Currency currency){
         this.currency = currency;
     }
-    public BigDecimal getBalance(){
+    public BigDecimal getAmount(){
         return this.amount;
     }
 
@@ -35,7 +35,7 @@ public class Balance implements IBalance{
         return this.amount.compareTo(amount) >= 0;
     };
 
-    public Result<Void> setBalance(BigDecimal amount){
+    public Result<Void> setAmount(BigDecimal amount){
         if(!this.currency.isValidAmount(amount)){
             return Result.failure("Invalid amount for currency", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }

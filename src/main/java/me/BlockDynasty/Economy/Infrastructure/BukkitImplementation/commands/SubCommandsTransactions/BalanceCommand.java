@@ -55,7 +55,7 @@ public class BalanceCommand implements CommandExecutor {
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
                 for (Balance entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
-                    BigDecimal balance = entry.getBalance();
+                    BigDecimal balance = entry.getAmount();
                     sender.sendMessage(F.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));
                 }
             }else{

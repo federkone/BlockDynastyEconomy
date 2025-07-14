@@ -60,7 +60,7 @@ public class Bank {
     public BigDecimal getBalance(Currency currency) {
         for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
-                return balance.getBalance();
+                return balance.getAmount();
             }
         }
         return BigDecimal.ZERO; // Return zero if no balance found for the currency
@@ -69,7 +69,7 @@ public class Bank {
     public void deposit(Currency currency,BigDecimal amount) {
         for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
-                balance.setBalance(balance.getBalance().add(amount));
+                balance.setAmount(balance.getAmount().add(amount));
                 return;
             }
         }
@@ -78,9 +78,9 @@ public class Bank {
     public void withdraw(Currency currency,BigDecimal amount) {
         for (Balance balance : vault) {
             if (balance.getCurrency().equals(currency)) {
-                BigDecimal newBalance = balance.getBalance().subtract(amount);
+                BigDecimal newBalance = balance.getAmount().subtract(amount);
                 if (newBalance.compareTo(BigDecimal.ZERO) >= 0) {
-                    balance.setBalance(newBalance);
+                    balance.setAmount(newBalance);
                 }
                 return;
             }

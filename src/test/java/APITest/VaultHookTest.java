@@ -24,7 +24,7 @@ class VaultHookTest {
 
         // Mock balance result
         Balance balance = mock(Balance.class);
-        when(balance.getBalance()).thenReturn(BigDecimal.valueOf(100));
+        when(balance.getAmount()).thenReturn(BigDecimal.valueOf(100));
         when(getBalanceUseCase.getBalance("player")).thenReturn(Result.success(balance));
 
         // Create VaultHook
@@ -44,7 +44,7 @@ class VaultHookTest {
 
         // Mock balance result
         Balance balance = mock(Balance.class);
-        when(balance.getBalance()).thenReturn(BigDecimal.valueOf(200));
+        when(balance.getAmount()).thenReturn(BigDecimal.valueOf(200));
         when(getBalanceUseCase.getBalance("playerName")).thenReturn(Result.success(balance));
 
         // Mock OfflinePlayer

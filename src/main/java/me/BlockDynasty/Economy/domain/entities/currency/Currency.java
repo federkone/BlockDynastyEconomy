@@ -11,7 +11,7 @@ public class Currency implements ICurrency{
     private String singular;
     private String plural;
     private String symbol ;
-    private String color ;//extraer a interfaz para separar de capa de dominio
+    private String color ;
     private boolean decimalSupported ;
     private boolean payable ;
     private boolean defaultCurrency ;
@@ -23,7 +23,7 @@ public class Currency implements ICurrency{
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
-        this.exchangeRate = 1; //1
+        this.exchangeRate = 1;
         this.color = "WHITE";
         this.symbol = "";
         this.decimalSupported = true;
@@ -36,7 +36,7 @@ public class Currency implements ICurrency{
 
     public Currency() {
         this.defaultBalance = BigDecimal.ZERO;
-        this.exchangeRate = 1; //1
+        this.exchangeRate = 1;
         this.color = "WHITE";
         this.symbol = "";
         this.decimalSupported = true;
