@@ -3,7 +3,6 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.ad
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import me.BlockDynasty.Economy.aplication.useCase.currency.ToggleFeaturesUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
@@ -19,7 +18,6 @@ public class EditCurrencyGUI extends AbstractGUI {
     private final Player player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
-    private final ToggleFeaturesUseCase toggleFeaturesUseCase;
 
     public EditCurrencyGUI(BlockDynastyEconomy plugin, Player player, Currency currency) {
         super("Editar Moneda: " + currency.getSingular(), 4);
@@ -27,7 +25,6 @@ public class EditCurrencyGUI extends AbstractGUI {
         this.player = player;
         this.currency = currency;
         this.editCurrencyUseCase = plugin.getUsesCase().getEditCurrencyUseCase();
-        this.toggleFeaturesUseCase = plugin.getUsesCase().getToggleFeaturesUseCase();
 
         setupGUI();
     }
@@ -81,10 +78,10 @@ public class EditCurrencyGUI extends AbstractGUI {
             player.closeInventory();
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
-                player.sendMessage("§6[Sistema] §a" + currency.getSingular() + " ahora es la moneda predeterminada.");
+                player.sendMessage("§6[Banco] §a" + currency.getSingular() + " ahora es la moneda predeterminada.");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
         });
@@ -97,12 +94,12 @@ public class EditCurrencyGUI extends AbstractGUI {
                 unused -> {
                     player.closeInventory();
                     try {
-                        toggleFeaturesUseCase.togglePayable(currency.getSingular());
-                        player.sendMessage("§6[Sistema] §aOpción de pago " +
+                        editCurrencyUseCase.togglePayable(currency.getSingular());
+                        player.sendMessage("§6[Banco] §aOpción de pago " +
                                 (currency.isPayable() ? "activada" : "desactivada") + " correctamente.");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
-                        player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                         openEditCurrencyGUI();
                     }
                 });
@@ -129,12 +126,12 @@ public class EditCurrencyGUI extends AbstractGUI {
                 unused -> {
                     player.closeInventory();
                     try {
-                        toggleFeaturesUseCase.toggleDecimals(currency.getSingular());
-                        player.sendMessage("§6[Sistema] §aSoporte de decimales " +
+                        editCurrencyUseCase.toggleDecimals(currency.getSingular());
+                        player.sendMessage("§6[Banco] §aSoporte de decimales " +
                                 (currency.isDecimalSupported() ? "desactivado" : "activado") + " correctamente.");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
-                        player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                         openEditCurrencyGUI();
                     }
                 });
@@ -161,10 +158,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                                 AnvilGUI.ResponseAction.run(() -> {
                                     try {
                                         editCurrencyUseCase.editStartBal(currency.getSingular(), startBal);
-                                        player.sendMessage("§6[Sistema] §aSaldo inicial actualizado correctamente.");
+                                        player.sendMessage("§6[Banco] §aSaldo inicial actualizado correctamente.");
                                         openEditCurrencyGUI();
                                     } catch (Exception e) {
-                                        player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                                         openEditCurrencyGUI();
                                     }
                                 })
@@ -193,10 +190,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                                 AnvilGUI.ResponseAction.run(() -> {
                                     try {
                                         editCurrencyUseCase.setCurrencyRate(currency.getSingular(), rate);
-                                        player.sendMessage("§6[Sistema] §aTasa de cambio actualizada correctamente.");
+                                        player.sendMessage("§6[Banco] §aTasa de cambio actualizada correctamente.");
                                         openEditCurrencyGUI();
                                     } catch (Exception e) {
-                                        player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                                         openEditCurrencyGUI();
                                     }
                                 })
@@ -234,10 +231,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                             AnvilGUI.ResponseAction.run(() -> {
                                 try {
                                     editCurrencyUseCase.editSymbol(currency.getSingular(), symbol);
-                                    player.sendMessage("§6[Sistema] §aSímbolo actualizado correctamente.");
+                                    player.sendMessage("§6[Banco] §aSímbolo actualizado correctamente.");
                                     openEditCurrencyGUI();
                                 } catch (Exception e) {
-                                    player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                                     openEditCurrencyGUI();
                                 }
                             })
@@ -266,10 +263,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                             AnvilGUI.ResponseAction.run(() -> {
                                 try {
                                     editCurrencyUseCase.setSingularName(currency.getSingular(), name);
-                                    player.sendMessage("§6[Sistema] §aNombre singular actualizado correctamente.");
+                                    player.sendMessage("§6[Banco] §aNombre singular actualizado correctamente.");
                                     openEditCurrencyGUI();
                                 } catch (Exception e) {
-                                    player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                                     openEditCurrencyGUI();
                                 }
                             })
@@ -298,10 +295,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                             AnvilGUI.ResponseAction.run(() -> {
                                 try {
                                     editCurrencyUseCase.setPluralName(currency.getSingular(), name);
-                                    player.sendMessage("§6[Sistema] §aNombre plural actualizado correctamente.");
+                                    player.sendMessage("§6[Banco] §aNombre plural actualizado correctamente.");
                                     openEditCurrencyGUI();
                                 } catch (Exception e) {
-                                    player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                                     openEditCurrencyGUI();
                                 }
                             })
@@ -377,10 +374,10 @@ public class EditCurrencyGUI extends AbstractGUI {
             player.closeInventory();
             try {
                 editCurrencyUseCase.editColor(currency.getSingular(), chatColor.name());
-                player.sendMessage("§6[Sistema] §aColor actualizado correctamente a " + colorName + ".");
+                player.sendMessage("§6[Banco] §aColor actualizado correctamente a " + colorName + ".");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§6[Sistema] §cError: §e" + e.getMessage());
+                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
         }

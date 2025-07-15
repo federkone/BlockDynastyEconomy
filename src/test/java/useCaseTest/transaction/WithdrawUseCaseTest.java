@@ -98,7 +98,7 @@ public class WithdrawUseCaseTest {
 
     @Test
     void withdrawUseCaseTestWithCurrencyNoSupportDecimals(){
-        useCaseFactory.getToggleFeaturesUseCase().toggleDecimals("dinero");
+        useCaseFactory.getEditCurrencyUseCase().toggleDecimals("dinero");
 
         Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(1000.50));
         assertEquals(ErrorCode.DECIMAL_NOT_SUPPORTED, result.getErrorCode());

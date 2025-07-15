@@ -1,4 +1,4 @@
-package me.BlockDynasty.Economy.aplication.useCase.transaction;
+package me.BlockDynasty.Economy.aplication.useCase.balance;
 
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;

@@ -51,14 +51,9 @@ public class OfferService implements IOfferService {
                     Offer offer = entry.getKey();
                     return offer.getVendedor().equals(player) || offer.getComprador().equals(player);
                 }).findFirst().orElse(null);
-
         if (entryToRemove != null) {
-            // Cancelar la tarea de expiración (false = no interrumpir si ya está corriendo)
             entryToRemove.getValue().cancel(false);
-
-            // Remover la oferta del mapa
             this.ofertasPendientes.remove(entryToRemove.getKey());
-
             return true;
         }
         return false;

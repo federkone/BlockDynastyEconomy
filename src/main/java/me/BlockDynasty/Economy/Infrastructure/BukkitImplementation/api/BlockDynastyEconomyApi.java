@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.api;
 
 import me.BlockDynasty.Economy.aplication.api.Api;
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import me.BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.result.Result;
 
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;

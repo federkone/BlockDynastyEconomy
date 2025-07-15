@@ -19,8 +19,8 @@ public class CommandRegister {
         CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(usesCaseFactory.getCreateCurrencyUseCase());
         DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(usesCaseFactory.deleteCurrencyUseCase());
         EditColorCoommand editColorCoommand = new EditColorCoommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(usesCaseFactory.getToggleFeaturesUseCase());
-        EditPayableCommand editPayableCommand = new EditPayableCommand(usesCaseFactory.getToggleFeaturesUseCase());
+        EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(usesCaseFactory.getEditCurrencyUseCase());
+        EditPayableCommand editPayableCommand = new EditPayableCommand(usesCaseFactory.getEditCurrencyUseCase());
         EditRateCommand editRateCommand = new EditRateCommand(usesCaseFactory.getEditCurrencyUseCase());
         EditStartBalCommand editStartBalCommand = new EditStartBalCommand(usesCaseFactory.getEditCurrencyUseCase());
         WithdrawCommand withdrawCommand = new WithdrawCommand(usesCaseFactory.getWithdrawUseCase(), plugin.getMessageService());

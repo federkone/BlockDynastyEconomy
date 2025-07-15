@@ -75,10 +75,10 @@ public class CreateCurrencyGUI {
     private void createCurrency(String singular, String plural) {
         try {
             createCurrencyUseCase.createCurrency(singular, plural);
-            player.sendMessage("§6[Sistema] §aLa moneda §e" + singular + "§a ha sido creada correctamente.");
+            player.sendMessage("§6[Banco] §aLa moneda §e" + singular + "§a ha sido creada correctamente.");
         }
         catch (CurrencyException e) {
-            player.sendMessage("§6[Sistema] §cError al crear la moneda: §e" + e.getMessage());
+            player.sendMessage("§6[Banco] §cError al crear la moneda: §e" + e.getMessage());
         }
     }
 }

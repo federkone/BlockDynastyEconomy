@@ -123,23 +123,15 @@ public class RepositorySql implements IRepository
 
     @Override
     public void createAccount(Account account)throws TransactionException {
-        //sessionFactory.openSession().persist(new AccountDb(account));
         executeInsideTransaction(session -> session.persist(new AccountDb(account)));
     }
 
     @Override
     public void saveAccount(Account account) throws TransactionException{
-        //sessionFactory.openSession().persist( new AccountDb(account));
         executeInsideTransaction(session -> session.merge(new AccountDb(account)));
     }
 
     //-----------transactions-------------------
-    public void transfer(Account userFrom, Account userTo)throws TransactionException {
-        executeInsideTransaction(session -> {
-            session.merge(new AccountDb(userFrom));
-            session.merge(new AccountDb(userTo));
-        });
-    }
     @Override
     public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount) {
         CurrencyDb currencyDb = new CurrencyDb(currency);

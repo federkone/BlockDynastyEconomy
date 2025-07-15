@@ -2,7 +2,6 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
@@ -21,7 +20,6 @@ public class EditCurrencyUseCase {
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
-
 
     public void editStartBal(String name, double startBal){
         Currency currency = currencyService.getCurrency(name);
@@ -54,7 +52,6 @@ public class EditCurrencyUseCase {
             throw new TransactionException("Error creating currency");
         }
     }
-
 
     public void editColor(String nameCurrency, String colorString){
         Currency currency = currencyService.getCurrency(nameCurrency);
@@ -139,6 +136,34 @@ public class EditCurrencyUseCase {
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
         }catch (TransactionException e){
             throw new TransactionException("Error saving currency");
+        }
+    }
+
+    public void togglePayable(String currencyName){
+        Currency currency = currencyService.getCurrency(currencyName);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currency.setPayable(!currency.isPayable());
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error creating currency");
+        }
+    }
+
+    public void toggleDecimals(String currencyName){
+        Currency currency = currencyService.getCurrency(currencyName);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currency.setDecimalSupported(!currency.isDecimalSupported());
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error creating currency");
         }
     }
 }

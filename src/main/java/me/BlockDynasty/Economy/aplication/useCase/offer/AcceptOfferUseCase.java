@@ -17,17 +17,17 @@ public class AcceptOfferUseCase {
         this.tradeCurrenciesUseCase = tradeCurrenciesUseCase;
     }
 
-    public Result<Void> execute (UUID playerAccetp, UUID playerOffer) {  //puede aceptarle la oferta a alguien en especifico
+    public Result<Void> execute (UUID playerAccept, UUID playerOffer) {  //puede aceptarle la oferta a alguien en especifico
         Offer offer = offerService.getOffer(playerOffer); //objener la oferta de un vendedor en especifico
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
         }
         Result<Void> tradeResult = tradeCurrenciesUseCase.execute(offer.getVendedor(), offer.getComprador(),  offer.getTipoCantidad().getSingular(), offer.getTipoMonto().getSingular(),offer.getCantidad(), offer.getMonto());
         if (!tradeResult.isSuccess()) {
-            offerService.removeOffer(playerAccetp);
+            offerService.removeOffer(playerAccept);
             return Result.failure(tradeResult.getErrorMessage(), tradeResult.getErrorCode());
         }
-        offerService.removeOffer(playerAccetp);
+        offerService.removeOffer(playerAccept);
         return Result.success(null);
     }
 }

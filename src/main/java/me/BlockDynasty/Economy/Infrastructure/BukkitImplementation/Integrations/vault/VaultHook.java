@@ -3,7 +3,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations
 
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;

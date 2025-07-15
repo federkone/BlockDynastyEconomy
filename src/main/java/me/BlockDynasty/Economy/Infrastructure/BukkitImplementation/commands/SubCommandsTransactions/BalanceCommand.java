@@ -1,7 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsTransactions;
 
 import me.BlockDynasty.Economy.domain.result.Result;
-import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;

@@ -49,7 +49,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
                 "§7Click para activar/desactivar características"), unused -> {
             player.closeInventory();
             // TODO: Implement Toggle Features GUI
-            player.sendMessage("§6[Sistema] §eConfigurar características: Función en desarrollo");
+            player.sendMessage("§6[Banco] §eFunción en desarrollo");
         });
 
         // Exit button

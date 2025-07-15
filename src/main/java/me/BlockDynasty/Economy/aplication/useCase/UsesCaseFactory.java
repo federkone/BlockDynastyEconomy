@@ -4,7 +4,7 @@ import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import me.BlockDynasty.Economy.aplication.useCase.transaction.GetBalanceUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.*;
 import me.BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
@@ -32,7 +32,6 @@ public class UsesCaseFactory {
     private final CreateCurrencyUseCase createCurrencyUseCase ;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase ;
     private final EditCurrencyUseCase editCurrencyUseCase ;
-    private final ToggleFeaturesUseCase toggleFeaturesUseCase ;
 
     private final CreateOfferUseCase createOfferUseCase ;
     private final AcceptOfferUseCase acceptOfferUseCase ;
@@ -52,7 +51,6 @@ public class UsesCaseFactory {
         this.transferFundsUseCase = new TransferFundsUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
         this.deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, this.getAccountsUseCase,repository,courier);
         this.editCurrencyUseCase = new EditCurrencyUseCase(currencyService,courier,repository);
-        this.toggleFeaturesUseCase = new ToggleFeaturesUseCase(currencyService,repository,courier);
         this.createOfferUseCase = new CreateOfferUseCase(offerService, this.getCurrencyUseCase, this.getAccountsUseCase);
         this.acceptOfferUseCase = new AcceptOfferUseCase(offerService, this.tradeCurrenciesUseCase);
         this.cancelOfferUseCase = new CancelOfferUseCase(offerService);
@@ -113,10 +111,6 @@ public class UsesCaseFactory {
 
     public EditCurrencyUseCase getEditCurrencyUseCase() {
         return editCurrencyUseCase;
-    }
-
-    public ToggleFeaturesUseCase getToggleFeaturesUseCase() {
-        return toggleFeaturesUseCase;
     }
 
     public CreateOfferUseCase getCreateOfferUseCase() {

@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.SubCommandsCurrency;
 
-import me.BlockDynasty.Economy.aplication.useCase.currency.ToggleFeaturesUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
@@ -11,9 +11,9 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class EditDecimalsCommand implements CommandExecutor {
-    public final ToggleFeaturesUseCase toggleFeaturesUseCase;
+    public final EditCurrencyUseCase toggleFeaturesUseCase;
 
-    public EditDecimalsCommand(ToggleFeaturesUseCase toggleFeaturesUseCase) {
+    public EditDecimalsCommand(EditCurrencyUseCase toggleFeaturesUseCase) {
         this.toggleFeaturesUseCase = toggleFeaturesUseCase;
     }
     @Override
