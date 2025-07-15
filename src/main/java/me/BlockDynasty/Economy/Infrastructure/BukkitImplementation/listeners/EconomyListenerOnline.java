@@ -18,13 +18,13 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EconomyListener implements Listener {
-    private final ICurrencyService currencyService;
-    private final CreateAccountUseCase createAccountUseCase;
-    private final GetAccountsUseCase getAccountsUseCase;
-    private final IAccountService accountService;
+public class EconomyListenerOnline implements Listener {
+    protected final ICurrencyService currencyService;
+    protected final CreateAccountUseCase createAccountUseCase;
+    protected final GetAccountsUseCase getAccountsUseCase;
+    protected final IAccountService accountService;
 
-    public EconomyListener(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService, ICurrencyService currencyService) {
+    public EconomyListenerOnline(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService, ICurrencyService currencyService) {
         this.currencyService = currencyService;
         this.createAccountUseCase = createAccountUseCase;
         this.getAccountsUseCase = getAccountsUseCase;
@@ -67,12 +67,19 @@ public class EconomyListener implements Listener {
         });
     }
 
-    private void loadPlayerAccount(Player player) {
+    //si se comienza a trabajar en online se van a buscar las cuentas por uuid y se va a preguntar si cambio el nombre para actualizar en sistema.
+    protected void loadPlayerAccount(Player player) {
         Result<Account> result = getAccountsUseCase.getAccount(player.getUniqueId());
         if (result.isSuccess()) {
+            Result<Void> resultChangeName = getAccountsUseCase.checkNameChange(result.getValue(), player.getName());
+            if(!resultChangeName.isSuccess()){
+                player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+                return;
+            }
             accountService.addAccountToCache(result.getValue());
             return;
         }
+
         Result<Account> creationResult = createAccountUseCase.execute(player.getUniqueId(), player.getName());
         if (!creationResult.isSuccess()) {
             player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));

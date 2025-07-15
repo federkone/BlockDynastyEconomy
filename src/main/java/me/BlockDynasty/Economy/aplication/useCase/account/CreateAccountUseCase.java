@@ -27,13 +27,29 @@ public class CreateAccountUseCase {
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
+    public Result<Account> executeOffline(UUID userUuid , String userName) {
+        Result<Account> accountResult =  this.getAccountsUseCase.getAccount(userName);
+        if (accountResult.isSuccess()) {
+            return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
+        }
+        Account account = new Account(userUuid, userName);
+        initializeAccountWithDefaultCurrencies(account);
+        try {
+            this.dataStore.createAccount(account);
+            this.accountService.addAccountToCache(account);
+        } catch (TransactionException t) {
+            return Result.failure("Error creating account for: " + account.getNickname(), ErrorCode.DATA_BASE_ERROR);
+        }
+        return Result.success(account);
+    }
+
+
     public Result<Account> execute(UUID userUuid , String userName) {
         Result<Account> accountResult =  this.getAccountsUseCase.getAccount(userUuid);
         if (accountResult.isSuccess()) {
             return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
         }
         Account account = new Account(userUuid, userName);
-        account.setCanReceiveCurrency(true);
         initializeAccountWithDefaultCurrencies(account);
         try {
             this.dataStore.createAccount(account);

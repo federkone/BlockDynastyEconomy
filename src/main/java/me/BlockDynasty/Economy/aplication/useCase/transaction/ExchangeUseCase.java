@@ -15,19 +15,14 @@ import java.math.RoundingMode;
 import java.util.UUID;
 
 
-// SE ENCARGA DE ACTUALIZAR LOS MONTOS DE CUENTA Y DE INTENTAR SALVAR EN LA DB
 //TODO: aqui se puede agregar el impuesto por cambio de divisa segun el rate de la moneda
-//todo: exchange permite a persona cambiar sus monedas con si mismo
-//todo: se supone que tampoco deberia validar si la moneda es pagable o no, ya que es un exchange
-//todo: falta agregar validaciones de decimal support etc
 public class ExchangeUseCase {
     private  final GetCurrencyUseCase getCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final Log economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
-    public ExchangeUseCase(GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                           Courier updateForwarder, Log economyLogger) {
+    public ExchangeUseCase(GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger) {
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
@@ -36,7 +31,6 @@ public class ExchangeUseCase {
     }
 
     public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-
         Result<Account> accountResult = this.getAccountsUseCase.getAccount(accountUuid);
 
         if (!accountResult.isSuccess()) {

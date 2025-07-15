@@ -37,6 +37,9 @@ public class GetAccountsUseCase {
        return Result.success(account);
     }
 
+    //punto critico,cuando entra un jugador se busca por uuid y si no está crea por uuid, lo que significa que si el usuario offline cambia la uuid deja de existir la cuenta.
+    //en modo offline, la fuente de la verdad es el nombre, y si se cambia la uuid se  debe actualizar el uuid nuevo en el sistema?
+    //en modo official/online, la fuente de la verdad siempre es la uuid, y puede pasar que se detecte que se cambio el nombre, por lo que debemos actualizarlo en nuestro sistema
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
@@ -103,9 +106,32 @@ public class GetAccountsUseCase {
         account.setWallet(updatedBalances);
     }
 
+    public Result<Void> checkNameChange( Account account , String newName) {
+       if (!account.getNickname().equalsIgnoreCase(newName)) {
+           account.setNickname(newName);
+           try {
+               this.dataStore.saveAccount(account);
+           } catch (TransactionException e) {
+               return Result.failure( "Error saving account after name change", ErrorCode.DATA_BASE_ERROR);
+           }
+       }
+        return Result.success(null);
+    }
+
+    public Result<Void> checkUuidChange(Account account, UUID newUuid) {
+        if (!account.getUuid().equals(newUuid)) {
+            account.setUuid(newUuid);
+            try {
+                this.dataStore.saveAccount(account);
+            } catch (TransactionException e) {
+                return Result.failure("Error saving account after UUID change", ErrorCode.DATA_BASE_ERROR);
+            }
+        }
+        return Result.success(null);
+    }
+
    public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {
        if (limit <= 0) {
-           //throw new IllegalArgumentException("Limit must be greater than 0");
            return Result.failure("Limit must be greater than 0", ErrorCode.INVALID_ARGUMENT);
        }
        List<Account> cache =  this.accountService.getAccountsTopList(currency);
@@ -114,7 +140,6 @@ public class GetAccountsUseCase {
            return Result.success(cache.subList(offset, Math.min(offset + limit, cache.size())));
        }
        if (!dataStore.isTopSupported()) {
-           //throw new RepositoryNotSupportTopException("Repository not support top");
            return Result.failure("Repository not support top", ErrorCode.REPOSITORY_NOT_SUPPORT_TOP);
        }
        List<Account> accounts;
@@ -125,11 +150,9 @@ public class GetAccountsUseCase {
                this.accountService.addAccountToTopList(account, currency);
            }
        } catch (TransactionException e) {
-           //throw new TransactionException("Error in transaction", e);
            return Result.failure("Error in transaction", ErrorCode.DATA_BASE_ERROR);
        }
        if (accounts.isEmpty()) {
-           //throw new AccountNotFoundException("No accounts found for currency: " + currency);
            return Result.failure("No accounts found for currency: "+ currency, ErrorCode.ACCOUNT_NOT_FOUND);
        }
        return Result.success(accounts);

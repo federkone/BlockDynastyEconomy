@@ -33,19 +33,16 @@ public class TransferFundsUseCase {
     public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
         Result<Account> accountFromResult = this.getAccountsUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
-            // messageservice.sendMessage(userFrom, accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult = this.getAccountsUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
-            // messageservice.sendMessage(userTo, accountToResult.getErrorMessage(), accountToResult.getErrorCode());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyResult = this.getCurrencyUseCase.getCurrency(currency);
         if (!currencyResult.isSuccess()) {
-            // messageservice.sendMessage(currency, currencyResult.getErrorMessage(), currencyResult.getErrorCode());
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
@@ -56,19 +53,16 @@ public class TransferFundsUseCase {
     public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
         Result<Account> accountFromResult = this.getAccountsUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
-            // messageservice.sendMessage(userFrom, accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult = this.getAccountsUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
-            // messageservice.sendMessage(userTo, accountToResult.getErrorMessage(), accountToResult.getErrorCode());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyResult = this.getCurrencyUseCase.getCurrency(currency);
         if (!currencyResult.isSuccess()) {
-            // messageservice.sendMessage(currency, currencyResult.getErrorMessage(), currencyResult.getErrorCode());
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
@@ -77,29 +71,25 @@ public class TransferFundsUseCase {
 
     private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
         if (!accountTo.canReceiveCurrency()) {
-            //messageservice.sendMessage( accountTo,currency,ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, "Target account can't receive currency");
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
-            //messageservice.sendMessage( accountFrom,currency,ErrorCode.INVALID_AMOUNT, "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
         if(!currency.isValidAmount(amount)){
-            //messageservice.sendMessage( currency,amount,ErrorCode.DECIMAL_NOT_SUPPORTED, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
         
         Result<TransferResult> result = this.dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
         if(!result.isSuccess()){
-            //messageservice.sendMessage( TransferResult,currency,result.getErrorCode(), "Transfer failed: " + result.getErrorMessage());
             this.economyLogger.log("[TRANSFER Failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
         //actualizar cache con las cuentas contenidas en result
-        this.getAccountsUseCase.syncCacheWithAccount(accountTo);
-        this.getAccountsUseCase.syncCacheWithAccount(accountFrom);
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getTo());
+        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getFrom());
 
         //messageService.sendMessage(TransferResult, currency, amount, "transfer successful");
         //.................

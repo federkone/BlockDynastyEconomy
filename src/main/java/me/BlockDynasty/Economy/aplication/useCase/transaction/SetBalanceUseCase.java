@@ -33,13 +33,11 @@ public class SetBalanceUseCase {
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.getAccountsUseCase.getAccount(targetUUID);
         if (!accountResult.isSuccess()) {
-            //messageService.sendMessage(targetUUID, accountResult);
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
         Result<Currency> currencyResult =  this.getCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
-            //messageService.sendMessage(targetUUID, currencyResult);
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
@@ -49,17 +47,15 @@ public class SetBalanceUseCase {
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.getAccountsUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
-            //messageService.sendMessage(targetName, accountResult);
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
         Result<Currency> currencyResult =  this.getCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
-            //messageService.sendMessage(currencyName, currencyResult);
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
-        return performSet(accountResult.getValue(), currencyResult.getValue(), amount); //return performSet(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performSet(accountResult.getValue(), currencyResult.getValue(), amount);
     }
 
     private Result<Void> performSet(Account account, Currency currency, BigDecimal amount) {

@@ -9,6 +9,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "currencies")
 public class CurrencyDb {
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private Long id;
     @Id
     @Column(name = "uuid", columnDefinition = "VARCHAR(60)")
     private String uuid;
@@ -23,7 +26,6 @@ public class CurrencyDb {
     private String symbol ;
 
     @Column(name = "color")
-    //@Convert(converter = ChatColorConverter.class)
     private String color ;
 
     @Column(name = "decimal_supported")
@@ -76,4 +78,5 @@ public class CurrencyDb {
     public String getUuid() {
         return uuid;
     }
+
 }

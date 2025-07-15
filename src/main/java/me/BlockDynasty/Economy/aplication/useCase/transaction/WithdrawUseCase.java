@@ -1,6 +1,5 @@
 package me.BlockDynasty.Economy.aplication.useCase.transaction;
 
-import com.mysql.cj.jdbc.SuspendableXAConnection;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
@@ -14,7 +13,6 @@ import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-//TODO, FUNCIONALIDAD PARA EXTRACCION DE DINERO
 public class WithdrawUseCase {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final IRepository dataStore;
@@ -33,7 +31,6 @@ public class WithdrawUseCase {
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.getAccountsUseCase.getAccount(targetUUID);
         if (!accountResult.isSuccess()) {
-            //messageservice.sendMessage(result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
         return this.execute(accountResult.getValue(), currencyName, amount);
@@ -42,7 +39,6 @@ public class WithdrawUseCase {
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.getAccountsUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
-            //messageservice.sendMessage(result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
         return this.execute(accountResult.getValue(), currencyName, amount);
@@ -56,20 +52,19 @@ public class WithdrawUseCase {
         return this.execute(targetName, null, amount);
     }
 
+    private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
+        Result<Currency> currencyResult = this.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+        return performWithdraw(account, currencyResult.getValue(), amount);
+    }
+
     private Result<Currency> getCurrency(String currencyName) {
         if (currencyName == null) {
             return this.getCurrencyUseCase.getDefaultCurrency();
         }
         return this.getCurrencyUseCase.getCurrency(currencyName);
-    }
-
-    private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
-        Result<Currency> currencyResult = this.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            //messageservice.sendMessage(result.getErrorMessage(), result.getErrorCode());
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-        return performWithdraw(account, currencyResult.getValue(), amount);
     }
 
     private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {

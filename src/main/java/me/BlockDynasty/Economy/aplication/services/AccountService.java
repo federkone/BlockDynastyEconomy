@@ -61,7 +61,6 @@ public class AccountService implements IAccountService {
     public void clearTopListCache() {
         accountsTopList.clear();
     }
-    //todo: permitir traer la configuracion de tiempo de limpieza desde el archivo config.yaml
     private void startCacheClearingTask() {
         //System.out.println("Top list cache cleared");
         scheduler.scheduleAtFixedRate(this::clearTopListCache, 0,expireCacheTopMinutes, TimeUnit.MINUTES);

@@ -15,7 +15,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 //TODO ESTA FUNCIONALIDAD PERMITE TRADEAR 2 MONEDAS DISTINTAS ENTRE 2 PERSONAS DISTINTAS, NO NECESITA VALIDAR SI LA MONEDA ES PAGABLE O NO, YA QUE ES UN TRADE
-//trade, que 2 personas intercambien 2 monedas distintas
 //TODO: TAMBIEN SE PODRIA COBRAR IMPUESTO POR TRADE
 public class TradeCurrenciesUseCase {
 

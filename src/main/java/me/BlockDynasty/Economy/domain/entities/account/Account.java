@@ -12,12 +12,13 @@ public class Account implements IAccount {
     private String uuid;
     private String nickname;
     private List<Balance> wallet;
-    private boolean canReceiveCurrency = true;
+    private boolean canReceiveCurrency ;
 
     public Account(UUID uuid, String nickname) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
         this.wallet = new ArrayList<>();
+        this.canReceiveCurrency = true;
     }
 
     public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
@@ -97,7 +98,7 @@ public class Account implements IAccount {
                 .findFirst()
                 .orElse(null);
     }
-//tiene monto
+
     public boolean hasEnough(Currency currency, BigDecimal amount){
         Balance balance = getBalance(currency);
         if (balance == null) {

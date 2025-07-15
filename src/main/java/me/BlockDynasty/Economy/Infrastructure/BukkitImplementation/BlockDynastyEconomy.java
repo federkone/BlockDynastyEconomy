@@ -4,6 +4,7 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.BankGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.EconomyListenerOffline;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
 import me.BlockDynasty.Economy.domain.services.log.Log;
@@ -20,7 +21,7 @@ import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.Configuration;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.EconomyListener;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.EconomyListenerOnline;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.EconomyLogger;
 import me.BlockDynasty.Economy.Infrastructure.repository.InitDatabase;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilServer;
@@ -148,7 +149,11 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new EconomyListener( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService), this);
+        if(getServer().getOnlineMode()){
+            getServer().getPluginManager().registerEvents(new EconomyListenerOnline( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService), this);
+        }else {
+            getServer().getPluginManager().registerEvents(new EconomyListenerOffline( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService), this);
+        }
     }
     private void setupIntegrations() {
         // Configuración de Vault
