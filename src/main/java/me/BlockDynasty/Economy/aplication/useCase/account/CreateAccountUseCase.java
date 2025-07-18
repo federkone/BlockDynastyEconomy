@@ -64,7 +64,7 @@ public class CreateAccountUseCase {
         List<Balance> balances =  this.currencyService.getCurrencies().stream()
                 .map(Balance::new)
                 .collect(Collectors.toList());
-        account.setWallet(balances);
+        account.setBalances(balances);
     }
 
 }

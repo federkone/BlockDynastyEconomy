@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.us
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
@@ -13,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,21 +24,23 @@ import java.util.List;
 
 //la ui para pagar, va a mostrar primero: las personas Online indexadas, luego elegir la moneda "monedas disponibles del sistema" indexada, luego abrir AnvilGUI para escribir monto.Fin
 public class PayGUI extends AbstractGUI {
-    private final BlockDynastyEconomy plugin;
+    private final JavaPlugin plugin;
     private final Player sender;
+    private final GUIService guiService;
     private final PayUseCase payUseCase;
     private final GetCurrencyUseCase getCurrencyUseCase;
-    private  MessageService messageService ;
+    private MessageService messageService;
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
 
-    public PayGUI(BlockDynastyEconomy plugin, PayUseCase payUseCase,Player sender, GetCurrencyUseCase getCurrencyUseCase) {
+    public PayGUI(JavaPlugin plugin, PayUseCase payUseCase, Player sender, GUIService guiService, GetCurrencyUseCase getCurrencyUseCase, MessageService messageService) {
         super("Seleccionar Jugador", 5);
         this.plugin = plugin;
+        this.guiService = guiService;
         this.sender = sender;
         this.payUseCase = payUseCase;
         this.getCurrencyUseCase = getCurrencyUseCase;
-        this.messageService = plugin.getMessageService();
+        this.messageService = messageService;
 
         showPlayersPage();
     }
@@ -62,7 +66,7 @@ public class PayGUI extends AbstractGUI {
             ItemStack playerHead = createPlayerHead(target);
 
             setItem(slot, playerHead, unused -> {
-                sender.closeInventory();
+                //sender.closeInventory();
                 openCurrencySelectionGUI(target);
             });
 
@@ -104,80 +108,11 @@ public class PayGUI extends AbstractGUI {
     }
 
     private void openCurrencySelectionGUI(Player targetPlayer) {
-        CurrencySelectionGUI gui = new CurrencySelectionGUI(plugin, sender, targetPlayer);
+        CurrencyListPay gui = new CurrencyListPay(plugin,guiService, sender, targetPlayer,getCurrencyUseCase,payUseCase,messageService,this);
         sender.openInventory(gui.getInventory());
 
         // Register the GUI with the GUIService
-        plugin.getGuiManager().registerGUI(sender, gui);
+        guiService.registerGUI(sender, gui);
     }
 
-    private void openAmountInputGUI(Player targetPlayer, Currency currency) {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-                    try {
-                        BigDecimal amount = new BigDecimal(stateSnapshot.getText());
-                        Result<Void> result = payUseCase.execute(sender.getUniqueId(), targetPlayer.getUniqueId(), currency.getSingular(), amount);
-
-                        if (result.isSuccess()) {
-                            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getName(), currency.getSingular(), amount));
-                            targetPlayer.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
-
-                            return List.of(AnvilGUI.ResponseAction.close());
-                        } else {
-                            return List.of(AnvilGUI.ResponseAction.replaceInputText(
-                                    "§c" + result.getErrorMessage()));
-                        }
-                    } catch (NumberFormatException e) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
-                    }
-                })
-                .text("0")
-                .title("Ingresar Monto")
-                .plugin(plugin)
-                .open(sender);
-    }
-
-    // Inner class for currency selection
-    private class CurrencySelectionGUI extends AbstractGUI {
-        private final Player targetPlayer;
-
-        public CurrencySelectionGUI(BlockDynastyEconomy plugin, Player sender, Player targetPlayer) {
-            super("Seleccionar Moneda", 3);
-            this.targetPlayer = targetPlayer;
-
-            setupCurrencyGUI();
-        }
-
-        private void setupCurrencyGUI() {
-            List<Currency> currencies = getCurrencyUseCase.getCurrencies();
-
-            int slot = 10;
-            for (Currency currency : currencies) {
-                setItem(slot, createItem(Material.GOLD_INGOT, "§6" + currency.getSingular(),
-                        "§7Click para seleccionar esta moneda"), unused -> {
-                    sender.closeInventory();
-                    openAmountInputGUI(targetPlayer, currency);
-                });
-
-                slot++;
-                if (slot % 9 == 8) slot += 2;
-            }
-
-            // Back button
-            setItem(22, createItem(Material.ARROW, "§aVolver",
-                    "§7Click para volver a selección de jugadores"), unused -> {
-                sender.closeInventory();
-
-                // Create a new PayGUI instance and open it
-                PayGUI payGUI = new PayGUI(plugin, payUseCase, sender, getCurrencyUseCase);
-                sender.openInventory(payGUI.getInventory());
-
-                // Register the new GUI with the GUIService
-                plugin.getGuiManager().registerGUI(sender, payGUI);
-            });
-        }
-    }
 }

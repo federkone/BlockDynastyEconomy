@@ -2,29 +2,39 @@ package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.ad
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
 
 public class EditCurrencyGUI extends AbstractGUI {
-    private final BlockDynastyEconomy plugin;
+    private final JavaPlugin plugin;
     private final Player player;
     private final Currency currency;
+    private final GUIService guiService;
     private final EditCurrencyUseCase editCurrencyUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final AbstractGUI parentGUI;
 
-    public EditCurrencyGUI(BlockDynastyEconomy plugin, Player player, Currency currency) {
+    public EditCurrencyGUI(JavaPlugin plugin, GUIService guiService, Player player, Currency currency,
+                           EditCurrencyUseCase editCurrencyUseCase, GetCurrencyUseCase getCurrencyUseCase,AbstractGUI parentGUI) {
         super("Editar Moneda: " + currency.getSingular(), 4);
         this.plugin = plugin;
         this.player = player;
+        this.guiService = guiService;
+        this.parentGUI = parentGUI;
         this.currency = currency;
-        this.editCurrencyUseCase = plugin.getUsesCase().getEditCurrencyUseCase();
+        this.editCurrencyUseCase =editCurrencyUseCase;
+        this.getCurrencyUseCase = getCurrencyUseCase;
 
         setupGUI();
     }
@@ -47,35 +57,35 @@ public class EditCurrencyGUI extends AbstractGUI {
         // Edit Start Balance button
         setItem(10, createItem(Material.EMERALD_BLOCK, "§aEditar Saldo Inicial",
                 "§7Click para modificar el saldo inicial"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openStartBalanceInput();
         });
 
         // Set Currency Rate button
         setItem(12, createItem(Material.GOLD_NUGGET, "§eEstablecer Tasa de Cambio",
                 "§7Click para modificar la tasa de cambio"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openExchangeRateInput();
         });
 
         // Edit Color button
         setItem(14, createItem(Material.LIME_DYE, "§aEditar Color",
                 "§7Click para cambiar el color de la moneda"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openColorSelectionGUI();
         });
 
         // Edit Symbol button
         setItem(16, createItem(Material.NAME_TAG, "§eEditar Símbolo",
                 "§7Click para cambiar el símbolo de la moneda"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openSymbolInput();
         });
 
         // Set Default Currency button
         setItem(28, createItem(Material.NETHER_STAR, "§bEstablecer como Predeterminada",
                 "§7Click para hacer esta moneda predeterminada"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
                 player.sendMessage("§6[Banco] §a" + currency.getSingular() + " ahora es la moneda predeterminada.");
@@ -92,11 +102,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                         currency.isPayable() ? "§aToggle Pagable: §aActivado" : "§cToggle Pagable: §cDesactivado",
                         "§7Click para " + (currency.isPayable() ? "desactivar" : "activar") + " la opción de pago"),
                 unused -> {
-                    player.closeInventory();
+                    //player.closeInventory();
                     try {
                         editCurrencyUseCase.togglePayable(currency.getSingular());
-                        player.sendMessage("§6[Banco] §aOpción de pago " +
-                                (currency.isPayable() ? "activada" : "desactivada") + " correctamente.");
+                        player.sendMessage("§6[Banco] §aOpción de pago cambiada");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
                         player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
@@ -107,14 +116,14 @@ public class EditCurrencyGUI extends AbstractGUI {
         // Edit Singular Name button
         setItem(30, createItem(Material.PAPER, "§eEditar Nombre Singular",
                 "§7Click para cambiar el nombre singular"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openSingularNameInput();
         });
 
         // Edit Plural Name button
         setItem(32, createItem(Material.BOOK, "§eEditar Nombre Plural",
                 "§7Click para cambiar el nombre plural"), unused -> {
-            player.closeInventory();
+            //player.closeInventory();
             openPluralNameInput();
         });
 
@@ -124,11 +133,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                         currency.isDecimalSupported() ? "§aToggle Decimales: §aActivado" : "§cToggle Decimales: §cDesactivado",
                         "§7Click para " + (currency.isDecimalSupported() ? "desactivar" : "activar") + " soporte de decimales"),
                 unused -> {
-                    player.closeInventory();
+                    //player.closeInventory();
                     try {
                         editCurrencyUseCase.toggleDecimals(currency.getSingular());
-                        player.sendMessage("§6[Banco] §aSoporte de decimales " +
-                                (currency.isDecimalSupported() ? "desactivado" : "activado") + " correctamente.");
+                        player.sendMessage("§6[Banco] §aSoporte de decimales cambiado.");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
                         player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
@@ -139,8 +147,8 @@ public class EditCurrencyGUI extends AbstractGUI {
         // Back button
         setItem(34, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
-            player.closeInventory();
-            openCurrencyListGUI();
+            player.openInventory(parentGUI.getInventory());
+            guiService.registerGUI(player, parentGUI);
         });
     }
 
@@ -211,7 +219,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     private void openColorSelectionGUI() {
         ColorSelectionGUI colorGUI = new ColorSelectionGUI();
         player.openInventory(colorGUI.getInventory());
-        plugin.getGuiManager().registerGUI(player, colorGUI);
+        guiService.registerGUI(player, colorGUI);
     }
 
     private void openSymbolInput() {
@@ -311,16 +319,11 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openEditCurrencyGUI() {
-        EditCurrencyGUI gui = new EditCurrencyGUI(plugin, player, currency);
+        EditCurrencyGUI gui = new EditCurrencyGUI(plugin, guiService,player, currency,editCurrencyUseCase, getCurrencyUseCase,parentGUI);
         player.openInventory(gui.getInventory());
-        plugin.getGuiManager().registerGUI(player, gui);
+        guiService.registerGUI(player, gui);
     }
 
-    private void openCurrencyListGUI() {
-        CurrencyListEdit listGui = new CurrencyListEdit(plugin, player);
-        player.openInventory(listGui.getInventory());
-        plugin.getGuiManager().registerGUI(player, listGui);
-    }
 
     // Inner class for color selection
     private class ColorSelectionGUI extends AbstractGUI {
@@ -365,13 +368,13 @@ public class EditCurrencyGUI extends AbstractGUI {
             // Back button
             setItem(31, createItem(Material.BARRIER, "§cVolver",
                     "§7Click para volver"), unused -> {
-                player.closeInventory();
+                //player.closeInventory();
                 openEditCurrencyGUI();
             });
         }
 
         private void handleColorSelection(ChatColor chatColor, String colorName) {
-            player.closeInventory();
+            //player.closeInventory();
             try {
                 editCurrencyUseCase.editColor(currency.getSingular(), chatColor.name());
                 player.sendMessage("§6[Banco] §aColor actualizado correctamente a " + colorName + ".");

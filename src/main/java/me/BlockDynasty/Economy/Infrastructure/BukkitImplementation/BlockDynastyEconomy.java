@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.RegisterModule;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.BankGUICommand;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
@@ -58,7 +59,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     MessageService messageService;
 
     private UsesCaseFactory usesCaseFactory;
-    private GUIService guiService;
+    //private GUIService guiService;
 
     @Override
     public void onLoad() {
@@ -136,16 +137,14 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerGUI(){
-        this.guiService = new GUIService();
-        // Register BalanceGUI command
-        //this.getCommand("balancegui").setExecutor(new BalanceGUICommand(this));
-        //this.getCommand("paygui").setExecutor(new PayGUICommand(this, usesCaseFactory.getPayUseCase(), usesCaseFactory.getCurrencyUseCase()));
-        this.getCommand("bank").setExecutor(new BankGUICommand(this));
-        this.getCommand("currencyPannel").setExecutor(new CurrencyPanelCommand(this));
-        // Register GUI event listener
-        getServer().getPluginManager().registerEvents(
-                new GUIListener(getGuiManager()), this
-        );
+        RegisterModule.register(this,
+                usesCaseFactory.getPayUseCase(),
+                usesCaseFactory.getCreateCurrencyUseCase(),
+                usesCaseFactory.getGetBalanceUseCase(),
+                usesCaseFactory.getCurrencyUseCase(),
+                usesCaseFactory.getEditCurrencyUseCase(),
+                usesCaseFactory.deleteCurrencyUseCase(),
+                messageService);
     }
 
     private void registerEvents() {
@@ -243,10 +242,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     public boolean isDisabling() {
         return disabling;
-    }
-
-    public GUIService getGuiManager() {
-        return guiService;
     }
 
     /*public boolean isChequesEnabled() {

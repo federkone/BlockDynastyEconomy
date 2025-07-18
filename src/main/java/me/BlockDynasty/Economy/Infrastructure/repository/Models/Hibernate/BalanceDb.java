@@ -26,6 +26,7 @@ public class BalanceDb  {
         this.amount = balance.getAmount();
     }
 
+
     public Balance toEntity(){
         return new Balance(currency.toEntity(), amount);
     }

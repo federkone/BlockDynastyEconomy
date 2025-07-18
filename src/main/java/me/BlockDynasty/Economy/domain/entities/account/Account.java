@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.domain.entities.account;
 
+import me.BlockDynasty.Economy.domain.entities.wallet.Wallet;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
@@ -11,20 +12,27 @@ import java.util.*;
 public class Account implements IAccount {
     private String uuid;
     private String nickname;
-    private List<Balance> wallet;
+    private Wallet wallet;
     private boolean canReceiveCurrency ;
 
     public Account(UUID uuid, String nickname) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
-        this.wallet = new ArrayList<>();
+        this.wallet = new Wallet();
         this.canReceiveCurrency = true;
     }
 
     public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
         this.uuid = uuid.toString();
         this.nickname = nickname;
-        this.wallet = balanceList;
+        this.wallet = new Wallet(balanceList);
+        this.canReceiveCurrency = canReceiveCurrency;
+    }
+
+    public Account(String uuid, String nickname, Wallet wallet, boolean canReceiveCurrency) {
+        this.uuid = uuid;
+        this.nickname = nickname;
+        this.wallet = wallet;
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
@@ -66,37 +74,27 @@ public class Account implements IAccount {
         return Result.success(null);
     }
 
-    public void setWallet(List<Balance> wallet) {
-        this.wallet = wallet;
+    public void setBalances(List<Balance> balances) {
+        this.wallet.setBalances(balances);
     }
-    public List<Balance> getWallet() {
-        return wallet;
+    public List<Balance> getBalances() {
+        return wallet.getBalances();
     }
 
     public boolean hasCurrency( String currencyName){
-        return wallet.stream().anyMatch(b ->
-                b.getCurrency().getSingular().equals(currencyName) || b.getCurrency().getPlural().equals(currencyName));
+        return wallet.hasCurrency(currencyName);
     }
 
     public Balance getBalance(Currency currency) {
-        return wallet.stream()
-                .filter(b -> b.getCurrency().equals(currency))
-                .findFirst()
-                .orElse(null);
+        return wallet.getBalance(currency);
     }
 
     public Balance getBalance(){
-        return wallet.stream()
-                .filter(b -> b.getCurrency().isDefaultCurrency())
-                .findFirst()
-                .orElse(null);
+        return wallet.getBalance();
     }
 
     public Balance getBalance(String currencyName){
-        return wallet.stream()
-                .filter(b -> b.getCurrency().getSingular().equalsIgnoreCase(currencyName) || b.getCurrency().getPlural().equalsIgnoreCase(currencyName))
-                .findFirst()
-                .orElse(null);
+        return wallet.getBalance(currencyName);
     }
 
     public boolean hasEnough(Currency currency, BigDecimal amount){
@@ -105,7 +103,19 @@ public class Account implements IAccount {
             return false;
         }
         return balance.hasEnough(amount);
-    };
+    }
+
+    @Override
+    public Wallet getWallet() {
+        return this.wallet;
+    }
+
+    @Override
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    ;
 
     public boolean hasEnoughDefaultCurrency(BigDecimal amount){
         Balance balance = getBalance();
@@ -116,8 +126,7 @@ public class Account implements IAccount {
     };
 
     private void createBalance(Currency currency, BigDecimal amount) {
-        Balance balance = new Balance(currency, amount);
-        wallet.add(balance);
+        wallet.createBalance(currency, amount);
     }
 
     public void setUuid(UUID uuid) {

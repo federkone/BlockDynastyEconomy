@@ -16,10 +16,7 @@ import java.util.stream.Collectors;
 public class RepositoryTest implements IRepository {
     private final List<Account> accounts = new ArrayList<>();
     private final List<Currency> currencies = new ArrayList<>();
-    @Override
-    public void loadCurrencies() {
 
-    }
 
     @Override
     public List<Currency> loadCurrencies(Criteria criteria) {
@@ -53,7 +50,7 @@ public class RepositoryTest implements IRepository {
 
     @Override
     public void deleteCurrency(Currency currency) {//todo create
-        accounts.forEach(account -> account.getWallet().remove(currency.getSingular()));
+        accounts.forEach(account -> account.getBalances().remove(currency.getSingular()));
 
         currencies.remove(currency);
 

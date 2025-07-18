@@ -1,28 +1,30 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.CurrencyPanelGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+
 import java.util.List;
 
 public abstract class AbstractCurrenciesList extends AbstractGUI {
-    private final BlockDynastyEconomy plugin;
+    private final GUIService guiService;
     private final Player player;
     private final GetCurrencyUseCase getCurrencyUseCase;
+    private final AbstractGUI parentGUI;
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public AbstractCurrenciesList(BlockDynastyEconomy plugin, Player player) {
+    public AbstractCurrenciesList( GUIService guiService, Player player, GetCurrencyUseCase getCurrencyUseCase,AbstractGUI parentGUI) {
         super("Lista de Monedas", 5);
-        this.plugin = plugin;
+        this.guiService = guiService;
         this.player = player;
-        this.getCurrencyUseCase = plugin.getUsesCase().getCurrencyUseCase();
+        this.parentGUI = parentGUI;
+        this.getCurrencyUseCase = getCurrencyUseCase;
 
         showCurrenciesPage();
     }
@@ -47,8 +49,9 @@ public abstract class AbstractCurrenciesList extends AbstractGUI {
             // Back button
             setItem(40, createItem(Material.ARROW, "§aVolver",
                     "§7Click para volver"), unused -> {
-                player.closeInventory();
-                openCurrencyEditorGUI();
+                //player.closeInventory();
+                player.openInventory(parentGUI.getInventory());
+                guiService.registerGUI(player, parentGUI);
             });
 
             return;
@@ -65,7 +68,7 @@ public abstract class AbstractCurrenciesList extends AbstractGUI {
                             "§7Singular: " + color + currency.getSingular(),
                             "§7Plural: " + color + currency.getPlural()),
                     unused -> {
-                        player.closeInventory();
+                        //player.closeInventory();
                         openSubMenu(currency,player);
                     });
 
@@ -94,19 +97,12 @@ public abstract class AbstractCurrenciesList extends AbstractGUI {
         // Back button
         setItem(40, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
-            player.closeInventory();
-            openCurrencyEditorGUI();
+            //player.closeInventory();
+            player.openInventory(parentGUI.getInventory());
+            guiService.registerGUI(player, parentGUI);
         });
     }
-    private void openCurrencyEditorGUI() {
-        // Create and open the CurrencyEditorGUI
-        CurrencyPanelGUI editorGUI =
-                new CurrencyPanelGUI(plugin, player);
-        player.openInventory(editorGUI.getInventory());
 
-        // Register GUI with manager
-        plugin.getGuiManager().registerGUI(player, editorGUI);
-    }
 
     public abstract void openSubMenu(Currency currency,Player player);
 

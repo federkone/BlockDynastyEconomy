@@ -3,8 +3,10 @@ package me.BlockDynasty.Economy.Infrastructure.repository;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.criteria.*;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
+
 import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.AccountDb;
 import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.CurrencyDb;
+
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
@@ -28,9 +30,6 @@ public class RepositorySql implements IRepository
 
     public RepositorySql(Connection connection) {
         this.sessionFactory = connection.getSession();
-    }
-    @Override
-    public void loadCurrencies() {
     }
 
     @Override

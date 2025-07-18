@@ -1,20 +1,22 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import org.bukkit.entity.Player;
 
-
 public class CurrencyListDelete extends AbstractCurrenciesList {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyListDelete(BlockDynastyEconomy plugin, Player player) {
-            super(plugin, player);
-            this.deleteCurrencyUseCase = plugin.getUsesCase().deleteCurrencyUseCase();
+    public CurrencyListDelete(GUIService guiService, Player player, GetCurrencyUseCase getCurrencyUseCase,
+                              DeleteCurrencyUseCase deleteCurrencyUseCase, AbstractGUI abstractGUI)  {
+            super(guiService, player,getCurrencyUseCase,abstractGUI);
+            this.deleteCurrencyUseCase =deleteCurrencyUseCase;
     }
 
     @Override

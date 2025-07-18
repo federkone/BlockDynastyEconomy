@@ -15,16 +15,16 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
         super(createAccountUseCase, getAccountsUseCase, accountService, currencyService);
     }
 
-    //si se comienza a trabajar en offline se van a buscar las cuentas por nombre y se va a preguntar si cambio la uuid para actualizar en sistema.
+    //si se comienza a trabajar en offline se van a buscar las cuentas por nombre.
     @Override
     protected void loadPlayerAccount(Player player){
         Result<Account> result = getAccountsUseCase.getAccount(player.getName());
         if (result.isSuccess()) {
-            Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
-            if(!resultChangeUuid.isSuccess()){
-                player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
-                return;
-            }
+           // Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
+            //if(!resultChangeUuid.isSuccess()){
+            //    player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+            //    return;
+            //}
             accountService.addAccountToCache(result.getValue());
             return;
         }

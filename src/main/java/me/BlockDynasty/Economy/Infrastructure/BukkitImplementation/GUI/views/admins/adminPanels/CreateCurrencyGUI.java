@@ -1,24 +1,24 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collections;
 import java.util.List;
 
 public class CreateCurrencyGUI {
-    private final BlockDynastyEconomy plugin;
+    private final JavaPlugin plugin;
     private final Player player;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     private String singularName;
 
-    public CreateCurrencyGUI(BlockDynastyEconomy plugin, Player player) {
+    public CreateCurrencyGUI(JavaPlugin plugin, Player player,CreateCurrencyUseCase createCurrencyUseCase) {
         this.plugin = plugin;
         this.player = player;
-        this.createCurrencyUseCase = plugin.getUsesCase().getCreateCurrencyUseCase();
+        this.createCurrencyUseCase = createCurrencyUseCase;
 
         openSingularNameInput();
     }

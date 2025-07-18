@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components;
 
+import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

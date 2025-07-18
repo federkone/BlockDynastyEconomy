@@ -2,8 +2,10 @@ package me.BlockDynasty.Economy.domain.entities.account;
 
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import me.BlockDynasty.Economy.domain.entities.wallet.Wallet;
 import me.BlockDynasty.Economy.domain.result.Result;
 
+import java.awt.event.WindowListener;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -13,12 +15,14 @@ public interface IAccount {
     Result<Void> add(Currency currency, BigDecimal amount);
     Result<Void> setBalance(Currency currency, BigDecimal amount);
 
-    void setWallet(List<Balance> wallet);
+    void setBalances(List<Balance> wallet);
     boolean hasCurrency( String currencyName);
     Balance getBalance(Currency currency);
     Balance getBalance();
     Balance getBalance(String currencyName);
     boolean hasEnough(Currency currency, BigDecimal amount);
+    Wallet getWallet();
+    void setWallet(Wallet wallet);
     boolean hasEnoughDefaultCurrency(BigDecimal amount);
     void setUuid(UUID uuid);
     void setNickname(String nickname);

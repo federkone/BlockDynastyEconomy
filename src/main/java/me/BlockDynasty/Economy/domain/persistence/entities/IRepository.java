@@ -10,7 +10,7 @@ import java.util.List;
 
 //todo: evaluar hacer solo operaciones CRUD
 public interface IRepository extends ITransactions {
-    void loadCurrencies(); //todas las monedas all()
+
     List<Currency> loadCurrencies(Criteria criteria);
     void saveCurrency(Currency currency); //hace de update tambien
     void deleteCurrency(Currency currency);

@@ -58,12 +58,12 @@ public class GetAccountsUseCase {
         UUID uuid = account.getUuid();
         Account cachedAccount = this.accountService.getAccountCache(uuid);
         if (cachedAccount != null) {
-            for (Balance updatedBalance : account.getWallet()) {
+            for (Balance updatedBalance : account.getBalances()) {
                 Balance cachedBalance = cachedAccount.getBalance(updatedBalance.getCurrency());
                 if (cachedBalance != null) {
                     cachedBalance.setAmount(updatedBalance.getAmount());
                 } else {
-                    cachedAccount.getWallet().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getAmount()));
+                    cachedAccount.getBalances().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getAmount()));
                 }
             }
         }
@@ -88,7 +88,7 @@ public class GetAccountsUseCase {
         if (result.isSuccess()){
             if (accountCache != null){
                 syncWalletWithSystemCurrencies(result.getValue());
-                accountCache.setWallet(result.getValue().getWallet());
+                accountCache.setBalances(result.getValue().getBalances());
             }
         }
     }
@@ -96,14 +96,14 @@ public class GetAccountsUseCase {
     private void syncWalletWithSystemCurrencies(Account account) {
         List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
                 .map(systemCurrency ->
-                        account.getWallet().stream()
+                        account.getBalances().stream()
                                 .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
                                 .findFirst() // Busca si ya existe el balance para esta moneda
                                 .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
                                     return new Balance(systemCurrency);
                                 }))
                 .collect(Collectors.toList());
-        account.setWallet(updatedBalances);
+        account.setBalances(updatedBalances);
     }
 
     public Result<Void> checkNameChange( Account account , String newName) {

@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -20,12 +21,12 @@ import java.util.function.Function;
 public class BalanceGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
     private final Player player;
-    private final BlockDynastyEconomy plugin;
+    private final JavaPlugin plugin;
 
     //CONSULTA SALDO
-    public BalanceGUI(BlockDynastyEconomy plugin, Player player) {
+    public BalanceGUI(JavaPlugin plugin, Player player,GetBalanceUseCase getBalanceUseCase) {
         super("Balance de cuenta", 3);
-        this.getBalanceUseCase = plugin.getUsesCase().getGetBalanceUseCase();
+        this.getBalanceUseCase = getBalanceUseCase;
         this.player = player;
         this.plugin = plugin;
 

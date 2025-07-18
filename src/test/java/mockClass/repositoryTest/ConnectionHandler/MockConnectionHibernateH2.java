@@ -28,6 +28,7 @@ public class MockConnectionHibernateH2 implements Connection {
         configuration.addAnnotatedClass(CurrencyDb.class);
         configuration.addAnnotatedClass(AccountDb.class);
         configuration.addAnnotatedClass(BalanceDb.class);
+        //configuration.addAnnotatedClass(WalletDb.class);
         // Initialize the session factory
         try {
             this.sessionFactory = this.configuration.buildSessionFactory();

@@ -65,7 +65,7 @@ public class GetBalanceUseCase {
     }
 
     private Result<Balance> performGetBalance(Account account, String currencyName) {
-        if(account.getWallet().isEmpty()) {
+        if(account.getBalances().isEmpty()) {
             return Result.failure("Account has no balances", ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
         Balance balance = account.getBalance(currencyName);
@@ -76,7 +76,7 @@ public class GetBalanceUseCase {
     }
 
     private Result<Balance> performGetBalance(Account account) {
-        if(account.getWallet().isEmpty()) {
+        if(account.getBalances().isEmpty()) {
             return Result.failure("Account has no balances", ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
 
@@ -88,9 +88,9 @@ public class GetBalanceUseCase {
     }
 
     private Result<List<Balance>> performGetBalances(Account account) {
-        if(account.getWallet().isEmpty()) {
+        if(account.getBalances().isEmpty()) {
             return Result.failure("Account has no balances", ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
-        return Result.success(account.getWallet());
+        return Result.success(account.getBalances());
     }
 }

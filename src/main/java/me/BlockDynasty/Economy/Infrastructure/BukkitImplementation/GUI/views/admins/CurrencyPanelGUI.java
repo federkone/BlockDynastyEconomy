@@ -1,22 +1,36 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins;
 
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CreateCurrencyGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListDelete;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListEdit;
+import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
+import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class CurrencyPanelGUI extends AbstractGUI {
-    private final BlockDynastyEconomy plugin;
     private final Player player;
+    private final GUIService guiService;
+    private final JavaPlugin plugin;
+    private  final CreateCurrencyUseCase createCurrencyUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final EditCurrencyUseCase editCurrencyUseCase;
+    private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyPanelGUI(BlockDynastyEconomy plugin, Player player) {
+    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, GetCurrencyUseCase getCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase,DeleteCurrencyUseCase deleteCurrencyUseCase) {
         super("Administrador de Monedas", 3);
-        this.plugin = plugin;
+        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.editCurrencyUseCase = editCurrencyUseCase;
+        this.createCurrencyUseCase = createCurrencyUseCase;
+        this.deleteCurrencyUseCase = deleteCurrencyUseCase;
+        this.guiService = guiService;
         this.player = player;
-
+        this.plugin = plugin;
         setupGUI();
     }
 
@@ -25,7 +39,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         setItem(10, createItem(Material.EMERALD, "§aCrear Moneda",
                 "§7Click para crear una nueva moneda"), unused -> {
             player.closeInventory();
-            new CreateCurrencyGUI(plugin, player);
+            new CreateCurrencyGUI(plugin, player, this.createCurrencyUseCase);
             //player.sendMessage("§6[Sistema] §eCrear moneda: Función en desarrollo");
         });
 
@@ -58,18 +72,18 @@ public class CurrencyPanelGUI extends AbstractGUI {
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListEdit currencyListEdit = new CurrencyListEdit(plugin, player);
+        CurrencyListEdit currencyListEdit = new CurrencyListEdit(guiService,plugin, player,this.getCurrencyUseCase,this.editCurrencyUseCase,this);
         player.openInventory(currencyListEdit.getInventory());
 
         // Register the GUI with the GUIService
-        plugin.getGuiManager().registerGUI(player, currencyListEdit);
+        guiService.registerGUI(player, currencyListEdit);
     }
 
     private void currencyListDelete() {
-        CurrencyListDelete currencyListDelete = new CurrencyListDelete(plugin, player);
+        CurrencyListDelete currencyListDelete = new CurrencyListDelete(guiService, player,this.getCurrencyUseCase,this.deleteCurrencyUseCase,this);
         player.openInventory(currencyListDelete.getInventory());
 
         // Register the GUI with the GUIService
-        plugin.getGuiManager().registerGUI(player, currencyListDelete);
+        guiService.registerGUI(player, currencyListDelete);
     }
 }

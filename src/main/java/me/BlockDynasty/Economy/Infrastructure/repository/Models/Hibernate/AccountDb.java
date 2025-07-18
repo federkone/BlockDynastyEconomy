@@ -34,7 +34,7 @@ public class AccountDb {
         this.uuid = account.getUuid().toString();
         this.nickname = account.getNickname();
         this.balances = new ArrayList<>();
-        for (Balance balance : account.getWallet()){
+        for (Balance balance : account.getBalances()){
             this.balances.add(new BalanceDb(balance));
         }
         this.canReceiveCurrency = account.canReceiveCurrency();
@@ -51,7 +51,7 @@ public class AccountDb {
     }
 
     public void updateFromEntity(Account account) {
-        Map<String, Balance> balanceMap = account.getWallet().stream()
+        Map<String, Balance> balanceMap = account.getBalances().stream()
                 .collect(Collectors.toMap(b -> b.getCurrency().getUuid().toString(), b -> b));
 
         for (BalanceDb balanceDb : this.balances) {

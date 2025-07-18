@@ -26,7 +26,7 @@ public class AccountMongoDb {
     public AccountMongoDb(Account account) {
         this.uuid = account.getUuid();
         this.nickname = account.getNickname();
-        this.balances = account.getWallet().stream()
+        this.balances = account.getBalances().stream()
                 .map(balance -> new BalanceMongoDb(balance))
                 .collect(Collectors.toList());
         this.canReceiveCurrency = account.canReceiveCurrency();

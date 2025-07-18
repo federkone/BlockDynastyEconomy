@@ -4,22 +4,26 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyE
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.IGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
 import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class PayGUICommand  implements CommandExecutor {
-    private final BlockDynastyEconomy plugin;
+    private final JavaPlugin plugin;
     private GUIService guiService;
+    private MessageService messageService;
     private PayUseCase payUseCase;
     private GetCurrencyUseCase getCurrencyUseCase;
 
-    public PayGUICommand(BlockDynastyEconomy plugin, PayUseCase payUseCase, GetCurrencyUseCase getCurrencyUseCase) {
+    public PayGUICommand(JavaPlugin plugin, GUIService guiService,PayUseCase payUseCase, GetCurrencyUseCase getCurrencyUseCase, MessageService messageService) {
         this.plugin = plugin;
-        this.guiService = plugin.getGuiManager();
+        this.guiService = guiService;
+        this.messageService = messageService;
         this.payUseCase = payUseCase;
         this.getCurrencyUseCase = getCurrencyUseCase;
     }
@@ -31,7 +35,7 @@ public class PayGUICommand  implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        IGUI gui = new PayGUI(plugin, payUseCase, player, getCurrencyUseCase);
+        IGUI gui = new PayGUI(plugin, payUseCase, player, guiService, getCurrencyUseCase,messageService);
         this.guiService.registerGUI(player, gui);
         gui.open(player);
         return true;
