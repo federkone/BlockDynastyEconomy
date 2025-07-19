@@ -4,15 +4,15 @@ import jakarta.persistence.*;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "currency")
 public class CurrencyDb {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(name = "uuid", unique = true) // Asegurar unicidad
     private String uuid;
 
@@ -43,15 +43,13 @@ public class CurrencyDb {
     @Column(name = "exchange_rate")
     private double exchangeRate ;
 
+    //esto se agrega para que hibernate elimine en cascada los balances asociados a esta moneda
+    @OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BalanceDb> balances = new ArrayList<>();
+
     public CurrencyDb() {
     }
 
-    public Long getId(){
-        return this.id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getUuid() {
         return uuid;
     }

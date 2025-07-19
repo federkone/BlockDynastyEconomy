@@ -1,6 +1,6 @@
 package useCaseTest.transaction;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import me.BlockDynasty.Economy.aplication.services.OfferService;
 import me.BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import me.BlockDynasty.Economy.domain.entities.balance.Balance;
@@ -15,11 +15,12 @@ import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import mockClass.MockListener;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import mockClass.LoggerTest;
+import repositoryTest.FactoryrRepo;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class WithdrawUseCaseTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         dinero= new Currency(UUID.randomUUID(),"dinero","dinero");
 
-        repository = new RepositorySql( new MockConnectionHibernateH2());
+        repository = FactoryrRepo.getDb();
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
 

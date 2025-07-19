@@ -43,6 +43,21 @@ public class RepositorySql implements IRepository
     }
 
     @Override
+    public Result<Currency> loadCurrencyByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Result<Currency> loadCurrencyByUuid(String uuid) {
+        return null;
+    }
+
+    @Override
+    public Result<Currency> loadDefaultCurrency() {
+        return null;
+    }
+
+    @Override
     public void saveCurrency(Currency currency) {
         //sessionFactory.openSession().persist( new CurrencyDb(currency));
         executeInsideTransaction(session -> session.merge(new CurrencyDb( currency)));

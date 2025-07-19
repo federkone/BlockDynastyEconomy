@@ -1,6 +1,6 @@
 package useCaseTest.transaction;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import mockClass.CourierTest;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
@@ -19,12 +19,12 @@ import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotPa
 import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.Infrastructure.repository.Exceptions.TransactionException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
 import mockClass.LoggerTest;
+import repositoryTest.FactoryrRepo;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -56,7 +56,7 @@ public class TradeCurrenciesUseCaseTest {
         cris.setBalance(coin, BigDecimal.valueOf(0));
         cris.setBalance(dinero, BigDecimal.valueOf(30000));
 
-        repository = new RepositorySql( new MockConnectionHibernateH2());
+        repository = FactoryrRepo.getDb();
 
 
         repository.saveCurrency(coin);

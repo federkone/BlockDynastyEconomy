@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Table(name = "balance")
 public class BalanceDb {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

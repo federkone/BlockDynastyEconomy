@@ -7,6 +7,7 @@ import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 
 public class InitDatabase {
 

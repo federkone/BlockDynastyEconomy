@@ -1,7 +1,7 @@
-package mockClass.repositoryTest.ConnectionHandler;
+package repositoryTest.ConnectionHandler;
 
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
-import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.*;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.Models.Hibernate.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -22,13 +22,13 @@ public class MockConnectionHibernateH2 implements Connection {
         configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         configuration.setProperty("hibernate.connection.autocommit", "true");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
-        configuration.setProperty("hibernate.show_sql", "false");
-        configuration.setProperty("hibernate.format_sql", "false");
-        configuration.setProperty("hibernate.use_sql_comments", "false");
+        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.format_sql", "true");
+        configuration.setProperty("hibernate.use_sql_comments", "true");
         configuration.addAnnotatedClass(CurrencyDb.class);
         configuration.addAnnotatedClass(AccountDb.class);
         configuration.addAnnotatedClass(BalanceDb.class);
-        //configuration.addAnnotatedClass(WalletDb.class);
+        configuration.addAnnotatedClass(WalletDb.class);
         // Initialize the session factory
         try {
             this.sessionFactory = this.configuration.buildSessionFactory();

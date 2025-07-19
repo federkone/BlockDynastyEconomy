@@ -66,6 +66,27 @@ public class CurrencyRepository implements ICurrencyRepository {
     }
 
     @Override
+    public Currency findDefaultCurrency() {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                CurrencyDb entity = session.createQuery(
+                                "SELECT c FROM CurrencyDb c WHERE c.defaultCurrency = :isDefault", CurrencyDb.class)
+                        .setParameter("isDefault", true)
+                        .getSingleResult();
+                tx.commit();
+                return CurrencyMapper.toDomain(entity);
+            } catch (NoResultException e) {
+                tx.rollback();
+                throw new CurrencyNotFoundException("Currency default no encontrado: ");
+            } catch (Exception e) {
+                tx.rollback();
+                throw new RepositoryException("Error repositorio: "+e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
     public Currency findByName(String name) {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
@@ -98,13 +119,11 @@ public class CurrencyRepository implements ICurrencyRepository {
                         .setParameter("singular", currency.getSingular())
                         .getSingleResult();
 
-                if (currencyDb == null) {
-                    throw new CurrencyNotFoundException("Currency no encontrado: " + currency.getUuid());
-                }
-
                 currencyDb.update(currency);
                 session.merge(currencyDb);
                 tx.commit();
+            } catch (NoResultException e) {
+                throw new CurrencyNotFoundException("Currency no encontrado: " + currency.getUuid());
             } catch (Exception e) {
                 tx.rollback();
                 throw new RepositoryException("Error repositorio: "+e.getMessage(),e);
@@ -148,13 +167,11 @@ public class CurrencyRepository implements ICurrencyRepository {
                         .setParameter("singular", currency.getSingular())
                         .getSingleResult();
 
-                if (currencyDb == null) {
-                    throw new CurrencyNotFoundException("Currency no encontrado: " + currency.getUuid());
-                }
-
                 currencyDb.update(currency);
                 session.merge(currencyDb);
                 tx.commit();
+            } catch (NoResultException e) {
+                throw new CurrencyNotFoundException("Currency no encontrado: " + currency.getUuid());
             } catch (Exception e) {
                 tx.rollback();
                 throw new  RepositoryException("Error repositorio: "+e.getMessage(),e);

@@ -9,6 +9,7 @@ import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilServer;
+import me.BlockDynasty.Economy.domain.result.Result;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -66,11 +67,11 @@ public class UpdateForwarder implements PluginMessageListener {
 
                         UtilServer.consoleLog(channelName + " - Account " + name + " updated.");
                         break;
+                        //si es currency, traerlas de db y actualizar el cache/service
                     case "currency":
                         Currency currency = plugin.getCurrencyManager().getCurrency(uuid);
                         if (currency != null) {
-                            Criteria criteria = Criteria.create().filter("uuid", uuid.toString()).limit(1);
-                            currency = plugin.getDataStore().loadCurrencies(criteria).get(0);
+                             currency = plugin.getDataStore().loadCurrencyByUuid(uuid.toString()).getValue();
                             UtilServer.consoleLog(channelName + " - Currency " + name + " updated.");
                         }
                         break;

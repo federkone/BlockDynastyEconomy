@@ -1,5 +1,6 @@
 package useCaseTest.account;
 
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
@@ -13,9 +14,10 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
+import repositoryTest.FactoryrRepo;
 
 
 import java.math.BigDecimal;
@@ -38,7 +40,7 @@ public class GetAccountsUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        repository = new RepositoryTest();
+        repository = FactoryrRepo.getDb();
         accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
@@ -94,6 +96,7 @@ public class GetAccountsUseCaseTest {
         luca.setBalance(defaultCurrency,BigDecimal.valueOf(8000));
         pri.setBalance(defaultCurrency,BigDecimal.valueOf(9000));
         facu.setBalance(defaultCurrency,BigDecimal.valueOf(10000));
+        repository.saveCurrency(defaultCurrency);
         repository.saveAccount(robert);
         repository.saveAccount(nullplague);
         repository.saveAccount(Cris);
@@ -112,10 +115,14 @@ public class GetAccountsUseCaseTest {
     void getTopAccountsUseCaseTest() {
         Result<List<Account>> resultTopAccounts =getAccountsUseCase.getTopAccounts("default",10,0);
         List<Account> accounts = resultTopAccounts.getValue();
+
+        List<Account> accounts2= repository.loadAccounts( null);
+        //System.out.println("Accounts in repository: " + accounts2.size());
         assertEquals (10, accounts.size());
         assertEquals("facu",accounts.get(0).getNickname()); //primero
         assertEquals("pri",accounts.get(1).getNickname());  //segundo
         assertEquals("robert",accounts.get(9).getNickname()); //ultimo
+
 
         //List<Account> accounts2 =  getAccountsUseCase.getTopAccounts("dinero",5,0);
         //System.out.println(messageService.getBalanceTopMessage(accounts,"default"));

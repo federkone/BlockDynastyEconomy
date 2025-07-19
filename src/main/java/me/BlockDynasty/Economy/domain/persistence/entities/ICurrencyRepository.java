@@ -8,6 +8,7 @@ public interface ICurrencyRepository {
     List<Currency> findAll();
     Currency findByName(String name);
     Currency findByUuid(String uid);
+    Currency findDefaultCurrency();
     void save(Currency currency);
     void delete(Currency currency);
     void update(Currency currency);

@@ -12,6 +12,9 @@ import java.util.List;
 public interface IRepository extends ITransactions {
 
     List<Currency> loadCurrencies(Criteria criteria);
+    Result<Currency> loadCurrencyByName(String name);
+    Result<Currency> loadCurrencyByUuid(String uuid);
+    Result<Currency> loadDefaultCurrency(); //carga la moneda por defecto, si no hay devuelve una lista vacia
     void saveCurrency(Currency currency); //hace de update tambien
     void deleteCurrency(Currency currency);
 

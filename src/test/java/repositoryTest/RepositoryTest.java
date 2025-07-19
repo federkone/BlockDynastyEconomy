@@ -1,4 +1,4 @@
-package mockClass.repositoryTest;
+package repositoryTest;
 
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -41,6 +41,21 @@ public class RepositoryTest implements IRepository {
         }
 
         return filteredCurrencies;
+    }
+
+    @Override
+    public Result<Currency> loadCurrencyByName(String name) {
+        return null;
+    }
+
+    @Override
+    public Result<Currency> loadCurrencyByUuid(String uuid) {
+        return null;
+    }
+
+    @Override
+    public Result<Currency> loadDefaultCurrency() {
+        return null;
     }
 
     @Override

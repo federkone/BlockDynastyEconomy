@@ -12,5 +12,6 @@ public interface IAccountRepository {
     void delete(Account account);
     void update(Account account);
     void create(Account account);
+    List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset);
 
 }

@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.repositoryV2.Models.Hibernate;
 
 import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.domain.entities.wallet.Wallet;
 
 public class AccountMapper {
@@ -8,18 +9,30 @@ public class AccountMapper {
         if (domain == null) {
             return null;
         }
-        AccountDb entity = new AccountDb();
-        entity.setUuid(domain.getUuid().toString());
-        entity.setNickname(domain.getNickname());
-        entity.setCanReceiveCurrency(domain.canReceiveCurrency());
+        AccountDb accountDb = new AccountDb();
+        accountDb.setUuid(domain.getUuid().toString());
+        accountDb.setNickname(domain.getNickname());
+        accountDb.setCanReceiveCurrency(domain.canReceiveCurrency());
 
-        // Convertir Wallet del dominio a WalletDb
-        if (domain.getWallet() != null) {
-            WalletDb wallet = WalletMapper.toEntity(domain.getWallet());
-            wallet.setAccount(entity); // Establece la relación bidireccional
-            entity.setWallet(wallet);
+        // Create wallet
+        WalletDb walletDb = new WalletDb();
+        accountDb.setWallet(walletDb);
+
+        // Create balances
+        if (domain.getBalances() != null) {
+            for (Balance balance : domain.getBalances()) {
+                BalanceDb balanceDb = new BalanceDb();
+
+                // Get or create currency
+                CurrencyDb currencyDb = CurrencyMapper.toEntity(balance.getCurrency());
+
+                balanceDb.setCurrency(currencyDb);
+                balanceDb.setAmount(balance.getAmount());
+                walletDb.addBalance(balanceDb);
+            }
         }
-        return entity;
+
+        return accountDb;
     }
 
     public static Account toDomain(AccountDb entity) {

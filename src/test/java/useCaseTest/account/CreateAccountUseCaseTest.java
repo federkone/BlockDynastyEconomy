@@ -1,5 +1,6 @@
 package useCaseTest.account;
 
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -8,10 +9,10 @@ import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
 import org.junit.jupiter.api.BeforeEach;
+import repositoryTest.FactoryrRepo;
 
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class CreateAccountUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        repository = new RepositoryTest();
+        repository = FactoryrRepo.getDb();
         accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);

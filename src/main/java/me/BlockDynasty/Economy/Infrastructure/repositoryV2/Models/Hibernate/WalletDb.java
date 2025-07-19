@@ -16,14 +16,25 @@ public class WalletDb {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private AccountDb account;
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BalanceDb> balances;
+    private List<BalanceDb> balances= new ArrayList<>();;
 
     public WalletDb() {
+    }
+
+    // Helper method for managing the relationship
+    public void addBalance(BalanceDb balance) {
+        balances.add(balance);
+        balance.setWallet(this);
+    }
+
+    public void removeBalance(BalanceDb balance) {
+        balances.remove(balance);
+        balance.setWallet(null);
     }
 
 

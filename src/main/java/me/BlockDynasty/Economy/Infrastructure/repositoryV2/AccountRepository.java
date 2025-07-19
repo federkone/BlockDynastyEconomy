@@ -38,7 +38,8 @@ public class AccountRepository implements IAccountRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
-                List<Account>  accounts = session.createQuery("SELECT a FROM AccountDb a", AccountDb.class)
+                List<Account> accounts = session.createQuery(
+                                "SELECT DISTINCT a FROM AccountDb a" , AccountDb.class)
                         .getResultList()
                         .stream()
                         .map(AccountMapper::toDomain)
@@ -57,12 +58,16 @@ public class AccountRepository implements IAccountRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
-                AccountDb accountDb = session.createQuery("SELECT a FROM AccountDb a WHERE a.uuid = :uuid", AccountDb.class)
+                AccountDb accountDb = session.createQuery(
+                                "SELECT a FROM AccountDb a " +
+                                        "WHERE a.uuid = :uuid",
+                                AccountDb.class)
                         .setParameter("uuid", uuid)
                         .getSingleResult();
                 tx.commit();
+                System.out.println(accountDb.getWallet().getBalances().size());
                 return AccountMapper.toDomain(accountDb);
-            }catch (NoResultException e) {
+            } catch (NoResultException e) {
                 tx.rollback();
                 throw new AccountNotFoundException("Account no encontrado: " + uuid);
             } catch (Exception e) {
@@ -77,12 +82,14 @@ public class AccountRepository implements IAccountRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
-                AccountDb entity = session.createQuery(
-                                "SELECT a FROM AccountDb a WHERE a.nickname = :nickname", AccountDb.class)
-                        .setParameter("nickname", nickname)
+                AccountDb accountDb = session.createQuery(
+                                "SELECT a FROM AccountDb a " +
+                                        "WHERE a.nickname = :name",
+                                AccountDb.class)
+                        .setParameter("name", nickname)
                         .getSingleResult();
                 tx.commit();
-                return AccountMapper.toDomain(entity);
+                return AccountMapper.toDomain(accountDb);
             } catch (NoResultException e) {
                 tx.rollback();
                 throw new AccountNotFoundException(e.getMessage());
@@ -95,7 +102,53 @@ public class AccountRepository implements IAccountRepository {
 
     @Override
     public void save(Account account) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                AccountDb accountDb = session.createQuery(
+                                "SELECT a FROM AccountDb a JOIN FETCH a.wallet w LEFT JOIN FETCH w.balances b LEFT JOIN FETCH b.currency WHERE a.uuid = :uuid",
+                                AccountDb.class)
+                        .setParameter("uuid", account.getUuid().toString())
+                        .getSingleResult();
 
+                // Update basic properties
+                accountDb.setNickname(account.getNickname());
+                accountDb.setCanReceiveCurrency(account.canReceiveCurrency());
+
+                // Create a map of existing balances by currency UUID for quick lookup
+                Map<String, BalanceDb> existingBalances = accountDb.getWallet().getBalances().stream()
+                        .collect(Collectors.toMap(b -> b.getCurrency().getUuid(), Function.identity()));
+
+                // Process each balance from the domain object
+                for (Balance domainBalance : account.getBalances()) {
+                    String currencyUuid = domainBalance.getCurrency().getUuid().toString();
+
+                    if (existingBalances.containsKey(currencyUuid)) {
+                        // Update existing balance
+                        existingBalances.get(currencyUuid).setAmount(domainBalance.getAmount());
+                    } else {
+                        // Create new balance if it doesn't exist
+                        CurrencyDb currencyDb = session.createQuery(
+                                        "FROM CurrencyDb WHERE uuid = :uuid", CurrencyDb.class)
+                                .setParameter("uuid", currencyUuid)
+                                .getSingleResult();
+
+                        BalanceDb newBalance = new BalanceDb();
+                        newBalance.setCurrency(currencyDb);
+                        newBalance.setAmount(domainBalance.getAmount());
+                        accountDb.getWallet().addBalance(newBalance);
+                    }
+                }
+
+                tx.commit();
+            } catch (NoResultException e) {
+                tx.rollback();
+                throw new AccountNotFoundException("Account no encontrado: " + account.getUuid());
+            } catch (Exception e) {
+                tx.rollback();
+                throw new RepositoryException("Error repositorio: " + e.getMessage(), e);
+            }
+        }
     }
 
     @Override
@@ -123,9 +176,54 @@ public class AccountRepository implements IAccountRepository {
     //actualizar primero implica saber que quiero actualizar, ya que si traigo una wallet con balances, lo mas probable es que primero tenga que traer la cuenta con su wallet, su wallet con el balance de la currency detectada a actualizar y recien ahi actualizar el monto
     //ya que esta consulta este trayendo la cuenta sin su wallet.
     public void update(Account account) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                AccountDb accountDb = session.createQuery(
+                                "SELECT a FROM AccountDb a JOIN FETCH a.wallet w LEFT JOIN FETCH w.balances b LEFT JOIN FETCH b.currency WHERE a.uuid = :uuid",
+                                AccountDb.class)
+                        .setParameter("uuid", account.getUuid().toString())
+                        .getSingleResult();
 
+                // Update basic properties
+                accountDb.setNickname(account.getNickname());
+                accountDb.setCanReceiveCurrency(account.canReceiveCurrency());
+
+                // Create a map of existing balances by currency UUID for quick lookup
+                Map<String, BalanceDb> existingBalances = accountDb.getWallet().getBalances().stream()
+                        .collect(Collectors.toMap(b -> b.getCurrency().getUuid(), Function.identity()));
+
+                // Process each balance from the domain object
+                for (Balance domainBalance : account.getBalances()) {
+                    String currencyUuid = domainBalance.getCurrency().getUuid().toString();
+
+                    if (existingBalances.containsKey(currencyUuid)) {
+                        // Update existing balance
+                        existingBalances.get(currencyUuid).setAmount(domainBalance.getAmount());
+                    } else {
+                        // Create new balance if it doesn't exist
+                        CurrencyDb currencyDb = session.createQuery(
+                                        "FROM CurrencyDb WHERE uuid = :uuid", CurrencyDb.class)
+                                .setParameter("uuid", currencyUuid)
+                                .getSingleResult();
+
+                        BalanceDb newBalance = new BalanceDb();
+                        newBalance.setCurrency(currencyDb);
+                        newBalance.setAmount(domainBalance.getAmount());
+                        accountDb.getWallet().addBalance(newBalance);
+                    }
+                }
+
+                tx.commit();
+            } catch (NoResultException e) {
+               // tx.rollback();
+                throw new AccountNotFoundException("Account no encontrado: " + account.getUuid());
+            } catch (Exception e) {
+                tx.rollback();
+                throw new RepositoryException("Error repositorio: " + e.getMessage(), e);
+            }
+        }
     }
-
 
     @Override
     public void create(Account account) {
@@ -146,6 +244,37 @@ public class AccountRepository implements IAccountRepository {
             }catch (Exception e) {
                 tx.rollback();
                 throw new RepositoryException("Error repositorio: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    @Override
+    public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
+        try (Session session = sessionFactory.openSession()) {
+            Transaction tx = session.beginTransaction();
+            try {
+                // HQL query to navigate through wallet to balances
+                String hql = "SELECT DISTINCT a FROM AccountDb a " +
+                        "JOIN FETCH a.wallet w " +
+                        "JOIN FETCH w.balances b " +
+                        "JOIN FETCH b.currency c " +
+                        "WHERE c.singular = :currencyName OR c.plural = :currencyName " +
+                        "ORDER BY b.amount DESC";
+
+                List<AccountDb> accountDbs = session.createQuery(hql, AccountDb.class)
+                        .setParameter("currencyName", currencyName)
+                        .setFirstResult(offset)
+                        .setMaxResults(limit)
+                        .getResultList();
+
+                tx.commit();
+                // Convert to domain entities
+                return accountDbs.stream()
+                        .map(AccountMapper::toDomain)
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                tx.rollback();
+                throw new RepositoryException("Error retrieving accounts by currency", e);
             }
         }
     }

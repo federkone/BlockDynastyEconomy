@@ -17,7 +17,7 @@ public class AccountDb {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "uuid", length = 60)
+    @Column(name = "uuid")
     private String uuid;
 
     @Column(name = "nickname")
@@ -32,7 +32,28 @@ public class AccountDb {
 
     public AccountDb() {
     }
+    public void updateFromEntity(Account account) {
+        Map<String, Balance> balanceMap = account.getBalances().stream()
+                .collect(Collectors.toMap(b -> b.getCurrency().getUuid().toString(), b -> b));
 
+        for (BalanceDb balanceDb : this.wallet.getBalances()) {
+            Balance updatedBalance = balanceMap.get(balanceDb.getCurrency().getUuid());
+            if (updatedBalance != null) {
+                balanceDb.setAmount(updatedBalance.getAmount());
+                balanceMap.remove(balanceDb.getCurrency().getUuid());
+            }
+        }
+
+        for (Balance newBalance : balanceMap.values()) {
+            this.wallet.getBalances().add(BalanceMapper.toEntity(newBalance));
+        }
+    }
+    public void setWallet(WalletDb wallet) {
+        this.wallet = wallet;
+        if (wallet != null) {
+            wallet.setAccount(this);
+        }
+    }
 
     public Long getId() {
         return this.id;
@@ -54,9 +75,6 @@ public class AccountDb {
     }
     public WalletDb getWallet() {
         return this.wallet;
-    }
-    public void setWallet(WalletDb wallet) {
-        this.wallet = wallet;
     }
     public boolean isCanReceiveCurrency() {
         return this.canReceiveCurrency;

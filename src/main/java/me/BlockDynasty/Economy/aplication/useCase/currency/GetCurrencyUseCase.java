@@ -21,9 +21,9 @@ public class GetCurrencyUseCase {
     public Result<Currency> getCurrency(String name) {
         Currency currency = currencyService.getCurrency(name);
         if (currency == null) {
-            List<Currency> currencies = datastore.loadCurrencies(Criteria.create().filter("singular", name).filter("plural",name).limit(1));
-            if(!currencies.isEmpty()){
-                currency = currencies.get(0);
+            Result<Currency> result = datastore.loadCurrencyByName(name);
+            if(result.isSuccess()){
+                currency = result.getValue();
             }else {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
@@ -34,10 +34,9 @@ public class GetCurrencyUseCase {
     public Result<Currency>  getDefaultCurrency() {
         Currency defaultCurrency = currencyService.getDefaultCurrency();
         if(defaultCurrency == null){
-            System.out.println("la moneda por defecto no esta en cache");
-            List<Currency> currencies = datastore.loadCurrencies(Criteria.create().filter("defaultCurrency", true).limit(1));
-            if(!currencies.isEmpty()){
-                defaultCurrency = currencies.get(0);
+            Result<Currency> result = datastore.loadDefaultCurrency();
+            if(result.isSuccess()){
+                defaultCurrency = result.getValue();
             }else {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }

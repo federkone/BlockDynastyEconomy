@@ -1,6 +1,6 @@
 package useCaseTest.currency;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
@@ -11,10 +11,10 @@ import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
+import repositoryTest.FactoryrRepo;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class DeleteCurrencyUseCaseTest {
 
     @BeforeEach
     public void setUp() {
-        repository = new RepositorySql(new MockConnectionHibernateH2());
+        repository = FactoryrRepo.getDb();
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);

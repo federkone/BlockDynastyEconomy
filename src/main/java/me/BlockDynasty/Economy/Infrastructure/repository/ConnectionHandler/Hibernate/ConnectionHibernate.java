@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.*;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.Models.Hibernate.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -12,12 +12,13 @@ public abstract class ConnectionHibernate implements Connection {
             configuration.setProperty("hibernate.hbm2ddl.auto", "update");
             configuration.setProperty("hibernate.connection.autocommit", "true");
             configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
-            configuration.setProperty("hibernate.show_sql", "false"); //todo: setup for debug
-            configuration.setProperty("hibernate.format_sql", "false");  //todo: setup for debug
-            configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
+            configuration.setProperty("hibernate.show_sql", "true"); //todo: setup for debug
+            configuration.setProperty("hibernate.format_sql", "true");  //todo: setup for debug
+            configuration.setProperty("hibernate.use_sql_comments", "true");//todo: setup for debug
             configuration.addAnnotatedClass(CurrencyDb.class);
             configuration.addAnnotatedClass(AccountDb.class);
             configuration.addAnnotatedClass(BalanceDb.class);
+            configuration.addAnnotatedClass(WalletDb.class);
         }
 
         protected   void init(){

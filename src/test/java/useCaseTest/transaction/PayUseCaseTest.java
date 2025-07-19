@@ -2,7 +2,8 @@ package useCaseTest.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.RepositorySql;
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
+import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import mockClass.CourierTest;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
@@ -12,20 +13,14 @@ import me.BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
-import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountCanNotReciveException;
-import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
-import me.BlockDynasty.Economy.domain.entities.account.Exceptions.InsufficientFundsException;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotPayableException;
-import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.DecimalNotSupportedException;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
 import mockClass.LoggerTest;
+import repositoryTest.FactoryrRepo;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -39,16 +34,17 @@ public class PayUseCaseTest {
     AccountService accountService;
     GetAccountsUseCase getAccountsUseCase;
     GetCurrencyUseCase getCurrencyUseCase;
+    EditCurrencyUseCase editCurrencyUseCase;
     PayUseCase payUseCase;
     Currency coin;
     Currency dinero;
+    Currency plata;
 
     @BeforeEach
     void setUp() {
         coin = new Currency(UUID.randomUUID(),"Coin","Coins");
         dinero = new Currency(UUID.randomUUID(),"dinero","dinero");
-        Currency plata = new Currency(UUID.randomUUID(),"plata","plata");
-        plata.setPayable(false);
+        plata = new Currency(UUID.randomUUID(),"plata","plata");
 
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");
@@ -60,7 +56,7 @@ public class PayUseCaseTest {
         cris.setBalance(coin, BigDecimal.valueOf(0));
         cris.setBalance(dinero, BigDecimal.valueOf(0));
 
-        repository = new RepositorySql( new MockConnectionHibernateH2());
+        repository = FactoryrRepo.getDb();
 
         repository.saveCurrency(plata);
         repository.saveCurrency(coin);
@@ -78,6 +74,7 @@ public class PayUseCaseTest {
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
         payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest());
+        editCurrencyUseCase= new EditCurrencyUseCase(currencyService ,new CourierTest(),repository);
     }
 
     @Test
@@ -109,7 +106,7 @@ public class PayUseCaseTest {
 
     @Test
     void payUseCaseTestWithCurrencyNotPayable(){
-
+        editCurrencyUseCase.togglePayable("plata");
         Result<Void> result = payUseCase.execute("nullplague", "cris", "plata", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.CURRENCY_NOT_PAYABLE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
     }

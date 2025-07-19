@@ -1,5 +1,6 @@
 package useCaseTest.offer;
 
+import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import mockClass.CourierTest;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -18,10 +19,11 @@ import me.BlockDynasty.Economy.domain.services.IAccountService;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import me.BlockDynasty.Economy.domain.services.IOfferService;
 import mockClass.MockListener;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import mockClass.repositoryTest.RepositoryTest;
 import mockClass.LoggerTest;
+import repositoryTest.FactoryrRepo;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -50,7 +52,7 @@ public class OfferUserCasesTest {
     @BeforeEach
     public void setup() {
         this.accountService = new AccountService(5);   //cargar en cache alguna cuenta para las pruebas
-        this.dataStore = new RepositoryTest();
+        this.dataStore = FactoryrRepo.getDb();
         this.currencyService = new CurrencyService(dataStore);  //cargar en cache alguna moneda para las pruebas
 
         this.coin= new Currency(UUID.randomUUID(),"coin","coins");
@@ -100,10 +102,10 @@ public class OfferUserCasesTest {
 
         assertEquals(true, result.isSuccess(), result.getErrorMessage()+ " " + result.getErrorCode());
         assertEquals(false, offerService.hasOfferTo(cris.getUuid()), "Offer should be removed after acceptance");
-        assertEquals(BigDecimal.valueOf(900), nullplague.getBalance(dollar).getAmount(), "Sender's dollar balance should be reduced");
-        assertEquals(BigDecimal.valueOf(1200), nullplague.getBalance(coin).getAmount(), "Sender's coin balance should be increased");
-        assertEquals(BigDecimal.valueOf(1100), cris.getBalance(dollar).getAmount(), "Receiver's dollar balance should be increased");
-        assertEquals(BigDecimal.valueOf(800), cris.getBalance(coin).getAmount(), "Receiver's coin balance should be reduced");
+        assertEquals(BigDecimal.valueOf(900).setScale(2), nullplague.getBalance(dollar).getAmount(), "Sender's dollar balance should be reduced");
+        assertEquals(BigDecimal.valueOf(1200).setScale(2), nullplague.getBalance(coin).getAmount(), "Sender's coin balance should be increased");
+        assertEquals(BigDecimal.valueOf(1100).setScale(2), cris.getBalance(dollar).getAmount(), "Receiver's dollar balance should be increased");
+        assertEquals(BigDecimal.valueOf(800).setScale(2), cris.getBalance(coin).getAmount(), "Receiver's coin balance should be reduced");
     }
 
     @Test

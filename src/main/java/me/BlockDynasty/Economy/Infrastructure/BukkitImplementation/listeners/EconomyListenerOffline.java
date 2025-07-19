@@ -20,11 +20,11 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
     protected void loadPlayerAccount(Player player){
         Result<Account> result = getAccountsUseCase.getAccount(player.getName());
         if (result.isSuccess()) {
-           // Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
-            //if(!resultChangeUuid.isSuccess()){
-            //    player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
-            //    return;
-            //}
+            Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
+            if(!resultChangeUuid.isSuccess()){
+                player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+                return;
+            }
             accountService.addAccountToCache(result.getValue());
             return;
         }

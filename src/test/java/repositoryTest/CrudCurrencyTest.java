@@ -1,26 +1,5 @@
 package repositoryTest;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
-import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.CurrencyRepository;
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.Models.Hibernate.CurrencyDb;
-import me.BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
-import me.BlockDynasty.Economy.domain.persistence.entities.ICurrencyRepository;
-import mockClass.repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
-import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 public class CrudCurrencyTest {
     /*    ICurrencyRepository currencyRepository = new CurrencyRepository(new MockConnectionHibernateH2().getSession());
         @BeforeEach
