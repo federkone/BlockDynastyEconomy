@@ -23,7 +23,7 @@ public interface IRepository extends ITransactions {
     Result<Account> loadAccountByName(String name);
     void createAccount(Account account);
     void saveAccount(Account account);
-    //void deleteAccount(Account account);
+    Result<Void> deleteAccount(Account account);
 
     List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset);
 

@@ -151,6 +151,18 @@ public class RepositorySql implements IRepository {
     }
 
     @Override
+    public Result<Void> deleteAccount(Account account) {
+        try {
+            accountRepository.delete(account);
+            return Result.success(null);
+        } catch (AccountNotFoundException e) {
+            return Result.failure( "Account with UUID " + account.getUuid() + " not found.",ErrorCode.ACCOUNT_NOT_FOUND);
+        } catch (Exception e) {
+            return Result.failure("Error deleting account: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+
+    @Override
     public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
            return accountRepository.getAccountsTopByCurrency( currencyName, limit, offset );
     }

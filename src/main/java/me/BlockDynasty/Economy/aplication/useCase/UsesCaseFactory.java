@@ -1,5 +1,6 @@
 package me.BlockDynasty.Economy.aplication.useCase;
 
+import me.BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.domain.services.log.Log;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
@@ -25,6 +26,7 @@ public class UsesCaseFactory {
     private final TradeCurrenciesUseCase tradeCurrenciesUseCase ;
 
     private final GetAccountsUseCase getAccountsUseCase ;
+    private final DeleteAccountUseCase deleteAccountUseCase ;
     private final GetCurrencyUseCase getCurrencyUseCase ;
     private final GetBalanceUseCase getBalanceUseCase ;
     private final CreateAccountUseCase createAccountUseCase ;
@@ -55,6 +57,7 @@ public class UsesCaseFactory {
         this.acceptOfferUseCase = new AcceptOfferUseCase(offerService, this.tradeCurrenciesUseCase);
         this.cancelOfferUseCase = new CancelOfferUseCase(offerService);
         this.getBalanceUseCase = new GetBalanceUseCase( this.getAccountsUseCase);
+        this.deleteAccountUseCase = new DeleteAccountUseCase(repository, accountService,getAccountsUseCase);
     }
 
     public WithdrawUseCase getWithdrawUseCase() {
@@ -123,5 +126,9 @@ public class UsesCaseFactory {
 
     public CancelOfferUseCase getCancelOfferUseCase() {
         return cancelOfferUseCase;
+    }
+
+    public DeleteAccountUseCase getDeleteAccountUseCase() {
+        return deleteAccountUseCase;
     }
 }

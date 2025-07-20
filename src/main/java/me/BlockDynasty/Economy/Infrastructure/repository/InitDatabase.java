@@ -14,13 +14,14 @@ public class InitDatabase {
     public static Result<IRepository> init(Plugin plugin) {
         FileConfiguration config = plugin.getConfig();
         String strategy = config.getString("storage");
+        boolean enableServerConsole = config.getBoolean("EnableWebEditorSqlServer");
 
         if (strategy == null || strategy.isEmpty()) {
             return Result.failure("§cNo storage method provided. Check your files, then try again.", null);
         }
 
         return switch (strategy.toLowerCase()) {
-            case "h2" -> h2(plugin);
+            case "h2" -> h2(plugin,enableServerConsole);
             case "mysql" -> mysqlRepository(config);
             case "yaml" -> yamlRepository(config);
             case "mongodb" -> mongoDBRepository(config);
@@ -46,10 +47,10 @@ public class InitDatabase {
         return Result.failure( "§cYAML storage is not supported yet. Check your files, then try again.", null);
     }
 
-    private static Result<IRepository> h2(Plugin plugin) {
+    private static Result<IRepository> h2(Plugin plugin,boolean enableServerConsole) {
         try {
             UtilServer.consoleLog(plugin.getDataFolder().getAbsolutePath());
-            IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath()));
+            IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath(),enableServerConsole));
             return Result.success(repository);
         } catch (Exception e) {
             UtilServer.consoleLog(e.getMessage());

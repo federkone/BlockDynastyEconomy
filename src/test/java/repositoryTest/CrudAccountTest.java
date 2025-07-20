@@ -3,6 +3,7 @@ package repositoryTest;
 import me.BlockDynasty.Economy.Infrastructure.repositoryV2.AccountRepository;
 import me.BlockDynasty.Economy.Infrastructure.repositoryV2.CurrencyRepository;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
+import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IAccountRepository;
 import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CrudAccountTest {
    IAccountRepository accountRepository = new AccountRepository(new MockConnectionHibernateH2().getSession());
@@ -53,5 +55,19 @@ public class CrudAccountTest {
         Account updatedAccount = accountRepository.findByUuid(account.getUuid().toString());
         assertEquals("updatedName", updatedAccount.getNickname());
         assertEquals(BigDecimal.valueOf(1000).setScale(2), updatedAccount.getBalance(currency).getAmount());
+    }
+
+    @Test
+    public  void testDeleteAccount() {
+        Currency currency = new Currency(UUID.randomUUID(),"dinero","dinero");
+        currencyRepository.create(currency);
+
+        Account account = new Account(UUID.randomUUID(), "nullplague");
+        account.setBalance(currency, BigDecimal.valueOf(1000));
+        accountRepository.create(account);
+
+        accountRepository.delete(account);
+
+        assertThrows(AccountNotFoundException.class ,()->{ accountRepository.findByUuid(account.getUuid().toString()); });
     }
 }

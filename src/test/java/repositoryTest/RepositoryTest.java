@@ -120,6 +120,11 @@ public class RepositoryTest implements IRepository {
         this.accounts.add(account);
     }
 
+    @Override
+    public Result<Void> deleteAccount(Account account) {
+        return null;
+    }
+
 
     public void transfer(Account userFrom, Account userTo) {
         accounts.remove(userFrom);

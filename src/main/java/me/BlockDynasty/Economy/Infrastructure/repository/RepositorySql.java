@@ -145,6 +145,11 @@ public class RepositorySql implements IRepository
         executeInsideTransaction(session -> session.merge(new AccountDb(account)));
     }
 
+    @Override
+    public Result<Void> deleteAccount(Account account) {
+        return null;
+    }
+
     //-----------transactions-------------------
     @Override
     public Result<TransferResult> transfer(String fromUuid, String toUuid, Currency currency, BigDecimal amount) {

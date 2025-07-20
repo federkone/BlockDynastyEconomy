@@ -32,11 +32,14 @@ public class Configuration {
                 + "enableDistanceLimitOffer true,maxDistanceOffer is the maximum distance in blocks that a player can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc."
                 + "\n"
                 + "expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire. example: 5 minutes, 10 minutes, etc."
+                        + "\n"
+                + "EnableWebEditorSqlServer is to enable the web sql server for h2 database in http://localhost:8082 user=sa,password=Admin123, if you want to use the web console of h2 database, you have to set this to true. with this you can manage the database from a web browser."
                 );
 
         String path = "Messages.";
 
-        config.addDefault("storage", "yaml");
+        config.addDefault("storage", "h2");
+        config.addDefault("EnableWebEditorSqlServer", false);
         config.addDefault("debug", false);
         config.addDefault("vault", true);
         config.addDefault("transaction_log", true);

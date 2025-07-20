@@ -26,11 +26,11 @@ public class AccountService implements IAccountService {
     public void removeAccountFromCache(UUID uuid) {  //removeAccountFromCache
         Account account = accountsOnlineUuid.remove(uuid);
         if (account != null) {
-            accountsOnlineName.remove(account.getNickname().toLowerCase());
+            accountsOnlineName.remove(account.getNickname());
         }
     }
     public void removeAccountFromCache(String name) {
-        Account account = accountsOnlineName.remove(name.toLowerCase());
+        Account account = accountsOnlineName.remove(name);
         if (account != null) {
             accountsOnlineUuid.remove(account.getUuid());
         }

@@ -26,7 +26,6 @@ public class AccountDb {
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private WalletDb wallet;
 
-
     @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency;
 

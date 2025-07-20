@@ -40,6 +40,9 @@ public class EditCurrencyUseCase {
     }
 
     public void setCurrencyRate(String currencyName, double rate){
+        if (rate <= 0) {
+            throw new IllegalArgumentException("Exchange rate must be greater than zero");
+        }
         Currency currency = currencyService.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");

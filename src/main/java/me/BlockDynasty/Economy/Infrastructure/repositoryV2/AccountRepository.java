@@ -156,8 +156,9 @@ public class AccountRepository implements IAccountRepository {
         try (Session session = sessionFactory.openSession()) {
             Transaction tx = session.beginTransaction();
             try {
-                AccountDb accountDb = session.createQuery("SELECT a FROM AccountDb a WHERE a.uuid = :uuid", AccountDb.class)
+                AccountDb accountDb = session.createQuery("SELECT a FROM AccountDb a WHERE a.uuid = :uuid OR a.nickname=:name", AccountDb.class)
                         .setParameter("uuid", account.getUuid().toString())
+                        .setParameter("name", account.getNickname())
                         .getSingleResult();
 
                 session.remove(accountDb);
