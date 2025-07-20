@@ -16,12 +16,11 @@ public class WalletDb {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private AccountDb account;
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
+    private List<AccountDb> accounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BalanceDb> balances= new ArrayList<>();;
+    private List<BalanceDb> balances = new ArrayList<>();
 
     public WalletDb() {
     }
@@ -37,13 +36,18 @@ public class WalletDb {
         balance.setWallet(null);
     }
 
-
-   public void setAccount(AccountDb account){
-        this.account = account;
+    public void setAccount(AccountDb account) {
+        accounts.add(account);
+        account.setWallet(this);
     }
 
-    public AccountDb getAccount() {
-        return this.account;
+    public void removeAccount(AccountDb account) {
+        accounts.remove(account);
+        account.setWallet(null);
+    }
+
+    public List<AccountDb> getAccounts() {
+        return accounts;
     }
 
     public Long getId() {
@@ -56,5 +60,5 @@ public class WalletDb {
 
     public void setBalances(List<BalanceDb> balances) {
         this.balances = balances;
-   }
+    }
 }

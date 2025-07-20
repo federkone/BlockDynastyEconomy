@@ -97,16 +97,16 @@ public class GetAccountsUseCaseTest {
         pri.setBalance(defaultCurrency,BigDecimal.valueOf(9000));
         facu.setBalance(defaultCurrency,BigDecimal.valueOf(10000));
         repository.saveCurrency(defaultCurrency);
-        repository.saveAccount(robert);
-        repository.saveAccount(nullplague);
-        repository.saveAccount(Cris);
-        repository.saveAccount(Javi);
-        repository.saveAccount(fedrakon);
-        repository.saveAccount(xabier);
-        repository.saveAccount(jose);
-        repository.saveAccount(luca);
-        repository.saveAccount(pri);
-        repository.saveAccount(facu);
+        repository.createAccount(robert);
+        repository.createAccount(nullplague);
+        repository.createAccount(Cris);
+        repository.createAccount(Javi);
+        repository.createAccount(fedrakon);
+        repository.createAccount(xabier);
+        repository.createAccount(jose);
+        repository.createAccount(luca);
+        repository.createAccount(pri);
+        repository.createAccount(facu);
 
 
     }

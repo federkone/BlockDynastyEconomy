@@ -122,8 +122,8 @@ public class PayUseCaseTest {
     }
 
 
-    @AfterEach
-    void clearDb(){
-        repository.clearAll();
-    }
+    //@AfterEach
+    //void clearDb(){
+      //  repository.clearAll();
+    //}
 }

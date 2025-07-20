@@ -94,7 +94,7 @@ public class WithdrawUseCaseTest {
     void withdrawUseCaseTestWithNullBalance(){
         currencyService.add(new Currency(UUID.randomUUID(),"oro","oro"));
         Result<Void> result = withdrawUseCase.execute(nullplague.getUuid(), "oro", BigDecimal.valueOf(10000));
-        assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, result.getErrorCode(), result.getErrorMessage() );
+        assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode(), result.getErrorMessage() );
     }
 
     @Test

@@ -14,23 +14,9 @@ public class AccountMapper {
         accountDb.setNickname(domain.getNickname());
         accountDb.setCanReceiveCurrency(domain.canReceiveCurrency());
 
-        // Create wallet
-        WalletDb walletDb = new WalletDb();
+        // Create wallet or find existing one (this would need repository access)
+        WalletDb walletDb = WalletMapper.toEntity(domain.getWallet());
         accountDb.setWallet(walletDb);
-
-        // Create balances
-        if (domain.getBalances() != null) {
-            for (Balance balance : domain.getBalances()) {
-                BalanceDb balanceDb = new BalanceDb();
-
-                // Get or create currency
-                CurrencyDb currencyDb = CurrencyMapper.toEntity(balance.getCurrency());
-
-                balanceDb.setCurrency(currencyDb);
-                balanceDb.setAmount(balance.getAmount());
-                walletDb.addBalance(balanceDb);
-            }
-        }
 
         return accountDb;
     }
@@ -40,7 +26,6 @@ public class AccountMapper {
             return null;
         }
         Wallet wallet = WalletMapper.toDomain(entity.getWallet());
-        return new Account( entity.getUuid(),entity.getNickname() , wallet, entity.isCanReceiveCurrency()
-        );
+        return new Account(entity.getUuid(), entity.getNickname(), wallet, entity.isCanReceiveCurrency());
     }
 }

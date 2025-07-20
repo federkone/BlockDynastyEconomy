@@ -9,7 +9,6 @@ public class ConnectionHibernateMysql extends ConnectionHibernate {
         configuration.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
         configuration.setProperty("hibernate.connection.username", username);
         configuration.setProperty("hibernate.connection.password", password);
-
         this.init();
     }
 }

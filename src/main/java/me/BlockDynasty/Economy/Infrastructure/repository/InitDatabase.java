@@ -2,6 +2,7 @@ package me.BlockDynasty.Economy.Infrastructure.repository;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.UtilServer;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
+import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
@@ -21,6 +22,7 @@ public class InitDatabase {
         }
 
         return switch (strategy.toLowerCase()) {
+            case "sqlite"-> sqlite(plugin);
             case "h2" -> h2(plugin,enableServerConsole);
             case "mysql" -> mysqlRepository(config);
             case "yaml" -> yamlRepository(config);
@@ -51,6 +53,17 @@ public class InitDatabase {
         try {
             UtilServer.consoleLog(plugin.getDataFolder().getAbsolutePath());
             IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath(),enableServerConsole));
+            return Result.success(repository);
+        } catch (Exception e) {
+            UtilServer.consoleLog(e.getMessage());
+            return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
+        }
+    }
+
+    private static Result<IRepository> sqlite(Plugin plugin) {
+        try {
+            UtilServer.consoleLog(plugin.getDataFolder().getAbsolutePath());
+            IRepository repository = new RepositorySql(new ConnectionHibernateSQLite(plugin.getDataFolder().getAbsolutePath()));
             return Result.success(repository);
         } catch (Exception e) {
             UtilServer.consoleLog(e.getMessage());

@@ -188,10 +188,19 @@ public class RepositorySql implements IRepository {
             org.hibernate.Transaction tx = session.beginTransaction();
             try {
                 // Delete in correct order to respect foreign key constraints
+
+                // First remove balances (which reference wallets and currencies)
                 session.createQuery("DELETE FROM BalanceDb").executeUpdate();
-                session.createQuery("DELETE FROM WalletDb").executeUpdate();
+
+                // Then remove accounts (which reference wallets)
                 session.createQuery("DELETE FROM AccountDb").executeUpdate();
+
+                // Now it's safe to remove wallets as no accounts reference them
+                session.createQuery("DELETE FROM WalletDb").executeUpdate();
+
+                // Finally currencies can be removed
                 session.createQuery("DELETE FROM CurrencyDb").executeUpdate();
+
                 tx.commit();
             } catch (Exception e) {
                 tx.rollback();
