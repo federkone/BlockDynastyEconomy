@@ -1,7 +1,5 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate;
 
-import org.hibernate.SessionFactory;
-
 public class ConnectionHibernateSQLite  extends   ConnectionHibernate{
     public ConnectionHibernateSQLite(String dbFilePath) {
         super();

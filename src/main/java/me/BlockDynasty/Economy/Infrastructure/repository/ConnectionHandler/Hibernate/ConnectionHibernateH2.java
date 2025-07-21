@@ -1,8 +1,6 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate;
-import org.h2.server.web.WebServer;
 import org.h2.tools.Server;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionHibernateH2 extends ConnectionHibernate {

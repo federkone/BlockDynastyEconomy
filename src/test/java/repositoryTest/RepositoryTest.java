@@ -2,9 +2,9 @@ package repositoryTest;
 
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.Infrastructure.repositoryOld.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Filter;
+import me.BlockDynasty.Economy.Infrastructure.repositoryOld.Criteria.Filter;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.result.TransferResult;

@@ -3,7 +3,6 @@ package me.BlockDynasty.Economy.aplication.useCase.currency;
 import me.BlockDynasty.Economy.domain.result.ErrorCode;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 

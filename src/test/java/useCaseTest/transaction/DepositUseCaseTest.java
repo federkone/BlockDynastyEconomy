@@ -1,6 +1,5 @@
 package useCaseTest.transaction;
 
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import me.BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import me.BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import mockClass.CourierTest;
@@ -13,7 +12,6 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

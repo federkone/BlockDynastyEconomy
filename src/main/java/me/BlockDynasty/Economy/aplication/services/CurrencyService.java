@@ -1,6 +1,6 @@
 package me.BlockDynasty.Economy.aplication.services;
 
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.Infrastructure.repositoryOld.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;

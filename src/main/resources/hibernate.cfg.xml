@@ -8,8 +8,8 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.connection.autocommit">true</property>
         <property name="hibernate.cache.use_second_level_cache">false</property>
-        <mapping class="me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.CurrencyDb"/>
-        <mapping class="me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.AccountDb"/>
-        <mapping class="me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.BalanceDb"/>
+        <mapping class="me.BlockDynasty.Economy.Infrastructure.repositoryOld.Models.Hibernate.CurrencyDb"/>
+        <mapping class="me.BlockDynasty.Economy.Infrastructure.repositoryOld.Models.Hibernate.AccountDb"/>
+        <mapping class="me.BlockDynasty.Economy.Infrastructure.repositoryOld.Models.Hibernate.BalanceDb"/>
     </session-factory>
 </hibernate-configuration>

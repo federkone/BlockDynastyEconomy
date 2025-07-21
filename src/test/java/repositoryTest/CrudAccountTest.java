@@ -1,7 +1,7 @@
 package repositoryTest;
 
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.AccountRepository;
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.CurrencyRepository;
+import me.BlockDynasty.Economy.Infrastructure.repository.AccountRepository;
+import me.BlockDynasty.Economy.Infrastructure.repository.CurrencyRepository;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;

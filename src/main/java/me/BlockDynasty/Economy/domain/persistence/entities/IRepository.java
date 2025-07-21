@@ -3,7 +3,7 @@ package me.BlockDynasty.Economy.domain.persistence.entities;
 import me.BlockDynasty.Economy.domain.persistence.transaction.ITransactions;
 import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.entities.currency.Currency;
-import me.BlockDynasty.Economy.Infrastructure.repository.Criteria.Criteria;
+import me.BlockDynasty.Economy.Infrastructure.repositoryOld.Criteria.Criteria;
 import me.BlockDynasty.Economy.domain.result.Result;
 
 import java.util.List;

@@ -1,19 +1,22 @@
 package me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
-import me.BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "account_balances")
-public class BalanceDb  {
+@Table(name = "balance")
+public class BalanceDb {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "currency_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "wallet_id")
+    private WalletDb wallet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currency_id", referencedColumnName = "uuid") // Referenciar UUID
     private CurrencyDb currency;
 
     @Column(name = "amount", precision = 18, scale = 2)
@@ -21,22 +24,27 @@ public class BalanceDb  {
 
     public BalanceDb() {
     }
-    public BalanceDb(Balance balance){
-        this.currency = new CurrencyDb(balance.getCurrency());
-        this.amount = balance.getAmount();
+
+    public Long getId() {
+        return this.id;
     }
 
-
-    public Balance toEntity(){
-        return new Balance(currency.toEntity(), amount);
+    public void setWallet(WalletDb wallet) {
+        this.wallet = wallet;
     }
-
+    public WalletDb getWallet() {
+        return this.wallet;
+    }
+    public void setCurrency(CurrencyDb currency) {
+        this.currency = currency;
+    }
     public CurrencyDb getCurrency() {
         return this.currency;
     }
-
+    public  BigDecimal getAmount() {
+        return this.amount;
+    }
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
 }

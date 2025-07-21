@@ -1,6 +1,5 @@
 package useCaseTest.offer;
 
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.RepositorySql;
 import mockClass.CourierTest;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
 import me.BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -19,7 +18,6 @@ import me.BlockDynasty.Economy.domain.services.IAccountService;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
 import me.BlockDynasty.Economy.domain.services.IOfferService;
 import mockClass.MockListener;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import mockClass.LoggerTest;

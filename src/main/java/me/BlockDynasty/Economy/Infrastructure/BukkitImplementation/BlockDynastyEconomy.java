@@ -1,11 +1,8 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.RegisterModule;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.BankGUICommand;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.listeners.GUIListener;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.listeners.EconomyListenerOffline;
+import me.BlockDynasty.Economy.aplication.api.Api;
 import me.BlockDynasty.Economy.domain.services.courier.Courier;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.CourierImpl;
 import me.BlockDynasty.Economy.domain.services.log.Log;
@@ -15,7 +12,7 @@ import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.log.VaultLogger;
 import me.BlockDynasty.Economy.aplication.services.OfferService;
 import me.BlockDynasty.Economy.aplication.services.AccountService;
-import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.api.BlockDynastyEconomyApi;
+import me.BlockDynasty.Economy.aplication.api.BlockDynastyEconomyApi;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.Integrations.bungee.UpdateForwarder;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.commands.CommandRegister;
 import me.BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -37,13 +34,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
-    private static BlockDynastyEconomyApi api;
+    private static Api api;
 
+    //private ChequeManager chequeManager;
     private IRepository repository;
     private IAccountService accountService;
-   //private ChequeManager chequeManager;
     private ICurrencyService currencyService;
+    private MessageService messageService;
     private IOfferService offerService;
+
     private VaultHandler vaultHandler;
     private Log economyLogger;
     private Log vaultLogger;
@@ -54,12 +53,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private boolean vault = true;
     private boolean logging = true;
     private boolean cheques = false;
-
     private boolean disabling = false;
-    MessageService messageService;
 
     private UsesCaseFactory usesCaseFactory;
-    //private GUIService guiService;
 
     @Override
     public void onLoad() {
@@ -90,7 +86,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         //registrar api
         api = new BlockDynastyEconomyApi(usesCaseFactory);
-        getServer().getServicesManager().register(BlockDynastyEconomyApi.class, (BlockDynastyEconomyApi)api, this, ServicePriority.Normal);
+        getServer().getServicesManager().register(Api.class, api, this, ServicePriority.Low);
     }
 
     @Override
@@ -135,7 +131,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void registerCommands(){
         CommandRegister.registerCommands(this);
     }
-
     private void registerGUI(){
         RegisterModule.register(this,
                 usesCaseFactory.getPayUseCase(),
@@ -146,7 +141,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
                 usesCaseFactory.deleteCurrencyUseCase(),
                 messageService);
     }
-
     private void registerEvents() {
         if(getServer().getOnlineMode()){
             getServer().getPluginManager().registerEvents(new EconomyListenerOnline( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService), this);
@@ -181,65 +175,51 @@ public class BlockDynastyEconomy extends JavaPlugin {
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", updateForwarder);
     }
 
+    public static BlockDynastyEconomy getInstance() {
+        return instance;
+    }
+    public static Api getApi() {
+        return api;
+    }
     public UsesCaseFactory getUsesCase() {
         return  this.usesCaseFactory;
     }
-
     public IRepository getDataStore() {  //IRepository
         if (repository == null) {
             throw new IllegalStateException("Repository is not initialized yet.");
         }
         return repository;             //return repository;
     }
-
-    public static BlockDynastyEconomy getInstance() {
-        return instance;
-    }
-
-    public static BlockDynastyEconomyApi getApi() {
-        return api;
-    }
     public ICurrencyService getCurrencyManager() {
         return currencyService;
     }
-
     public MessageService getMessageService() {
         return messageService;
     }
-
     public VaultHandler getVaultHandler() {
         return vaultHandler;
     }
-
     public UpdateForwarder getUpdateForwarder() {
         return updateForwarder;
     }
-
-
     public boolean isDebug() {
         return debug;
     }
-
     private void setDebug(boolean debug) {
         this.debug = debug;
     }
-
     public boolean isVault() {
         return vault;
     }
-
     private void setVault(boolean vault) {
         this.vault = vault;
     }
-
     public boolean isLogging() {
         return logging;
     }
-
     public void setLogging(boolean logging) {
         this.logging = logging;
     }
-
     public boolean isDisabling() {
         return disabling;
     }

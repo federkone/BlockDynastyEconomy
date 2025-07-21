@@ -8,9 +8,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-//TODO: MIGRAR EL MESSAGE SERVICE AQUI SI ES POSIBLE Y CONSTRUIR DINAMICAMENTE LOS MENSAJES
 public class F {
-    private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance(); //TODO: REVISAR LA NECEISTAD DE TENER UNA REFERENCIA
+    private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private static FileConfiguration cfg = plugin.getConfig();
 
     public F(){

@@ -1,7 +1,7 @@
 package repositoryTest.ConnectionHandler;
 
 import me.BlockDynasty.Economy.Infrastructure.repository.ConnectionHandler.Hibernate.Connection;
-import me.BlockDynasty.Economy.Infrastructure.repositoryV2.Models.Hibernate.*;
+import me.BlockDynasty.Economy.Infrastructure.repository.Models.Hibernate.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

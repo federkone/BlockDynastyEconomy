@@ -15,7 +15,7 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
         super(createAccountUseCase, getAccountsUseCase, accountService, currencyService);
     }
 
-    //si se comienza a trabajar en offline se van a buscar las cuentas por nombre.
+    //si se comienza a trabajar en offline se van a buscar las cuentas por nombre y se va a preguntar si cambio el uuid para actualizar en sistema.
     @Override
     protected void loadPlayerAccount(Player player){
         Result<Account> result = getAccountsUseCase.getAccount(player.getName());

@@ -26,6 +26,7 @@ public class GetAccountsUseCase {
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
        if(account == null){
+           //System.out.println("DB HIT ->");
             Result<Account> result = this.dataStore.loadAccountByName(name);
             if(result.isSuccess()) {
                 account = result.getValue();
@@ -33,16 +34,14 @@ public class GetAccountsUseCase {
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }
+       }//else { System.out.println("CAHCE HIT ->");}
        return Result.success(account);
     }
 
-    //punto critico,cuando entra un jugador se busca por uuid y si no está crea por uuid, lo que significa que si el usuario offline cambia la uuid deja de existir la cuenta.
-    //en modo offline, la fuente de la verdad es el nombre, y si se cambia la uuid se  debe actualizar el uuid nuevo en el sistema?
-    //en modo official/online, la fuente de la verdad siempre es la uuid, y puede pasar que se detecte que se cambio el nombre, por lo que debemos actualizarlo en nuestro sistema
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
+           //System.out.println("DB HIT ->");
             Result<Account> result = this.dataStore.loadAccountByUuid(uuid.toString());
            if(result.isSuccess()) {
                 account = result.getValue();
@@ -50,7 +49,7 @@ public class GetAccountsUseCase {
             }else{
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
-       }
+       }//else { System.out.println("CAHCE HIT ->");}
        return Result.success(account);
     }
 
@@ -84,12 +83,12 @@ public class GetAccountsUseCase {
 
     public void syncCache(UUID uuid){
         Account accountCache = this.accountService.getAccountCache(uuid);
-        Result<Account> result =  this.dataStore.loadAccountByUuid(uuid.toString());
-        if (result.isSuccess()){
-            if (accountCache != null){
-                syncWalletWithSystemCurrencies(result.getValue());
-                accountCache.setBalances(result.getValue().getBalances());
-            }
+        if (accountCache != null){
+            Result<Account> result =  this.dataStore.loadAccountByUuid(uuid.toString());
+            if (result.isSuccess()){
+                    syncWalletWithSystemCurrencies(result.getValue());
+                    accountCache.setBalances(result.getValue().getBalances());
+                }
         }
     }
 
