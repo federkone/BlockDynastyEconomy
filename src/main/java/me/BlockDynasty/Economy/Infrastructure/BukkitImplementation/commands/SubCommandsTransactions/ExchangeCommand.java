@@ -96,19 +96,26 @@ public class ExchangeCommand implements CommandExecutor {
                     }
                 }else {
                     switch (result.getErrorCode()){
-                        case ACCOUNT_CAN_NOT_RECEIVE -> sender.sendMessage(F.getCannotReceive());
-                        case ACCOUNT_NOT_FOUND -> sender.sendMessage(messageService.getAccountNotFoundMessage());
-                        case CURRENCY_NOT_FOUND ->  sender.sendMessage(F.getUnknownCurrency());
-                        case DECIMAL_NOT_SUPPORTED -> sender.sendMessage("Intercambio invalido"+" no se puede extraer "+result.getValue()+" "+toExchange+" intenta con otro monto en "+toReceive);
-                        case INVALID_AMOUNT -> sender.sendMessage(F.getUnvalidAmount());
-                        case INSUFFICIENT_FUNDS -> {
+                        case ACCOUNT_CAN_NOT_RECEIVE:
+                            sender.sendMessage(F.getCannotReceive());
+                        case ACCOUNT_NOT_FOUND:
+                            sender.sendMessage(messageService.getAccountNotFoundMessage());
+                        case CURRENCY_NOT_FOUND:
+                            sender.sendMessage(F.getUnknownCurrency());
+                        case DECIMAL_NOT_SUPPORTED:
+                            sender.sendMessage("Intercambio invalido"+" no se puede extraer "+result.getValue()+" "+toExchange+" intenta con otro monto en "+toReceive);
+                        case INVALID_AMOUNT:
+                            sender.sendMessage(F.getUnvalidAmount());
+                        case INSUFFICIENT_FUNDS:
+                        {
                             if( targetPlayer != null){
                                 targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
                             }else {
                                 sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
                             }
                             }
-                        case DATA_BASE_ERROR -> {
+                        case DATA_BASE_ERROR :
+                        {
                             if( targetPlayer != null){
                                 targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
                                 //console log informate about the error or another log
@@ -116,11 +123,11 @@ public class ExchangeCommand implements CommandExecutor {
                                 sender.sendMessage(messageService.getUnexpectedErrorMessage());
                             }
                         }
-                        default -> sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                        default:
+                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
                     }
             }
         });
-
         });
         return true;
     }

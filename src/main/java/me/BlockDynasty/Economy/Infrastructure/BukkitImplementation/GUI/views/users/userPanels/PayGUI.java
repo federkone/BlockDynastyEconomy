@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.MaterialAdapter;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.MessageService;
@@ -63,7 +64,7 @@ public class PayGUI extends AbstractGUI {
         int slot = 10;
         for (int i = startIndex; i < endIndex; i++) {
             Player target = onlinePlayers.get(i);
-            ItemStack playerHead = createPlayerHead(target);
+            ItemStack playerHead = MaterialAdapter.createPlayerHead(target);
 
             setItem(slot, playerHead, unused -> {
                 //sender.closeInventory();
@@ -95,16 +96,6 @@ public class PayGUI extends AbstractGUI {
         // Cancel button
         setItem(40, createItem(Material.BARRIER, "§cCancelar",
                 "§7Click para cancelar"), unused -> sender.closeInventory());
-    }
-
-    private ItemStack createPlayerHead(Player player) {
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta meta = (SkullMeta) head.getItemMeta();
-        meta.setOwningPlayer(player);
-        meta.setDisplayName("§e" + player.getName());
-        meta.setLore(Collections.singletonList("§7Click para pagar a este jugador"));
-        head.setItemMeta(meta);
-        return head;
     }
 
     private void openCurrencySelectionGUI(Player targetPlayer) {

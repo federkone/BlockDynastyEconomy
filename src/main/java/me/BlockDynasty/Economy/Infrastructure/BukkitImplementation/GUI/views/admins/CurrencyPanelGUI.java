@@ -51,7 +51,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         });
 
         // Edit Currency button
-        setItem(14, createItem(Material.WRITABLE_BOOK, "§eEditar Moneda",
+        setItem(14, createItem(Material.BOOK, "§eEditar Moneda",
                 "§7Click para editar una moneda existente"), unused -> {
             player.closeInventory();
             openCurrencyListGUI();
@@ -59,7 +59,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         });
 
         // Toggle Features button
-        setItem(16, createItem(Material.COMPARATOR, "§bConfigurar Características",
+        setItem(16, createItem(Material.PAPER, "§bConfigurar Características",
                 "§7Click para activar/desactivar características"), unused -> {
             player.closeInventory();
             // TODO: Implement Toggle Features GUI

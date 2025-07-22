@@ -92,7 +92,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     @Override
     public void onDisable() {
         disabling = true;
-        if (isVault()) getVaultHandler().unhook();
+        if(this.vaultHandler != null) getVaultHandler().unhook();
         if (getDataStore() != null) {
             getDataStore().close();
         }

@@ -20,14 +20,20 @@ public class InitDatabase {
             return Result.failure("§cNo storage method provided. Check your files, then try again.", null);
         }
 
-        return switch (strategy.toLowerCase()) {
-            case "sqlite"-> sqlite(plugin);
-            case "h2" -> h2(plugin,enableServerConsole);
-            case "mysql" -> mysqlRepository(config);
-            case "yaml" -> yamlRepository(config);
-            case "mongodb" -> mongoDBRepository(config);
-            default -> Result.failure("§cNo valid storage method provided. Check your files, then try again.", null);
-        };
+         switch (strategy.toLowerCase()) {
+            case "sqlite":
+                return sqlite(plugin);
+            case "h2":
+                return h2(plugin,enableServerConsole);
+            case "mysql":
+                return mysqlRepository(config);
+            case "yaml":
+                return yamlRepository(config);
+            case "mongodb":
+                return mongoDBRepository(config);
+            default:
+                return Result.failure("§cNo valid storage method provided. Check your files, then try again.", null);
+        }
     }
 
     private static Result<IRepository>  mysqlRepository(FileConfiguration config) {

@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.MaterialAdapter;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.BalanceGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
@@ -44,7 +45,7 @@ public class BankGUI extends AbstractGUI {
         });
 
         // Pay option
-        setItem(15, createItem(Material.PLAYER_HEAD, "§aPagar a un Jugador",
+        setItem(15, createItem(MaterialAdapter.getPlayerHead(), "§aPagar a un Jugador",
                 "§7Click para pagar a otro jugador"), unused -> {
             //player.closeInventory();
             openPayGUI();

@@ -12,18 +12,9 @@ import java.util.concurrent.Callable;
 public class SchedulerUtils {
     public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
 
-    //public SchedulerUtils(BlockDynastyEconomy plugin){
-    //    SchedulerUtils.plugin = plugin;
-    //}
-
     public static void runLater(long delay, Runnable runnable)
     {
         Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
-    }
-
-    public static void runLaterAsync(long delay, Runnable runnable)
-    {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
     }
 
     /**
@@ -40,6 +31,12 @@ public class SchedulerUtils {
      */
     public static void run(Runnable runnable){
         Bukkit.getScheduler().runTask(plugin, runnable);
+    }
+
+/*
+    public static void runLaterAsync(long delay, Runnable runnable)
+    {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
     }
 
     public static void runAtInterval(long interval, Runnable... tasks)
@@ -125,10 +122,12 @@ public class SchedulerUtils {
         }.runTaskTimer(plugin, 0L, interval);
     }
 
-    public interface Task
+    /*public interface Task
     {
         void start(Runnable onComplete);
     }
+
+
 
     public static class TaskBuilder
     {
@@ -243,5 +242,5 @@ public class SchedulerUtils {
 
             task.start(this::startNext);
         }
-    }
+    }*/
 }

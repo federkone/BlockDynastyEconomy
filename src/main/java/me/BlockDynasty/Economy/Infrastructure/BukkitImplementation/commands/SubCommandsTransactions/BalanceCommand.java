@@ -60,8 +60,10 @@ public class BalanceCommand implements CommandExecutor {
                 }
             }else{
                 switch (resultBalances.getErrorCode()){
-                    case ACCOUNT_NOT_FOUND -> sender.sendMessage(messageService.getAccountNotFoundMessage());
-                    case CURRENCY_NOT_FOUND -> sender.sendMessage(messageService.getNoCurrencyFund(target));
+                    case ACCOUNT_NOT_FOUND:
+                        sender.sendMessage(messageService.getAccountNotFoundMessage());
+                    case CURRENCY_NOT_FOUND:
+                        sender.sendMessage(messageService.getNoCurrencyFund(target));
                 }
             }
         });

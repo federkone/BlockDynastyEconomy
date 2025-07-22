@@ -125,7 +125,11 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
         Result<List<Account>> resultTopAccounts =getAccountsUseCase.getTopAccounts(currencyName, limit, 0);
         if (!resultTopAccounts.isSuccess()){
             switch (resultTopAccounts.getErrorCode()){
-                case ACCOUNT_NOT_FOUND, INVALID_ARGUMENT, DATA_BASE_ERROR,REPOSITORY_NOT_SUPPORT_TOP -> {
+                case ACCOUNT_NOT_FOUND :
+                case DATA_BASE_ERROR:
+                case INVALID_ARGUMENT:
+                case REPOSITORY_NOT_SUPPORT_TOP:
+                {
                     return resultTopAccounts.getErrorMessage();
                 }
             }
@@ -204,7 +208,7 @@ public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
            // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
-            return currency.format(account.getBalance(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
+            return ChatColor.valueOf(currency.getColor()) + currency.format(account.getBalance(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
             //return currency.format(account.getBalance(currency).getBalance());
             return String.valueOf(account.getBalance(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%

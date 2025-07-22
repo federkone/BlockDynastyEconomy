@@ -1,6 +1,7 @@
 package me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.views.admins.adminPanels;
 
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.BlockDynastyEconomy;
+import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.MaterialAdapter;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.components.AbstractGUI;
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.GUI.services.GUIService;
 import me.BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
@@ -69,7 +70,7 @@ public class EditCurrencyGUI extends AbstractGUI {
         });
 
         // Edit Color button
-        setItem(14, createItem(Material.LIME_DYE, "§aEditar Color",
+        setItem(14, createItem(MaterialAdapter.getLimeDye(), "§aEditar Color",
                 "§7Click para cambiar el color de la moneda"), unused -> {
             //player.closeInventory();
             openColorSelectionGUI();
@@ -98,7 +99,7 @@ public class EditCurrencyGUI extends AbstractGUI {
 
         // Toggle Payable button
         setItem(20, createItem(
-                        currency.isPayable() ? Material.LIME_CONCRETE : Material.RED_CONCRETE,
+                        currency.isPayable() ? MaterialAdapter.getLimeConcrete(): MaterialAdapter.getRedConcrete(),
                         currency.isPayable() ? "§aToggle Pagable: §aActivado" : "§cToggle Pagable: §cDesactivado",
                         "§7Click para " + (currency.isPayable() ? "desactivar" : "activar") + " la opción de pago"),
                 unused -> {
@@ -129,7 +130,7 @@ public class EditCurrencyGUI extends AbstractGUI {
 
         // Toggle Decimals button
         setItem(24, createItem(
-                        currency.isDecimalSupported() ? Material.LIME_CONCRETE : Material.RED_CONCRETE,
+                        currency.isDecimalSupported() ?MaterialAdapter.getLimeConcrete() : MaterialAdapter.getRedConcrete(),
                         currency.isDecimalSupported() ? "§aToggle Decimales: §aActivado" : "§cToggle Decimales: §cDesactivado",
                         "§7Click para " + (currency.isDecimalSupported() ? "desactivar" : "activar") + " soporte de decimales"),
                 unused -> {
@@ -335,34 +336,34 @@ public class EditCurrencyGUI extends AbstractGUI {
 
         private void setupColorGUI() {
             // Create slots for each color
-            setItem(10, createColorItem(Material.WHITE_WOOL, ChatColor.WHITE, "Blanco"),
+            setItem(10, createColorItem("WHITE_WOOL", ChatColor.WHITE, "Blanco"),
                     unused -> handleColorSelection(ChatColor.WHITE, "Blanco"));
-            setItem(11, createColorItem(Material.YELLOW_WOOL, ChatColor.YELLOW, "Amarillo"),
+            setItem(11, createColorItem("YELLOW_WOOL", ChatColor.YELLOW, "Amarillo"),
                     unused -> handleColorSelection(ChatColor.YELLOW, "Amarillo"));
-            setItem(12, createColorItem(Material.RED_WOOL, ChatColor.RED, "Rojo"),
+            setItem(12, createColorItem("RED_WOOL", ChatColor.RED, "Rojo"),
                     unused -> handleColorSelection(ChatColor.RED, "Rojo"));
-            setItem(13, createColorItem(Material.PINK_WOOL, ChatColor.LIGHT_PURPLE, "Rosa"),
+            setItem(13, createColorItem("PINK_WOOL", ChatColor.LIGHT_PURPLE, "Rosa"),
                     unused -> handleColorSelection(ChatColor.LIGHT_PURPLE, "Rosa"));
-            setItem(14, createColorItem(Material.PURPLE_WOOL, ChatColor.DARK_PURPLE, "Morado"),
+            setItem(14, createColorItem("PURPLE_WOOL", ChatColor.DARK_PURPLE, "Morado"),
                     unused -> handleColorSelection(ChatColor.DARK_PURPLE, "Morado"));
-            setItem(15, createColorItem(Material.ORANGE_WOOL, ChatColor.GOLD, "Dorado"),
+            setItem(15, createColorItem("ORANGE_WOOL", ChatColor.GOLD, "Dorado"),
                     unused -> handleColorSelection(ChatColor.GOLD, "Dorado"));
-            setItem(16, createColorItem(Material.LIME_WOOL, ChatColor.GREEN, "Verde"),
+            setItem(16, createColorItem("LIME_WOOL", ChatColor.GREEN, "Verde"),
                     unused -> handleColorSelection(ChatColor.GREEN, "Verde"));
 
-            setItem(19, createColorItem(Material.GRAY_WOOL, ChatColor.GRAY, "Gris"),
+            setItem(19, createColorItem("GRAY_WOOL", ChatColor.GRAY, "Gris"),
                     unused -> handleColorSelection(ChatColor.GRAY, "Gris"));
-            setItem(20, createColorItem(Material.LIGHT_GRAY_WOOL, ChatColor.DARK_GRAY, "Gris Oscuro"),
+            setItem(20, createColorItem("LIGHT_GRAY_WOOL", ChatColor.DARK_GRAY, "Gris Oscuro"),
                     unused -> handleColorSelection(ChatColor.DARK_GRAY, "Gris Oscuro"));
-            setItem(21, createColorItem(Material.CYAN_WOOL, ChatColor.AQUA, "Agua"),
+            setItem(21, createColorItem("CYAN_WOOL", ChatColor.AQUA, "Agua"),
                     unused -> handleColorSelection(ChatColor.AQUA, "Agua"));
-            setItem(22, createColorItem(Material.LIGHT_BLUE_WOOL, ChatColor.BLUE, "Azul"),
+            setItem(22, createColorItem("LIGHT_BLUE_WOOL", ChatColor.BLUE, "Azul"),
                     unused -> handleColorSelection(ChatColor.BLUE, "Azul"));
-            setItem(23, createColorItem(Material.BLUE_WOOL, ChatColor.DARK_BLUE, "Azul Oscuro"),
+            setItem(23, createColorItem("BLUE_WOOL", ChatColor.DARK_BLUE, "Azul Oscuro"),
                     unused -> handleColorSelection(ChatColor.DARK_BLUE, "Azul Oscuro"));
-            setItem(24, createColorItem(Material.BROWN_WOOL, ChatColor.DARK_RED, "Rojo Oscuro"),
+            setItem(24, createColorItem("BROWN_WOOL", ChatColor.DARK_RED, "Rojo Oscuro"),
                     unused -> handleColorSelection(ChatColor.DARK_RED, "Rojo Oscuro"));
-            setItem(25, createColorItem(Material.GREEN_WOOL, ChatColor.DARK_GREEN, "Verde Oscuro"),
+            setItem(25, createColorItem("GREEN_WOOL", ChatColor.DARK_GREEN, "Verde Oscuro"),
                     unused -> handleColorSelection(ChatColor.DARK_GREEN, "Verde Oscuro"));
 
             // Back button
@@ -385,8 +386,8 @@ public class EditCurrencyGUI extends AbstractGUI {
             }
         }
 
-        private ItemStack createColorItem(Material material, ChatColor chatColor, String colorName) {
-            return createItem(material, chatColor + colorName,
+        private ItemStack createColorItem(String material, ChatColor chatColor, String colorName) {
+            return createItem(MaterialAdapter.adaptWool(material), chatColor + colorName,
                     "§7Click para seleccionar este color",
                     chatColor + "Ejemplo: " + currency.getSingular());
         }

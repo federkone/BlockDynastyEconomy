@@ -8,7 +8,7 @@ import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.config.file.F
 import me.BlockDynasty.Economy.Infrastructure.BukkitImplementation.utils.SchedulerUtils;
 import me.BlockDynasty.Economy.domain.services.IAccountService;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
-import net.kyori.adventure.text.Component;
+//import net.kyori.adventure.text.Component; //paper messages
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -73,7 +73,8 @@ public class EconomyListenerOnline implements Listener {
         if (result.isSuccess()) {
             Result<Void> resultChangeName = getAccountsUseCase.checkNameChange(result.getValue(), player.getName());
             if(!resultChangeName.isSuccess()){
-                player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+                //player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.")); //paper
+                player.kickPlayer("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");
                 return;
             }
             accountService.addAccountToCache(result.getValue());
@@ -82,7 +83,8 @@ public class EconomyListenerOnline implements Listener {
 
         Result<Account> creationResult = createAccountUseCase.execute(player.getUniqueId(), player.getName());
         if (!creationResult.isSuccess()) {
-            player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+            //player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.")); //paper
+            player.kickPlayer("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");
         }
     }
 }

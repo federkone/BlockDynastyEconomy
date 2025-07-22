@@ -5,6 +5,7 @@ author: Nullplague
 description: A multi-currency economy plugin for spigot servers!
 load: STARTUP
 api-version: 1.15
+folia-supported: true
 loadbefore:
   - ItemFrameShops
 softdepend: [Vault, PlaceholderAPI]

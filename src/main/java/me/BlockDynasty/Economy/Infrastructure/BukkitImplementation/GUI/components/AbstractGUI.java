@@ -65,4 +65,14 @@ public abstract class AbstractGUI implements IGUI {
         }
         return item;
     }
+
+    public ItemStack createItem(ItemStack base, String name, String... lore) {
+        ItemMeta meta = base.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            base.setItemMeta(meta);
+        }
+        return base;
+    }
 }

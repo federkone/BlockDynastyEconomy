@@ -6,7 +6,7 @@ import me.BlockDynasty.Economy.domain.entities.account.Account;
 import me.BlockDynasty.Economy.domain.result.Result;
 import me.BlockDynasty.Economy.domain.services.IAccountService;
 import me.BlockDynasty.Economy.domain.services.ICurrencyService;
-import net.kyori.adventure.text.Component;
+//import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public class EconomyListenerOffline extends  EconomyListenerOnline {
@@ -22,7 +22,8 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
         if (result.isSuccess()) {
             Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
             if(!resultChangeUuid.isSuccess()){
-                player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+                //player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+                player.kickPlayer("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");
                 return;
             }
             accountService.addAccountToCache(result.getValue());
@@ -31,7 +32,8 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
 
         Result<Account> creationResult = createAccountUseCase.executeOffline(player.getUniqueId(), player.getName());
         if (!creationResult.isSuccess()) {
-            player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+            //player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
+            player.kickPlayer("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");
         }
     }
 }
