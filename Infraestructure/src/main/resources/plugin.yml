@@ -1,0 +1,42 @@
+name: BlockDynastyEconomy
+main: BlockDynasty.BukkitImplementation.BlockDynastyEconomy
+version: 1.0
+author: Nullplague
+description: A multi-currency economy plugin for spigot servers!
+load: STARTUP
+#api-version: 1.13
+folia-supported: true
+loadbefore:
+  - ItemFrameShops
+softdepend: [Vault, PlaceholderAPI]
+commands:
+  balance:
+    description: Shows your balances
+    usage: /balance (account)
+    aliases: [bal, money]
+  baltop:
+    description: Shows the top balances of the server
+    usage: /baltop (currency) (cant)
+    aliases: [top, balancetop, moneytop]
+  economy:
+    description: Give, set or take currency.
+    aliases: [eco, blockdynastyeconomy]
+  pay:
+    description: Pays another account
+    usage: /pay <account> <amount> (currency)
+    aliases: [pagar]
+  exchange:
+    usage: /exchange
+    description: Exchange currencies.
+    aliases: [intercambiar]
+  offer:
+    description: Offer currency to another player.
+    aliases: [ofertar,ofrecer]
+  bank:
+    description: Opens the bank GUI.
+    usage: /bank
+    aliases: [bank, banco]
+  currencyPannel:
+    description: Opens the currency panel GUI.
+    usage: /currencyPanel
+    aliases: [panelMonedas, monedas]

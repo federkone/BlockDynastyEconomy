@@ -1,0 +1,44 @@
+package BlockDynasty.Economy.aplication.useCase.currency;
+
+import BlockDynasty.Economy.domain.services.courier.Courier;
+import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
+import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
+import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
+
+//todo: borrar currency y registro de esta moneda de todos los usuarios que la tengan. tanto en la cache como en la base de datos?
+public class DeleteCurrencyUseCase {
+    private final ICurrencyService currencyService;
+    private final GetAccountsUseCase getAccountsUseCase;
+    private final IRepository dataStore;
+    private final Courier updateForwarder;
+
+    //borrar una moneda del sistema implica que se tengan que borrar todos los balances de las cuentas que tengan esa moneda
+    public DeleteCurrencyUseCase(ICurrencyService currencyService, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder){
+        this.currencyService = currencyService;
+        this.getAccountsUseCase = getAccountsUseCase;
+        this.dataStore = dataStore;
+        this.updateForwarder = updateForwarder;
+    }
+    public void deleteCurrency(String currencyName){
+        Currency currency = currencyService.getCurrency(currencyName);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        if (currency.isDefaultCurrency()){
+            throw new CurrencyNotFoundException(currency.getSingular()+" is default");
+        }
+        try {
+            dataStore.deleteCurrency(currency);
+            currencyService.remove(currency);
+            getAccountsUseCase.syncDbWithCache();
+            if (updateForwarder != null){
+                updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+            }
+        }catch (TransactionException e){
+            throw new TransactionException("Error deleting currency");
+        }
+    }
+}

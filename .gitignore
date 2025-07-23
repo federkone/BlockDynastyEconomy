@@ -6,4 +6,4 @@ dependency-reduced-pom.xml
 *.jar
 /.classpath
 /.project
-/src/test/java/repositoryTest/ForTest.txt
+/Infraestructure/src/test/java/repositoryTest/ForTest.txt
