@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
@@ -58,17 +59,20 @@ public class BuyCommand implements CommandExecutor {
             cmdBuilder.append(args[i]).append(" ");
         }
         String cmd = cmdBuilder.toString().trim();
-        SchedulerFactory.runAsync(() -> {
+
+        Runnable AsyncRunnable = () -> {
             Result<Void> result =withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
-            SchedulerFactory.run( () -> {
-            if(result.isSuccess()){
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-                player.sendMessage(F.getBuyCommandSuccess());
-            }else{
-                messageService.sendErrorMessage(result.getErrorCode(),player,tipoDemoneda);
-            }
-            });
-        });
+            SchedulerFactory.run( new ContextualTask(() -> {
+                if(result.isSuccess()){
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                    player.sendMessage(F.getBuyCommandSuccess());
+                }else{
+                    messageService.sendErrorMessage(result.getErrorCode(),player,tipoDemoneda);
+                }
+            }, player));
+        };
+
+        SchedulerFactory.runAsync(new ContextualTask(AsyncRunnable));
         return false;
     }
 }

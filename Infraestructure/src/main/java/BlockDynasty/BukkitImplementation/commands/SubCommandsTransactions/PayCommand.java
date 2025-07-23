@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
@@ -70,17 +71,18 @@ public class PayCommand implements CommandExecutor {
 
         BigDecimal finalAmount = amount;
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             Result<Void> result = pay.execute(player.getName(), targetName, currencyName, finalAmount);
 
             // Volver al hilo principal para enviar mensajes, que usan la API de Bukkit
-            SchedulerFactory.run( () -> {
+            SchedulerFactory.run( new ContextualTask(() -> {
                 if (result.isSuccess()){
                     player.sendMessage(messageService.getSuccessMessage(player.getName(), targetName, currencyName, finalAmount));
 
                     Player targetPlayer = Bukkit.getPlayer(targetName);
                     if (targetPlayer != null) {
-                        targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));
+                        // Si el jugador objetivo está en línea, envía el mensaje de éxito
+                        SchedulerFactory.run( new ContextualTask(() -> {targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));},targetPlayer));
                     }
                 } else {
                     //player.sendMessage(result.getErrorMessage());
@@ -108,8 +110,8 @@ public class PayCommand implements CommandExecutor {
                             break;
                     }
                 }
-            });
-        });
+            },player));
+        }));
         return true;
     }
 }

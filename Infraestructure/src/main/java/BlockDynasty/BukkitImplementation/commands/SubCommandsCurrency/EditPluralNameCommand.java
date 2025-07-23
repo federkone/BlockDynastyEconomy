@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.BukkitImplementation.config.file.F;
@@ -27,7 +28,7 @@ public class EditPluralNameCommand  implements CommandExecutor {
 
         String plural = args[0];
         String newPlural = args[1];
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.setPluralName(plural, newPlural);
                 sender.sendMessage("Plural name updated for " + plural + " to " + newPlural);
@@ -36,7 +37,7 @@ public class EditPluralNameCommand  implements CommandExecutor {
             } catch (TransactionException e) {
                 sender.sendMessage("error while updating the plural name");
             }
-        });
+        }));
         return false;
     }
 }

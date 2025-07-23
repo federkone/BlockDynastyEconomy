@@ -34,26 +34,45 @@ Todo list:
 
 #comandos de administracion para crear y editar monedas
 /economy currency create
+
 /economy currency delete
+
 /economy currency view
+
 /economy currency color
+
 /economy currency decimals
+
 /economy currency payable
+
 /economy currency rate
+
 /economy currency startbal
+
 /economy currency symbol
+
 /economy currency list
+
 /economy currency default
+
 /economy currency plural
+
 /economy currency singular
 
 #comandos publicos simplificados para los jugadores
 /pay
+
 /exchange           #intercambiar monedas
+
 /balance            #ver balances
+
 /baltop             #ver top
 
+
 /offer create
+
 /offer cancel
+
 /offer accept
+
 /offer deny

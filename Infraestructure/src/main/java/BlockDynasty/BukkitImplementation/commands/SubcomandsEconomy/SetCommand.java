@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
@@ -55,10 +56,11 @@ public class SetCommand implements CommandExecutor {
         }
 
         double finalMount = amount;
-        SchedulerFactory.runAsync(() -> {
+
+        Runnable AsyncRunnable = () -> {
             Result<Void> result = setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
 
-            SchedulerFactory.run( () -> {
+            SchedulerFactory.run( new ContextualTask(() -> {
                 if(result.isSuccess()){
                     sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                     Player targetPlayer = Bukkit.getPlayer(target);
@@ -69,8 +71,9 @@ public class SetCommand implements CommandExecutor {
                 }else{
                     messageService.sendErrorMessage(result.getErrorCode(),sender,target);
                 }
-            });
-        });
+            },(Player) sender));
+        };
+        SchedulerFactory.runAsync(new ContextualTask(AsyncRunnable));
         return false;
     }
 

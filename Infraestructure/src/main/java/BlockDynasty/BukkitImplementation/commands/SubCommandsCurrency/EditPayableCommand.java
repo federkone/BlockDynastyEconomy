@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -26,7 +27,7 @@ public class EditPayableCommand implements CommandExecutor {
         }
 
         String currencyName = args[0];
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 toggleFeaturesUseCase.togglePayable(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Toggled payability for §f" + currencyName);
@@ -35,7 +36,7 @@ public class EditPayableCommand implements CommandExecutor {
             } catch (TransactionException e) {
                 sender.sendMessage(F.getPrefix() + "§cAn error occurred while toggling payability for §f" + currencyName);
             }
-        });
+        }));
         return false;
     }
 }

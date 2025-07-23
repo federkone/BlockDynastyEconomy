@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -21,13 +22,13 @@ public class ListCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             List<Currency> currencies = getCurrencyUseCase.getCurrencies();
             sender.sendMessage(F.getPrefix() + "§7There are §f" + currencies.size() + "§7 currencies.");
             for (Currency currency : currencies) {
                 sender.sendMessage("§a§l>> §e" + currency.getSingular());
             }
-        });
+        }));
         return false;
     }
 }

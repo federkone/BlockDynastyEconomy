@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
@@ -56,21 +57,24 @@ public class WithdrawCommand implements CommandExecutor {
         }
 
         double finalMount = amount;
-        SchedulerFactory.runAsync(() -> {
-            Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
-            SchedulerFactory.run( () -> {
+
+        Runnable AsyncRunnable = () ->{
+                Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+                SchedulerFactory.run( new ContextualTask(() -> {
                 if(result.isSuccess()){
                     sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
                     Player targetPlayer = Bukkit.getPlayer(target);
                     if (targetPlayer != null) {
-                       // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
+                        // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
                         targetPlayer.sendMessage(messageService.getWithdrawSuccess( currencyName, BigDecimal.valueOf(finalMount)));
                     }
                 }else{
                     messageService.sendErrorMessage(result.getErrorCode(),sender,target);
                 }
-            });
-        });
+            }, (Player) sender));
+        };
+
+        SchedulerFactory.runAsync(new ContextualTask(AsyncRunnable));
         return false;
     }
 }

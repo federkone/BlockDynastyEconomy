@@ -6,25 +6,25 @@ import org.bukkit.Bukkit;
 public class Scheduler implements IScheduler {
     public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
 
-    public void runLater(long delay, Runnable runnable)
+    public void runLater(long delay, ContextualTask contextualTask)
     {
-        Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
+        Bukkit.getScheduler().runTaskLater(plugin, contextualTask.getRunnable(), delay);
     }
 
     /**
      * Runs a task on another thread immediately.
-     * @param runnable - Task to perform.
+     * @param contextualTask - Task to perform.
      */
-    public void runAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+    public void runAsync(ContextualTask contextualTask) {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, contextualTask.getRunnable());
     }
 
     /**
      * Runs a task on the main thread immediately
-     * @param runnable - Task to perform
+     * @param contextualTask - Task to perform
      */
-    public void run(Runnable runnable){
-        Bukkit.getScheduler().runTask(plugin, runnable);
+    public void run(ContextualTask contextualTask){
+        Bukkit.getScheduler().runTask(plugin, contextualTask.getRunnable());
     }
 
 

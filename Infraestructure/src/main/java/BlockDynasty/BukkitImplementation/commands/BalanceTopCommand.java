@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
@@ -50,7 +51,7 @@ public class BalanceTopCommand implements CommandExecutor {
 
 
         int finalLimit = limit;
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             Result<List<Account>> resultAccounts =getAccountsUseCase.getTopAccounts(nameCurrency, finalLimit,0);
             if (resultAccounts.isSuccess()){
                 sender.sendMessage("Top "+ finalLimit +" "+ nameCurrency+" : ");
@@ -70,7 +71,7 @@ public class BalanceTopCommand implements CommandExecutor {
                 }*/
             }
 
-        });
+        }));
 
         return false;
     }

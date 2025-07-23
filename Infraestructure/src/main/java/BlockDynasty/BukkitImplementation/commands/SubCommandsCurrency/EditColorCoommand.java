@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
@@ -47,7 +48,7 @@ public class EditColorCoommand implements CommandExecutor {
         String currencyName = args[0];
         String colorString = args[1].toUpperCase();
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.editColor(currencyName, colorString);
                 sender.sendMessage(F.getPrefix() + "§7Color for §f" + currencyName + " §7updated: " + colorString);
@@ -57,7 +58,7 @@ public class EditColorCoommand implements CommandExecutor {
                 sender.sendMessage(F.getPrefix() + "§cInvalid chat color.");
             }
 
-        });
+        }));
         return false;
     }
 }

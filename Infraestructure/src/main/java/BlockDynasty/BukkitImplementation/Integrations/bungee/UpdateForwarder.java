@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -59,10 +60,10 @@ public class UpdateForwarder implements PluginMessageListener {
                             return;
                         }
 
-                        SchedulerFactory.runAsync(() -> {
+                        SchedulerFactory.runAsync(new ContextualTask(() -> {
                             getAccountUseCase.syncCache(uuid);
                             player.sendMessage("§a¡Cuenta bancaria actualizada, se ha realizado un depostio o extraccion en tu cuenta!");
-                        });
+                        }));
 
                         UtilServer.consoleLog(channelName + " - Account " + name + " updated.");
                         break;

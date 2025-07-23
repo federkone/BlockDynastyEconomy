@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -27,7 +28,7 @@ public class SetDefaultCommand implements CommandExecutor {
         }
 
         String currencyName =args[0];
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.setDefaultCurrency(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Set default currency to §f" + currencyName);
@@ -37,7 +38,7 @@ public class SetDefaultCommand implements CommandExecutor {
             } catch (TransactionException e) {
                 sender.sendMessage(F.getPrefix() + "§cError while setting default currency");
             }
-        });
+        }));
         return false;
     }
 }

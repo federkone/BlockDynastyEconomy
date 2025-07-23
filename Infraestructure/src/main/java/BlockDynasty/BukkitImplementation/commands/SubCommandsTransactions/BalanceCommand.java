@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
@@ -50,7 +51,7 @@ public class BalanceCommand implements CommandExecutor {
             target = sender.getName();
         }
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             Result<List<Balance>> resultBalances = balance.getBalances(target);
             if (resultBalances.isSuccess()) {
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
@@ -67,7 +68,7 @@ public class BalanceCommand implements CommandExecutor {
                         sender.sendMessage(messageService.getNoCurrencyFund(target));
                 }
             }
-        });
+        }));
         return true;
     }
 }

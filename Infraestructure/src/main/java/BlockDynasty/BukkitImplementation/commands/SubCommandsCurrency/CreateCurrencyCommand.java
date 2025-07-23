@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
@@ -29,7 +30,7 @@ public class CreateCurrencyCommand implements CommandExecutor {
         String single = args[0];
         String plural = args[1];
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 createCurrencyUseCase.createCurrency(single, plural);
                 sender.sendMessage(F.getPrefix() + "§7Created currency: §a" + single);
@@ -38,9 +39,7 @@ public class CreateCurrencyCommand implements CommandExecutor {
             } catch (TransactionException e) {
                 sender.sendMessage(F.getPrefix() + "§cAn error occurred while creating the currency.");
             }
-
-
-        });
+        }));
 
         return false;
     }

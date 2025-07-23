@@ -27,14 +27,14 @@ public class SchedulerFactory {
         return schedulerInstance;
     }
 
-    public static void run(Runnable runnable){
-        getScheduler().run( runnable);
+    public static void run(ContextualTask contextualTask){
+        getScheduler().run(contextualTask);
     }
 
-    public static void runAsync(Runnable runnable) {
-        getScheduler().runAsync(runnable);
+    public static void runAsync(ContextualTask contextualTask) {
+        getScheduler().runAsync(contextualTask);
     }
-    public static void runLater(long delay, Runnable runnable) {
-        getScheduler().runLater(delay, runnable);
+    public static void runLater(long delay, ContextualTask contextualTask) {
+        getScheduler().runLater(delay, contextualTask);
     }
 }

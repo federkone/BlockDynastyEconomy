@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
@@ -83,53 +84,82 @@ public class ExchangeCommand implements CommandExecutor {
 
         double finalToReceiveAmount = toReceiveAmount;
         Player targetPlayer = Bukkit.getPlayer(player);
-        SchedulerFactory.runAsync(() -> {
-           // Result<Void> result =exchange.execute(player, toExchange, toReceive, BigDecimal.valueOf(finalToExchangeAmount),BigDecimal.valueOf( finalToReceiveAmount));
-            Result<BigDecimal> result =exchange.execute(player, toExchange, toReceive, null,BigDecimal.valueOf( finalToReceiveAmount));
-            SchedulerFactory.run( () -> {
-                if (result.isSuccess()){
-                    if( targetPlayer != null){
-                       // targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,BigDecimal.valueOf( finalToExchangeAmount), toReceive));
-                        targetPlayer.sendMessage(messageService.getExchangeSuccess( toExchange,result.getValue(), toReceive));
-                    }else{
-                        //sender.sendMessage(messageService.getExchangeSuccess( toExchange, BigDecimal.valueOf(finalToExchangeAmount), toReceive));
-                        sender.sendMessage(messageService.getExchangeSuccess( toExchange, result.getValue(), toReceive));
-                    }
-                }else {
-                    switch (result.getErrorCode()){
-                        case ACCOUNT_CAN_NOT_RECEIVE:
-                            sender.sendMessage(F.getCannotReceive());
-                        case ACCOUNT_NOT_FOUND:
-                            sender.sendMessage(messageService.getAccountNotFoundMessage());
-                        case CURRENCY_NOT_FOUND:
-                            sender.sendMessage(F.getUnknownCurrency());
-                        case DECIMAL_NOT_SUPPORTED:
-                            sender.sendMessage("Intercambio invalido"+" no se puede extraer "+result.getValue()+" "+toExchange+" intenta con otro monto en "+toReceive);
-                        case INVALID_AMOUNT:
-                            sender.sendMessage(F.getUnvalidAmount());
-                        case INSUFFICIENT_FUNDS:
-                        {
-                            if( targetPlayer != null){
-                                targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                            }else {
-                                sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                            }
-                            }
-                        case DATA_BASE_ERROR :
-                        {
-                            if( targetPlayer != null){
-                                targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
-                                //console log informate about the error or another log
-                            }else {
-                                sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            }
+
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
+            Result<BigDecimal> result = exchange.execute(player, toExchange, toReceive, null, BigDecimal.valueOf(finalToReceiveAmount));
+
+            Runnable resultTask = () -> {
+                if (result.isSuccess()) {
+                    Runnable successMessage = () -> {
+                        String message = messageService.getExchangeSuccess(toExchange, result.getValue(), toReceive);
+                        if (targetPlayer != null) {
+                            targetPlayer.sendMessage(message);
+                        } else {
+                            sender.sendMessage(message);
                         }
-                        default:
-                            sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                    };
+
+                    // Ejecutar el mensaje en el contexto correcto
+                    if (targetPlayer != null) {
+                        SchedulerFactory.run(new ContextualTask(successMessage, targetPlayer));
+                    } else if (sender instanceof Player) {
+                        SchedulerFactory.run(new ContextualTask(successMessage, (Player) sender));
+                    } else {
+                        successMessage.run(); // consola o comando externo
                     }
-            }
-        });
-        });
+
+                } else {
+                    Runnable errorTask = () -> {
+                        switch (result.getErrorCode()) {
+                            case ACCOUNT_CAN_NOT_RECEIVE:
+                                sender.sendMessage(F.getCannotReceive());
+                                break;
+                            case ACCOUNT_NOT_FOUND:
+                                sender.sendMessage(messageService.getAccountNotFoundMessage());
+                                break;
+                            case CURRENCY_NOT_FOUND:
+                                sender.sendMessage(F.getUnknownCurrency());
+                                break;
+                            case DECIMAL_NOT_SUPPORTED:
+                                sender.sendMessage("Intercambio inválido: no se puede extraer " + result.getValue() + " " + toExchange + ", intenta con otro monto en " + toReceive);
+                                break;
+                            case INVALID_AMOUNT:
+                                sender.sendMessage(F.getUnvalidAmount());
+                                break;
+                            case INSUFFICIENT_FUNDS:
+                                if (targetPlayer != null) {
+                                    SchedulerFactory.run(new ContextualTask(() -> {
+                                        targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                                    }, targetPlayer));
+                                } else {
+                                    sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
+                                }
+                                break;
+                            case DATA_BASE_ERROR:
+                                if (targetPlayer != null) {
+                                    SchedulerFactory.run(new ContextualTask(() -> {
+                                        targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
+                                    }, targetPlayer));
+                                } else {
+                                    sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                                }
+                                break;
+                            default:
+                                sender.sendMessage(messageService.getUnexpectedErrorMessage());
+                                break;
+                        }
+                    };
+
+                    if (sender instanceof Player) {
+                        SchedulerFactory.run(new ContextualTask(errorTask, (Player) sender));
+                    } else {
+                        errorTask.run();
+                    }
+                }
+            };
+
+            SchedulerFactory.run(new ContextualTask(resultTask,targetPlayer));
+        }));
         return true;
     }
 }

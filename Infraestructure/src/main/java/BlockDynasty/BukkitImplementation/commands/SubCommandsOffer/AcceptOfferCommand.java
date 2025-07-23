@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.config.file.F;
@@ -44,35 +45,53 @@ public class AcceptOfferCommand  implements CommandExecutor {
                 return false;
             }
         }
-        SchedulerFactory.runAsync(() -> {
-            Result<Void> result = acceptOfferUseCase.execute(player.getUniqueId(),playerFrom.getUniqueId());  //playerFrom.getUniqueId() //aca podemos mandar el id del player al que quiere aceptarle la oferta
-            SchedulerFactory.run( () -> {
-                if(result.isSuccess()){
-                    //player.sendMessage("Tu oferta para "+playerFrom.getName()+" ha sido aceptada");
-                    playerFrom.sendMessage(messageService.getOfferAcceptMessage(player.getName()));
-                    //playerFrom.sendMessage("Oferta de "+player.getName()+" aceptada");
-                    player.sendMessage(messageService.getOfferAcceptToMessage(playerFrom.getName()));
-                }else{
-                    switch (result.getErrorCode()){
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
+            Result<Void> result = acceptOfferUseCase.execute(player.getUniqueId(), playerFrom.getUniqueId());
+
+            Runnable mainThreadTask = () -> {
+                if (result.isSuccess()) {
+                    // Mensaje para playerFrom (jugador que hizo la oferta)
+                    SchedulerFactory.run(new ContextualTask(() -> {
+                        playerFrom.sendMessage(messageService.getOfferAcceptMessage(player.getName()));
+                    }, playerFrom));
+
+                    // Mensaje para player (quien acepta la oferta)
+                    SchedulerFactory.run(new ContextualTask(() -> {
+                        player.sendMessage(messageService.getOfferAcceptToMessage(playerFrom.getName()));
+                    }, player));
+
+                } else {
+                    switch (result.getErrorCode()) {
                         case OFFER_NOT_FOUND:
                             sender.sendMessage(F.getNotOffers());
                             break;
+
                         case INSUFFICIENT_FUNDS:
                             sender.sendMessage("No tienes suficientes fondos para esta oferta");
-                            playerFrom.sendMessage( "El jugador no tiene suficiente dinero para  la oferta");
+
+                            // playerFrom debe ser informado en su propio contexto
+                            SchedulerFactory.run(new ContextualTask(() -> {
+                                playerFrom.sendMessage("El jugador no tiene suficiente dinero para la oferta");
+                            }, playerFrom));
                             break;
+
                         case DATA_BASE_ERROR:
                             sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            playerFrom.sendMessage(F.getOfferCancel());
+
+                            SchedulerFactory.run(new ContextualTask(() -> {
+                                playerFrom.sendMessage(F.getOfferCancel());
+                            }, playerFrom));
                             break;
+
                         default:
                             sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                            //playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
                             break;
                     }
                 }
-            });
-        });
+            };
+
+            SchedulerFactory.run(new ContextualTask(mainThreadTask, player)); // player como contexto principal
+        }));
         return false;
     }
 }

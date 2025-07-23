@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -28,7 +29,7 @@ public class EditSymbolCommand implements CommandExecutor {
         String currencyName = args[0];
         String currencySymbol = args[1];
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.editSymbol(currencyName, currencySymbol);
                 sender.sendMessage(F.getPrefix() + "§7Currency symbol for §f" + currencyName + " §7updated: §a" + currencySymbol);
@@ -37,7 +38,7 @@ public class EditSymbolCommand implements CommandExecutor {
             } catch (CurrencyNotFoundException e) {
                 sender.sendMessage(F.getUnknownCurrency());
             }
-        });
+        }));
 
         return false;
     }

@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -36,7 +37,7 @@ public class EditStartBalCommand implements CommandExecutor {
         String currencyName = args[0];
         double finalAmount = amount;
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.editStartBal(currencyName, finalAmount);
                 sender.sendMessage(F.getPrefix() + "§7Starting balance for §f" + currencyName + " §7set: §a" + finalAmount);
@@ -48,7 +49,7 @@ public class EditStartBalCommand implements CommandExecutor {
                 sender.sendMessage("no decimal support for " + currencyName);
             }
 
-        });
+        }));
 
         return false;
     }

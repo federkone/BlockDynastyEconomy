@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
@@ -35,13 +36,13 @@ public class EconomyListenerOnline implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        SchedulerFactory.run(() -> loadPlayerAccount(player));
+        SchedulerFactory.run(new ContextualTask(() -> loadPlayerAccount(player)));
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        SchedulerFactory.run(() -> loadPlayerAccount(player));
+        SchedulerFactory.run(new ContextualTask(() -> loadPlayerAccount(player)));
         checkDefaultCurrency(player);
     }
 
@@ -60,12 +61,12 @@ public class EconomyListenerOnline implements Listener {
     }
 
     private void checkDefaultCurrency(Player player) {
-        SchedulerFactory.runLater(40L, () -> {
+        SchedulerFactory.runLater(40L, new ContextualTask(() -> {
             if (!currencyService.existsDefaultCurrency() &&
                     (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
                 player.sendMessage(F.getPrefix() + "§cNo has creado una moneda predeterminada. Hazlo con \"§e/currency§c\".");
             }
-        });
+        }));
     }
 
     //si se comienza a trabajar en online se van a buscar las cuentas por uuid y se va a preguntar si cambio el nombre para actualizar en sistema.

@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -41,7 +42,7 @@ public class EditRateCommand implements CommandExecutor {
         }
 
         double finalAmount = amount;
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             try {
                 editCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
                 sender.sendMessage("Rate currency updated for " + currencyName + " to " + rate);
@@ -50,7 +51,7 @@ public class EditRateCommand implements CommandExecutor {
             } catch (TransactionException e) {
                 sender.sendMessage("error while updating the rate");
             }
-        });
+        }));
 
         return false;
     }

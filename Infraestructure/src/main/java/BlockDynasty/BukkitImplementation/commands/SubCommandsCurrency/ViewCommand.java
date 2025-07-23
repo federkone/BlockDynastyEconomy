@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
@@ -25,7 +26,7 @@ public class ViewCommand implements CommandExecutor {
             return true;
         }
 
-        SchedulerFactory.runAsync(() -> {
+        SchedulerFactory.runAsync(new ContextualTask(() -> {
             Result<Currency> resultCurrency = getCurrencyUseCase.getCurrency(args[0]);
             if (!resultCurrency.isSuccess()) {
                 sender.sendMessage(F.getUnknownCurrency());
@@ -43,7 +44,7 @@ public class ViewCommand implements CommandExecutor {
             sender.sendMessage(F.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
             sender.sendMessage(F.getPrefix() + "§7Rate: " + ChatColor.valueOf(currency.getColor()) + currency.getExchangeRate());
 
-        });
+        }));
         return false;
     }
 }

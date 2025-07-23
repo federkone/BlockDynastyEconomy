@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
@@ -56,22 +57,27 @@ public class DepositCommand implements CommandExecutor {
         }
 
         double finalMount = amount;
-        SchedulerFactory.runAsync(() -> {
+        Runnable AsyncRunnable = () -> {
             Result<Void> result =deposit.execute(target, currencyName, BigDecimal.valueOf(finalMount));
 
-            SchedulerFactory.run( () -> {
-                if(result.isSuccess()){
+            Runnable runnable = () -> {
+                if (result.isSuccess()) {
                     sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
+
                     Player targetPlayer = Bukkit.getPlayer(target);
                     if (targetPlayer != null) {
-                        targetPlayer.sendMessage(messageService.getDepositSuccess( currencyName, BigDecimal.valueOf(finalMount)));
-                        //targetPlayer.sendMessage("§aHas recibido " + finalMount + " " + currencyName);
+                        SchedulerFactory.run(new ContextualTask(() -> {
+                            targetPlayer.sendMessage(messageService.getDepositSuccess(currencyName, BigDecimal.valueOf(finalMount)));
+                        }, targetPlayer));
                     }
-                }else{
-                    messageService.sendErrorMessage(result.getErrorCode(),sender,target);
+                } else {
+                    messageService.sendErrorMessage(result.getErrorCode(), sender, target);
                 }
-            });
-        });
+            };
+
+            SchedulerFactory.run( new ContextualTask(runnable,( Player) sender));
+        };
+        SchedulerFactory.runAsync(new ContextualTask( AsyncRunnable, (Player) sender));
         return false;
     }
 }
