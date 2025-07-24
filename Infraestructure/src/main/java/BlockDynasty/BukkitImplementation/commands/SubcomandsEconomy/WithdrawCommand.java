@@ -1,12 +1,11 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.BukkitImplementation.config.file.F;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,21 +59,28 @@ public class WithdrawCommand implements CommandExecutor {
 
         Runnable AsyncRunnable = () ->{
                 Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
-                SchedulerFactory.run( new ContextualTask(() -> {
-                if(result.isSuccess()){
-                    sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
-                    Player targetPlayer = Bukkit.getPlayer(target);
-                    if (targetPlayer != null) {
-                        // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
-                        targetPlayer.sendMessage(messageService.getWithdrawSuccess( currencyName, BigDecimal.valueOf(finalMount)));
+
+                Runnable runnable = () -> {
+                    if(result.isSuccess()){
+                        sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
+                        Player targetPlayer = Bukkit.getPlayer(target);
+                        if (targetPlayer != null) {
+                            // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
+                            targetPlayer.sendMessage(messageService.getWithdrawSuccess( currencyName, BigDecimal.valueOf(finalMount)));
+                        }
+                    }else{
+                        messageService.sendErrorMessage(result.getErrorCode(),sender,target);
                     }
-                }else{
-                    messageService.sendErrorMessage(result.getErrorCode(),sender,target);
+                };
+
+                if( sender instanceof Player player) {
+                    Scheduler.run( ContextualTask.build(runnable, player));
+                }else {
+                    runnable.run();
                 }
-            }, (Player) sender));
         };
 
-        SchedulerFactory.runAsync(new ContextualTask(AsyncRunnable));
+        Scheduler.runAsync(ContextualTask.build(AsyncRunnable));
         return false;
     }
 }

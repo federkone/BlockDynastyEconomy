@@ -1,29 +1,25 @@
 package BlockDynasty.BukkitImplementation.scheduler;
 
+import BlockDynasty.BukkitImplementation.utils.JavaUtil;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.FoliaImplementation.scheduler.SchedulerFolia;
 
 public class SchedulerFactory {
-    // Static instance to cache the scheduler implementation
+    public static final boolean isFolia = JavaUtil.classExists("io.papermc.paper.threadedregions.RegionizedServer");
+    public static final boolean isCanvas = JavaUtil.classExists("io.canvasmc.canvas.server.ThreadedServer"); //tested and is redundant with Folia, probably not needed
     private static IScheduler schedulerInstance;
 
     public static IScheduler getScheduler() {
-        // Return cached instance if already determined
         if (schedulerInstance != null) {
             return schedulerInstance;
         }
 
-        try {
-            // Check if Folia API exists
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            // Folia detected
-            schedulerInstance = BlockDynasty.FoliaImplementation.scheduler.Scheduler.init();
+        if(isFolia || isCanvas){
+            schedulerInstance = SchedulerFolia.init();
             UtilServer.consoleLog("Folia detected, applying Folia scheduler implementation.");
-            System.out.println("Folia detected, applying Folia scheduler implementation.");
-        } catch (ClassNotFoundException e) {
-            // Regular Bukkit/Paper
-            schedulerInstance = BlockDynasty.BukkitImplementation.scheduler.Scheduler.init();
+        }else{
+            schedulerInstance = SchedulerBukkit.init();
         }
-
         return schedulerInstance;
     }
 

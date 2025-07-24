@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
@@ -8,7 +9,6 @@ import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.BukkitImplementation.config.file.F;
 
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -51,7 +51,7 @@ public class BalanceCommand implements CommandExecutor {
             target = sender.getName();
         }
 
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             Result<List<Balance>> resultBalances = balance.getBalances(target);
             if (resultBalances.isSuccess()) {
                 sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));

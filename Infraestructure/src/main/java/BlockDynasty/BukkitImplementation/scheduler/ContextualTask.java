@@ -1,45 +1,53 @@
 package BlockDynasty.BukkitImplementation.scheduler;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 
 public class ContextualTask {
     private final Runnable runnable;
-    private final Player playerContext;
+    private final Entity entity;
     private final Location locationContext;
 
-    public ContextualTask(Runnable runnable) {
-        this(runnable, null, null);
-    }
+    //future use cases could include for folia total compatibility
+    //private final World worldContext;  // Contextual world, if needed
 
-    public ContextualTask(Runnable runnable, Player playerContext) {
-        this(runnable, playerContext, null);
-    }
-
-    public ContextualTask(Runnable runnable, Location locationContext) {
-        this(runnable, null, locationContext);
-    }
-
-    private ContextualTask(Runnable runnable, Player playerContext, Location locationContext) {
+    private ContextualTask(Runnable runnable, Entity entity, Location locationContext) {
         this.runnable = runnable;
-        this.playerContext = playerContext;
+        this.entity = entity;
         this.locationContext = locationContext;
+    }
+
+    // Static factory methods
+    public static ContextualTask build(Runnable runnable) {
+        return new ContextualTask(runnable, null, null );
+    }
+
+    public static ContextualTask build(Runnable runnable, Entity entity) {
+        return new ContextualTask(runnable, entity, null);
+    }
+
+    public static ContextualTask build(Runnable runnable, Location locationContext) {
+        return new ContextualTask(runnable, null, locationContext);
+    }
+
+    public static ContextualTask build(Runnable runnable, Entity entity, Location locationContext) {
+        return new ContextualTask(runnable, entity, locationContext);
     }
 
     public Runnable getRunnable() {
         return runnable;
     }
 
-    public Player getPlayerContext() {
-        return playerContext;
+    public Entity getEntityContext() {
+        return entity;
     }
 
     public Location getLocationContext() {
         return locationContext;
     }
 
-    public boolean hasPlayerContext() {
-        return playerContext != null;
+    public boolean hasEntityContext() {
+        return entity != null;
     }
 
     public boolean hasLocationContext() {

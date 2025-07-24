@@ -1,12 +1,11 @@
 package BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.BukkitImplementation.config.file.F;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -66,7 +65,7 @@ public class DepositCommand implements CommandExecutor {
 
                     Player targetPlayer = Bukkit.getPlayer(target);
                     if (targetPlayer != null) {
-                        SchedulerFactory.run(new ContextualTask(() -> {
+                        Scheduler.run(ContextualTask.build(() -> {
                             targetPlayer.sendMessage(messageService.getDepositSuccess(currencyName, BigDecimal.valueOf(finalMount)));
                         }, targetPlayer));
                     }
@@ -75,9 +74,15 @@ public class DepositCommand implements CommandExecutor {
                 }
             };
 
-            SchedulerFactory.run( new ContextualTask(runnable,( Player) sender));
+            if(sender instanceof Player player) {
+                Scheduler.run( ContextualTask.build(runnable, player));
+            }else{
+                runnable.run();
+            }
+
         };
-        SchedulerFactory.runAsync(new ContextualTask( AsyncRunnable, (Player) sender));
+
+        Scheduler.runAsync(ContextualTask.build( AsyncRunnable));
         return false;
     }
 }

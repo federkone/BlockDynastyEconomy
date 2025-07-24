@@ -1,12 +1,11 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.BukkitImplementation.config.file.F;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -85,7 +84,7 @@ public class ExchangeCommand implements CommandExecutor {
         double finalToReceiveAmount = toReceiveAmount;
         Player targetPlayer = Bukkit.getPlayer(player);
 
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             Result<BigDecimal> result = exchange.execute(player, toExchange, toReceive, null, BigDecimal.valueOf(finalToReceiveAmount));
 
             Runnable resultTask = () -> {
@@ -101,9 +100,9 @@ public class ExchangeCommand implements CommandExecutor {
 
                     // Ejecutar el mensaje en el contexto correcto
                     if (targetPlayer != null) {
-                        SchedulerFactory.run(new ContextualTask(successMessage, targetPlayer));
+                        Scheduler.run(ContextualTask.build(successMessage, targetPlayer));
                     } else if (sender instanceof Player) {
-                        SchedulerFactory.run(new ContextualTask(successMessage, (Player) sender));
+                        Scheduler.run(ContextualTask.build(successMessage, (Player) sender));
                     } else {
                         successMessage.run(); // consola o comando externo
                     }
@@ -128,7 +127,7 @@ public class ExchangeCommand implements CommandExecutor {
                                 break;
                             case INSUFFICIENT_FUNDS:
                                 if (targetPlayer != null) {
-                                    SchedulerFactory.run(new ContextualTask(() -> {
+                                    Scheduler.run(ContextualTask.build(() -> {
                                         targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
                                     }, targetPlayer));
                                 } else {
@@ -137,7 +136,7 @@ public class ExchangeCommand implements CommandExecutor {
                                 break;
                             case DATA_BASE_ERROR:
                                 if (targetPlayer != null) {
-                                    SchedulerFactory.run(new ContextualTask(() -> {
+                                    Scheduler.run(ContextualTask.build(() -> {
                                         targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
                                     }, targetPlayer));
                                 } else {
@@ -150,15 +149,14 @@ public class ExchangeCommand implements CommandExecutor {
                         }
                     };
 
-                    if (sender instanceof Player) {
-                        SchedulerFactory.run(new ContextualTask(errorTask, (Player) sender));
+                    if (sender instanceof Player player1) {
+                        Scheduler.run(ContextualTask.build(errorTask, player1));
                     } else {
                         errorTask.run();
                     }
                 }
             };
-
-            SchedulerFactory.run(new ContextualTask(resultTask,targetPlayer));
+            Scheduler.run(ContextualTask.build(resultTask,targetPlayer));
         }));
         return true;
     }

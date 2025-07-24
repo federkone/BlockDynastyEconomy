@@ -1,12 +1,12 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +28,7 @@ public class DeleteCurrencyCommand implements CommandExecutor {
 
         String currencyName = args[0];
 
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 deleteCurrencyUseCase.deleteCurrency(currencyName);
                 sender.sendMessage(F.getPrefix() + "§7Deleted currency: §a" + currencyName);

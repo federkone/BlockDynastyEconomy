@@ -5,10 +5,10 @@ import java.io.DataInputStream;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -60,7 +60,7 @@ public class UpdateForwarder implements PluginMessageListener {
                             return;
                         }
 
-                        SchedulerFactory.runAsync(new ContextualTask(() -> {
+                        Scheduler.runAsync(ContextualTask.build(() -> {
                             getAccountUseCase.syncCache(uuid);
                             player.sendMessage("§a¡Cuenta bancaria actualizada, se ha realizado un depostio o extraccion en tu cuenta!");
                         }));

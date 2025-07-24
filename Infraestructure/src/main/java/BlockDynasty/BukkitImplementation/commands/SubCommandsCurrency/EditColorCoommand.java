@@ -1,12 +1,12 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,7 +48,7 @@ public class EditColorCoommand implements CommandExecutor {
         String currencyName = args[0];
         String colorString = args[1].toUpperCase();
 
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 editCurrencyUseCase.editColor(currencyName, colorString);
                 sender.sendMessage(F.getPrefix() + "§7Color for §f" + currencyName + " §7updated: " + colorString);

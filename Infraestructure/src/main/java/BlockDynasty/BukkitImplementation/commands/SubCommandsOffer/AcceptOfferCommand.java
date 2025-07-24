@@ -1,11 +1,11 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.config.file.F;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,18 +45,18 @@ public class AcceptOfferCommand  implements CommandExecutor {
                 return false;
             }
         }
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             Result<Void> result = acceptOfferUseCase.execute(player.getUniqueId(), playerFrom.getUniqueId());
 
             Runnable mainThreadTask = () -> {
                 if (result.isSuccess()) {
                     // Mensaje para playerFrom (jugador que hizo la oferta)
-                    SchedulerFactory.run(new ContextualTask(() -> {
+                    Scheduler.run(ContextualTask.build(() -> {
                         playerFrom.sendMessage(messageService.getOfferAcceptMessage(player.getName()));
                     }, playerFrom));
 
                     // Mensaje para player (quien acepta la oferta)
-                    SchedulerFactory.run(new ContextualTask(() -> {
+                    Scheduler.run(ContextualTask.build(() -> {
                         player.sendMessage(messageService.getOfferAcceptToMessage(playerFrom.getName()));
                     }, player));
 
@@ -70,7 +70,7 @@ public class AcceptOfferCommand  implements CommandExecutor {
                             sender.sendMessage("No tienes suficientes fondos para esta oferta");
 
                             // playerFrom debe ser informado en su propio contexto
-                            SchedulerFactory.run(new ContextualTask(() -> {
+                            Scheduler.run(ContextualTask.build(() -> {
                                 playerFrom.sendMessage("El jugador no tiene suficiente dinero para la oferta");
                             }, playerFrom));
                             break;
@@ -78,7 +78,7 @@ public class AcceptOfferCommand  implements CommandExecutor {
                         case DATA_BASE_ERROR:
                             sender.sendMessage(messageService.getUnexpectedErrorMessage());
 
-                            SchedulerFactory.run(new ContextualTask(() -> {
+                            Scheduler.run(ContextualTask.build(() -> {
                                 playerFrom.sendMessage(F.getOfferCancel());
                             }, playerFrom));
                             break;
@@ -90,7 +90,7 @@ public class AcceptOfferCommand  implements CommandExecutor {
                 }
             };
 
-            SchedulerFactory.run(new ContextualTask(mainThreadTask, player)); // player como contexto principal
+            Scheduler.run(ContextualTask.build(mainThreadTask, player)); // player como contexto principal
         }));
         return false;
     }

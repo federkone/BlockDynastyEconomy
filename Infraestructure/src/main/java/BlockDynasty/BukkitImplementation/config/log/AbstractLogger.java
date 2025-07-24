@@ -1,10 +1,9 @@
 package BlockDynasty.BukkitImplementation.config.log;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import com.google.common.collect.Sets;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.utils.UtilTime;
 import BlockDynasty.Economy.domain.services.log.Log;
 
@@ -70,7 +69,7 @@ public abstract class AbstractLogger implements Log {
     private void zipAndReplace() {
         zipping = true;
 
-        SchedulerFactory.runAsync( new ContextualTask(() -> {
+        Scheduler.runAsync( ContextualTask.build(() -> {
             try {
                 String date = UtilTime.date();
                 date = date.replace("/", "-");

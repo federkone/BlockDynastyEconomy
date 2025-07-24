@@ -1,245 +1,29 @@
 package BlockDynasty.BukkitImplementation.scheduler;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import org.bukkit.Bukkit;
+public class Scheduler {
 
-public class Scheduler implements IScheduler {
-    public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
-
-    public void runLater(long delay, ContextualTask contextualTask)
-    {
-        Bukkit.getScheduler().runTaskLater(plugin, contextualTask.getRunnable(), delay);
+    /**
+     * Runs a task on another thread after a delay.
+     * @param delay - Delay in ticks.
+     * @param contextualTask - Context to perform.
+     */
+    public static void runLater(long delay, ContextualTask contextualTask) {
+        SchedulerFactory.runLater( delay, contextualTask);
     }
 
     /**
      * Runs a task on another thread immediately.
-     * @param contextualTask - Task to perform.
+     * @param contextualTask - Context to perform.
      */
-    public void runAsync(ContextualTask contextualTask) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, contextualTask.getRunnable());
+    public static void runAsync(ContextualTask contextualTask) {
+        SchedulerFactory.runAsync( contextualTask);
     }
 
     /**
      * Runs a task on the main thread immediately
-     * @param contextualTask - Task to perform
+     * @param contextualTask - Context to perform
      */
-    public void run(ContextualTask contextualTask){
-        Bukkit.getScheduler().runTask(plugin, contextualTask.getRunnable());
+    public static  void run(ContextualTask contextualTask) {
+        SchedulerFactory.run(contextualTask);
     }
-
-
-
-    public static Scheduler init() {
-        return new Scheduler();
-    }
-/*
-    public static void runLaterAsync(long delay, Runnable runnable)
-    {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
-    }
-
-    public static void runAtInterval(long interval, Runnable... tasks)
-    {
-        runAtInterval(0L, interval, tasks);
-    }
-
-    public static void runAtInterval(long delay, long interval, Runnable... tasks)
-    {
-        new BukkitRunnable()
-        {
-            private int index;
-
-            @Override
-            public void run()
-            {
-                if (this.index >= tasks.length)
-                {
-                    this.cancel();
-                    return;
-                }
-
-                tasks[index].run();
-                index++;
-            }
-        }.runTaskTimer(plugin, delay, interval);
-    }
-
-    public static void repeat(int repetitions, long interval, Runnable task, Runnable onComplete)
-    {
-        new BukkitRunnable()
-        {
-            private int index;
-
-            @Override
-            public void run()
-            {
-                index++;
-                if (this.index >= repetitions)
-                {
-                    this.cancel();
-                    if (onComplete == null)
-                    {
-                        return;
-                    }
-
-                    onComplete.run();
-                    return;
-                }
-
-                task.run();
-            }
-        }.runTaskTimer(plugin, 0L, interval);
-    }
-
-    public static void repeatWhile(long interval, Callable<Boolean> predicate, Runnable task, Runnable onComplete)
-    {
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    if (!predicate.call())
-                    {
-                        this.cancel();
-                        if (onComplete == null)
-                        {
-                            return;
-                        }
-
-                        onComplete.run();
-                        return;
-                    }
-
-                    task.run();
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }.runTaskTimer(plugin, 0L, interval);
-    }
-
-    /*public interface Task
-    {
-        void start(Runnable onComplete);
-    }
-
-
-
-    public static class TaskBuilder
-    {
-        private Queue<Task> taskList;
-
-        public TaskBuilder()
-        {
-            this.taskList = new LinkedList<>();
-        }
-
-        public TaskBuilder append(TaskBuilder builder)
-        {
-            this.taskList.addAll(builder.taskList);
-            return this;
-        }
-
-        public TaskBuilder appendDelay(long delay)
-        {
-            this.taskList.add(onComplete -> SchedulerUtils.runLater(delay, onComplete));
-            return this;
-        }
-
-        public TaskBuilder appendTask(Runnable task)
-        {
-            this.taskList.add(onComplete ->
-            {
-                task.run();
-                onComplete.run();
-            });
-
-            return this;
-        }
-
-        public TaskBuilder appendTask(Task task)
-        {
-            this.taskList.add(task);
-            return this;
-        }
-
-        public TaskBuilder appendDelayedTask(long delay, Runnable task)
-        {
-            this.taskList.add(onComplete -> SchedulerUtils.runLater(delay, () ->
-            {
-                task.run();
-                onComplete.run();
-            }));
-
-            return this;
-        }
-
-        public TaskBuilder appendTasks(long delay, long interval, Runnable... tasks)
-        {
-            this.taskList.add(onComplete ->
-            {
-                Runnable[] runnables = Arrays.copyOf(tasks, tasks.length + 1);
-                runnables[runnables.length - 1] = onComplete;
-                SchedulerUtils.runAtInterval(delay, interval, runnables);
-            });
-
-            return this;
-        }
-
-        public TaskBuilder appendRepeatingTask(int repetitions, long interval, Runnable task)
-        {
-            this.taskList.add(onComplete -> SchedulerUtils.repeat(repetitions, interval, task, onComplete));
-            return this;
-        }
-
-        public TaskBuilder appendConditionalRepeatingTask(long interval, Callable<Boolean> predicate, Runnable task)
-        {
-            this.taskList.add(onComplete -> SchedulerUtils.repeatWhile(interval, predicate, task, onComplete));
-            return this;
-        }
-
-        public TaskBuilder waitFor(Callable<Boolean> predicate)
-        {
-            this.taskList.add(onComplete -> new BukkitRunnable()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        if (!predicate.call())
-                        {
-                            return;
-                        }
-
-                        this.cancel();
-                        onComplete.run();
-                    } catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }.runTaskTimer(plugin, 0L, 1L));
-            return this;
-        }
-
-        public void runTasks()
-        {
-            this.startNext();
-        }
-
-        private void startNext()
-        {
-            Task task = this.taskList.poll();
-            if (task == null)
-            {
-                return;
-            }
-
-            task.start(this::startNext);
-        }
-    }*/
 }

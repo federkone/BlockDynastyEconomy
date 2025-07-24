@@ -1,12 +1,12 @@
 package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +42,7 @@ public class EditRateCommand implements CommandExecutor {
         }
 
         double finalAmount = amount;
-        SchedulerFactory.runAsync(new ContextualTask(() -> {
+        Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 editCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
                 sender.sendMessage("Rate currency updated for " + currencyName + " to " + rate);

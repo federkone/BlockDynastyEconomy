@@ -1,13 +1,13 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 //import net.kyori.adventure.text.Component; //paper messages
@@ -36,13 +36,13 @@ public class EconomyListenerOnline implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
-        SchedulerFactory.run(new ContextualTask(() -> loadPlayerAccount(player)));
+        Scheduler.run(ContextualTask.build(() -> loadPlayerAccount(player)));
     }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        SchedulerFactory.run(new ContextualTask(() -> loadPlayerAccount(player)));
+        Scheduler.run(ContextualTask.build(() -> loadPlayerAccount(player)));
         checkDefaultCurrency(player);
     }
 
@@ -61,7 +61,7 @@ public class EconomyListenerOnline implements Listener {
     }
 
     private void checkDefaultCurrency(Player player) {
-        SchedulerFactory.runLater(40L, new ContextualTask(() -> {
+        Scheduler.runLater(40L, ContextualTask.build(() -> {
             if (!currencyService.existsDefaultCurrency() &&
                     (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
                 player.sendMessage(F.getPrefix() + "§cNo has creado una moneda predeterminada. Hazlo con \"§e/currency§c\".");
