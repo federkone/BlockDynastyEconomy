@@ -27,7 +27,7 @@ obtener bancos(): lista de bancos
 public class Bank {
     private String name;
     private String owner;
-    private UUID ouwnerUUID;
+    private UUID ouwnerUUID; //puede ser el UUID del server o del jugador
     private List<Balance> vault;
 
     public Bank(String name,UUID ouwnerUUID, String owner) {

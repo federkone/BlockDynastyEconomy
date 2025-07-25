@@ -11,7 +11,7 @@
 
     <modules>
         <module>core</module>
-        <module>Infraestructure</module>
+        <module>Infrastructure</module>
     </modules>
 
     <properties>
