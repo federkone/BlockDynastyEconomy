@@ -2,6 +2,7 @@ package BlockDynasty.BukkitImplementation.logs;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
+import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import com.google.common.collect.Sets;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.UtilTime;
@@ -35,7 +36,7 @@ public abstract class AbstractLogger implements Log {
             try {
                 latest.createNewFile();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                UtilServer.consoleLog(ex.getMessage());
             }
         }
         this.toAdd = Sets.newHashSet();
@@ -51,8 +52,9 @@ public abstract class AbstractLogger implements Log {
             builder.append(getName());
             builder.append(message);
             writeToFile(builder.toString());
+            UtilServer.consoleLog(getName() + message);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            UtilServer.consoleLog(ex.getMessage());
         }
     }
 
@@ -76,8 +78,7 @@ public abstract class AbstractLogger implements Log {
                 }
                 FileOutputStream fos = new FileOutputStream(zFile);
                 ZipOutputStream zipOut = new ZipOutputStream(fos);
-                File fileToZip = latest;
-                FileInputStream fis = new FileInputStream(fileToZip);
+                FileInputStream fis = new FileInputStream(latest);
                 ZipEntry zipEntry = new ZipEntry(date + ".log");
                 zipOut.putNextEntry(zipEntry);
                 final byte[] bytes = new byte[1024];
@@ -98,7 +99,7 @@ public abstract class AbstractLogger implements Log {
                 }
                 zipping = false;
             } catch (Exception e) {
-                e.printStackTrace();
+               UtilServer.consoleLog(e.getMessage());
             }
         }));
     }
@@ -119,7 +120,7 @@ public abstract class AbstractLogger implements Log {
             builder.append(message);
             writeToFile(builder.toString());
         } catch (IOException ex) {
-            ex.printStackTrace();
+            UtilServer.consoleLogError( ex.getMessage());
         }
     }
 
@@ -135,7 +136,7 @@ public abstract class AbstractLogger implements Log {
             builder.append(message);
             writeToFile(builder.toString());
         } catch (IOException e) {
-            ex.printStackTrace();
+            UtilServer.consoleLogError( ex.getMessage());
         }
     }
 

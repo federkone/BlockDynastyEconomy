@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class CurrencyPanelCommand implements CommandExecutor {
     private final JavaPlugin plugin;
-    private GUIService guiService;
+    private final GUIService guiService;
     private CreateCurrencyUseCase createCurrencyUseCase;
     private EditCurrencyUseCase editCurrencyUseCase;
     private GetCurrencyUseCase getCurrencyUseCase;
@@ -35,7 +35,7 @@ public class CurrencyPanelCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("blockdynasty.economy.currencypanel")) {
+        if (!sender.hasPermission("BlockDynastyEconomy.economy.currencypanel")) {
             sender.sendMessage("§cYou do not have permission to use this command.");
             return true;
         }

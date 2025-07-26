@@ -69,7 +69,7 @@ public class GetAccountsUseCase {
     }
 
     public void syncDbWithCache() {
-        Collection<Account> accounts = this.accountService.getAccountsCache();
+        Collection<Account> accounts = this.accountService.getAccountsOnline();
         for (Account account : accounts) {
             syncWalletWithSystemCurrencies(account);
             try {

@@ -28,7 +28,7 @@ public class VaultUnlockedHandler implements IVaultHandler {
             ServicesManager sm = Bukkit.getServicesManager();
             sm.register(Economy.class, this.vaultUnlockedHook, plugin, ServicePriority.Highest);
 
-            UtilServer.consoleLog("Vault Unlocked link enabled.");
+            UtilServer.consoleLog("Vault Unlocked detect, link enabled.");
         } catch (Exception e) {
             e.printStackTrace();
         }

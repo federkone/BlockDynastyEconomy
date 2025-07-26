@@ -7,7 +7,7 @@ import java.util.*;
 public interface IAccountService {
     void removeAccountFromCache(UUID uuid);
     void addAccountToCache(Account account);
-    Collection<Account> getAccountsCache();
+    Collection<Account> getAccountsOnline();
     Account getAccountCache(String name);
     Account getAccountCache(UUID uuid);
     void addAccountToTopList(Account account,String currencyName);

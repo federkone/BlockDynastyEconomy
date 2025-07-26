@@ -8,6 +8,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.Collections;
 
 @SuppressWarnings("deprecation")
+/**
+ * MaterialAdapter is a utility class that provides methods to adapt materials
+ * for different Minecraft versions, particularly for legacy versions (1.8-1.12)
+ * and modern versions (1.13+).
+ * at the moment translate: LimeDye, LimeConcrete, RedConcrete, PlayerHead, adaptWool, createPlayerHead
+ */
 public class MaterialAdapter {
 
     public static Material getLimeDye() {

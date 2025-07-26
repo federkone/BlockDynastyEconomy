@@ -41,7 +41,7 @@ public class AccountService implements IAccountService {
         this.accountsOnlineName.put(account.getNickname(), account);
     }
 
-    public Collection<Account> getAccountsCache() {
+    public Collection<Account> getAccountsOnline() {
         return this.accountsOnlineUuid.values();
     }
     public Account getAccountCache(String name){

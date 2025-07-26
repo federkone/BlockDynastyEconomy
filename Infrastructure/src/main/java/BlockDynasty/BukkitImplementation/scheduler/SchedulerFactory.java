@@ -19,6 +19,7 @@ public class SchedulerFactory {
             UtilServer.consoleLog("Folia detected, applying Folia scheduler implementation.");
         }else{
             schedulerInstance = SchedulerBukkit.init();
+            UtilServer.consoleLog("Bukkit detected, applying Bukkit scheduler implementation.");
         }
         return schedulerInstance;
     }
