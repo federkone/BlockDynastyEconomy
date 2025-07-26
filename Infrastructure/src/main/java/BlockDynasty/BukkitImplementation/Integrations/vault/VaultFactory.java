@@ -11,8 +11,8 @@ public class VaultFactory {
     private static final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private static IVaultHandler vaultHandler;
 
-    public static void init(boolean isVault, UsesCaseFactory usesCaseFactory) {
-        if (isVault) {
+    public static void init(UsesCaseFactory usesCaseFactory) {
+        if (plugin.getConfig().getBoolean("vault")) {
             if (Bukkit.getPluginManager().getPlugin("Vault") != null) {
                 if(JavaUtil.classExists("net.milkbowl.vault2.economy.Economy")){  //if is present vault 2/vault Unlocked plugin
                     vaultHandler = new VaultUnlockedHandler(plugin, usesCaseFactory);

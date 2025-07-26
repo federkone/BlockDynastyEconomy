@@ -6,7 +6,6 @@ import java.io.DataInputStream;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
@@ -17,26 +16,25 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import java.io.IOException;
 import java.util.UUID;
 
-public class UpdateForwarder implements PluginMessageListener {
+/**
+ * BlockDynasty Bungee-Spigot Messaging Listener
+ *
+ * This listener is used to update currencies and balance for players
+ * on different servers. This is important to sustain synced balances
+ * and currencies on all of the servers.
+ */
 
-    /**
-     * BlockDynasty Bungee-Spigot Messaging Listener
-     *
-     * This listener is used to update currencies and balance for players
-     * on different servers. This is important to sustain synced balances
-     * and currencies on all of the servers.
-     */
-
-    private BlockDynastyEconomy plugin;
+public class BungeeImpl implements PluginMessageListener {
+    private final BlockDynastyEconomy plugin;
     private final String channelName = "BlockDynastyEconomy Data Channel";
-    private  GetAccountsUseCase getAccountUseCase;
+    private final GetAccountsUseCase getAccountUseCase;
 
-    public UpdateForwarder(BlockDynastyEconomy plugin ) {
+    public BungeeImpl(BlockDynastyEconomy plugin ) {
         this.plugin = plugin;
         this.getAccountUseCase = plugin.getUsesCase().getAccountsUseCase();
     }
 
-//testear en todos los servidores. esto funciona a modo de broadcast. lo cual puede generar trafico innecesario
+//todo: testear en todos los servidores. esto funciona a modo de broadcast. lo cual puede generar trafico innecesario
     @Override
     public void onPluginMessageReceived(String channel, Player notInUse, byte[] message) {
         if (!channel.equals("BungeeCord")) {

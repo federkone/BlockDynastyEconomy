@@ -40,13 +40,15 @@ public abstract class AbstractLogger implements Log {
         }
         this.toAdd = Sets.newHashSet();
         this.zipping = false;
+
+        this.save();
     }
 
     public void log(String message) {
         try {
             StringBuilder builder = new StringBuilder();
             appendDate(builder);
-            builder.append('[').append("ECONOMY-LOG").append(']').append(' ');
+            builder.append(getName());
             builder.append(message);
             writeToFile(builder.toString());
         } catch (IOException ex) {
@@ -54,18 +56,11 @@ public abstract class AbstractLogger implements Log {
         }
     }
 
+    public abstract String getName();
+
     public void save() {
         zipAndReplace();
     }
-
-    private File getLatest() {
-        return latest;
-    }
-
-    private File getFolder() {
-        return folder;
-    }
-
     private void zipAndReplace() {
         zipping = true;
 
@@ -108,6 +103,14 @@ public abstract class AbstractLogger implements Log {
         }));
     }
 
+    private File getLatest() {
+        return latest;
+    }
+
+    private File getFolder() {
+        return folder;
+    }
+
     private void warn(String message) {
         try {
             StringBuilder builder = new StringBuilder();
@@ -136,11 +139,11 @@ public abstract class AbstractLogger implements Log {
         }
     }
 
-    private final void appendDate(StringBuilder builder) {
+    private  void appendDate(StringBuilder builder) {
         builder.append('[').append(getDateAndTime()).append(']').append(' ');
     }
 
-    private final void writeToFile(String string) throws IOException {
+    private  void writeToFile(String string) throws IOException {
         if (zipping) {
             toAdd.add(string);
             return;

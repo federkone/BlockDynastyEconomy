@@ -13,14 +13,15 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.List;
 
-public class BlockdynastyEconomyExpansion extends PlaceholderExpansion {
+public class PlaceHolderExpansion extends PlaceholderExpansion {
     private final GetAccountsUseCase getAccountsUseCase;
     private final GetCurrencyUseCase getCurrencyUseCase;
 
-    public BlockdynastyEconomyExpansion(GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase) {
+    public PlaceHolderExpansion(GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase) {
         this.getAccountsUseCase = getAccountsUseCase;
         this.getCurrencyUseCase = getCurrencyUseCase;
     }
+
 
     @Override
     public boolean register() {
