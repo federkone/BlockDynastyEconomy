@@ -2,9 +2,7 @@ package repositoryTest;
 
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.repositoryOld.Criteria.Criteria;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.repositoryOld.Criteria.Filter;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.result.TransferResult;
@@ -230,7 +228,7 @@ public class RepositoryTest implements IRepository {
         if (account == null) {
             return Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND);
         }
-        Result<Void> result = account.setBalance(currency, amount);
+        Result<Void> result = account.setMoney(currency, amount);
 
         if (!result.isSuccess()) {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
@@ -247,8 +245,8 @@ public class RepositoryTest implements IRepository {
                 .filter(account -> account.hasCurrency(currencyName))
                 // Ordenar por balance en la moneda especificada, en orden descendente
                 .sorted((a1, a2) -> {
-                    BigDecimal balance1 = a1.getBalance(currencyName).getAmount();
-                    BigDecimal balance2 = a2.getBalance(currencyName).getAmount();
+                    BigDecimal balance1 = a1.getMoney(currencyName).getAmount();
+                    BigDecimal balance2 = a2.getMoney(currencyName).getAmount();
                     return balance2.compareTo(balance1); // Orden descendente
                 })
                 // Aplicar paginación

@@ -1,6 +1,6 @@
 package BlockDynasty.Economy.domain.entities.bank;
 
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class Bank {
     private String name;
     private String owner;
     private UUID ouwnerUUID; //puede ser el UUID del server o del jugador
-    private List<Balance> vault;
+    private List<Money> vault;
 
     public Bank(String name,UUID ouwnerUUID, String owner) {
         this.ouwnerUUID = ouwnerUUID;
@@ -41,12 +41,12 @@ public class Bank {
         return name;
     }
 
-    public void addBalance(Balance balance) {
-        this.vault.add(balance);
+    public void addBalance(Money money) {
+        this.vault.add(money);
     }
 
-    public void setVault(List<Balance> balances) {
-        this.vault = balances;
+    public void setVault(List<Money> monies) {
+        this.vault = monies;
     }
 
     public String getOwnerName() {
@@ -58,29 +58,29 @@ public class Bank {
     }
 
     public BigDecimal getBalance(Currency currency) {
-        for (Balance balance : vault) {
-            if (balance.getCurrency().equals(currency)) {
-                return balance.getAmount();
+        for (Money money : vault) {
+            if (money.getCurrency().equals(currency)) {
+                return money.getAmount();
             }
         }
         return BigDecimal.ZERO; // Return zero if no balance found for the currency
     }
 
     public void deposit(Currency currency,BigDecimal amount) {
-        for (Balance balance : vault) {
-            if (balance.getCurrency().equals(currency)) {
-                balance.setAmount(balance.getAmount().add(amount));
+        for (Money money : vault) {
+            if (money.getCurrency().equals(currency)) {
+                money.setAmount(money.getAmount().add(amount));
                 return;
             }
         }
     }
 
     public void withdraw(Currency currency,BigDecimal amount) {
-        for (Balance balance : vault) {
-            if (balance.getCurrency().equals(currency)) {
-                BigDecimal newBalance = balance.getAmount().subtract(amount);
+        for (Money money : vault) {
+            if (money.getCurrency().equals(currency)) {
+                BigDecimal newBalance = money.getAmount().subtract(amount);
                 if (newBalance.compareTo(BigDecimal.ZERO) >= 0) {
-                    balance.setAmount(newBalance);
+                    money.setAmount(newBalance);
                 }
                 return;
             }

@@ -8,7 +8,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import net.milkbowl.vault2.economy.AccountPermission;
@@ -198,7 +198,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull BigDecimal getBalance(@NotNull String pluginName, @NotNull UUID accountID) {
-        Result<Balance> result = getBalanceUseCase.getBalance(accountID);
+        Result<Money> result = getBalanceUseCase.getBalance(accountID);
         if(result.isSuccess() ){
             return result.getValue().getAmount();
         }
@@ -212,7 +212,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull BigDecimal getBalance(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String world, @NotNull String currency) {
-        Result<Balance> result = getBalanceUseCase.getBalance(accountID,currency);
+        Result<Money> result = getBalanceUseCase.getBalance(accountID,currency);
         if(result.isSuccess() ){
             return result.getValue().getAmount();
         }
@@ -236,7 +236,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean has(@NotNull String pluginName, @NotNull UUID accountID, @NotNull BigDecimal amount) {
-        Result<Balance> balanceResult = getBalanceUseCase.getBalance(accountID);
+        Result<Money> balanceResult = getBalanceUseCase.getBalance(accountID);
         if(balanceResult.isSuccess() ){
             return balanceResult.getValue().hasEnough(amount);
         }
@@ -250,7 +250,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean has(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull String currency, @NotNull BigDecimal amount) {
-        Result<Balance> balanceResult = getBalanceUseCase.getBalance(accountID,currency);
+        Result<Money> balanceResult = getBalanceUseCase.getBalance(accountID,currency);
         if(balanceResult.isSuccess() ){
             return balanceResult.getValue().hasEnough(amount);
         }

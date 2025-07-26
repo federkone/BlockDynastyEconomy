@@ -2,7 +2,7 @@ package APITest;
 
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.BukkitImplementation.Integrations.vault.VaultHook;
 import BlockDynasty.Economy.domain.result.Result;
 import org.bukkit.OfflinePlayer;
@@ -23,9 +23,9 @@ class VaultHookTest {
         when(usesCaseFactory.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
 
         // Mock balance result
-        Balance balance = mock(Balance.class);
-        when(balance.getAmount()).thenReturn(BigDecimal.valueOf(100));
-        when(getBalanceUseCase.getBalance("player")).thenReturn(Result.success(balance));
+        Money money = mock(Money.class);
+        when(money.getAmount()).thenReturn(BigDecimal.valueOf(100));
+        when(getBalanceUseCase.getBalance("player")).thenReturn(Result.success(money));
 
         // Create VaultHook
         VaultHook vaultHook = new VaultHook(usesCaseFactory);
@@ -43,9 +43,9 @@ class VaultHookTest {
         when(usesCaseFactory.getGetBalanceUseCase()).thenReturn(getBalanceUseCase);
 
         // Mock balance result
-        Balance balance = mock(Balance.class);
-        when(balance.getAmount()).thenReturn(BigDecimal.valueOf(200));
-        when(getBalanceUseCase.getBalance("playerName")).thenReturn(Result.success(balance));
+        Money money = mock(Money.class);
+        when(money.getAmount()).thenReturn(BigDecimal.valueOf(200));
+        when(getBalanceUseCase.getBalance("playerName")).thenReturn(Result.success(money));
 
         // Mock OfflinePlayer
         OfflinePlayer offlinePlayer = mock(OfflinePlayer.class);

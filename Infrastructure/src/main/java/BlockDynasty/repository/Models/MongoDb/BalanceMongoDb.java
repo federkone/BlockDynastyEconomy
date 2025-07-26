@@ -1,6 +1,6 @@
 package BlockDynasty.repository.Models.MongoDb;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import  dev.morphia.annotations.*;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.math.BigDecimal;
 
@@ -17,13 +17,13 @@ public class BalanceMongoDb {
     private BigDecimal amount;
 
 
-    public BalanceMongoDb(Balance balance) {
-        this.currency = new CurrencyMongoDb(balance.getCurrency());
-        this.amount = balance.getAmount();
+    public BalanceMongoDb(Money money) {
+        this.currency = new CurrencyMongoDb(money.getCurrency());
+        this.amount = money.getAmount();
     }
 
-    public Balance toEntity() {
-        return  new Balance(this.currency.toEntity(),this.amount);
+    public Money toEntity() {
+        return  new Money(this.currency.toEntity(),this.amount);
     }
 
 

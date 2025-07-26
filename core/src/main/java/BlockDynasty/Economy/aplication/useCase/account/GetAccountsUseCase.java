@@ -1,9 +1,9 @@
 package BlockDynasty.Economy.aplication.useCase.account;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -57,12 +57,12 @@ public class GetAccountsUseCase {
         UUID uuid = account.getUuid();
         Account cachedAccount = this.accountService.getAccountCache(uuid);
         if (cachedAccount != null) {
-            for (Balance updatedBalance : account.getBalances()) {
-                Balance cachedBalance = cachedAccount.getBalance(updatedBalance.getCurrency());
-                if (cachedBalance != null) {
-                    cachedBalance.setAmount(updatedBalance.getAmount());
+            for (Money updatedMoney : account.getBalances()) {
+                Money cachedMoney = cachedAccount.getMoney(updatedMoney.getCurrency());
+                if (cachedMoney != null) {
+                    cachedMoney.setAmount(updatedMoney.getAmount());
                 } else {
-                    cachedAccount.getBalances().add(new Balance(updatedBalance.getCurrency(), updatedBalance.getAmount()));
+                    cachedAccount.getBalances().add(new Money(updatedMoney.getCurrency(), updatedMoney.getAmount()));
                 }
             }
         }
@@ -93,16 +93,16 @@ public class GetAccountsUseCase {
     }
 
     private void syncWalletWithSystemCurrencies(Account account) {
-        List<Balance> updatedBalances =  this.currencyService.getCurrencies().stream()
+        List<Money> updatedMonies =  this.currencyService.getCurrencies().stream()
                 .map(systemCurrency ->
                         account.getBalances().stream()
                                 .filter(balance -> balance.getCurrency().getUuid().equals(systemCurrency.getUuid()))
                                 .findFirst() // Busca si ya existe el balance para esta moneda
                                 .orElseGet(() -> { // Si no existe, crea un nuevo balance para esta moneda
-                                    return new Balance(systemCurrency);
+                                    return new Money(systemCurrency);
                                 }))
                 .collect(Collectors.toList());
-        account.setBalances(updatedBalances);
+        account.setBalances(updatedMonies);
     }
 
     public Result<Void> checkNameChange( Account account , String newName) {

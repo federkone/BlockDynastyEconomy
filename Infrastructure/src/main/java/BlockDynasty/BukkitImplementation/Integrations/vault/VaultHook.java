@@ -2,6 +2,7 @@
 package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
@@ -9,7 +10,6 @@ import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -77,7 +77,7 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public boolean has(String playerName, double amount) {  //El jugador X tiene X cantidad de "dinero default"
-        Result<Balance> balanceResult = getBalanceUseCase.getBalance(playerName);
+        Result<Money> balanceResult = getBalanceUseCase.getBalance(playerName);
         if(balanceResult.isSuccess() ){
             return balanceResult.getValue().hasEnough(BigDecimal.valueOf(amount));
         }
@@ -103,7 +103,7 @@ public class VaultHook extends AbstractEconomy {
     @Override
     public double getBalance(String playerName) {
         //UtilServer.consoleLog("Lookup name: " + playerName);
-        Result<Balance> result = getBalanceUseCase.getBalance(playerName);
+        Result<Money> result = getBalanceUseCase.getBalance(playerName);
         if(result.isSuccess() ){
             return result.getValue().getAmount().doubleValue();
         }
@@ -113,7 +113,7 @@ public class VaultHook extends AbstractEconomy {
     //caso de uso obtener balance
     @Override
     public double getBalance(OfflinePlayer player) {
-        Result<Balance> result = getBalanceUseCase.getBalance(player.getName());
+        Result<Money> result = getBalanceUseCase.getBalance(player.getName());
         if(result.isSuccess() ){
             return result.getValue().getAmount().doubleValue();
         }

@@ -2,9 +2,9 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 
@@ -51,10 +51,10 @@ public class BalanceCommand implements CommandExecutor {
         }
 
         Scheduler.runAsync(ContextualTask.build(() -> {
-            Result<List<Balance>> resultBalances = balance.getBalances(target);
+            Result<List<Money>> resultBalances = balance.getBalances(target);
             if (resultBalances.isSuccess()) {
                 sender.sendMessage(Message.getBalanceMultiple().replace("{player}", target));
-                for (Balance entry : resultBalances.getValue()) {
+                for (Money entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
                     BigDecimal balance = entry.getAmount();
                     sender.sendMessage(Message.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));

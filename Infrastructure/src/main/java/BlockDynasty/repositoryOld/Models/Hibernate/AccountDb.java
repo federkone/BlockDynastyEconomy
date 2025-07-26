@@ -1,8 +1,8 @@
 package BlockDynasty.repositoryOld.Models.Hibernate;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import jakarta.persistence.*;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,8 +34,8 @@ public class AccountDb {
         this.uuid = account.getUuid().toString();
         this.nickname = account.getNickname();
         this.balances = new ArrayList<>();
-        for (Balance balance : account.getBalances()){
-            this.balances.add(new BalanceDb(balance));
+        for (Money money : account.getBalances()){
+            this.balances.add(new BalanceDb(money));
         }
         this.canReceiveCurrency = account.canReceiveCurrency();
     }
@@ -44,26 +44,26 @@ public class AccountDb {
         return new Account(UUID.fromString(uuid), nickname, balancesToEntity(), canReceiveCurrency);
     }
 
-    private List<Balance> balancesToEntity() {
+    private List<Money> balancesToEntity() {
         return  this.balances.stream()
                 .map(BalanceDb::toEntity)
                 .collect(Collectors.toList());
     }
 
     public void updateFromEntity(Account account) {
-        Map<String, Balance> balanceMap = account.getBalances().stream()
+        Map<String, Money> balanceMap = account.getBalances().stream()
                 .collect(Collectors.toMap(b -> b.getCurrency().getUuid().toString(), b -> b));
 
         for (BalanceDb balanceDb : this.balances) {
-            Balance updatedBalance = balanceMap.get(balanceDb.getCurrency().getUuid());
-            if (updatedBalance != null) {
-                balanceDb.setAmount(updatedBalance.getAmount());
+            Money updatedMoney = balanceMap.get(balanceDb.getCurrency().getUuid());
+            if (updatedMoney != null) {
+                balanceDb.setAmount(updatedMoney.getAmount());
                 balanceMap.remove(balanceDb.getCurrency().getUuid());
             }
         }
 
-        for (Balance newBalance : balanceMap.values()) {
-            this.balances.add(new BalanceDb(newBalance));
+        for (Money newMoney : balanceMap.values()) {
+            this.balances.add(new BalanceDb(newMoney));
         }
     }
 

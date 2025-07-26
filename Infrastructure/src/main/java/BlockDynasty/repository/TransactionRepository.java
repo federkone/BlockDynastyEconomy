@@ -7,7 +7,7 @@ import BlockDynasty.repository.Mappers.AccountMapper;
 import BlockDynasty.repository.Models.Hibernate.*;
 
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.transaction.ITransactions;
@@ -90,8 +90,8 @@ public class TransactionRepository  implements ITransactions {
     private void updateBalancesInDb(Account account, AccountDb accountDb, Session session) {
         WalletDb walletDb = accountDb.getWallet();
 
-        for (Balance balance : account.getBalances()) {
-            String currencyUuid = balance.getCurrency().getUuid().toString();
+        for (Money money : account.getBalances()) {
+            String currencyUuid = money.getCurrency().getUuid().toString();
 
             // Find the corresponding BalanceDb
             Optional<BalanceDb> existingBalance = walletDb.getBalances().stream()
@@ -100,7 +100,7 @@ public class TransactionRepository  implements ITransactions {
 
             if (existingBalance.isPresent()) {
                 // Update existing balance
-                existingBalance.get().setAmount(balance.getAmount());
+                existingBalance.get().setAmount(money.getAmount());
             } else {
                 // Create new balance
                 CurrencyDb currencyDb;
@@ -115,7 +115,7 @@ public class TransactionRepository  implements ITransactions {
 
                 BalanceDb newBalance = new BalanceDb();
                 newBalance.setCurrency(currencyDb);
-                newBalance.setAmount(balance.getAmount());
+                newBalance.setAmount(money.getAmount());
                 newBalance.setWallet(walletDb);
                 walletDb.getBalances().add(newBalance);
             }
@@ -358,7 +358,7 @@ public class TransactionRepository  implements ITransactions {
                 }
 
                 Account account = AccountMapper.toDomain(accountDb);
-                Result<Void> result = account.setBalance(currency, amount);
+                Result<Void> result = account.setMoney(currency, amount);
 
                 if (!result.isSuccess()) {
                     tx.rollback();

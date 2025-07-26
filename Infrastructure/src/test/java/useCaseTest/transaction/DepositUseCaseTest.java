@@ -59,7 +59,7 @@ public class DepositUseCaseTest {
         Result<Void> result = depositUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
 
         assertTrue( result.isSuccess(),"Expected success, but got: " + result.getErrorMessage() + " " + result.getErrorCode());
-        assertEquals(BigDecimal.valueOf(5000).setScale(2), getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(5000).setScale(2), getAccountsUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
     }
 
     /*@Test

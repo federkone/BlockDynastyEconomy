@@ -27,8 +27,8 @@ public class CrudAccountTest {
        currencyRepository.create(currency);
 
         Account account = new Account(UUID.randomUUID(), "nullplague");
-        account.setBalance(currency, BigDecimal.valueOf(1000));
-        account.setBalance(currency2, BigDecimal.valueOf(1000));
+        account.setMoney(currency, BigDecimal.valueOf(1000));
+        account.setMoney(currency2, BigDecimal.valueOf(1000));
         accountRepository.create(account);
 
         account.add(currency, BigDecimal.valueOf(1000));
@@ -36,7 +36,7 @@ public class CrudAccountTest {
 
         Account foundAccount = accountRepository.findByUuid(account.getUuid().toString());
         assertEquals(account.getUuid(), foundAccount.getUuid(), "The account UUID should match");
-        assertEquals(BigDecimal.valueOf(2000).setScale(2), foundAccount.getBalance(currency).getAmount(), "The account balance should match");
+        assertEquals(BigDecimal.valueOf(2000).setScale(2), foundAccount.getMoney(currency).getAmount(), "The account balance should match");
 
     }
 
@@ -49,12 +49,12 @@ public class CrudAccountTest {
         accountRepository.create(account);
 
         account.setNickname("updatedName");
-        account.setBalance(currency, BigDecimal.valueOf(1000));
+        account.setMoney(currency, BigDecimal.valueOf(1000));
         accountRepository.save(account);
 
         Account updatedAccount = accountRepository.findByUuid(account.getUuid().toString());
         assertEquals("updatedName", updatedAccount.getNickname());
-        assertEquals(BigDecimal.valueOf(1000).setScale(2), updatedAccount.getBalance(currency).getAmount());
+        assertEquals(BigDecimal.valueOf(1000).setScale(2), updatedAccount.getMoney(currency).getAmount());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class CrudAccountTest {
         currencyRepository.create(currency);
 
         Account account = new Account(UUID.randomUUID(), "nullplague");
-        account.setBalance(currency, BigDecimal.valueOf(1000));
+        account.setMoney(currency, BigDecimal.valueOf(1000));
         accountRepository.create(account);
 
         accountRepository.delete(account);

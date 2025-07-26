@@ -2,7 +2,7 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SetBalanceUseCaseTest {
+public class SetMoneyUseCaseTest {
     Account nullplague;
     Currency dinero;
     IRepository repository;
@@ -56,7 +56,7 @@ public class SetBalanceUseCaseTest {
         Result<Void> result = setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(1));
         assertTrue(result.isSuccess());
 
-        Result<Balance> accountResult = useCaseFactory.getGetBalanceUseCase().getBalance( nullplague.getNickname(), "dinero");
+        Result<Money> accountResult = useCaseFactory.getGetBalanceUseCase().getBalance( nullplague.getNickname(), "dinero");
         assertEquals(BigDecimal.valueOf(1), accountResult.getValue( ).getAmount());
     }
 

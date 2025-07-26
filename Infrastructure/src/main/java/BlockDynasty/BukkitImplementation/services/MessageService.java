@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.services;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -229,9 +229,9 @@ public class MessageService {
         StringBuilder aux = new StringBuilder();
         for (int i = 0; i < accounts.size(); i++) {
             Account account = accounts.get(i);
-            Balance balance = account.getBalance(nameCurrency);
-            Currency currency = balance.getCurrency();
-            BigDecimal balanceValue = balance.getAmount();
+            Money money = account.getMoney(nameCurrency);
+            Currency currency = money.getCurrency();
+            BigDecimal balanceValue = money.getAmount();
             //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
             aux.append(Message.getBalanceTop()
                     .replace("{number}", String.valueOf(i+1))

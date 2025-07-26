@@ -43,10 +43,10 @@ public class TransferUseCaseTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");
 
-        nullplague.setBalance(coin, BigDecimal.valueOf(0));
-        nullplague.setBalance(dinero, BigDecimal.valueOf(10000));
-        cris.setBalance(coin, BigDecimal.valueOf(0));
-        cris.setBalance(dinero, BigDecimal.valueOf(0));
+        nullplague.setMoney(coin, BigDecimal.valueOf(0));
+        nullplague.setMoney(dinero, BigDecimal.valueOf(10000));
+        cris.setMoney(coin, BigDecimal.valueOf(0));
+        cris.setMoney(dinero, BigDecimal.valueOf(0));
 
         repository = FactoryRepo.getDb();
 
@@ -85,8 +85,8 @@ public class TransferUseCaseTest {
         }*/
         Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance("dinero").getAmount().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney("dinero").getAmount().setScale(2));
     }
 
     @Test

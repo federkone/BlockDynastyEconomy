@@ -282,7 +282,7 @@ public class RepositorySql implements IRepository
 
         Account account = accountDb.toEntity();
         //---logica de negocio de la cuenta
-        Result<Void> result = account.setBalance(currency, amount);
+        Result<Void> result = account.setMoney(currency, amount);
        if (!result.isSuccess()) {
             tx.rollback();
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

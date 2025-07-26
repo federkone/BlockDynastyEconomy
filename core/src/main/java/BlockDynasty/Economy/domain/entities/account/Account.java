@@ -1,9 +1,9 @@
 package BlockDynasty.Economy.domain.entities.account;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.wallet.Wallet;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
@@ -20,9 +20,9 @@ public class Account implements IAccount {
         this.canReceiveCurrency = true;
     }
 
-    public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
+    public Account(UUID uuid, String nickname, List<Money> moneyList, boolean canReceiveCurrency) {
         this.player = new Player(uuid.toString(), nickname);
-        this.wallet = new Wallet(balanceList);
+        this.wallet = new Wallet(moneyList);
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
@@ -33,11 +33,11 @@ public class Account implements IAccount {
     }
 
     public Result<Void> subtract(Currency currency, BigDecimal amount){
-        Balance balance = getBalance(currency);
-        if (balance == null) {
+        Money money = getMoney(currency);
+        if (money == null) {
             return Result.failure("No balance found for currency" , ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         }
-        Result<Void> result = balance.subtract(amount);
+        Result<Void> result = money.subtract(amount);
         if (!result.isSuccess()) {
             return result;
         }
@@ -45,11 +45,11 @@ public class Account implements IAccount {
     }
 
     public Result<Void> add(Currency currency, BigDecimal amount) {
-        Balance balance = getBalance(currency);
-        if (balance == null) {
+        Money money = getMoney(currency);
+        if (money == null) {
             return Result.failure("No balance found for currency" , ErrorCode.ACCOUNT_NOT_HAVE_BALANCE);
         } else {
-            Result<Void> result = balance.add(amount);
+            Result<Void> result = money.add(amount);
             if (!result.isSuccess()) {
                 return result;
             }
@@ -57,12 +57,12 @@ public class Account implements IAccount {
         return Result.success(null);
     }
 
-    public Result<Void> setBalance(Currency currency, BigDecimal amount) {
-        Balance balance = getBalance(currency);
-        if (balance == null) {
+    public Result<Void> setMoney(Currency currency, BigDecimal amount) {
+        Money money = getMoney(currency);
+        if (money == null) {
             createBalance(currency, amount);
         }else{
-            Result<Void> result = balance.setAmount(amount);
+            Result<Void> result = money.setAmount(amount);
             if (!result.isSuccess()) {
                 return result;
             }
@@ -70,10 +70,10 @@ public class Account implements IAccount {
         return Result.success(null);
     }
 
-    public void setBalances(List<Balance> balances) {
-        this.wallet.setBalances(balances);
+    public void setBalances(List<Money> monies) {
+        this.wallet.setBalances(monies);
     }
-    public List<Balance> getBalances() {
+    public List<Money> getBalances() {
         return wallet.getBalances();
     }
 
@@ -81,44 +81,40 @@ public class Account implements IAccount {
         return wallet.hasCurrency(currencyName);
     }
 
-    public Balance getBalance(Currency currency) {
-        return wallet.getBalance(currency);
+    public Money getMoney(Currency currency) {
+        return wallet.getMoney(currency);
     }
 
-    public Balance getBalance(){
-        return wallet.getBalance();
+    public Money getMoney(){
+        return wallet.getMoney();
     }
 
-    public Balance getBalance(String currencyName){
-        return wallet.getBalance(currencyName);
+    public Money getMoney(String currencyName){
+        return wallet.getMoney(currencyName);
     }
 
     public boolean hasEnough(Currency currency, BigDecimal amount){
-        Balance balance = getBalance(currency);
-        if (balance == null) {
+        Money money = getMoney(currency);
+        if (money == null) {
             return false;
         }
-        return balance.hasEnough(amount);
+        return money.hasEnough(amount);
     }
 
-    @Override
     public Wallet getWallet() {
         return this.wallet;
     }
 
-    @Override
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
     }
 
-    ;
-
     public boolean hasEnoughDefaultCurrency(BigDecimal amount){
-        Balance balance = getBalance();
-        if (balance == null) {
+        Money money = getMoney();
+        if (money == null) {
             return false;
         }
-        return balance.hasEnough(amount);
+        return money.hasEnough(amount);
     };
 
     private void createBalance(Currency currency, BigDecimal amount) {

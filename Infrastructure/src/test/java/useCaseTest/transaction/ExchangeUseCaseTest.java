@@ -44,8 +44,8 @@ public class ExchangeUseCaseTest {
 
         // Increase the initial dinero balance to have enough for the test
         player = new Account(UUID.randomUUID(), "player");
-        player.setBalance(coin, BigDecimal.valueOf(100));
-        player.setBalance(dinero, BigDecimal.valueOf(40000)); // Increase from 10 to 40000
+        player.setMoney(coin, BigDecimal.valueOf(100));
+        player.setMoney(dinero, BigDecimal.valueOf(40000)); // Increase from 10 to 40000
 
         // Initialize repository and save data
         repository = FactoryRepo.getDb();
@@ -84,8 +84,8 @@ public class ExchangeUseCaseTest {
 
         // Verify balances were updated correctly
         Account updatedAccount = getAccountsUseCase.getAccount("player").getValue();
-        assertEquals(BigDecimal.valueOf(101).setScale(2), updatedAccount.getBalance(coin).getAmount().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getBalance(dinero).getAmount().doubleValue());
+        assertEquals(BigDecimal.valueOf(101).setScale(2), updatedAccount.getMoney(coin).getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getMoney(dinero).getAmount().doubleValue());
     }
 
     //errores a evaluar:  cuenta no encontrada,moneda no encontrada, monto negativo, saldo insuficiente.

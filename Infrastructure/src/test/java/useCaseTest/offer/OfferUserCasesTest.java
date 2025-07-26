@@ -61,10 +61,10 @@ public class OfferUserCasesTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");
 
-        nullplague.setBalance(dollar, BigDecimal.valueOf(1000));
-        nullplague.setBalance(coin, BigDecimal.valueOf(1000));
-        cris.setBalance(dollar, BigDecimal.valueOf(1000));
-        cris.setBalance(coin, BigDecimal.valueOf(1000));
+        nullplague.setMoney(dollar, BigDecimal.valueOf(1000));
+        nullplague.setMoney(coin, BigDecimal.valueOf(1000));
+        cris.setMoney(dollar, BigDecimal.valueOf(1000));
+        cris.setMoney(coin, BigDecimal.valueOf(1000));
 
         accountService.addAccountToCache(nullplague);
         accountService.addAccountToCache(cris);
@@ -100,10 +100,10 @@ public class OfferUserCasesTest {
 
         assertEquals(true, result.isSuccess(), result.getErrorMessage()+ " " + result.getErrorCode());
         assertEquals(false, offerService.hasOfferTo(cris.getUuid()), "Offer should be removed after acceptance");
-        assertEquals(BigDecimal.valueOf(900).setScale(2), nullplague.getBalance(dollar).getAmount(), "Sender's dollar balance should be reduced");
-        assertEquals(BigDecimal.valueOf(1200).setScale(2), nullplague.getBalance(coin).getAmount(), "Sender's coin balance should be increased");
-        assertEquals(BigDecimal.valueOf(1100).setScale(2), cris.getBalance(dollar).getAmount(), "Receiver's dollar balance should be increased");
-        assertEquals(BigDecimal.valueOf(800).setScale(2), cris.getBalance(coin).getAmount(), "Receiver's coin balance should be reduced");
+        assertEquals(BigDecimal.valueOf(900).setScale(2), nullplague.getMoney(dollar).getAmount(), "Sender's dollar balance should be reduced");
+        assertEquals(BigDecimal.valueOf(1200).setScale(2), nullplague.getMoney(coin).getAmount(), "Sender's coin balance should be increased");
+        assertEquals(BigDecimal.valueOf(1100).setScale(2), cris.getMoney(dollar).getAmount(), "Receiver's dollar balance should be increased");
+        assertEquals(BigDecimal.valueOf(800).setScale(2), cris.getMoney(coin).getAmount(), "Receiver's coin balance should be reduced");
     }
 
     @Test

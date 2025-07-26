@@ -1,9 +1,9 @@
 package BlockDynasty.Economy.aplication.useCase.account;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -61,10 +61,10 @@ public class CreateAccountUseCase {
     }
 
     private void initializeAccountWithDefaultCurrencies(Account account) {
-        List<Balance> balances =  this.currencyService.getCurrencies().stream()
-                .map(Balance::new)
+        List<Money> monies =  this.currencyService.getCurrencies().stream()
+                .map(Money::new)
                 .collect(Collectors.toList());
-        account.setBalances(balances);
+        account.setBalances(monies);
     }
 
 }

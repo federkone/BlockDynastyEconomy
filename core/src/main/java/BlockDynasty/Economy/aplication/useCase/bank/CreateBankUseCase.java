@@ -1,6 +1,6 @@
 package BlockDynasty.Economy.aplication.useCase.bank;
 
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IBankService;
@@ -15,7 +15,7 @@ public class CreateBankUseCase {
         this.bankService = bankService;
     }
 
-    public Result<Void> execute(String bankName, String creatorName, List<Balance> balances) {
+    public Result<Void> execute(String bankName, String creatorName, List<Money> monies) {
         if(bankService.bankExists(bankName)) {
             return Result.failure("Bank already exists", ErrorCode.BANK_ALREADY_EXISTS);
 
@@ -28,7 +28,7 @@ public class CreateBankUseCase {
             return Result.failure("Creator name cannot be empty",ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
-        if (balances == null || balances.isEmpty()) {
+        if (monies == null || monies.isEmpty()) {
             return Result.failure("Balances cannot be empty", ErrorCode.BANK_NOT_HAVE_CURRENCY);
         }
 

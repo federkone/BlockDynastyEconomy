@@ -1,7 +1,7 @@
 package BlockDynasty.repository.Mappers;
 
 import BlockDynasty.repository.Models.Hibernate.WalletDb;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.wallet.Wallet;
 
 import java.util.List;
@@ -26,9 +26,9 @@ public class WalletMapper {
     if (entity == null) {
         return null;
     }
-        List<Balance> balances = entity.getBalances().stream()
+        List<Money> monies = entity.getBalances().stream()
                 .map(BalanceMapper::toDomain)
                 .collect(Collectors.toList());
-        return new Wallet(balances);
+        return new Wallet(monies);
     }
 }

@@ -1,7 +1,7 @@
 package BlockDynasty.repository.Models.MongoDb;
 import  dev.morphia.annotations.*;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +36,7 @@ public class AccountMongoDb {
         return new Account(this.uuid,this.nickname,balancesToEntity(), this.canReceiveCurrency);
     }
 
-    private List<Balance> balancesToEntity() {
+    private List<Money> balancesToEntity() {
         return this.balances.stream()
                 .map(BalanceMongoDb::toEntity)
                 .collect(Collectors.toList());

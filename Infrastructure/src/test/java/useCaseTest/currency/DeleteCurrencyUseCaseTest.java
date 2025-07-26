@@ -1,12 +1,12 @@
 package useCaseTest.currency;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
@@ -49,8 +49,8 @@ public class DeleteCurrencyUseCaseTest {
 
         Result<Account> account = getAccountsUseCase.getAccount("Nullplague");
 
-        for (Balance balance : account.getValue().getBalances()) {
-            System.out.println(balance.getCurrency().getSingular());
+        for (Money money : account.getValue().getBalances()) {
+            System.out.println(money.getCurrency().getSingular());
         }
 
         assertEquals(1, getAccountsUseCase.getAccount("Nullplague").getValue().getBalances().size());

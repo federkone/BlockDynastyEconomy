@@ -2,7 +2,7 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -60,7 +60,7 @@ public class WithdrawUseCaseTest {
     void withdrawUseCaseTestWithFounds() {
         Result<Void> result =withdrawUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
         assertEquals(true, result.isSuccess());
-        Result<Balance> accountResult = useCaseFactory.getGetBalanceUseCase().getBalance(nullplague.getUuid(),"dinero");
+        Result<Money> accountResult = useCaseFactory.getGetBalanceUseCase().getBalance(nullplague.getUuid(),"dinero");
         assertEquals(0,accountResult.getValue().getAmount().compareTo(BigDecimal.valueOf(0 )));
     }
 

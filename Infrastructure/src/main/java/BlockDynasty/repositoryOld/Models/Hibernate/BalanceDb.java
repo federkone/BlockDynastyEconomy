@@ -1,7 +1,7 @@
 package BlockDynasty.repositoryOld.Models.Hibernate;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import jakarta.persistence.*;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 
 import java.math.BigDecimal;
 
@@ -21,14 +21,14 @@ public class BalanceDb  {
 
     public BalanceDb() {
     }
-    public BalanceDb(Balance balance){
-        this.currency = new CurrencyDb(balance.getCurrency());
-        this.amount = balance.getAmount();
+    public BalanceDb(Money money){
+        this.currency = new CurrencyDb(money.getCurrency());
+        this.amount = money.getAmount();
     }
 
 
-    public Balance toEntity(){
-        return new Balance(currency.toEntity(), amount);
+    public Money toEntity(){
+        return new Money(currency.toEntity(), amount);
     }
 
     public CurrencyDb getCurrency() {

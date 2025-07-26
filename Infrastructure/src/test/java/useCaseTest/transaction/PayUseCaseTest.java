@@ -46,12 +46,12 @@ public class PayUseCaseTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");
 
-        nullplague.setBalance(plata, BigDecimal.valueOf(1000));
-        nullplague.setBalance(coin, BigDecimal.valueOf(0));
-        nullplague.setBalance(dinero, BigDecimal.valueOf(10000));
-        cris.setBalance(plata, BigDecimal.valueOf(1000));
-        cris.setBalance(coin, BigDecimal.valueOf(0));
-        cris.setBalance(dinero, BigDecimal.valueOf(0));
+        nullplague.setMoney(plata, BigDecimal.valueOf(1000));
+        nullplague.setMoney(coin, BigDecimal.valueOf(0));
+        nullplague.setMoney(dinero, BigDecimal.valueOf(10000));
+        cris.setMoney(plata, BigDecimal.valueOf(1000));
+        cris.setMoney(coin, BigDecimal.valueOf(0));
+        cris.setMoney(dinero, BigDecimal.valueOf(0));
 
         repository = FactoryRepo.getDb();
 
@@ -79,8 +79,8 @@ public class PayUseCaseTest {
         Result<Void> result = payUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
         assertTrue(result.isSuccess());
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
     @Test
@@ -114,8 +114,8 @@ public class PayUseCaseTest {
         Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
 
-        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
 

@@ -1,11 +1,11 @@
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
@@ -154,21 +154,21 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
 
             return Message.getBalanceTop()
                     .replace("{number}", String.valueOf(position + 1))
-                    .replace("{currencycolor}", "" + ChatColor.valueOf(account.getBalance(currencyName).getCurrency().getColor()) )
+                    .replace("{currencycolor}", "" + ChatColor.valueOf(account.getMoney(currencyName).getCurrency().getColor()) )
                     .replace("{player}", account.getNickname())
-                    .replace("{balance}", account.getBalance(currencyName).getCurrency().format(account.getBalance(currencyName).getAmount()));
+                    .replace("{balance}", account.getMoney(currencyName).getCurrency().format(account.getMoney(currencyName).getAmount()));
         }
 
         // Construir el resultado completo si no se solicitó una posición específica
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < topAccounts.size(); i++) {
             Account account = topAccounts.get(i);
-            Balance balance = account.getBalance(currencyName);
+            Money money = account.getMoney(currencyName);
             result.append(Message.getBalanceTop()
                     .replace("{number}", String.valueOf(i + 1))
-                    .replace("{currencycolor}", "" + ChatColor.valueOf(balance.getCurrency().getColor()))
+                    .replace("{currencycolor}", "" + ChatColor.valueOf(money.getCurrency().getColor()))
                     .replace("{player}", account.getNickname())
-                    .replace("{balance}", balance.getCurrency().format(balance.getAmount())));
+                    .replace("{balance}", money.getCurrency().format(money.getAmount())));
             /*result.append(i + 1).append(". ")
                     .append(account.getNickname()).append(": ")
                     //.append(balance.getBalance()).append(" ").append(balance.getCurrency().format());
@@ -186,11 +186,11 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
     // %blockdynastyeconomy_balance_dinero_formatted%
     private String handleBalancePlaceholder(String placeholder, Account account, Currency defaultCurrency) {
         if (placeholder.equals("balance_default")) {
-            return String.valueOf(Math.round(account.getBalance(defaultCurrency).getAmount().doubleValue()));
+            return String.valueOf(Math.round(account.getMoney(defaultCurrency).getAmount().doubleValue()));
         }
 
         if (placeholder.equals("balance_default_formatted")) {
-            return defaultCurrency.format(account.getBalance(defaultCurrency).getAmount());
+            return defaultCurrency.format(account.getMoney(defaultCurrency).getAmount());
         }
 
         // Manejar balances de otras monedas (ejemplo: %blockdynastyeconomy_balance_dinero%)
@@ -209,10 +209,10 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
            // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
-            return ChatColor.valueOf(currency.getColor()) + currency.format(account.getBalance(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
+            return ChatColor.valueOf(currency.getColor()) + currency.format(account.getMoney(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
             //return currency.format(account.getBalance(currency).getBalance());
-            return String.valueOf(account.getBalance(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
+            return String.valueOf(account.getMoney(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
         }
     }
 

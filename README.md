@@ -21,7 +21,7 @@ Todo list:
 
 
 -placeholder for top currency holders (ex: %gemseco_<currency>_top_#_#%)- check
--añadir al placeholder la posibilidad de tener el balance ademas de formateado con simbolo o sin simbolo -CHECK
+-añadir al placeholder la posibilidad de tener el money ademas de formateado con simbolo o sin simbolo -CHECK
 
 
 ---->
@@ -64,7 +64,7 @@ Todo list:
 
 /exchange           #intercambiar monedas
 
-/balance            #ver balances
+/money            #ver monies
 
 /baltop             #ver top
 

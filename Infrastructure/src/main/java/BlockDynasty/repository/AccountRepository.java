@@ -1,5 +1,6 @@
 package BlockDynasty.repository;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import BlockDynasty.Economy.domain.persistence.Exceptions.RepositoryException;
@@ -9,7 +10,6 @@ import BlockDynasty.repository.Models.Hibernate.*;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountAlreadyExist;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.entities.IAccountRepository;
 import org.hibernate.Session;
@@ -133,8 +133,8 @@ public class AccountRepository implements IAccountRepository {
     }
     // Helper method similar to what's in TransactionRepository
     private void updateBalancesInWallet(Account account, WalletDb walletDb, Session session) {
-        for (Balance balance : account.getBalances()) {
-            String currencyUuid = balance.getCurrency().getUuid().toString();
+        for (Money money : account.getBalances()) {
+            String currencyUuid = money.getCurrency().getUuid().toString();
 
             // Find existing balance by currency
             Optional<BalanceDb> existingBalance = walletDb.getBalances().stream()
@@ -143,7 +143,7 @@ public class AccountRepository implements IAccountRepository {
 
             if (existingBalance.isPresent()) {
                 // Update existing balance amount
-                existingBalance.get().setAmount(balance.getAmount());
+                existingBalance.get().setAmount(money.getAmount());
             } else {
                 // Create new balance
                 try {
@@ -154,7 +154,7 @@ public class AccountRepository implements IAccountRepository {
 
                     BalanceDb newBalance = new BalanceDb();
                     newBalance.setCurrency(currencyDb);
-                    newBalance.setAmount(balance.getAmount());
+                    newBalance.setAmount(money.getAmount());
                     newBalance.setWallet(walletDb);
                     walletDb.getBalances().add(newBalance);
                 } catch (NoResultException e) {
@@ -221,8 +221,8 @@ public class AccountRepository implements IAccountRepository {
                 accountDb.setWallet(walletDb);
 
                 // Process balances
-                for (Balance domainBalance : account.getBalances()) {
-                    String currencyUuid = domainBalance.getCurrency().getUuid().toString();
+                for (Money domainMoney : account.getBalances()) {
+                    String currencyUuid = domainMoney.getCurrency().getUuid().toString();
 
                     CurrencyDb currencyDb = session.createQuery(
                                     "FROM CurrencyDb WHERE uuid = :uuid", CurrencyDb.class)
@@ -231,7 +231,7 @@ public class AccountRepository implements IAccountRepository {
 
                     BalanceDb balanceDb = new BalanceDb();
                     balanceDb.setCurrency(currencyDb);
-                    balanceDb.setAmount(domainBalance.getAmount());
+                    balanceDb.setAmount(domainMoney.getAmount());
                     balanceDb.setWallet(walletDb);
                     walletDb.getBalances().add(balanceDb);
                 }

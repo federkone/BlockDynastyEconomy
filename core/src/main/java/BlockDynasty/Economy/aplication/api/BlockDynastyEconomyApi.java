@@ -2,11 +2,11 @@ package BlockDynasty.Economy.aplication.api;
 
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.*;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
@@ -58,7 +58,7 @@ public class BlockDynastyEconomyApi implements Api {
     }
 
     public double getBalance(UUID uuid){
-        Result<Balance> balanceResult =  this.getBalanceUseCase.getBalance(uuid);
+        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve default balance: " + balanceResult.getErrorMessage());
         }
@@ -66,7 +66,7 @@ public class BlockDynastyEconomyApi implements Api {
     }
 
     public double getBalance(UUID uuid, String currency) {
-        Result<Balance> balanceResult =  this.getBalanceUseCase.getBalance(uuid, currency);
+        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid, currency);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance for currency '" + currency + "': " + balanceResult.getErrorMessage());
         }

@@ -1,10 +1,9 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,10 +33,10 @@ public class BalanceGUI extends AbstractGUI {
     }
 
     private void setupGUI() {
-        Result<List<Balance>> result = getBalanceUseCase.getBalances(player.getUniqueId());
+        Result<List<Money>> result = getBalanceUseCase.getBalances(player.getUniqueId());
 
         if (result.isSuccess() && result.getValue() != null) {
-            List<Balance> balances = result.getValue();
+            List<Money> monies = result.getValue();
 
             // Add title item
             setItem(4, createItem(Material.BOOK, "§6Balance de tu cuenta",
@@ -45,10 +44,10 @@ public class BalanceGUI extends AbstractGUI {
 
             // Display each balance in separate slots
             int slot = 10;
-            for (Balance balance : balances) {
-                String currencyName = balance.getCurrency().getSingular();
-                BigDecimal amount = balance.getAmount();
-                Currency currency = balance.getCurrency();
+            for (Money money : monies) {
+                String currencyName = money.getCurrency().getSingular();
+                BigDecimal amount = money.getAmount();
+                Currency currency = money.getCurrency();
 
                 setItem(slot, createItem(Material.GOLD_INGOT,
                         "§6" + currencyName,

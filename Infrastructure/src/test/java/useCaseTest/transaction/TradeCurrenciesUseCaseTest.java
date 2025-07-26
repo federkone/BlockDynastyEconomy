@@ -49,10 +49,10 @@ public class TradeCurrenciesUseCaseTest {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");
 
-        nullplague.setBalance(coin, BigDecimal.valueOf(1));
-        nullplague.setBalance(dinero, BigDecimal.valueOf(0));
-        cris.setBalance(coin, BigDecimal.valueOf(0));
-        cris.setBalance(dinero, BigDecimal.valueOf(30000));
+        nullplague.setMoney(coin, BigDecimal.valueOf(1));
+        nullplague.setMoney(dinero, BigDecimal.valueOf(0));
+        cris.setMoney(coin, BigDecimal.valueOf(0));
+        cris.setMoney(dinero, BigDecimal.valueOf(30000));
 
         repository = FactoryRepo.getDb();
 
@@ -101,16 +101,16 @@ public class TradeCurrenciesUseCaseTest {
             fail("Exception"+ e);
         }
 
-        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(coin).getAmount());
     }
 
     @Test
     void TradeCurrencyUseCseTestInsufficientFounds(){
         Result<Void> result = tradeCurrenciesUseCase.execute("nullplague","cris","Coin","dinero",BigDecimal.valueOf(2),BigDecimal.valueOf(30000));
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
-        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getBalance(coin).getAmount());
-        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getBalance(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
 

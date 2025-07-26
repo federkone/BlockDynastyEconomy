@@ -1,10 +1,10 @@
 package BlockDynasty.repository.Mappers;
 
+import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.repository.Models.Hibernate.BalanceDb;
-import BlockDynasty.Economy.domain.entities.balance.Balance;
 
 public class BalanceMapper {
-    public static BalanceDb toEntity(Balance domain) {
+    public static BalanceDb toEntity(Money domain) {
         if (domain == null) return null;
 
         BalanceDb entity = new BalanceDb();
@@ -14,10 +14,10 @@ public class BalanceMapper {
     }
 
 
-    public static Balance toDomain(BalanceDb entity) {
+    public static Money toDomain(BalanceDb entity) {
         if (entity == null) {
             return null;
         }
-        return new Balance(CurrencyMapper.toDomain(entity.getCurrency()), entity.getAmount() );
+        return new Money(CurrencyMapper.toDomain(entity.getCurrency()), entity.getAmount() );
     }
 }
