@@ -4,8 +4,8 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,18 +26,18 @@ public class SetCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (!sender.hasPermission("gemseconomy.command.set")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.set")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
 
         if (args.length == 0) {
-            F.getManageHelp(sender);  //todo el mensaje de eco help
+            Message.getManageHelp(sender);  //todo el mensaje de eco help
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage(F.getSetUsage());
+            sender.sendMessage(Message.getSetUsage());
             return true;
         }
 
@@ -49,7 +49,7 @@ public class SetCommand implements CommandExecutor {
         try {
             amount = Double.parseDouble(montoString);
         } catch (NumberFormatException e) {
-            sender.sendMessage(F.getUnvalidAmount());
+            sender.sendMessage(Message.getUnvalidAmount());
             return true;
         }
 
@@ -67,7 +67,7 @@ public class SetCommand implements CommandExecutor {
                         targetPlayer.sendMessage(messageService.getSetSuccess( currencyName, BigDecimal.valueOf(finalMount)));
                     }
                 }else{
-                    messageService.sendErrorMessage(result.getErrorCode(),sender,target);
+                    messageService.sendErrorMessage(result.getErrorCode(),sender,currencyName);
                 }
             };
 

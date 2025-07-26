@@ -2,8 +2,8 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,7 +28,7 @@ public class CreateOfferCommand implements CommandExecutor {
 
         //SI LOS ARGUMENTOS SON MENOR A 5
         if (args.length != 5) {
-            sender.sendMessage(F.getOfferUsageCreate()); //subcomando de eco
+            sender.sendMessage(Message.getOfferUsageCreate()); //subcomando de eco
             return false;
         }
         //INTENTAR PARSEAR LOS MONTOS SINO INFORMAR ERROR
@@ -49,22 +49,22 @@ public class CreateOfferCommand implements CommandExecutor {
 
         //si target no existe no se puede ofertar o no esta en linea
         if (target == null || !target.isOnline()) {
-            sender.sendMessage(F.getOfflinePlayer());
+            sender.sendMessage(Message.getOfflinePlayer());
             return false;
         }
 
         Player player = (Player) sender;
 
-        if(F.getEnableDistanceLimitOffer()){
-            double distance =F.getDistanceLimitOffer();
+        if(Message.getEnableDistanceLimitOffer()){
+            double distance = Message.getDistanceLimitOffer();
             if(player.getLocation().distance(target.getLocation())>distance){
-                sender.sendMessage(F.getTooFar(distance));
+                sender.sendMessage(Message.getTooFar(distance));
                 return false;
             }
         }
 
         if(player.getName().equals(target.getName())){        // SI SE ESTA INTENTANDO OFRECER A SI MISMO
-            sender.sendMessage(F.getOfferYourself());
+            sender.sendMessage(Message.getOfferYourself());
             return false;
         }
 
@@ -79,7 +79,7 @@ public class CreateOfferCommand implements CommandExecutor {
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             //target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());
         }else{
-            messageService.sendErrorMessage(result.getErrorCode(),player,target.getName());
+            messageService.sendErrorMessage(result.getErrorCode(),player,tipoCantidad);
         }
         return false;
     }

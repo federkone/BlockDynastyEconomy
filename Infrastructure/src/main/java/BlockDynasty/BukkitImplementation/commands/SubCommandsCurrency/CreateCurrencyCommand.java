@@ -2,11 +2,10 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +22,7 @@ public class CreateCurrencyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(F.getCurrencyUsage_Create());
+            sender.sendMessage(Message.getCurrencyUsage_Create());
             return true;
         }
 
@@ -33,11 +32,11 @@ public class CreateCurrencyCommand implements CommandExecutor {
         Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 createCurrencyUseCase.createCurrency(single, plural);
-                sender.sendMessage(F.getPrefix() + "§7Created currency: §a" + single);
+                sender.sendMessage(Message.getPrefix() + "§7Created currency: §a" + single);
             } catch (CurrencyAlreadyExist e) {
-                sender.sendMessage(F.getPrefix() + "§cCurrency Already Exist.");
+                sender.sendMessage(Message.getPrefix() + "§cCurrency Already Exist.");
             } catch (TransactionException e) {
-                sender.sendMessage(F.getPrefix() + "§cAn error occurred while creating the currency.");
+                sender.sendMessage(Message.getPrefix() + "§cAn error occurred while creating the currency.");
             }
         }));
 

@@ -2,12 +2,11 @@ package BlockDynasty.BukkitImplementation.commands;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,8 +14,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-
-//TODO PENSAR SI USAR CACHE O NO. QUIZAS NO ES NECESARIO
 public class BalanceTopCommand implements CommandExecutor {
     private final GetAccountsUseCase getAccountsUseCase;
     private final MessageService messageService;
@@ -28,8 +25,8 @@ public class BalanceTopCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("gemseconomy.command.baltop")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.baltop")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
 
@@ -62,13 +59,6 @@ public class BalanceTopCommand implements CommandExecutor {
 
             }else{
                 messageService.sendErrorMessage(resultAccounts.getErrorCode(),sender, nameCurrency);
-                /*switch (resultAccounts.getErrorCode()){
-                    case ACCOUNT_NOT_FOUND ->   sender.sendMessage(F.getBalanceTopEmpty());
-                    case INVALID_ARGUMENT ->  sender.sendMessage("invalid argument");
-                    case REPOSITORY_NOT_SUPPORT_TOP ->sender.sendMessage("No support top");
-                    case DATA_BASE_ERROR ->   sender.sendMessage("Error in query");
-                    default -> sender.sendMessage("Unknown error");
-                }*/
             }
 
         }));

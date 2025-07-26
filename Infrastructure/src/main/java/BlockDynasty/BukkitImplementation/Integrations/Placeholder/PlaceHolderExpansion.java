@@ -3,7 +3,7 @@ package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Balance;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -152,7 +152,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
             /*return (position + 1) + ". " + account.getNickname() + ": " +
                     account.getBalance(currencyName).getBalance() + " " + currencyName;*/
 
-            return F.getBalanceTop()
+            return Message.getBalanceTop()
                     .replace("{number}", String.valueOf(position + 1))
                     .replace("{currencycolor}", "" + ChatColor.valueOf(account.getBalance(currencyName).getCurrency().getColor()) )
                     .replace("{player}", account.getNickname())
@@ -164,7 +164,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
         for (int i = 0; i < topAccounts.size(); i++) {
             Account account = topAccounts.get(i);
             Balance balance = account.getBalance(currencyName);
-            result.append(F.getBalanceTop()
+            result.append(Message.getBalanceTop()
                     .replace("{number}", String.valueOf(i + 1))
                     .replace("{currencycolor}", "" + ChatColor.valueOf(balance.getCurrency().getColor()))
                     .replace("{player}", account.getNickname())

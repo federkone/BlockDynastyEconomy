@@ -4,7 +4,7 @@ import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
 import BlockDynasty.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
 import BlockDynasty.BukkitImplementation.GUI.listeners.GUIListener;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;

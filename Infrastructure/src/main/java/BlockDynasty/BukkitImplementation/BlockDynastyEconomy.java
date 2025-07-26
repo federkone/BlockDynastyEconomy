@@ -8,11 +8,11 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
-import BlockDynasty.BukkitImplementation.config.log.VaultLogger;
+import BlockDynasty.BukkitImplementation.logs.VaultLogger;
 import BlockDynasty.BukkitImplementation.config.file.Configuration;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.BukkitImplementation.commands.CommandRegister;
-import BlockDynasty.BukkitImplementation.config.log.EconomyLogger;
+import BlockDynasty.BukkitImplementation.logs.EconomyLogger;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
 
 import BlockDynasty.Economy.aplication.api.Api;

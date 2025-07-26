@@ -2,10 +2,9 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +23,7 @@ public class ListCommand implements CommandExecutor {
 
         Scheduler.runAsync(ContextualTask.build(() -> {
             List<Currency> currencies = getCurrencyUseCase.getCurrencies();
-            sender.sendMessage(F.getPrefix() + "§7There are §f" + currencies.size() + "§7 currencies.");
+            sender.sendMessage(Message.getPrefix() + "§7There are §f" + currencies.size() + "§7 currencies.");
             for (Currency currency : currencies) {
                 sender.sendMessage("§a§l>> §e" + currency.getSingular());
             }

@@ -2,11 +2,10 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +39,7 @@ public class EditColorCoommand implements CommandExecutor {
             sender.sendMessage("§e§lYELLOW §7= yellow");
             sender.sendMessage("§f§lWHITE §7= white|reset");
 
-            sender.sendMessage(F.getCurrencyUsage_Color());
+            sender.sendMessage(Message.getCurrencyUsage_Color());
             return true;
         }
 
@@ -51,11 +50,11 @@ public class EditColorCoommand implements CommandExecutor {
         Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 editCurrencyUseCase.editColor(currencyName, colorString);
-                sender.sendMessage(F.getPrefix() + "§7Color for §f" + currencyName + " §7updated: " + colorString);
+                sender.sendMessage(Message.getPrefix() + "§7Color for §f" + currencyName + " §7updated: " + colorString);
             } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
+                sender.sendMessage(Message.getUnknownCurrency());
             } catch (CurrencyColorUnformat e) {
-                sender.sendMessage(F.getPrefix() + "§cInvalid chat color.");
+                sender.sendMessage(Message.getPrefix() + "§cInvalid chat color.");
             }
 
         }));

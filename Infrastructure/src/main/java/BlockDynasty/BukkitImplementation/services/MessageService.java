@@ -1,4 +1,5 @@
-package BlockDynasty.BukkitImplementation.config.file;
+package BlockDynasty.BukkitImplementation.services;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -26,10 +27,10 @@ public class MessageService {
                 sender.sendMessage(getInsufficientFundsMessage(currencyName));
                 break;
             case ACCOUNT_NOT_HAVE_BALANCE:
-                sender.sendMessage(F.getInsufficientFunds());
+                sender.sendMessage(Message.getInsufficientFunds());
                 break;
             case CURRENCY_NOT_FOUND:
-                sender.sendMessage(F.getUnknownCurrency());
+                sender.sendMessage(Message.getUnknownCurrency());
                 break;
             case INVALID_AMOUNT:
             case DECIMAL_NOT_SUPPORTED:
@@ -39,19 +40,22 @@ public class MessageService {
                 sender.sendMessage(getUnexpectedErrorMessage());
                 break;
             case OFFER_ALREADY_EXISTS:
-                sender.sendMessage(F.getAlreadyOffer());
+                sender.sendMessage(Message.getAlreadyOffer());
                 break;
             case ACCOUNT_CAN_NOT_RECEIVE:
-                sender.sendMessage(F.getCannotReceive());
+                sender.sendMessage(Message.getCannotReceive());
                 break;
             case OFFER_NOT_FOUND:
-                sender.sendMessage(F.getNotOffers());
+                sender.sendMessage(Message.getNotOffers());
                 break;
             case INVALID_ARGUMENT:
                 sender.sendMessage("invalid argument");
             break;
             case REPOSITORY_NOT_SUPPORT_TOP:
                 sender.sendMessage("No support top");
+            case CURRENCY_NOT_PAYABLE:
+                sender.sendMessage(getCurrencyNotPayableMessage(currencyName));
+                break;
             default:
                 sender.sendMessage(getUnexpectedErrorMessage());
                 break;
@@ -59,11 +63,11 @@ public class MessageService {
     }
 
     public String getPayNoPerms() {
-        return F.getPayNoPerms();
+        return Message.getPayNoPerms();
     }
 
     public String getPayYourselfMessage() {
-        return F.getPayYourself();
+        return Message.getPayYourself();
     }
 
     public String getInsufficientFundsMessage(String currencyName) {
@@ -71,21 +75,21 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found"; // Manejo de errores interno si no se encuentra la moneda
         }
-        return F.getInsufficientFunds()
+        return Message.getInsufficientFunds()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{currency}", currency.getPlural());
     }
 
     public String getAccountNotFoundMessage() {
-        return F.getPlayerDoesNotExist();
+        return Message.getPlayerDoesNotExist();
     }
 
     public String getPayUsage() {
-        return F.getPayUsage();
+        return Message.getPayUsage();
     }
 
     public String getUnvalidAmount() {
-        return F.getUnvalidAmount();
+        return Message.getUnvalidAmount();
     }
 
     public String getCurrencyNotPayableMessage(String currencyName) {
@@ -93,13 +97,13 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found";
         }
-        return F.getCurrencyNotPayable()
+        return Message.getCurrencyNotPayable()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{currency}", currency.getPlural());
     }
 
     public String getCannotReceiveMessage(String playerName) {
-        return F.getCannotReceive()
+        return Message.getCannotReceive()
                 .replace("{player}", playerName);
     }
 
@@ -112,7 +116,7 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found";
         }
-        return F.getPayerMessage()
+        return Message.getPayerMessage()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", targetName);
@@ -123,7 +127,7 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found";
         }
-        return F.getPaidMessage()
+        return Message.getPaidMessage()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", payerName);
@@ -132,7 +136,7 @@ public class MessageService {
     public String getExchangeSuccess( String toExchange, BigDecimal toExchangeAmount, String toReceive) {
         Currency currencyTo = currencyService.getCurrency(toExchange);
         Currency currencyToRecive = currencyService.getCurrency(toReceive);
-        return F.getExchangeSuccess()
+        return Message.getExchangeSuccess()
                 .replace("{currencycolor}", "" + ChatColor.valueOf(currencyTo.getColor()))
                 .replace("{ex_curr}", currencyTo.format(toExchangeAmount))
                 .replace("{currencycolor2}", "" + ChatColor.valueOf(currencyToRecive.getColor()))
@@ -143,7 +147,7 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found";
         }
-        return F.getTakeMessage()
+        return Message.getTakeMessage()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor())+ "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", target);
@@ -154,7 +158,7 @@ public class MessageService {
         if (currency == null) {
             return "Currency not found";
         }
-        return F.getAddMessage()
+        return Message.getAddMessage()
                 .replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amount}", currency.format(amount))
                 .replace("{player}", target);
@@ -163,7 +167,7 @@ public class MessageService {
     public String getOfferSendMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
         Currency currency = currencyService.getCurrency(currencyName);
         Currency currency2 = currencyService.getCurrency(currencyName2);
-        return F.getOfferSender()
+        return Message.getOfferSender()
                 .replace("{currencycolorOffert}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amountOffert}",  currency.format(amount))
                 .replace("{currencycolorValue}", ChatColor.valueOf(currency2.getColor()) + "")
@@ -175,7 +179,7 @@ public class MessageService {
     public String getOfferReceiveMessage(String target, String currencyName, BigDecimal amount, String currencyName2, BigDecimal amount2) {
         Currency currency = currencyService.getCurrency(currencyName);
         Currency currency2 = currencyService.getCurrency(currencyName2);
-        return F.getOfferReceiver()
+        return Message.getOfferReceiver()
                 .replace("{currencycolorOffert}", ChatColor.valueOf(currency.getColor()) + "")
                 .replace("{amountOffert}",  currency.format(amount))
                 .replace("{currencycolorValue}", ChatColor.valueOf(currency2.getColor()) + "")
@@ -184,41 +188,41 @@ public class MessageService {
     }
 
     public String getOfferCancelMessage(String target) {
-        return F.getOfferCancel()
+        return Message.getOfferCancel()
                 .replace("{player}", target);
     }
 
     public String getOfferCancelToMessage(String target) {
-        return F.getOfferCancelTo()
+        return Message.getOfferCancelTo()
                 .replace("{player}", target);
     }
 
     public String getOfferDenyMessage(String target) {
-        return F.getOfferDeny()
+        return Message.getOfferDeny()
                 .replace("{player}", target);
     }
 
     public String getOfferDenyToMessage(String target) {
-        return F.getOfferDenyTo()
+        return Message.getOfferDenyTo()
                 .replace("{player}", target);
     }
 
     public String getOfferAcceptMessage(String target) {
-        return F.getOfferAccept()
+        return Message.getOfferAccept()
                 .replace("{player}", target);
     }
 
     public String getOfferAcceptToMessage(String target) {
-        return F.getOfferAcceptTo()
+        return Message.getOfferAcceptTo()
                 .replace("{player}", target);
     }
 
     public String getNoDefaultCurrency() {
-        return F.getNoDefaultCurrency();
+        return Message.getNoDefaultCurrency();
     }
 
     public String getNoCurrencyFund(String name){
-        return F.getBalanceNone().replace("{player}", name);
+        return Message.getBalanceNone().replace("{player}", name);
     }
 
     public String getBalanceTopMessage(List<Account> accounts,String nameCurrency) {
@@ -229,7 +233,7 @@ public class MessageService {
             Currency currency = balance.getCurrency();
             BigDecimal balanceValue = balance.getAmount();
             //return F.getBalanceTop().replace("{player}", account.getName()).replace("{balance}", balance.getBalance().toString());
-            aux.append(F.getBalanceTop()
+            aux.append(Message.getBalanceTop()
                     .replace("{number}", String.valueOf(i+1))
                     .replace("{currencycolor}", "" + ChatColor.valueOf(currency.getColor()))
                     .replace("{player}", account.getNickname())
@@ -242,19 +246,19 @@ public class MessageService {
 
     public String getWithdrawSuccess(String currencyName, BigDecimal amount) {
         Currency currency = currencyService.getCurrency(currencyName);
-        return F.getWithdrawSuccess()
+        return Message.getWithdrawSuccess()
                 .replace("{amount}", currency.format(amount));
     }
 
     public String getDepositSuccess(String currencyName, BigDecimal amount) {
         Currency currency = currencyService.getCurrency(currencyName);
-        return F.getDepositSuccess()
+        return Message.getDepositSuccess()
                 .replace("{amount}", currency.format(amount));
     }
 
     public String getSetSuccess( String currencyName, BigDecimal amount) {
         Currency currency = currencyService.getCurrency(currencyName);
-        return F.getSetSuccess()
+        return Message.getSetSuccess()
                 .replace("{amount}", currency.format(amount));
     }
 }

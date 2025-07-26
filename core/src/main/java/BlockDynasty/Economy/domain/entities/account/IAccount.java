@@ -5,7 +5,6 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.wallet.Wallet;
 import BlockDynasty.Economy.domain.result.Result;
 
-import java.awt.event.WindowListener;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;

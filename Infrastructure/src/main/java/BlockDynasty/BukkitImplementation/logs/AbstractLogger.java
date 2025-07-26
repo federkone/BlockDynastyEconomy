@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.config.log;
+package BlockDynasty.BukkitImplementation.logs;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;

@@ -2,19 +2,18 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Balance;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -30,12 +29,12 @@ public class BalanceCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("gemseconomy.command.economy")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.economy")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
-        if (!sender.hasPermission("gemseconomy.command.balance")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.balance")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
 
@@ -54,11 +53,11 @@ public class BalanceCommand implements CommandExecutor {
         Scheduler.runAsync(ContextualTask.build(() -> {
             Result<List<Balance>> resultBalances = balance.getBalances(target);
             if (resultBalances.isSuccess()) {
-                sender.sendMessage(F.getBalanceMultiple().replace("{player}", target));
+                sender.sendMessage(Message.getBalanceMultiple().replace("{player}", target));
                 for (Balance entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
                     BigDecimal balance = entry.getAmount();
-                    sender.sendMessage(F.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));
+                    sender.sendMessage(Message.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));
                 }
             }else{
                 switch (resultBalances.getErrorCode()){

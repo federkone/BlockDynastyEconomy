@@ -8,11 +8,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
-public class F {
+public class Message {
     private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private static FileConfiguration cfg = plugin.getConfig();
 
-    public F(){
+    public Message(){
     }
 
     private static String get(String path){

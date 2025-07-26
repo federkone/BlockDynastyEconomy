@@ -2,11 +2,10 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +21,7 @@ public class EditSymbolCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(args.length<2){
-            sender.sendMessage(F.getCurrencyUsage_Symbol());
+            sender.sendMessage(Message.getCurrencyUsage_Symbol());
             return true;
         }
 
@@ -32,11 +31,11 @@ public class EditSymbolCommand implements CommandExecutor {
         Scheduler.runAsync(ContextualTask.build(() -> {
             try {
                 editCurrencyUseCase.editSymbol(currencyName, currencySymbol);
-                sender.sendMessage(F.getPrefix() + "§7Currency symbol for §f" + currencyName + " §7updated: §a" + currencySymbol);
+                sender.sendMessage(Message.getPrefix() + "§7Currency symbol for §f" + currencyName + " §7updated: §a" + currencySymbol);
             } catch (TransactionException e) {
-                sender.sendMessage(F.getPrefix() + "§7error in transaction.");
+                sender.sendMessage(Message.getPrefix() + "§7error in transaction.");
             } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
+                sender.sendMessage(Message.getUnknownCurrency());
             }
         }));
 

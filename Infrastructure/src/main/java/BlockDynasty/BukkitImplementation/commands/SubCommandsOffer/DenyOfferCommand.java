@@ -2,8 +2,8 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,14 +22,14 @@ public class DenyOfferCommand  implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length != 1) {
-            sender.sendMessage(F.getOfferUsageDeny());
+            sender.sendMessage(Message.getOfferUsageDeny());
             return false;
         }
 
         String playerNme = args[0];
         Player playerFrom = Bukkit.getPlayer(playerNme);
         if (playerFrom == null || !playerFrom.isOnline()) {
-            sender.sendMessage(F.getOfflinePlayer());
+            sender.sendMessage(Message.getOfflinePlayer());
             return false;
         }
 
@@ -42,7 +42,7 @@ public class DenyOfferCommand  implements CommandExecutor {
         }else{
             switch (result.getErrorCode()){
                 case OFFER_NOT_FOUND:
-                    sender.sendMessage(F.getNotOffers());
+                    sender.sendMessage(Message.getNotOffers());
                     break;
                 default:
                     sender.sendMessage(messageService.getUnexpectedErrorMessage());

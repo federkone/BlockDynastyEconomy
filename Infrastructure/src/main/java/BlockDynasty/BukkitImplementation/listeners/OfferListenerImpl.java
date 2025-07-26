@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import org.bukkit.Bukkit;
@@ -13,8 +13,8 @@ public class OfferListenerImpl implements OfferListener {
         Player sender = Bukkit.getPlayer(offer.getVendedor());
 
         if (receiver != null && sender != null) {
-            receiver.sendMessage(F.getOfferExpiredTo(sender.getName()));
-            sender.sendMessage(F.getOfferExpired(receiver.getName()));
+            receiver.sendMessage(Message.getOfferExpiredTo(sender.getName()));
+            sender.sendMessage(Message.getOfferExpired(receiver.getName()));
         }
     }
 }

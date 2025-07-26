@@ -4,8 +4,8 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,27 +26,27 @@ public class BuyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("gemseconomy.command.buycommand")) {
+        if (!sender.hasPermission("BlockDynastyEconomy.command.buycommand")) {
             sender.sendMessage(messageService.getPayNoPerms()); //no tiene permisos para ejecutar comando pagar
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage(F.getBuyCommandUsage());
+            sender.sendMessage(Message.getBuyCommandUsage());
             return false;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
 
         if(player==null) {
-            sender.sendMessage(F.getBuyCommandOffline());
+            sender.sendMessage(Message.getBuyCommandOffline());
             return false;
         }
         double cantidadDemoneda;
         try {
             cantidadDemoneda = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            player.sendMessage(F.getUnvalidAmount());
+            player.sendMessage(Message.getUnvalidAmount());
             return false;
         }
 
@@ -64,7 +64,7 @@ public class BuyCommand implements CommandExecutor {
             Runnable runnable = ()->{
                 if(result.isSuccess()){
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-                    player.sendMessage(F.getBuyCommandSuccess());
+                    player.sendMessage(Message.getBuyCommandSuccess());
                 }else{
                     messageService.sendErrorMessage(result.getErrorCode(),player,tipoDemoneda);
                 }

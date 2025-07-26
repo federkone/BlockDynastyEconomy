@@ -1,12 +1,11 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.BalanceGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;

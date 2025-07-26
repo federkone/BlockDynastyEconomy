@@ -4,8 +4,8 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.config.file.Message;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,8 +25,8 @@ public class ExchangeCommand implements CommandExecutor {
     }
 
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("gemseconomy.command.exchange")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.exchange")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
 
@@ -59,7 +59,7 @@ public class ExchangeCommand implements CommandExecutor {
         double finalToReceiveAmount = toReceiveAmount;
         */
         if (args.length < 3) {
-            F.getExchangeHelp(sender);
+            Message.getExchangeHelp(sender);
             return true;
         }
         String player;
@@ -74,7 +74,7 @@ public class ExchangeCommand implements CommandExecutor {
         try {
             toReceiveAmount = Double.parseDouble(args[2]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(F.getUnvalidAmount());
+            sender.sendMessage(Message.getUnvalidAmount());
             return true;
         }
 
@@ -111,19 +111,19 @@ public class ExchangeCommand implements CommandExecutor {
                     Runnable errorTask = () -> {
                         switch (result.getErrorCode()) {
                             case ACCOUNT_CAN_NOT_RECEIVE:
-                                sender.sendMessage(F.getCannotReceive());
+                                sender.sendMessage(Message.getCannotReceive());
                                 break;
                             case ACCOUNT_NOT_FOUND:
                                 sender.sendMessage(messageService.getAccountNotFoundMessage());
                                 break;
                             case CURRENCY_NOT_FOUND:
-                                sender.sendMessage(F.getUnknownCurrency());
+                                sender.sendMessage(Message.getUnknownCurrency());
                                 break;
                             case DECIMAL_NOT_SUPPORTED:
                                 sender.sendMessage("Intercambio inválido: no se puede extraer " + result.getValue() + " " + toExchange + ", intenta con otro monto en " + toReceive);
                                 break;
                             case INVALID_AMOUNT:
-                                sender.sendMessage(F.getUnvalidAmount());
+                                sender.sendMessage(Message.getUnvalidAmount());
                                 break;
                             case INSUFFICIENT_FUNDS:
                                 if (targetPlayer != null) {

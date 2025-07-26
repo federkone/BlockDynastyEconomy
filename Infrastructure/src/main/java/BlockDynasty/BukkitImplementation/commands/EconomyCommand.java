@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.commands;
 
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,17 +22,17 @@ public class EconomyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission("gemseconomy.command.economy")) {
-            sender.sendMessage(F.getNoPerms());
+        if (!sender.hasPermission("BlockDynastyEconomy.command.economy")) {
+            sender.sendMessage(Message.getNoPerms());
             return true;
         }
         if (args.length == 0) {
-            F.getManageHelp(sender); // Mensaje de ayuda
+            Message.getManageHelp(sender); // Mensaje de ayuda
             return true;
         }
         CommandExecutor subCommand = subCommands.get(args[0].toLowerCase());
         if (subCommand == null) {
-            sender.sendMessage(F.getUnknownSubCommand());
+            sender.sendMessage(Message.getUnknownSubCommand());
             return true;
         }
 

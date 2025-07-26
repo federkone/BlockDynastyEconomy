@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.config.log;
+package BlockDynasty.BukkitImplementation.logs;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.Economy.domain.services.log.Log;

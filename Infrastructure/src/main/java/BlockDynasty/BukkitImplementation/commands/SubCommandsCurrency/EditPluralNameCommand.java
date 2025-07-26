@@ -2,9 +2,8 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import org.bukkit.command.Command;
@@ -33,7 +32,7 @@ public class EditPluralNameCommand  implements CommandExecutor {
                 editCurrencyUseCase.setPluralName(plural, newPlural);
                 sender.sendMessage("Plural name updated for " + plural + " to " + newPlural);
             }catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
+                sender.sendMessage(Message.getUnknownCurrency());
             } catch (TransactionException e) {
                 sender.sendMessage("error while updating the plural name");
             }

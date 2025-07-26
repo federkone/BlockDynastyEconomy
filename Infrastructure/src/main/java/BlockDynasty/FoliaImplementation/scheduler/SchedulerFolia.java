@@ -18,13 +18,17 @@ public class SchedulerFolia implements IScheduler {
 
     public void run(ContextualTask contextualTask){
         if (contextualTask.hasEntityContext()) {
-            contextualTask.getEntityContext().getScheduler().execute(plugin, contextualTask.getRunnable(),null,1);
+            contextualTask.getEntityContext().getScheduler().execute(plugin, contextualTask.getRunnable(), null, 1);
             //Bukkit.getRegionScheduler().execute(plugin, contextualTask.getEntityContext().getLocation(), contextualTask.getRunnable());
-        } else if (contextualTask.hasLocationContext()) {
-            Bukkit.getRegionScheduler().execute(plugin, contextualTask.getLocationContext(), contextualTask.getRunnable());
-        } else {
-            Bukkit.getGlobalRegionScheduler().execute(plugin, contextualTask.getRunnable());
+            return;
         }
+
+        if(contextualTask.hasLocationContext()) {
+            Bukkit.getRegionScheduler().execute(plugin, contextualTask.getLocationContext(), contextualTask.getRunnable());
+            return;
+        }
+
+        Bukkit.getGlobalRegionScheduler().execute(plugin, contextualTask.getRunnable());
     }
 
     public static SchedulerFolia init() {

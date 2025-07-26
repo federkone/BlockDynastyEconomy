@@ -11,6 +11,7 @@ public class PlaceHolder {
     public static void register(GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase){
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             UtilServer.consoleLog("PlaceholderAPI not found. Expansion won't be loaded.");
+            return;
         }
         expansion = new PlaceHolderExpansion(getAccountsUseCase, getCurrencyUseCase);
         expansion.register();

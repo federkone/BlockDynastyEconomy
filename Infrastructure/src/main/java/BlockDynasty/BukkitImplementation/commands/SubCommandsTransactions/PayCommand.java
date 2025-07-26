@@ -4,14 +4,14 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.services.MessageService;
 
 import java.math.BigDecimal;
 
@@ -27,11 +27,11 @@ public class PayCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(F.getNoConsole());
+            sender.sendMessage(Message.getNoConsole());
             return true;
         }
 
-        if (!sender.hasPermission("gemseconomy.command.pay")) {
+        if (!sender.hasPermission("BlockDynastyEconomy.command.pay")) {
             sender.sendMessage(messageService.getPayNoPerms()); //no tiene permisos para ejecutar comando pagar
             return true;
         }
@@ -84,30 +84,7 @@ public class PayCommand implements CommandExecutor {
                         Scheduler.run( ContextualTask.build(() -> {targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));},targetPlayer));
                     }
                 } else {
-                    //player.sendMessage(result.getErrorMessage());
-                    switch (result.getErrorCode()){
-                        case ACCOUNT_NOT_FOUND:
-                            player.sendMessage(messageService.getAccountNotFoundMessage());
-                            break;
-                        case ACCOUNT_CAN_NOT_RECEIVE:
-                            player.sendMessage(messageService.getCannotReceiveMessage(targetName));
-                            break;
-                        case INSUFFICIENT_FUNDS:
-                            player.sendMessage(messageService.getInsufficientFundsMessage(currencyName));
-                            break;
-                        case DECIMAL_NOT_SUPPORTED:
-                            player.sendMessage(messageService.getUnvalidAmount());
-                            break;
-                        case CURRENCY_NOT_FOUND:
-                            player.sendMessage(F.getUnknownCurrency());
-                            break;
-                        case CURRENCY_NOT_PAYABLE:
-                            player.sendMessage(messageService.getCurrencyNotPayableMessage(currencyName));
-                            break;
-                        default:
-                            player.sendMessage(messageService.getUnexpectedErrorMessage());
-                            break;
-                    }
+                    messageService.sendErrorMessage( result.getErrorCode(), player, currencyName);
                 }
             },player));
         }));

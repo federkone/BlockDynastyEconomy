@@ -2,11 +2,10 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
-import BlockDynasty.BukkitImplementation.config.file.F;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +22,7 @@ public class EditRateCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if(args.length < 2){
-            sender.sendMessage(F.getCurrencyUsage_Rate());
+            sender.sendMessage(Message.getCurrencyUsage_Rate());
             return false;
         }
 
@@ -37,7 +36,7 @@ public class EditRateCommand implements CommandExecutor {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException ex) {
-            sender.sendMessage(F.getUnvalidAmount());
+            sender.sendMessage(Message.getUnvalidAmount());
             return true;
         }
 
@@ -47,7 +46,7 @@ public class EditRateCommand implements CommandExecutor {
                 editCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
                 sender.sendMessage("Rate currency updated for " + currencyName + " to " + rate);
             } catch (CurrencyNotFoundException e) {
-                sender.sendMessage(F.getUnknownCurrency());
+                sender.sendMessage(Message.getUnknownCurrency());
             } catch (TransactionException e) {
                 sender.sendMessage("error while updating the rate");
             }

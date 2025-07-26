@@ -10,28 +10,24 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class Account implements IAccount {
-    private String uuid;
-    private String nickname;
+    private final Player player;
     private Wallet wallet;
     private boolean canReceiveCurrency ;
 
     public Account(UUID uuid, String nickname) {
-        this.uuid = uuid.toString();
-        this.nickname = nickname;
+        this.player = new Player(uuid.toString(), nickname);
         this.wallet = new Wallet();
         this.canReceiveCurrency = true;
     }
 
     public Account(UUID uuid, String nickname, List<Balance> balanceList, boolean canReceiveCurrency) {
-        this.uuid = uuid.toString();
-        this.nickname = nickname;
+        this.player = new Player(uuid.toString(), nickname);
         this.wallet = new Wallet(balanceList);
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
     public Account(String uuid, String nickname, Wallet wallet, boolean canReceiveCurrency) {
-        this.uuid = uuid;
-        this.nickname = nickname;
+        this.player = new Player(uuid, nickname);
         this.wallet = wallet;
         this.canReceiveCurrency = canReceiveCurrency;
     }
@@ -130,17 +126,17 @@ public class Account implements IAccount {
     }
 
     public void setUuid(UUID uuid) {
-        this.uuid = uuid.toString();
+        this.player.setUuid(uuid.toString());
     }
     public void setNickname(String nickname) {
-         this.nickname = nickname;
+        this.player.setNickname(nickname);
     }
 
     public String getNickname() {
-        return nickname;
+        return player.getNickname();
     }
     public UUID getUuid() {
-        return UUID.fromString(uuid);
+        return UUID.fromString(player.getUuid());
     }
 
     public void setCanReceiveCurrency(boolean canReceiveCurrency) {
