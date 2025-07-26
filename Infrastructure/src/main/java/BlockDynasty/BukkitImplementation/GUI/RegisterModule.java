@@ -5,6 +5,7 @@ import BlockDynasty.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
 import BlockDynasty.BukkitImplementation.GUI.listeners.GUIListener;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
+import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
@@ -30,6 +31,6 @@ public  class RegisterModule {
 
         // Register GUI event listener
         plugin.getServer().getPluginManager().registerEvents(new GUIListener(guiService), plugin);
-        System.out.println("GUI modules registered successfully.");
+        UtilServer.consoleLog("GUI modules registered successfully.");
     }
 }

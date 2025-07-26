@@ -3,33 +3,33 @@ package BlockDynasty.BukkitImplementation;
 import BlockDynasty.BukkitImplementation.GUI.RegisterModule;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
-import BlockDynasty.BukkitImplementation.Integrations.vault.IVaultHandler;
-import BlockDynasty.BukkitImplementation.Integrations.vault.VaultFactory;
-import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
-import BlockDynasty.Economy.aplication.api.Api;
-import BlockDynasty.Economy.domain.services.courier.Courier;
+import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
-import BlockDynasty.Economy.domain.services.log.Log;
+import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
+import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
-import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.config.log.VaultLogger;
-import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.aplication.api.BlockDynastyEconomyApi;
-import BlockDynasty.BukkitImplementation.commands.CommandRegister;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.BukkitImplementation.config.file.Configuration;
 import BlockDynasty.BukkitImplementation.config.file.MessageService;
-import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
+import BlockDynasty.BukkitImplementation.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.config.log.EconomyLogger;
-import BlockDynasty.repository.InitDatabase;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
-import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolderExpansion;
+
+import BlockDynasty.Economy.aplication.api.Api;
+import BlockDynasty.Economy.aplication.api.BlockDynastyEconomyApi;
+import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.services.OfferService;
+import BlockDynasty.Economy.aplication.services.AccountService;
+import BlockDynasty.Economy.aplication.services.CurrencyService;
+import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
+import BlockDynasty.Economy.domain.result.Result;
+import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+
+import BlockDynasty.repository.InitDatabase;
+
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,27 +38,19 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
     private static Api api;
 
-    //private ChequeManager chequeManager;
     private IRepository repository;
     private IAccountService accountService;
     private ICurrencyService currencyService;
     private MessageService messageService;
     private IOfferService offerService;
-
     private Courier courier;
-
-    private boolean debug = false;
-    private boolean disabling = false;
-
     private UsesCaseFactory usesCaseFactory;
+
+    private boolean disabling = false;
 
     @Override
     public void onLoad() {
-        Configuration configuration = new Configuration(this);
-        configuration.loadDefaultConfig();
-
-        setDebug(getConfig().getBoolean("debug",false));
-
+        Configuration.init(this);
     }
 
     @Override
@@ -85,8 +77,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
     @Override
     public void onDisable() {
         disabling = true;
-        if(VaultFactory.getVaultHandler() != null) getVaultHandler().unhook();
         if (getDataStore() != null) getDataStore().close();
+        Vault.unhook();
+        PlaceHolder.unregister();
+        Bungee.unhook(this);
     }
 
     private void initRepository() {
@@ -108,7 +102,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
         this.courier = new CourierImpl(this);
 
         this.usesCaseFactory = new UsesCaseFactory(accountService, currencyService, EconomyLogger.build(this), offerService, getDataStore(), courier);
-
     }
     private void registerCommands(){
         CommandRegister.registerCommands(this);
@@ -127,17 +120,17 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Listener economyListener;
         if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
             economyListener = new EconomyListenerOnline( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService);
+            UtilServer.consoleLog("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
             economyListener = new EconomyListenerOffline( usesCaseFactory.getCreateAccountUseCase(), usesCaseFactory.getAccountsUseCase(), accountService,currencyService);
+            UtilServer.consoleLog("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
         getServer().getPluginManager().registerEvents(economyListener, this);
     }
     private void setupIntegrations() {
-        VaultFactory.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier));
-
+        Vault.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier));
         PlaceHolder.register(usesCaseFactory.getAccountsUseCase(), usesCaseFactory.getCurrencyUseCase());
-
-        Bungee.init();
+        Bungee.init(this);
     }
 
     public static BlockDynastyEconomy getInstance() {
@@ -146,7 +139,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static Api getApi() {
         return api;
     }
-    public UsesCaseFactory getUsesCase() {
+    public UsesCaseFactory getUsesCaseFactory() {
         return  this.usesCaseFactory;
     }
     public IRepository getDataStore() {
@@ -161,26 +154,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public MessageService getMessageService() {
         return messageService;
     }
-    public IVaultHandler getVaultHandler() {
-        return VaultFactory.getVaultHandler();
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-    private void setDebug(boolean debug) {
-        this.debug = debug;
-    }
 
     public boolean isDisabling() {
         return disabling;
     }
-
-    /*public boolean isChequesEnabled() {
-        return cheques;
-    }
-
-    public void setCheques(boolean cheques) {
-        this.cheques = cheques;
-    }*/
 }

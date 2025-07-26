@@ -14,7 +14,7 @@ public class CommandRegister {
 
     public static void registerCommands(BlockDynastyEconomy plugin)
     {
-        UsesCaseFactory usesCaseFactory =  plugin.getUsesCase();
+        UsesCaseFactory usesCaseFactory =  plugin.getUsesCaseFactory();
 
         CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(usesCaseFactory.getCreateCurrencyUseCase());
         DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(usesCaseFactory.deleteCurrencyUseCase());

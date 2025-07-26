@@ -19,9 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class vaultUnlockedHook implements Economy {
+public class VaultUnlockedHook implements Economy {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final CreateAccountUseCase createAccountUseCase;
@@ -29,7 +28,7 @@ public class vaultUnlockedHook implements Economy {
     private final WithdrawUseCase withdrawUseCase;
     private final DepositUseCase depositUseCase;
 
-    public vaultUnlockedHook(UsesCaseFactory usesCaseFactory) {
+    public VaultUnlockedHook(UsesCaseFactory usesCaseFactory) {
         this.getCurrencyUseCase = usesCaseFactory.getCurrencyUseCase();
         this.getBalanceUseCase = usesCaseFactory.getGetBalanceUseCase();
         this.createAccountUseCase = usesCaseFactory.getCreateAccountUseCase();

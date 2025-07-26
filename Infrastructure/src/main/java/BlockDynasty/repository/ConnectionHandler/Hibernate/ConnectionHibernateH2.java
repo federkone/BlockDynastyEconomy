@@ -1,4 +1,6 @@
 package BlockDynasty.repository.ConnectionHandler.Hibernate;
+import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import jdk.jshell.execution.Util;
 import org.h2.tools.Server;
 
 import java.sql.SQLException;
@@ -24,7 +26,7 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
             Server webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082","-baseDir",dbFilePath);
             webServer.start();
         } catch (SQLException e) {
-            System.err.println("Failed to start H2 console: " + e.getMessage());
+            UtilServer.consoleLog("Failed to start H2 console: " + e.getMessage());
         }
     }
 }

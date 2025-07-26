@@ -1,13 +1,13 @@
-
 package BlockDynasty.BukkitImplementation.utils;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 
 public class UtilServer {
-    private static boolean debugEnabled = false;
-    private static final String Console_Prefix = "§2[BlockDynastyEconomy] §f";
+    private final static boolean debugEnabled = BlockDynastyEconomy.getInstance().getConfig().getBoolean("debug");
+    private static final String Console_Prefix = "§2[BlockDynastyEconomy LOG] §f";
     private static final String Error_Prefix = "§c[B-Eco-Error] §f";
 
     public static void consoleLog(String message){
@@ -15,7 +15,7 @@ public class UtilServer {
     }
 
     public static void consoleLogError(String message){
-        getServer().getConsoleSender().sendMessage(Error_Prefix + message);
+        if(debugEnabled) getServer().getConsoleSender().sendMessage(Error_Prefix + message);
     }
 
     private static String colorize(String message){

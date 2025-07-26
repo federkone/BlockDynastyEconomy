@@ -14,7 +14,6 @@ public class VaultHandler implements  IVaultHandler {
     private final BlockDynastyEconomy plugin;
     private  final UsesCaseFactory usesCaseFactory;
 
-    //tendria que detectar si se trata de vault o vault unlocked para registrar el servicio correcto
     public VaultHandler(BlockDynastyEconomy plugin, UsesCaseFactory usesCaseFactory) {
         this.plugin = plugin;
         this.usesCaseFactory = usesCaseFactory;

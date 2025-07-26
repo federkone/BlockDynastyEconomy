@@ -31,7 +31,7 @@ public class BungeeImpl implements PluginMessageListener {
 
     public BungeeImpl(BlockDynastyEconomy plugin ) {
         this.plugin = plugin;
-        this.getAccountUseCase = plugin.getUsesCase().getAccountsUseCase();
+        this.getAccountUseCase = plugin.getUsesCaseFactory().getAccountsUseCase();
     }
 
 //todo: testear en todos los servidores. esto funciona a modo de broadcast. lo cual puede generar trafico innecesario

@@ -8,16 +8,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Arrays;
 
 public class Configuration {
-
     private static BlockDynastyEconomy plugin;
 
-    public Configuration(BlockDynastyEconomy plugin) {
-
+    public static void init(BlockDynastyEconomy plugin) {
         Configuration.plugin = plugin;
+        loadDefaultConfig();
     }
 
-    public void loadDefaultConfig() {
-
+    private static void loadDefaultConfig() {
         FileConfiguration config = plugin.getConfig();
 
         config.options().header(plugin.getDescription().getName()

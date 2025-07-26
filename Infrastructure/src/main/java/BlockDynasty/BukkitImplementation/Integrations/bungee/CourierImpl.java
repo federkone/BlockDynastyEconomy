@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 public class CourierImpl implements Courier {
     private final String channelName = "BlockDynastyEconomy Data Channel";
-    private  final  Plugin plugin;
+    private final Plugin plugin;
 
     public CourierImpl(Plugin plugin) {
         this.plugin = plugin;

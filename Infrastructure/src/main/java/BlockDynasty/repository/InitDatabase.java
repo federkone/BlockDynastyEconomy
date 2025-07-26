@@ -56,7 +56,6 @@ public class InitDatabase {
 
     private static Result<IRepository> h2(Plugin plugin,boolean enableServerConsole) {
         try {
-            UtilServer.consoleLog(plugin.getDataFolder().getAbsolutePath());
             IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath(),enableServerConsole));
             return Result.success(repository);
         } catch (Exception e) {
@@ -67,7 +66,6 @@ public class InitDatabase {
 
     private static Result<IRepository> sqlite(Plugin plugin) {
         try {
-            UtilServer.consoleLog(plugin.getDataFolder().getAbsolutePath());
             IRepository repository = new RepositorySql(new ConnectionHibernateSQLite(plugin.getDataFolder().getAbsolutePath()));
             return Result.success(repository);
         } catch (Exception e) {
