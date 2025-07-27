@@ -25,4 +25,12 @@ public class SetEvent extends Event {
     public BigDecimal getAmount() {
         return amount;
     }
+    @Override
+    public String toString() {
+        return "SetEvent{" +
+                "currency=" + currency.getSingular() +
+                ", player=" + player.getNickname() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
 }

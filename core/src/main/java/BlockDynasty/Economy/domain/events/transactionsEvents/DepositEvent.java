@@ -26,4 +26,13 @@ public class DepositEvent extends Event {
     public BigDecimal getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "DepositEvent{" +
+                "currency=" + currency.getSingular() +
+                ", player=" + player.getNickname() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
 }

@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO: DE MOMENTO ESTE CASO SE USA DE MOMENTO CUANDO UN USUARIO ENTRA AL SERVER, SI NO EXISTE SE CREARA UNA CUENTA.
 public class CreateAccountUseCase {
     private final IAccountService accountService;
     private final ICurrencyService currencyService;

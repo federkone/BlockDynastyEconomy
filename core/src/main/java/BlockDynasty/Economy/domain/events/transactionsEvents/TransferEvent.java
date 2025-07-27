@@ -34,4 +34,14 @@ public class TransferEvent extends Event {
     public BigDecimal getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "TransferEvent{" +
+                "player sender=" + fromPlayer.getNickname() +
+                ", player receiver=" + toPlayer.getNickname() +
+                ", currency=" + currency.getSingular() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
 }

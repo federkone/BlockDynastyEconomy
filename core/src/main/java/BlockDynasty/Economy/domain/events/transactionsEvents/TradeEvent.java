@@ -44,4 +44,15 @@ public class TradeEvent extends Event {
     }
 
 
+    @Override
+    public String toString() {
+        return "TradeEvent{" +
+                "fromPlayer=" + fromPlayer.getNickname() +
+                ", toPlayer=" + toPlayer.getNickname() +
+                ", currencyFrom=" + currencyFrom.getSingular() +
+                ", currencyTo=" + currencyTo.getSingular() +
+                ", amountFrom=" + amountFrom.toString() +
+                ", amountTo=" + amountTo.toString() +
+                '}';
+    }
 }

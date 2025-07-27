@@ -35,4 +35,14 @@ public class PayEvent  extends Event {
         return amount;
     }
 
+    @Override
+    public String toString() {
+        return "PayEvent{" +
+                "currency=" + currency.getSingular() +
+                ", payer sender=" + payer.getNickname() +
+                ", player receiver=" + received.getNickname() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
+
 }

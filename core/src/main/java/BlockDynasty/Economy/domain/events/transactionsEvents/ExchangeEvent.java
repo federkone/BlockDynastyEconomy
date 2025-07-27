@@ -41,4 +41,16 @@ public class ExchangeEvent extends Event {
     public BigDecimal getExchangedAmount() {
         return exchangedAmount;
     }
+
+    @Override
+    public String toString() {
+        return "ExchangeEvent{" +
+                "player=" + player.getNickname() +
+                ", fromCurrency=" + fromCurrency.getSingular() +
+                ", toCurrency=" + toCurrency.getSingular() +
+                ", amount=" + amount.toString() +
+                ", exchangeRate=" + exchangeRate +
+                ", exchangedAmount=" + exchangedAmount.toString() +
+                '}';
+    }
 }

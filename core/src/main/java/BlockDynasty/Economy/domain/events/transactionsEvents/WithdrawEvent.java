@@ -28,4 +28,13 @@ public class WithdrawEvent extends Event {
     public BigDecimal getAmount() {
         return amount;
     }
+
+    @Override
+    public String toString() {
+        return "WithdrawEvent{" +
+                "currency=" + currency.getSingular() +
+                ", player=" + player.getNickname() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
 }
