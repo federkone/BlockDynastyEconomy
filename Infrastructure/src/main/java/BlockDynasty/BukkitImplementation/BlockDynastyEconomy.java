@@ -130,7 +130,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             UtilServer.consoleLog("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
         getServer().getPluginManager().registerEvents(economyListener, this);
-        //TransactionsListener.register(eventManager);
+        TransactionsListener.register(eventManager);
     }
     private void setupIntegrations() {
         Vault.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier,eventManager));

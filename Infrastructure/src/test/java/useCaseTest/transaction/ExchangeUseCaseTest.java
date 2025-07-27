@@ -1,5 +1,6 @@
 package useCaseTest.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
@@ -68,7 +69,7 @@ public class ExchangeUseCaseTest {
 
         // Initialize the exchange use case to test
         exchangeUseCase = new ExchangeUseCase(getCurrencyUseCase, getAccountsUseCase,
-                repository, new CourierTest(), new LoggerTest());
+                repository, new CourierTest(), new LoggerTest(),new EventManager());
     }
 
     @Test

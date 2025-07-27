@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.ExchangeEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -14,7 +16,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-
 //TODO: aqui se puede agregar el impuesto por cambio de divisa segun el rate de la moneda
 public class ExchangeUseCase {
     private  final GetCurrencyUseCase getCurrencyUseCase;
@@ -22,12 +23,15 @@ public class ExchangeUseCase {
     private final Courier updateForwarder;
     private final Log economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
-    public ExchangeUseCase(GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger) {
+    private final EventManager eventManager;
+
+    public ExchangeUseCase(GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger,EventManager eventManager) {
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.eventManager = eventManager;
     }
 
     public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
@@ -97,6 +101,7 @@ public class ExchangeUseCase {
         this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
         this.economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
+        this.eventManager.emit(new ExchangeEvent(account.getPlayer(),currencyFrom,currencyTo,amountFrom,currencyTo.getExchangeRate(),amountTo));
 
         return Result.success(amountFrom);
     }

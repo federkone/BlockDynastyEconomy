@@ -48,10 +48,10 @@ public class UsesCaseFactory {
         this.createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, this.getAccountsUseCase, courier,repository);
         this.setBalanceUseCase = new SetBalanceUseCase(  this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger,eventManager);
         this.payUseCase = new PayUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
-        this.exchangeUseCase = new ExchangeUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.exchangeUseCase = new ExchangeUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
         this.createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, this.getAccountsUseCase, repository);
-        this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
-        this.transferFundsUseCase = new TransferFundsUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
+        this.transferFundsUseCase = new TransferFundsUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
         this.deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, this.getAccountsUseCase,repository,courier);
         this.editCurrencyUseCase = new EditCurrencyUseCase(currencyService,courier,repository);
         this.createOfferUseCase = new CreateOfferUseCase(offerService, this.getCurrencyUseCase, this.getAccountsUseCase);

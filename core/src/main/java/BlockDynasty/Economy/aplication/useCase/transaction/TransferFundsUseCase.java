@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.TransferEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -18,16 +20,18 @@ public class TransferFundsUseCase {
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final Log economyLogger;
+    private final EventManager eventManager;
     private final GetAccountsUseCase getAccountsUseCase;
     private final GetCurrencyUseCase getCurrencyUseCase;
 
     public TransferFundsUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                                Courier updateForwarder, Log economyLogger) {
+                                Courier updateForwarder, Log economyLogger, EventManager eventManager) {
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
@@ -96,6 +100,7 @@ public class TransferFundsUseCase {
         this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
+        eventManager.emit(new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount));
         //................
 
         return Result.success(null);

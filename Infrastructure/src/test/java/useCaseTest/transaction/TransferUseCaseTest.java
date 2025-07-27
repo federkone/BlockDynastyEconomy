@@ -1,5 +1,6 @@
 package useCaseTest.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
@@ -63,7 +64,7 @@ public class TransferUseCaseTest {
 
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest());
+        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test

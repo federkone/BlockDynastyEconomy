@@ -1,5 +1,6 @@
 package useCaseTest.offer;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -75,7 +76,7 @@ public class OfferUserCasesTest {
 
         getAccountsUseCase = new GetAccountsUseCase( accountService, currencyService, dataStore);
         getCurrencyUseCase = new GetCurrencyUseCase( currencyService, dataStore);
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase( getCurrencyUseCase, getAccountsUseCase, dataStore,new CourierTest(),new LoggerTest());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase( getCurrencyUseCase, getAccountsUseCase, dataStore,new CourierTest(),new LoggerTest(),new EventManager());
         offerService = new OfferService(new MockListener(),1);
 
         createOfferUseCase = new CreateOfferUseCase( offerService, getCurrencyUseCase, getAccountsUseCase);
