@@ -11,13 +11,11 @@ desde 1.13 hasta 1.16.9 el plugin no es compatible, requieren estrictamente java
 
 Todo list:
 
-    -para soporte de folia quitar utilidad Scheduler y usar elscheduler de folia
-    -para soporte de versiones viejas quitar el uso de la GUI. O  buscar libreria de materiales retrocompatibles entre veriones
+    -Refactorizar el sistema de informes de transacciones, migrar a la nueva arquitectura basada en eventos de transacciones
 
     -refactor config file, add message file
     -create command for edit accountCanReciveCurrency attribute
     -complete use case and comand for delete accountDb
-
 
 
 -placeholder for top currency holders (ex: %gemseco_<currency>_top_#_#%)- check
