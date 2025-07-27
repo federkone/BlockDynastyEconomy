@@ -79,7 +79,7 @@ public class BungeeImpl implements PluginMessageListener {
                 }
             }
         }catch (IOException exception){
-            exception.printStackTrace();
+            UtilServer.consoleLogError(exception.getMessage());
         }
     }
 }

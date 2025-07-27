@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -17,14 +19,16 @@ public class DepositUseCase {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
+    private final EventManager eventManager;
     private final Log economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public DepositUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger){
+    public DepositUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
+        this.eventManager = eventManager;
         this.getAccountsUseCase = getAccountsUseCase;
     }
 
@@ -91,6 +95,7 @@ public class DepositUseCase {
         this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
+        this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount));
 
         return Result.success(null);
     }

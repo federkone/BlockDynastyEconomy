@@ -2,7 +2,9 @@ package useCaseTest.transaction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
+import BlockDynasty.Economy.domain.events.transactionsEvents.PayEvent;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -29,6 +31,7 @@ public class PayUseCaseTest {
     IRepository repository;
     CurrencyService currencyService;
     AccountService accountService;
+    EventManager eventManager;
     GetAccountsUseCase getAccountsUseCase;
     GetCurrencyUseCase getCurrencyUseCase;
     EditCurrencyUseCase editCurrencyUseCase;
@@ -64,14 +67,18 @@ public class PayUseCaseTest {
 
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
+        eventManager = new EventManager();
 
         accountService.addAccountToCache(nullplague); //se conecto el player1
         accountService.addAccountToCache(cris); //se conecto el player2
 
         getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest());
+        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest(),eventManager);
         editCurrencyUseCase= new EditCurrencyUseCase(currencyService ,new CourierTest(),repository);
+
+        eventManager.subscribe(PayEvent.class, event -> { System.out.println( event.getPayer().getNickname() + " realizo un pago a "+ event.getReceived().getNickname()+ " de un monto de " +event.getAmount()); } );
+        eventManager.subscribe(PayEvent.class, event -> {System.out.println("OTRO EVENTO MAS, INYECTANDO COSAS AL CASO DE USO");});
     }
 
     @Test

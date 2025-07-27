@@ -141,4 +141,7 @@ public class Account implements IAccount {
     public boolean canReceiveCurrency() {
         return canReceiveCurrency;
     }
+    public Player getPlayer() {
+        return player;
+    }
 }

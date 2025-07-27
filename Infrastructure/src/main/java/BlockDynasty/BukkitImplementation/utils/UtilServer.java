@@ -7,15 +7,15 @@ import org.bukkit.Server;
 
 public class UtilServer {
     private final static boolean debugEnabled = BlockDynastyEconomy.getInstance().getConfig().getBoolean("debug");
-    private static final String Console_Prefix = "§2[BlockDynastyEconomy LOG] §f";
-    private static final String Error_Prefix = "§c[B-Eco-Error] §f";
+    private static final String Console_Prefix = "§2[BlockDynastyEconomy] §f";
+    private static final String Error_Prefix = "§c[BlockDynastyEconomy-Error] §f";
 
     public static void consoleLog(String message){
         if(debugEnabled) getServer().getConsoleSender().sendMessage(Console_Prefix + colorize(message));
     }
 
     public static void consoleLogError(String message){
-        if(debugEnabled) getServer().getConsoleSender().sendMessage(Error_Prefix + message);
+        getServer().getConsoleSender().sendMessage(Error_Prefix + message);
     }
 
     private static String colorize(String message){

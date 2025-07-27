@@ -1,5 +1,6 @@
 package useCaseTest.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import mockClass.CourierTest;
@@ -48,7 +49,7 @@ public class DepositUseCaseTest {
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, getAccountsUseCase,repository);
         createCurrenyUseCase = new CreateCurrencyUseCase(currencyService, getAccountsUseCase, new CourierTest(), repository);
-        depositUseCase = new DepositUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new CourierTest(),new LoggerTest());
+        depositUseCase = new DepositUseCase(getCurrencyUseCase,getAccountsUseCase, repository,new CourierTest(),new LoggerTest(),new EventManager());
 
         createCurrenyUseCase.createCurrency(dinero.getSingular(), dinero.getPlural());
         createAccountUseCase.execute(nullplague.getUuid(), nullplague.getNickname());

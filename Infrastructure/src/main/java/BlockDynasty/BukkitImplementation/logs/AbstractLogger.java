@@ -36,7 +36,7 @@ public abstract class AbstractLogger implements Log {
             try {
                 latest.createNewFile();
             } catch (IOException ex) {
-                UtilServer.consoleLog(ex.getMessage());
+                UtilServer.consoleLogError(ex.getMessage());
             }
         }
         this.toAdd = Sets.newHashSet();
@@ -52,9 +52,8 @@ public abstract class AbstractLogger implements Log {
             builder.append(getName());
             builder.append(message);
             writeToFile(builder.toString());
-            UtilServer.consoleLog(getName() + message);
         } catch (IOException ex) {
-            UtilServer.consoleLog(ex.getMessage());
+            UtilServer.consoleLogError(ex.getMessage());
         }
     }
 
@@ -99,7 +98,7 @@ public abstract class AbstractLogger implements Log {
                 }
                 zipping = false;
             } catch (Exception e) {
-               UtilServer.consoleLog(e.getMessage());
+               UtilServer.consoleLogError(e.getMessage());
             }
         }));
     }

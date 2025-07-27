@@ -1,5 +1,6 @@
 package useCaseTest.account;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
@@ -45,7 +46,7 @@ public class GetAccountsUseCaseTest {
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,getAccountsUseCase,repository);
         createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, getAccountsUseCase,null, repository);
         getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase, repository, null, null);
+        depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase, repository, null, null,new EventManager());
         messageService = new MessageService(currencyService);
 
         //createCurrencyUseCase.createCurrency("dinero", "dinero");

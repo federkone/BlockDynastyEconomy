@@ -1,5 +1,6 @@
 package useCaseTest.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import BlockDynasty.Economy.domain.entities.balance.Money;
@@ -32,6 +33,7 @@ public class SetMoneyUseCaseTest {
     IRepository repository;
     CurrencyService currencyService;
     AccountService accountService;
+    EventManager eventManager;
     SetBalanceUseCase setBalanceUseCase;
     UsesCaseFactory useCaseFactory;
 
@@ -43,8 +45,9 @@ public class SetMoneyUseCaseTest {
         repository = FactoryRepo.getDb();
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
+        eventManager = new EventManager();
 
-        useCaseFactory = new UsesCaseFactory(accountService , currencyService, new LoggerTest(), new OfferService(new MockListener()) ,repository,new CourierTest());
+        useCaseFactory = new UsesCaseFactory(accountService , currencyService, new LoggerTest(), new OfferService(new MockListener()) ,repository,new CourierTest(),eventManager);
 
         setBalanceUseCase = useCaseFactory.getSetBalanceUseCase();
         useCaseFactory.getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());

@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.logs;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import BlockDynasty.Economy.domain.services.log.Log;
 
 public class VaultLogger extends AbstractLogger {
@@ -13,6 +14,7 @@ public class VaultLogger extends AbstractLogger {
 
     @Override
     public void log(String message) {
+        UtilServer.consoleLog(getName() + message);
         if (!enable) {
             return;
         }

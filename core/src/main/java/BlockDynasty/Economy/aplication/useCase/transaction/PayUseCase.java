@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.PayEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -19,15 +21,17 @@ public class PayUseCase {
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final Log economyLogger;
+    private final EventManager eventManager;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public PayUseCase( GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
-                                Courier updateForwarder, Log economyLogger) {
+    public PayUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+                      Courier updateForwarder, Log economyLogger, EventManager eventManager) {
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
@@ -77,28 +81,23 @@ public class PayUseCase {
 
     private Result<Void> performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         if (!accountTo.canReceiveCurrency()) {
-            //messageservice.sendMessage( accountTo,currency,ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, "Target account can't receive currency");
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
         if(!currency.isPayable()){
-            //messageservice.sendMessage( currency,ErrorCode.CURRENCY_NOT_PAYABLE, "Currency is not payable");
             return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }
 
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
-            //messageservice.sendMessage( currency,amount,ErrorCode.INVALID_AMOUNT, "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
 
         if(!currency.isValidAmount(amount)){
-            //messageservice.sendMessage( currency,amount,ErrorCode.DECIMAL_NOT_SUPPORTED, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         Result<TransferResult> result = dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
         if(!result.isSuccess()){
-            //messageservice.sendMessage( accountFrom,currency,amount,result.getErrorMessage(),result.getErrorCode());
             this.economyLogger.log("[Pay failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
@@ -107,12 +106,14 @@ public class PayUseCase {
         this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getTo());
         this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getFrom());
 
-        //messageService.sendMessage(TransferResult, currency, amount, "Pay successful");
-
         //.................
         this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.economyLogger.log("[Pay] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
+        this.eventManager.emit(new PayEvent(accountFrom.getPlayer(), accountTo.getPlayer(), currency, amount));
+            //desde infrastructura se hará -> eventManager.subscribe(PayEvent.class,event -> { } );  el cual sera el subscriptor/escuchador del evento
+            //permitiendo asi inyectar comportamiento nuevo sin tocar el caso de uso
+             //lo mas probable es que sea mejor extraer updateforwarder y el logger hacia afuera... o no.... :)
         //................
 
         return Result.success(null);

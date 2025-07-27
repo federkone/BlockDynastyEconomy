@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -17,15 +19,17 @@ public class WithdrawUseCase {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
+    private final EventManager eventManager;
     private final Log logger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public WithdrawUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log logger){
+    public WithdrawUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager){
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.logger = logger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
@@ -89,6 +93,7 @@ public class WithdrawUseCase {
         //messageservice.sendMessage(account,currency,amount, ErrorCode.SUCCESS, "Withdraw successful");
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
+        this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount));
 
     return Result.success(null);
     }

@@ -29,5 +29,5 @@ public interface IAccount {
     UUID getUuid();
     void setCanReceiveCurrency(boolean canReceiveCurrency);
     boolean canReceiveCurrency();
-
+    Player getPlayer();
 }

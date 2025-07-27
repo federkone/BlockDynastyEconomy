@@ -1,5 +1,6 @@
 package BlockDynasty.Economy.aplication.useCase;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
@@ -39,14 +40,14 @@ public class UsesCaseFactory {
     private final AcceptOfferUseCase acceptOfferUseCase ;
     private final CancelOfferUseCase cancelOfferUseCase ;
 
-    public UsesCaseFactory(IAccountService accountService, ICurrencyService currencyService, Log economyLogger, IOfferService offerService, IRepository repository, Courier courier) {
+    public UsesCaseFactory(IAccountService accountService, ICurrencyService currencyService, Log economyLogger, IOfferService offerService, IRepository repository, Courier courier, EventManager eventManager) {
         this.getCurrencyUseCase = new GetCurrencyUseCase(currencyService,repository);
         this.getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
-        this.withdrawUseCase = new WithdrawUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
-        this.depositUseCase = new DepositUseCase( this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger);
+        this.withdrawUseCase = new WithdrawUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
+        this.depositUseCase = new DepositUseCase( this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger,eventManager);
         this.createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, this.getAccountsUseCase, courier,repository);
-        this.setBalanceUseCase = new SetBalanceUseCase(  this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger);
-        this.payUseCase = new PayUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
+        this.setBalanceUseCase = new SetBalanceUseCase(  this.getCurrencyUseCase,  this.getAccountsUseCase,repository, courier, economyLogger,eventManager);
+        this.payUseCase = new PayUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger,eventManager);
         this.exchangeUseCase = new ExchangeUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);
         this.createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, this.getAccountsUseCase, repository);
         this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( this.getCurrencyUseCase, this.getAccountsUseCase, repository, courier, economyLogger);

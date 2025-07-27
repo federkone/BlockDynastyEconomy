@@ -45,8 +45,8 @@ public class CourierImpl implements Courier {
             player.sendPluginMessage(plugin, "BungeeCord", outBytes.toByteArray());
 
         } catch (IOException e) {
-            plugin.getLogger().severe("Failed to send plugin message: " + e.getMessage());
-            e.printStackTrace();
+            //plugin.getLogger().severe("Failed to send plugin message: " + e.getMessage());
+            UtilServer.consoleLogError(e.getMessage());
         }
     }
 

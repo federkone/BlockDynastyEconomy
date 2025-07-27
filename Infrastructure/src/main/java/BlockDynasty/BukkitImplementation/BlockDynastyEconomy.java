@@ -17,6 +17,7 @@ import BlockDynasty.BukkitImplementation.utils.UtilServer;
 
 import BlockDynasty.Economy.aplication.api.Api;
 import BlockDynasty.Economy.aplication.api.BlockDynastyEconomyApi;
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -42,6 +43,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private IAccountService accountService;
     private ICurrencyService currencyService;
     private MessageService messageService;
+    private EventManager eventManager;
     private IOfferService offerService;
     private Courier courier;
     private UsesCaseFactory usesCaseFactory;
@@ -65,7 +67,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             setupIntegrations();
             UtilServer.consoleLog("Plugin enabled successfully!");
         } catch (Exception e) {
-            UtilServer.consoleLog("An error occurred during plugin initialization: " + e.getMessage());
+            UtilServer.consoleLogError("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -90,7 +92,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             repository = result.getValue();
             UtilServer.consoleLog("§a Data store BlockDynastyEconomy initialized successfully.");
         } else {
-            UtilServer.consoleLog(result.getErrorMessage());
+            UtilServer.consoleLogError(result.getErrorMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -99,9 +101,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
         this.currencyService = new CurrencyService(getDataStore());
         this.messageService = new MessageService(currencyService);
         this.offerService = new OfferService(new OfferListenerImpl());
+        this.eventManager = new EventManager();
         this.courier = new CourierImpl(this);
 
-        this.usesCaseFactory = new UsesCaseFactory(accountService, currencyService, EconomyLogger.build(this), offerService, getDataStore(), courier);
+        this.usesCaseFactory = new UsesCaseFactory(accountService, currencyService, EconomyLogger.build(this), offerService, getDataStore(), courier,eventManager);
     }
     private void registerCommands(){
         CommandRegister.registerCommands(this);
@@ -128,7 +131,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         getServer().getPluginManager().registerEvents(economyListener, this);
     }
     private void setupIntegrations() {
-        Vault.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier));
+        Vault.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier,eventManager));
         PlaceHolder.register(usesCaseFactory.getAccountsUseCase(), usesCaseFactory.getCurrencyUseCase());
         Bungee.init(this);
     }

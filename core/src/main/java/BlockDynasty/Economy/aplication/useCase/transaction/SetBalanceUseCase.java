@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -17,17 +19,19 @@ public class SetBalanceUseCase {
     private final GetCurrencyUseCase getCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
+    private final EventManager eventManager;
     private final Log economyLogger;
     private final GetAccountsUseCase getAccountsUseCase;
 
-    public SetBalanceUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase,IRepository dataStore,
-                             Courier updateForwarder, Log economyLogger){
+    public SetBalanceUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+                             Courier updateForwarder, Log economyLogger, EventManager eventManager) {
 
         this.getCurrencyUseCase = getCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.getAccountsUseCase = getAccountsUseCase;
+        this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
@@ -80,6 +84,7 @@ public class SetBalanceUseCase {
         //messageService.serndMessage(account,currency,amount ErrorCode.SET_BALANCE_SUCCESS);
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
+        this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount));
 
         return Result.success(null);
     }

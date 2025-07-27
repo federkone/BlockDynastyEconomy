@@ -41,7 +41,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateMysql(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password")));
             return Result.success(repository);
         }catch (Exception e) {
-            UtilServer.consoleLog(e.getMessage());
+            UtilServer.consoleLogError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }
@@ -59,7 +59,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath(),enableServerConsole));
             return Result.success(repository);
         } catch (Exception e) {
-            UtilServer.consoleLog(e.getMessage());
+            UtilServer.consoleLogError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }
@@ -69,7 +69,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateSQLite(plugin.getDataFolder().getAbsolutePath()));
             return Result.success(repository);
         } catch (Exception e) {
-            UtilServer.consoleLog(e.getMessage());
+            UtilServer.consoleLogError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }
