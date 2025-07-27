@@ -1,7 +1,9 @@
 
 package BlockDynasty.BukkitImplementation.Integrations.vault;
 
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
@@ -31,13 +33,13 @@ public class VaultHook extends AbstractEconomy {
     private final WithdrawUseCase withdrawUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
 
-    public VaultHook(UsesCaseFactory usesCaseFactory) {
-        this.getAccountsUseCase = usesCaseFactory.getAccountsUseCase();
-        this.getCurrencyUseCase = usesCaseFactory.getCurrencyUseCase();
-        this.depositUseCase = usesCaseFactory.getDepositUseCase();
-        this.withdrawUseCase = usesCaseFactory.getWithdrawUseCase();
-        this.createAccountUseCase = usesCaseFactory.getCreateAccountUseCase();
-        this.getBalanceUseCase = usesCaseFactory.getGetBalanceUseCase();
+    public VaultHook(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
+        this.getAccountsUseCase = accountsUseCase.getGetAccountsUseCase();
+        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.depositUseCase = transactionsUseCase.getDepositUseCase();
+        this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
+        this.createAccountUseCase = accountsUseCase.getCreateAccountUseCase();
+        this.getBalanceUseCase = accountsUseCase.getGetBalanceUseCase();
     }
 
     @Override

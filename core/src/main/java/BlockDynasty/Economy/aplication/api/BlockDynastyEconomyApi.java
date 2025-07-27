@@ -1,6 +1,8 @@
 package BlockDynasty.Economy.aplication.api;
 
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
@@ -23,14 +25,14 @@ public class BlockDynastyEconomyApi implements Api {
     private final TradeCurrenciesUseCase tradeCurrenciesUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
 
-    public BlockDynastyEconomyApi(UsesCaseFactory usesCaseFactory) {
-        this.depositUseCase = usesCaseFactory.getDepositUseCase();
-        this.withdrawUseCase = usesCaseFactory.getWithdrawUseCase();
-        this.exchangeUseCase = usesCaseFactory.getExchangeUseCase();
-        this.transferFundsUseCase = usesCaseFactory.getTransferFundsUseCase();
-        this.getCurrencyUseCase = usesCaseFactory.getCurrencyUseCase();
-        this.tradeCurrenciesUseCase = usesCaseFactory.getTradeCurrenciesUseCase();
-        this.getBalanceUseCase = usesCaseFactory.getGetBalanceUseCase();
+    public BlockDynastyEconomyApi(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase ,TransactionsUseCase transactionsUseCase) {
+        this.depositUseCase = transactionsUseCase.getDepositUseCase();
+        this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
+        this.exchangeUseCase = transactionsUseCase.getExchangeUseCase();
+        this.transferFundsUseCase = transactionsUseCase.getTransferFundsUseCase();
+        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.tradeCurrenciesUseCase = transactionsUseCase.getTradeCurrenciesUseCase();
+        this.getBalanceUseCase = accountsUseCase.getGetBalanceUseCase();
     }
 
     public void deposit(UUID uuid, double amount){

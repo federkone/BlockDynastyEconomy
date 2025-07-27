@@ -29,9 +29,9 @@ public class BungeeImpl implements PluginMessageListener {
     private final String channelName = "BlockDynastyEconomy Data Channel";
     private final GetAccountsUseCase getAccountUseCase;
 
-    public BungeeImpl(BlockDynastyEconomy plugin ) {
+    public BungeeImpl(BlockDynastyEconomy plugin , GetAccountsUseCase getAccountUseCase) {
         this.plugin = plugin;
-        this.getAccountUseCase = plugin.getUsesCaseFactory().getAccountsUseCase();
+        this.getAccountUseCase = getAccountUseCase;
     }
 
 //todo: testear en todos los servidores. esto funciona a modo de broadcast. lo cual puede generar trafico innecesario
@@ -67,11 +67,11 @@ public class BungeeImpl implements PluginMessageListener {
                         break;
                         //si es currency, traerlas de db y actualizar el cache/service
                     case "currency":
-                        Currency currency = plugin.getCurrencyManager().getCurrency(uuid);
+                        /*Currency currency = plugin.getCurrencyManager().getCurrency(uuid);
                         if (currency != null) {
                              currency = plugin.getDataStore().loadCurrencyByUuid(uuid.toString()).getValue();
                             UtilServer.consoleLog(channelName + " - Currency " + name + " updated.");
-                        }
+                        }*/
                         break;
                     default:
                         UtilServer.consoleLog(channelName + " - Unknown type: " + type);

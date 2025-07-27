@@ -1,16 +1,12 @@
 package useCaseTest.transaction;
 
-import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import mockClass.MockListener;
 import org.junit.jupiter.api.AfterEach;
@@ -31,11 +27,8 @@ public class SetMoneyUseCaseTest {
     Account nullplague;
     Currency dinero;
     IRepository repository;
-    CurrencyService currencyService;
-    AccountService accountService;
-    EventManager eventManager;
     SetBalanceUseCase setBalanceUseCase;
-    UsesCaseFactory useCaseFactory;
+    Core core;
 
     @BeforeEach
     void setUp() {
@@ -43,15 +36,13 @@ public class SetMoneyUseCaseTest {
         dinero= new Currency(UUID.randomUUID(),"dinero","dinero");
 
         repository = FactoryRepo.getDb();
-        currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
-        eventManager = new EventManager();
 
-        useCaseFactory = new UsesCaseFactory(accountService , currencyService, new LoggerTest(), new OfferService(new MockListener()) ,repository,new CourierTest(),eventManager);
+        this.core = new Core(repository, 5, new MockListener(), new CourierTest(),new LoggerTest());
 
-        setBalanceUseCase = useCaseFactory.getSetBalanceUseCase();
-        useCaseFactory.getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());
-        useCaseFactory.getCreateAccountUseCase().execute(nullplague.getUuid(), nullplague.getNickname());
+
+        setBalanceUseCase = core.getTransactionsUseCase().getSetBalanceUseCase();
+        core.getCurrencyUseCase().getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());
+        core.getAccountsUseCase().getCreateAccountUseCase().execute(nullplague.getUuid(), nullplague.getNickname());
     }
 
     @Test
@@ -59,7 +50,7 @@ public class SetMoneyUseCaseTest {
         Result<Void> result = setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(1));
         assertTrue(result.isSuccess());
 
-        Result<Money> accountResult = useCaseFactory.getGetBalanceUseCase().getBalance( nullplague.getNickname(), "dinero");
+        Result<Money> accountResult = core.getAccountsUseCase().getGetBalanceUseCase().getBalance( nullplague.getNickname(), "dinero");
         assertEquals(BigDecimal.valueOf(1), accountResult.getValue( ).getAmount());
     }
 

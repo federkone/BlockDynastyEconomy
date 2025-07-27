@@ -8,35 +8,37 @@ import BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions.Exchan
 import BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions.PayCommand;
 import BlockDynasty.BukkitImplementation.commands.SubcomandsEconomy.*;
 
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.*;
 
 public class CommandRegister {
 
-    public static void registerCommands(BlockDynastyEconomy plugin)
+    public static void registerCommands(BlockDynastyEconomy plugin, AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase, OfferUseCase offerUseCase)
     {
-        UsesCaseFactory usesCaseFactory =  plugin.getUsesCaseFactory();
+        CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(currencyUseCase.getCreateCurrencyUseCase());
+        DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(currencyUseCase.getDeleteCurrencyUseCase());
+        EditColorCoommand editColorCoommand = new EditColorCoommand(currencyUseCase.getEditCurrencyUseCase());
+        EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(currencyUseCase.getEditCurrencyUseCase());
+        EditPayableCommand editPayableCommand = new EditPayableCommand(currencyUseCase.getEditCurrencyUseCase());
+        EditRateCommand editRateCommand = new EditRateCommand(currencyUseCase.getEditCurrencyUseCase());
+        EditStartBalCommand editStartBalCommand = new EditStartBalCommand(currencyUseCase.getEditCurrencyUseCase());
+        ViewCommand ViewCommand = new ViewCommand(currencyUseCase.getGetCurrencyUseCase());
+        EditSymbolCommand editSymbolCommand = new EditSymbolCommand(currencyUseCase.getEditCurrencyUseCase());
+        ListCommand listCommand = new ListCommand(currencyUseCase.getGetCurrencyUseCase());
+        SetDefaultCommand setDefaultCommand = new SetDefaultCommand(currencyUseCase.getEditCurrencyUseCase());
+        EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(currencyUseCase.getEditCurrencyUseCase());
+        EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(currencyUseCase.getEditCurrencyUseCase());
 
-        CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(usesCaseFactory.getCreateCurrencyUseCase());
-        DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(usesCaseFactory.deleteCurrencyUseCase());
-        EditColorCoommand editColorCoommand = new EditColorCoommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditPayableCommand editPayableCommand = new EditPayableCommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditRateCommand editRateCommand = new EditRateCommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditStartBalCommand editStartBalCommand = new EditStartBalCommand(usesCaseFactory.getEditCurrencyUseCase());
-        WithdrawCommand withdrawCommand = new WithdrawCommand(usesCaseFactory.getWithdrawUseCase(), plugin.getMessageService());
-        DepositCommand depositCommand = new DepositCommand(usesCaseFactory.getDepositUseCase(), plugin.getMessageService());
-        SetCommand setCommand = new SetCommand(usesCaseFactory.getSetBalanceUseCase(), plugin.getMessageService());
-        ViewCommand ViewCommand = new ViewCommand(usesCaseFactory.getCurrencyUseCase());
-        EditSymbolCommand editSymbolCommand = new EditSymbolCommand(usesCaseFactory.getEditCurrencyUseCase());
-        ListCommand listCommand = new ListCommand(usesCaseFactory.getCurrencyUseCase());
-        SetDefaultCommand setDefaultCommand = new SetDefaultCommand(usesCaseFactory.getEditCurrencyUseCase());
-        CreateOfferCommand createOfferCommand = new CreateOfferCommand(usesCaseFactory.getCreateOfferUseCase(),plugin.getMessageService());
-        CancelOfferCommand cancelOfferCommand = new CancelOfferCommand(usesCaseFactory.getCancelOfferUseCase(),plugin.getMessageService());
-        AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(usesCaseFactory.getAcceptOfferUseCase(),plugin.getMessageService());
-        DenyOfferCommand denyOfferCommand = new DenyOfferCommand(usesCaseFactory.getCancelOfferUseCase(),plugin.getMessageService());
-        BuyCommand buyCommand = new BuyCommand(usesCaseFactory.getWithdrawUseCase(), plugin.getMessageService());
-        EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(usesCaseFactory.getEditCurrencyUseCase());
-        EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(usesCaseFactory.getEditCurrencyUseCase());
+        WithdrawCommand withdrawCommand = new WithdrawCommand(transactionsUseCase.getWithdrawUseCase(), plugin.getMessageService());
+        DepositCommand depositCommand = new DepositCommand(transactionsUseCase.getDepositUseCase(), plugin.getMessageService());
+        SetCommand setCommand = new SetCommand(transactionsUseCase.getSetBalanceUseCase(), plugin.getMessageService());
+
+        CreateOfferCommand createOfferCommand = new CreateOfferCommand(offerUseCase.getCreateOfferUseCase(),plugin.getMessageService());
+        CancelOfferCommand cancelOfferCommand = new CancelOfferCommand(offerUseCase.getCancelOfferUseCase(),plugin.getMessageService());
+        AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(offerUseCase.getAcceptOfferUseCase(),plugin.getMessageService());
+        DenyOfferCommand denyOfferCommand = new DenyOfferCommand(offerUseCase.getCancelOfferUseCase(),plugin.getMessageService());
+
+        BuyCommand buyCommand = new BuyCommand(transactionsUseCase.getWithdrawUseCase(), plugin.getMessageService());
+
 
 
         OfferCommand offerCommand = new OfferCommand();
@@ -68,7 +70,7 @@ public class CommandRegister {
 
         plugin.getCommand("economy").setExecutor(economyCommand);
 
-        plugin.getCommand("pay").setExecutor(new PayCommand(usesCaseFactory.getPayUseCase(), plugin.getMessageService()));
+        plugin.getCommand("pay").setExecutor(new PayCommand(transactionsUseCase.getPayUseCase(), plugin.getMessageService()));
 
         offerCommand.registerSubCommand("create", createOfferCommand);
         offerCommand.registerSubCommand("cancel", cancelOfferCommand);
@@ -78,9 +80,9 @@ public class CommandRegister {
         plugin.getCommand("offer").setExecutor(offerCommand);
 
 
-        plugin.getCommand("exchange").setExecutor(new ExchangeCommand(usesCaseFactory.getExchangeUseCase(), plugin.getMessageService()));
-        plugin.getCommand("balance").setExecutor(new BalanceCommand(usesCaseFactory.getGetBalanceUseCase(), plugin.getMessageService()));
-        plugin.getCommand("baltop").setExecutor(new BalanceTopCommand(usesCaseFactory.getAccountsUseCase(), plugin.getMessageService()));
+        plugin.getCommand("exchange").setExecutor(new ExchangeCommand(transactionsUseCase.getExchangeUseCase(), plugin.getMessageService()));
+        plugin.getCommand("balance").setExecutor(new BalanceCommand(accountsUseCase.getGetBalanceUseCase(), plugin.getMessageService()));
+        plugin.getCommand("baltop").setExecutor(new BalanceTopCommand(accountsUseCase.getGetAccountsUseCase(), plugin.getMessageService()));
 
 
     }

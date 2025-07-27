@@ -1,6 +1,8 @@
 package BlockDynasty.BukkitImplementation.Integrations.vaultUnloked;
 
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
@@ -28,13 +30,13 @@ public class VaultUnlockedHook implements Economy {
     private final WithdrawUseCase withdrawUseCase;
     private final DepositUseCase depositUseCase;
 
-    public VaultUnlockedHook(UsesCaseFactory usesCaseFactory) {
-        this.getCurrencyUseCase = usesCaseFactory.getCurrencyUseCase();
-        this.getBalanceUseCase = usesCaseFactory.getGetBalanceUseCase();
-        this.createAccountUseCase = usesCaseFactory.getCreateAccountUseCase();
-        this.getAccountsUseCase = usesCaseFactory.getAccountsUseCase();
-        this.withdrawUseCase = usesCaseFactory.getWithdrawUseCase();
-        this.depositUseCase = usesCaseFactory.getDepositUseCase();
+    public VaultUnlockedHook(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
+        this.getAccountsUseCase = accountsUseCase.getGetAccountsUseCase();
+        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.depositUseCase = transactionsUseCase.getDepositUseCase();
+        this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
+        this.createAccountUseCase = accountsUseCase.getCreateAccountUseCase();
+        this.getBalanceUseCase = accountsUseCase.getGetBalanceUseCase();
     }
 
     @Override

@@ -3,7 +3,9 @@ package BlockDynasty.BukkitImplementation.Integrations.vaultUnloked;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.Integrations.vault.IVaultHandler;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
-import BlockDynasty.Economy.aplication.useCase.UsesCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import net.milkbowl.vault2.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -12,17 +14,21 @@ import org.bukkit.plugin.ServicesManager;
 public class VaultUnlockedHandler implements IVaultHandler {
     private VaultUnlockedHook vaultUnlockedHook;
     private final BlockDynastyEconomy plugin;
-    private final UsesCaseFactory usesCaseFactory;
+    private final AccountsUseCase accountsUseCase;
+    private final CurrencyUseCase currencyUseCase;
+    private final TransactionsUseCase transactionsUseCase;
 
-    public VaultUnlockedHandler(BlockDynastyEconomy plugin, UsesCaseFactory usesCaseFactory) {
+    public VaultUnlockedHandler(BlockDynastyEconomy plugin, AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
         this.plugin = plugin;
-        this.usesCaseFactory = usesCaseFactory;
+        this.accountsUseCase = accountsUseCase;
+        this.currencyUseCase = currencyUseCase;
+        this.transactionsUseCase = transactionsUseCase;
     }
 
     public void hook() {
         try {
             if (this.vaultUnlockedHook == null) {
-                this.vaultUnlockedHook = new VaultUnlockedHook(usesCaseFactory);
+                this.vaultUnlockedHook = new VaultUnlockedHook(accountsUseCase,currencyUseCase,transactionsUseCase);
             }
 
             ServicesManager sm = Bukkit.getServicesManager();
@@ -30,7 +36,7 @@ public class VaultUnlockedHandler implements IVaultHandler {
 
             UtilServer.consoleLog("Vault Unlocked detect, link enabled.");
         } catch (Exception e) {
-            e.printStackTrace();
+            UtilServer.consoleLogError(e.getMessage());
         }
     }
 
