@@ -8,6 +8,7 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
+import BlockDynasty.BukkitImplementation.listeners.TransactionsListener;
 import BlockDynasty.BukkitImplementation.logs.VaultLogger;
 import BlockDynasty.BukkitImplementation.config.file.Configuration;
 import BlockDynasty.BukkitImplementation.services.MessageService;
@@ -129,6 +130,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             UtilServer.consoleLog("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
         getServer().getPluginManager().registerEvents(economyListener, this);
+        //TransactionsListener.register(eventManager);
     }
     private void setupIntegrations() {
         Vault.init(new UsesCaseFactory(accountService, currencyService,VaultLogger.build(this), offerService,getDataStore(),courier,eventManager));

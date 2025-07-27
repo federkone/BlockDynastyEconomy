@@ -111,9 +111,6 @@ public class PayUseCase {
         this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.economyLogger.log("[Pay] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
         this.eventManager.emit(new PayEvent(accountFrom.getPlayer(), accountTo.getPlayer(), currency, amount));
-            //desde infrastructura se hará -> eventManager.subscribe(PayEvent.class,event -> { } );  el cual sera el subscriptor/escuchador del evento
-            //permitiendo asi inyectar comportamiento nuevo sin tocar el caso de uso
-             //lo mas probable es que sea mejor extraer updateforwarder y el logger hacia afuera... o no.... :)
         //................
 
         return Result.success(null);
