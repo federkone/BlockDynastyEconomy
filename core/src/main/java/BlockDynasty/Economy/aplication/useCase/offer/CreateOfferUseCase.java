@@ -2,8 +2,8 @@ package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.services.IOfferService;
@@ -13,32 +13,32 @@ import java.util.UUID;
 
 public class CreateOfferUseCase {
     private final IOfferService offerService;
-    private final GetCurrencyUseCase getCurrencyUseCase;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
     //todo: crear oferta si, solo si no existe una pendiente entre enviador y receptor. primero tengo que obtener ambos jugadores con GetplayerUseCase y asegurarse que existan, ,GetCurrencyUseCase y asegurarse que la moneda existente exista, y luego crear la oferta guardandola en el OfferManager
-    public CreateOfferUseCase(IOfferService offerService, GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase) {
+    public CreateOfferUseCase(IOfferService offerService, SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase) {
         this.offerService = offerService;
-        this.getCurrencyUseCase = getCurrencyUseCase;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Void> execute (UUID playerSender, UUID playerReciber, String currencyNameValue, BigDecimal amountCurrencyValue, String currencyNameOffer, BigDecimal amountCurrencyOffer) {
-        Result<Account> accountSenderResult = this.getAccountsUseCase.getAccount(playerSender);
+        Result<Account> accountSenderResult = this.searchAccountUseCase.getAccount(playerSender);
         if (!accountSenderResult.isSuccess()) {
             return Result.failure(accountSenderResult.getErrorMessage(), accountSenderResult.getErrorCode());
         }
 
-        Result<Account> accountReciberResult = this.getAccountsUseCase.getAccount(playerReciber);
+        Result<Account> accountReciberResult = this.searchAccountUseCase.getAccount(playerReciber);
         if (!accountReciberResult.isSuccess()) {
             return Result.failure(accountReciberResult.getErrorMessage(), accountReciberResult.getErrorCode());
         }
 
-        Result<Currency> currencyValueResult = this.getCurrencyUseCase.getCurrency(currencyNameValue);
+        Result<Currency> currencyValueResult = this.searchCurrencyUseCase.getCurrency(currencyNameValue);
         if (!currencyValueResult.isSuccess()) {
             return Result.failure(currencyValueResult.getErrorMessage(), currencyValueResult.getErrorCode());
         }
-        Result<Currency> currencyOfferResult = this.getCurrencyUseCase.getCurrency(currencyNameOffer);
+        Result<Currency> currencyOfferResult = this.searchCurrencyUseCase.getCurrency(currencyNameOffer);
         if (!currencyOfferResult.isSuccess()) {
             return Result.failure(currencyOfferResult.getErrorMessage(), currencyOfferResult.getErrorCode());
         }

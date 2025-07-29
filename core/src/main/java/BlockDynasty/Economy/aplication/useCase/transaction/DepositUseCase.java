@@ -6,8 +6,8 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -16,24 +16,24 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class DepositUseCase {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final EventManager eventManager;
     private final Log economyLogger;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
-    public DepositUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public DepositUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.eventManager = eventManager;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.getAccountsUseCase.getAccount(targetUUID);
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -41,7 +41,7 @@ public class DepositUseCase {
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.getAccountsUseCase.getAccount(targetName);
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -58,9 +58,9 @@ public class DepositUseCase {
 
     private Result<Currency> getCurrency(String currencyName) {
         if (currencyName == null) {
-            return  this.getCurrencyUseCase.getDefaultCurrency();
+            return  this.searchCurrencyUseCase.getDefaultCurrency();
         }
-        return  this.getCurrencyUseCase.getCurrency(currencyName);
+        return  this.searchCurrencyUseCase.getCurrency(currencyName);
     }
 
     private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
@@ -72,7 +72,6 @@ public class DepositUseCase {
     }
 
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
-
 
         if (!account.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
@@ -92,7 +91,7 @@ public class DepositUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount));

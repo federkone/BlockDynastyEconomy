@@ -4,9 +4,9 @@ import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -23,16 +23,16 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class VaultUnlockedHook implements Economy {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final CreateAccountUseCase createAccountUseCase;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
     private final WithdrawUseCase withdrawUseCase;
     private final DepositUseCase depositUseCase;
 
     public VaultUnlockedHook(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
-        this.getAccountsUseCase = accountsUseCase.getGetAccountsUseCase();
-        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.searchAccountUseCase = accountsUseCase.getGetAccountsUseCase();
+        this.searchCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
         this.depositUseCase = transactionsUseCase.getDepositUseCase();
         this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
         this.createAccountUseCase = accountsUseCase.getCreateAccountUseCase();
@@ -66,7 +66,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String format(@NotNull BigDecimal amount) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if(currencyResult.isSuccess()) return currencyResult.getValue().format(amount);
         return String.valueOf(amount);
     }
@@ -78,7 +78,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String format(@NotNull BigDecimal amount, @NotNull String currency) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currency);
+        Result<Currency> currencyResult = searchCurrencyUseCase.getCurrency(currency);
         if(currencyResult.isSuccess()) return currencyResult.getValue().format(amount);
         return String.valueOf(amount);
     }
@@ -90,13 +90,13 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean hasCurrency(@NotNull String currency) {
-        Result<Currency> result = getCurrencyUseCase.getCurrency(currency);
+        Result<Currency> result = searchCurrencyUseCase.getCurrency(currency);
         return result.isSuccess();
     }
 
     @Override
     public @NotNull String getDefaultCurrency(@NotNull String pluginName) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             return currencyResult.getValue().getSingular();
         }
@@ -105,7 +105,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String defaultCurrencyNamePlural(@NotNull String pluginName) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             return currencyResult.getValue().getPlural();
         }
@@ -114,7 +114,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String defaultCurrencyNameSingular(@NotNull String pluginName) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             return currencyResult.getValue().getSingular();
         }
@@ -123,7 +123,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull Collection<String> currencies() {
-        List<Currency> currenciesResult = getCurrencyUseCase.getCurrencies();
+        List<Currency> currenciesResult = searchCurrencyUseCase.getCurrencies();
         return currenciesResult.stream().map(Currency::getSingular).toList();
     }
 
@@ -156,7 +156,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public Optional<String> getAccountName(@NotNull UUID accountID) {
-        Result<Account> accountResult = getAccountsUseCase.getAccount(accountID);
+        Result<Account> accountResult = searchAccountUseCase.getAccount(accountID);
         if (accountResult.isSuccess()) {
             return Optional.of(accountResult.getValue().getNickname());
         }
@@ -165,7 +165,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean hasAccount(@NotNull UUID accountID) {
-        return getAccountsUseCase.getAccount(accountID).isSuccess();
+        return searchAccountUseCase.getAccount(accountID).isSuccess();
     }
 
     @Override

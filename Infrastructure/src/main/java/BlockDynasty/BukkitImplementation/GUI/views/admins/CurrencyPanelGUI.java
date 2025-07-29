@@ -8,7 +8,7 @@ import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyLi
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,13 +18,13 @@ public class CurrencyPanelGUI extends AbstractGUI {
     private final GUIService guiService;
     private final JavaPlugin plugin;
     private  final CreateCurrencyUseCase createCurrencyUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final EditCurrencyUseCase editCurrencyUseCase;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, GetCurrencyUseCase getCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase,DeleteCurrencyUseCase deleteCurrencyUseCase) {
+    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, SearchCurrencyUseCase searchCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase, DeleteCurrencyUseCase deleteCurrencyUseCase) {
         super("Administrador de Monedas", 3);
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.editCurrencyUseCase = editCurrencyUseCase;
         this.createCurrencyUseCase = createCurrencyUseCase;
         this.deleteCurrencyUseCase = deleteCurrencyUseCase;
@@ -72,7 +72,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListEdit currencyListEdit = new CurrencyListEdit(guiService,plugin, player,this.getCurrencyUseCase,this.editCurrencyUseCase,this);
+        CurrencyListEdit currencyListEdit = new CurrencyListEdit(guiService,plugin, player,this.searchCurrencyUseCase,this.editCurrencyUseCase,this);
         player.openInventory(currencyListEdit.getInventory());
 
         // Register the GUI with the GUIService
@@ -80,7 +80,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
     }
 
     private void currencyListDelete() {
-        CurrencyListDelete currencyListDelete = new CurrencyListDelete(guiService, player,this.getCurrencyUseCase,this.deleteCurrencyUseCase,this);
+        CurrencyListDelete currencyListDelete = new CurrencyListDelete(guiService, player,this.searchCurrencyUseCase,this.deleteCurrencyUseCase,this);
         player.openInventory(currencyListDelete.getInventory());
 
         // Register the GUI with the GUIService

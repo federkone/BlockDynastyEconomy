@@ -1,11 +1,10 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
@@ -23,11 +22,11 @@ public class EditCurrencyGUI extends AbstractGUI {
     private final Currency currency;
     private final GUIService guiService;
     private final EditCurrencyUseCase editCurrencyUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final AbstractGUI parentGUI;
 
     public EditCurrencyGUI(JavaPlugin plugin, GUIService guiService, Player player, Currency currency,
-                           EditCurrencyUseCase editCurrencyUseCase, GetCurrencyUseCase getCurrencyUseCase,AbstractGUI parentGUI) {
+                           EditCurrencyUseCase editCurrencyUseCase, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
         super("Editar Moneda: " + currency.getSingular(), 4);
         this.plugin = plugin;
         this.player = player;
@@ -35,7 +34,7 @@ public class EditCurrencyGUI extends AbstractGUI {
         this.parentGUI = parentGUI;
         this.currency = currency;
         this.editCurrencyUseCase =editCurrencyUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
 
         setupGUI();
     }
@@ -320,7 +319,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openEditCurrencyGUI() {
-        EditCurrencyGUI gui = new EditCurrencyGUI(plugin, guiService,player, currency,editCurrencyUseCase, getCurrencyUseCase,parentGUI);
+        EditCurrencyGUI gui = new EditCurrencyGUI(plugin, guiService,player, currency,editCurrencyUseCase, searchCurrencyUseCase,parentGUI);
         player.openInventory(gui.getInventory());
         guiService.registerGUI(player, gui);
     }

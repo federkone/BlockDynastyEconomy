@@ -2,11 +2,11 @@ package BlockDynasty.BukkitImplementation.Integrations.bungee;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 
 public class Bungee {
 
-    public static void init(BlockDynastyEconomy plugin, GetAccountsUseCase getAccountUseCase) {
+    public static void init(BlockDynastyEconomy plugin, SearchAccountUseCase getAccountUseCase) {
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");  //outgoing channel
         plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "BungeeCord", new BungeeImpl(plugin,getAccountUseCase));  //incoming channel
         UtilServer.consoleLog("BungeeCord channel has been initialized. chanel Name: BungeeCord");

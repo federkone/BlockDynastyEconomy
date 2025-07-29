@@ -7,7 +7,7 @@ import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.*;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 //todo : la api deberia proporcionar/exponer, todos los casos de usos existentes
 //todo:ademas, se deberia retornar siempre un EconomyResponse, para que desde afuera se sepa el resultado de la operacion. puede ser simplemente un boolean, o un objeto que contenga el resultado de la operacion.
 public class BlockDynastyEconomyApi implements Api {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final DepositUseCase depositUseCase;
     private final WithdrawUseCase withdrawUseCase;
     private final ExchangeUseCase exchangeUseCase;
@@ -30,7 +30,7 @@ public class BlockDynastyEconomyApi implements Api {
         this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
         this.exchangeUseCase = transactionsUseCase.getExchangeUseCase();
         this.transferFundsUseCase = transactionsUseCase.getTransferFundsUseCase();
-        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.searchCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
         this.tradeCurrenciesUseCase = transactionsUseCase.getTradeCurrenciesUseCase();
         this.getBalanceUseCase = accountsUseCase.getGetBalanceUseCase();
     }
@@ -95,7 +95,7 @@ public class BlockDynastyEconomyApi implements Api {
     }
 
     public Currency getCurrency(String name){
-            return  this.getCurrencyUseCase.getCurrency(name).getValue();
+            return  this.searchCurrencyUseCase.getCurrency(name).getValue();
     }
 
 }

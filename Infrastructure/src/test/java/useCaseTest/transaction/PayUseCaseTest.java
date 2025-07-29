@@ -9,8 +9,8 @@ import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -32,8 +32,8 @@ public class PayUseCaseTest {
     CurrencyService currencyService;
     AccountService accountService;
     EventManager eventManager;
-    GetAccountsUseCase getAccountsUseCase;
-    GetCurrencyUseCase getCurrencyUseCase;
+    SearchAccountUseCase searchAccountUseCase;
+    SearchCurrencyUseCase searchCurrencyUseCase;
     EditCurrencyUseCase editCurrencyUseCase;
     PayUseCase payUseCase;
     Currency coin;
@@ -72,9 +72,9 @@ public class PayUseCaseTest {
         accountService.addAccountToCache(nullplague); //se conecto el player1
         accountService.addAccountToCache(cris); //se conecto el player2
 
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        payUseCase = new PayUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest(),eventManager);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
+        payUseCase = new PayUseCase(searchCurrencyUseCase, searchAccountUseCase,repository,new CourierTest(),new LoggerTest(),eventManager);
         editCurrencyUseCase= new EditCurrencyUseCase(currencyService ,new CourierTest(),repository);
 
         eventManager.subscribe(PayEvent.class, event -> { System.out.println( event.getPayer().getNickname() + " realizo un pago a "+ event.getReceived().getNickname()+ " de un monto de " +event.getAmount()); } );
@@ -86,8 +86,8 @@ public class PayUseCaseTest {
         Result<Void> result = payUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
         assertTrue(result.isSuccess());
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(0).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(10000).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
     @Test
@@ -121,8 +121,8 @@ public class PayUseCaseTest {
         Result<Void> result = payUseCase.execute("nullplague", "cris", "dinero", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.ACCOUNT_CAN_NOT_RECEIVE, result.getErrorCode()); //ejemplo con patron result en lugar de excepciones
 
-        assertEquals(BigDecimal.valueOf(10000),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(0),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(10000), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(0), searchAccountUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
 

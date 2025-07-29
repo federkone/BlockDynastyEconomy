@@ -3,7 +3,7 @@ package useCaseTest.currency;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -25,17 +25,17 @@ public class DeleteCurrencyUseCaseTest {
     DeleteCurrencyUseCase deleteCurrencyUseCase;
     CreateCurrencyUseCase createCurrencyUseCase;
     CreateAccountUseCase createAccountUseCase;
-    GetAccountsUseCase getAccountsUseCase;
+    SearchAccountUseCase searchAccountUseCase;
 
     @BeforeEach
     public void setUp() {
         repository = FactoryRepo.getDb();
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5);
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
-        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService,getAccountsUseCase,repository,null);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService,getAccountsUseCase, null,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, getAccountsUseCase ,repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService, repository);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, searchAccountUseCase,repository,null);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, searchAccountUseCase, null,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
 
     }
 
@@ -47,13 +47,13 @@ public class DeleteCurrencyUseCaseTest {
 
         deleteCurrencyUseCase.deleteCurrency("dinero");
 
-        Result<Account> account = getAccountsUseCase.getAccount("Nullplague");
+        Result<Account> account = searchAccountUseCase.getAccount("Nullplague");
 
         for (Money money : account.getValue().getBalances()) {
             System.out.println(money.getCurrency().getSingular());
         }
 
-        assertEquals(1, getAccountsUseCase.getAccount("Nullplague").getValue().getBalances().size());
+        assertEquals(1, searchAccountUseCase.getAccount("Nullplague").getValue().getBalances().size());
 
 
     }

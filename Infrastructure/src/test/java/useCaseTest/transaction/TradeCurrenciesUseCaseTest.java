@@ -4,8 +4,8 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -36,8 +36,8 @@ public class TradeCurrenciesUseCaseTest {
     IRepository repository;
     CurrencyService currencyService;
     AccountService accountService;
-    GetAccountsUseCase getAccountsUseCase;
-    GetCurrencyUseCase getCurrencyUseCase;
+    SearchAccountUseCase searchAccountUseCase;
+    SearchCurrencyUseCase searchCurrencyUseCase;
     TradeCurrenciesUseCase tradeCurrenciesUseCase;
     Currency coin;
     Currency dinero;
@@ -74,10 +74,10 @@ public class TradeCurrenciesUseCaseTest {
         //accountManager.addAccountToCache(account1); //se conecto el player1
         //accountManager.addAccountToCache(account2); //se conecto el player2
 
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test
@@ -102,16 +102,16 @@ public class TradeCurrenciesUseCaseTest {
             fail("Exception"+ e);
         }
 
-        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney(coin).getAmount());
     }
 
     @Test
     void TradeCurrencyUseCseTestInsufficientFounds(){
         Result<Void> result = tradeCurrenciesUseCase.execute("nullplague","cris","Coin","dinero",BigDecimal.valueOf(2),BigDecimal.valueOf(30000));
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
-        assertEquals(BigDecimal.valueOf(1).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney(coin).getAmount());
-        assertEquals(BigDecimal.valueOf(30000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
     }
 
 

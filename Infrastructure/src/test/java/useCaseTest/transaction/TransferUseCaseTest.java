@@ -2,8 +2,8 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.TransferFundsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -30,8 +30,8 @@ public class TransferUseCaseTest {
     IRepository repository;
     CurrencyService currencyService;
     AccountService accountService;
-    GetAccountsUseCase getAccountsUseCase;
-    GetCurrencyUseCase getCurrencyUseCase;
+    SearchAccountUseCase searchAccountUseCase;
+    SearchCurrencyUseCase searchCurrencyUseCase;
     TransferFundsUseCase transferFundsUseCase;
     Currency coin;
     Currency dinero;
@@ -62,9 +62,9 @@ public class TransferUseCaseTest {
         //accountManager.addAccountToCache(account1); //se conecto el player1
         //accountManager.addAccountToCache(account2); //se conecto el player2
 
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        transferFundsUseCase = new TransferFundsUseCase(getCurrencyUseCase,getAccountsUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
+        transferFundsUseCase = new TransferFundsUseCase(searchCurrencyUseCase, searchAccountUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test
@@ -86,8 +86,8 @@ public class TransferUseCaseTest {
         }*/
         Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2),getAccountsUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).setScale(2),getAccountsUseCase.getAccount("cris").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(0).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney("dinero").getAmount().setScale(2));
     }
 
     @Test

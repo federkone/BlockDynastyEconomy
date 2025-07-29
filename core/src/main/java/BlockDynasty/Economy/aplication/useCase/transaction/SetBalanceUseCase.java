@@ -6,9 +6,9 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
@@ -16,31 +16,31 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public class SetBalanceUseCase {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final EventManager eventManager;
     private final Log economyLogger;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
-    public SetBalanceUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+    public SetBalanceUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
                              Courier updateForwarder, Log economyLogger, EventManager eventManager) {
 
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
         this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult =  this.getAccountsUseCase.getAccount(targetUUID);
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetUUID);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
-        Result<Currency> currencyResult =  this.getCurrencyUseCase.getCurrency(currencyName);
+        Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
@@ -49,12 +49,12 @@ public class SetBalanceUseCase {
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult =  this.getAccountsUseCase.getAccount(targetName);
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetName);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
-        Result<Currency> currencyResult =  this.getCurrencyUseCase.getCurrency(currencyName);
+        Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
@@ -64,24 +64,20 @@ public class SetBalanceUseCase {
 
     private Result<Void> performSet(Account account, Currency currency, BigDecimal amount) {
         if(amount.compareTo(BigDecimal.ZERO) < 0){
-            //messageService.sendMessage(currency, ErrorCode.INVALID_AMOUNT + ": Amount must be greater than -1");
             return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
         }
 
         if(!currency.isValidAmount(amount)){
-            //messageService.sendMessage(currency, ErrorCode.DECIMAL_NOT_SUPPORTED + ": Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         Result<Account> result =  this.dataStore.setBalance(account.getUuid().toString(), currency, amount);
         if (!result.isSuccess()) {
-            //messageService.sendMessage(account, result);
             this.economyLogger.log("[BALANCE SET failed] Account: " + account.getNickname() + " were set to: " + currency.format(amount) + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
-        //messageService.serndMessage(account,currency,amount ErrorCode.SET_BALANCE_SUCCESS);
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
         this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount));

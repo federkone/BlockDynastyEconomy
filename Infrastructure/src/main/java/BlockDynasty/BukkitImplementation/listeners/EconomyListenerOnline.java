@@ -4,7 +4,7 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -22,13 +22,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class EconomyListenerOnline implements Listener {
     protected final ICurrencyService currencyService;
     protected final CreateAccountUseCase createAccountUseCase;
-    protected final GetAccountsUseCase getAccountsUseCase;
+    protected final SearchAccountUseCase searchAccountUseCase;
     protected final IAccountService accountService;
 
-    public EconomyListenerOnline(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService, ICurrencyService currencyService) {
+    public EconomyListenerOnline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
         this.currencyService = currencyService;
         this.createAccountUseCase = createAccountUseCase;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
         this.accountService = accountService;
     }
 
@@ -70,9 +70,9 @@ public class EconomyListenerOnline implements Listener {
 
     //si se comienza a trabajar en online se van a buscar las cuentas por uuid y se va a preguntar si cambio el nombre para actualizar en sistema.
     protected void loadPlayerAccount(Player player) {
-        Result<Account> result = getAccountsUseCase.getAccount(player.getUniqueId());
+        Result<Account> result = searchAccountUseCase.getAccount(player.getUniqueId());
         if (result.isSuccess()) {
-            Result<Void> resultChangeName = getAccountsUseCase.checkNameChange(result.getValue(), player.getName());
+            Result<Void> resultChangeName = searchAccountUseCase.checkNameChange(result.getValue(), player.getName());
             if(!resultChangeName.isSuccess()){
                 //player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.")); //paper
                 player.kickPlayer("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");

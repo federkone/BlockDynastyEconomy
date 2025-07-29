@@ -1,6 +1,6 @@
 package useCaseTest.account;
 
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateAccountUseCaseTest {
     IRepository repository;
-    GetAccountsUseCase getAccountsUseCase;
+    SearchAccountUseCase searchAccountUseCase;
     CreateAccountUseCase createAccountUseCase;
     AccountService accountService;
     CurrencyService currencyService;
@@ -28,8 +28,8 @@ public class CreateAccountUseCaseTest {
         repository = FactoryRepo.getDb();
         accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,getAccountsUseCase,repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
     }
 
     @Test

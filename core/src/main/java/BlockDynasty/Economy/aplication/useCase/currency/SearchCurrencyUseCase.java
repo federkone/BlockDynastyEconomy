@@ -8,11 +8,11 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.util.List;
 
-public class GetCurrencyUseCase {
+public class SearchCurrencyUseCase {
     private final ICurrencyService currencyService;
     private final IRepository datastore;
 
-    public GetCurrencyUseCase(ICurrencyService currencyService, IRepository datastore) {
+    public SearchCurrencyUseCase(ICurrencyService currencyService, IRepository datastore) {
         this.currencyService = currencyService;
         this.datastore = datastore;
     }

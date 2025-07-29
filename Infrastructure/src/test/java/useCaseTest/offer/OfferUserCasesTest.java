@@ -5,8 +5,8 @@ import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
@@ -34,8 +34,8 @@ public class OfferUserCasesTest {
     private AcceptOfferUseCase acceptOfferUseCase;
     private CancelOfferUseCase cancelOfferUseCase;
 
-    private GetAccountsUseCase getAccountsUseCase;
-    private GetCurrencyUseCase getCurrencyUseCase;
+    private SearchAccountUseCase searchAccountUseCase;
+    private SearchCurrencyUseCase searchCurrencyUseCase;
     private TradeCurrenciesUseCase tradeCurrenciesUseCase ;
     private IAccountService accountService;
     private ICurrencyService currencyService;
@@ -74,12 +74,12 @@ public class OfferUserCasesTest {
         dataStore.saveAccount(nullplague);
         dataStore.saveAccount(cris);
 
-        getAccountsUseCase = new GetAccountsUseCase( accountService, currencyService, dataStore);
-        getCurrencyUseCase = new GetCurrencyUseCase( currencyService, dataStore);
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase( getCurrencyUseCase, getAccountsUseCase, dataStore,new CourierTest(),new LoggerTest(),new EventManager());
+        searchAccountUseCase = new SearchAccountUseCase( accountService, currencyService, dataStore);
+        searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, dataStore,new CourierTest(),new LoggerTest(),new EventManager());
         offerService = new OfferService(new MockListener(),1);
 
-        createOfferUseCase = new CreateOfferUseCase( offerService, getCurrencyUseCase, getAccountsUseCase);
+        createOfferUseCase = new CreateOfferUseCase( offerService, searchCurrencyUseCase, searchAccountUseCase);
         acceptOfferUseCase = new AcceptOfferUseCase( offerService, tradeCurrenciesUseCase);
         cancelOfferUseCase = new CancelOfferUseCase( offerService);
     }

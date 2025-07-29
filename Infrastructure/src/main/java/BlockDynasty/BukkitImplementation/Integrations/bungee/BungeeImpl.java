@@ -6,8 +6,7 @@ import java.io.DataInputStream;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,9 +26,9 @@ import java.util.UUID;
 public class BungeeImpl implements PluginMessageListener {
     private final BlockDynastyEconomy plugin;
     private final String channelName = "BlockDynastyEconomy Data Channel";
-    private final GetAccountsUseCase getAccountUseCase;
+    private final SearchAccountUseCase getAccountUseCase;
 
-    public BungeeImpl(BlockDynastyEconomy plugin , GetAccountsUseCase getAccountUseCase) {
+    public BungeeImpl(BlockDynastyEconomy plugin , SearchAccountUseCase getAccountUseCase) {
         this.plugin = plugin;
         this.getAccountUseCase = getAccountUseCase;
     }

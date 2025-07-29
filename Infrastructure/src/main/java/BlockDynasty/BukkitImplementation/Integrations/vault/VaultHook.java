@@ -8,8 +8,8 @@ import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -24,18 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VaultHook extends AbstractEconomy {
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
     private final CreateAccountUseCase createAccountUseCase;
 
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
     private final DepositUseCase depositUseCase;
     private final WithdrawUseCase withdrawUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
 
     public VaultHook(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
-        this.getAccountsUseCase = accountsUseCase.getGetAccountsUseCase();
-        this.getCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
+        this.searchAccountUseCase = accountsUseCase.getGetAccountsUseCase();
+        this.searchCurrencyUseCase = currencyUseCase.getGetCurrencyUseCase();
         this.depositUseCase = transactionsUseCase.getDepositUseCase();
         this.withdrawUseCase = transactionsUseCase.getWithdrawUseCase();
         this.createAccountUseCase = accountsUseCase.getCreateAccountUseCase();
@@ -54,14 +54,14 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public String format(double amount) {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if(currencyResult.isSuccess()) return currencyResult.getValue().format(BigDecimal.valueOf(amount));
         return String.valueOf(amount);
     }
 
     @Override
     public String currencyNamePlural() {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             return currencyResult.getValue().getPlural();
         }
@@ -70,7 +70,7 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public String currencyNameSingular() {
-        Result<Currency> currencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> currencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             return currencyResult.getValue().getSingular();
         }
@@ -93,12 +93,12 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public boolean hasAccount(String playerName) {
-        return getAccountsUseCase.getAccount(playerName).isSuccess();
+        return searchAccountUseCase.getAccount(playerName).isSuccess();
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer player) {
-        return getAccountsUseCase.getAccount(player.getUniqueId()).isSuccess();
+        return searchAccountUseCase.getAccount(player.getUniqueId()).isSuccess();
     }
 
     //caso de uso obtener balance

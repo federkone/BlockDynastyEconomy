@@ -2,8 +2,8 @@ package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -14,12 +14,12 @@ import org.bukkit.OfflinePlayer;
 import java.util.List;
 
 public class PlaceHolderExpansion extends PlaceholderExpansion {
-    private final GetAccountsUseCase getAccountsUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public PlaceHolderExpansion(GetAccountsUseCase getAccountsUseCase, GetCurrencyUseCase getCurrencyUseCase) {
-        this.getAccountsUseCase = getAccountsUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public PlaceHolderExpansion(SearchAccountUseCase searchAccountUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+        this.searchAccountUseCase = searchAccountUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 
 
@@ -71,13 +71,13 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
         }
 
         // Obtener la cuenta del jugador
-        Result<Account> accountResult = getAccountsUseCase.getAccount(player.getUniqueId());
+        Result<Account> accountResult = searchAccountUseCase.getAccount(player.getUniqueId());
         if (!accountResult.isSuccess()) {
             return "Player data not found";
         }
 
         // Obtener la moneda predeterminada
-        Result<Currency> defaultCurrencyResult = getCurrencyUseCase.getDefaultCurrency();
+        Result<Currency> defaultCurrencyResult = searchCurrencyUseCase.getDefaultCurrency();
         if (!defaultCurrencyResult.isSuccess()) {
             return "Default currency not found";
         }
@@ -123,7 +123,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
         }
 
         // Obtener las cuentas principales
-        Result<List<Account>> resultTopAccounts =getAccountsUseCase.getTopAccounts(currencyName, limit, 0);
+        Result<List<Account>> resultTopAccounts = searchAccountUseCase.getTopAccounts(currencyName, limit, 0);
         if (!resultTopAccounts.isSuccess()){
             switch (resultTopAccounts.getErrorCode()){
                 case ACCOUNT_NOT_FOUND :
@@ -200,7 +200,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
         }
 
         String currencyName = parts[1];
-        Result<Currency> currencyResult = getCurrencyUseCase.getCurrency(currencyName);
+        Result<Currency> currencyResult = searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return "Currency not found";
         }

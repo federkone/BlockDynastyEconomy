@@ -12,12 +12,12 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GetAccountsUseCase {
+public class SearchAccountUseCase {
     private final IAccountService accountService;
     private final IRepository dataStore;
     private final ICurrencyService currencyService;
 
-    public GetAccountsUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
+    public SearchAccountUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
         this.accountService = accountService;
         this.dataStore = dataStore;
         this.currencyService = currencyService;

@@ -5,9 +5,9 @@ import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -26,14 +26,14 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GetAccountsUseCaseTest {
+public class SearchAccountUseCaseTest {
     IRepository repository;
-    GetAccountsUseCase getAccountsUseCase;
+    SearchAccountUseCase searchAccountUseCase;
     CreateAccountUseCase createAccountUseCase;
     AccountService accountService;
     CurrencyService currencyService;
     DepositUseCase depositUseCase;
-    GetCurrencyUseCase getCurrencyUseCase;
+    SearchCurrencyUseCase searchCurrencyUseCase;
     CreateCurrencyUseCase createCurrencyUseCase;
     MessageService messageService;
 
@@ -42,11 +42,11 @@ public class GetAccountsUseCaseTest {
         repository = FactoryRepo.getDb();
         accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,getAccountsUseCase,repository);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, getAccountsUseCase,null, repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
-        depositUseCase = new DepositUseCase(getCurrencyUseCase, getAccountsUseCase, repository, null, null,new EventManager());
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, searchAccountUseCase,null, repository);
+        searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
+        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase, repository, null, null,new EventManager());
         messageService = new MessageService(currencyService);
 
         //createCurrencyUseCase.createCurrency("dinero", "dinero");
@@ -112,7 +112,7 @@ public class GetAccountsUseCaseTest {
 
     @Test
     void getTopAccountsUseCaseTest() {
-        Result<List<Account>> resultTopAccounts =getAccountsUseCase.getTopAccounts("default",10,0);
+        Result<List<Account>> resultTopAccounts = searchAccountUseCase.getTopAccounts("default",10,0);
         List<Account> accounts = resultTopAccounts.getValue();
 
         List<Account> accounts2= repository.loadAccounts( );
@@ -134,7 +134,7 @@ public class GetAccountsUseCaseTest {
         /*assertThrows(AccountNotFoundException.class, () -> {
            getAccountsUseCase.getTopAccounts("default",10,0);
         });*/
-        Result<List<Account>> resultTopaccounts = getAccountsUseCase.getTopAccounts("default",10,0);
+        Result<List<Account>> resultTopaccounts = searchAccountUseCase.getTopAccounts("default",10,0);
         assertEquals(ErrorCode.ACCOUNT_NOT_FOUND, resultTopaccounts.getErrorCode());
     }
 
@@ -143,13 +143,13 @@ public class GetAccountsUseCaseTest {
         /*assertThrows(IllegalArgumentException.class, () -> {
             getAccountsUseCase.getTopAccounts("default",-10,0);
         });*/
-        Result<List<Account>> resultTopaccounts = getAccountsUseCase.getTopAccounts("default",-10,0);
+        Result<List<Account>> resultTopaccounts = searchAccountUseCase.getTopAccounts("default",-10,0);
         assertEquals(ErrorCode.INVALID_ARGUMENT, resultTopaccounts.getErrorCode());
     }
 
     @Test
     void getOfflineAccounts(){
-        Result<List<Account>> result = getAccountsUseCase.getOfflineAccounts();
+        Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
         assertTrue(result.isSuccess());
         result.getValue().forEach(System.out::println);
         List<Account> accounts = result.getValue();

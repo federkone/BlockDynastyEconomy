@@ -4,7 +4,6 @@ import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 
 import java.util.UUID;
 
@@ -13,17 +12,17 @@ import java.util.UUID;
 public class DeleteAccountUseCase {
     IRepository repository;
     IAccountService accountService;
-    GetAccountsUseCase getAccountsUseCase;
+    SearchAccountUseCase searchAccountUseCase;
 
-    public DeleteAccountUseCase(IRepository repository, IAccountService accountService,GetAccountsUseCase getAccountsUseCase) {
+    public DeleteAccountUseCase(IRepository repository, IAccountService accountService, SearchAccountUseCase searchAccountUseCase) {
            this.repository= repository;
            this.accountService = accountService;
-           this.getAccountsUseCase = getAccountsUseCase;
+           this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Void> execute(String name){
         // Primero, obtenemos la cuenta del jugador por su nombre
-        Result<Account> accountResult = getAccountsUseCase.getAccount(name);
+        Result<Account> accountResult = searchAccountUseCase.getAccount(name);
         if (!accountResult.isSuccess()) {
             return Result.failure("Account not found for player: " + name, accountResult.getErrorCode());
         }
@@ -37,7 +36,7 @@ public class DeleteAccountUseCase {
 
     public Result<Void> execute(UUID uuid){
         // Primero, obtenemos la cuenta del jugador por su UUID
-        Result<Account> accountResult = getAccountsUseCase.getAccount(uuid);
+        Result<Account> accountResult = searchAccountUseCase.getAccount(uuid);
         if (!accountResult.isSuccess()) {
             return Result.failure("Account not found for UUID: " + uuid, accountResult.getErrorCode());
         }

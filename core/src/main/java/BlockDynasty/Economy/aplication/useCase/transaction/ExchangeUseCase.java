@@ -6,8 +6,8 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -18,35 +18,35 @@ import java.util.UUID;
 
 //TODO: aqui se puede agregar el impuesto por cambio de divisa segun el rate de la moneda
 public class ExchangeUseCase {
-    private  final GetCurrencyUseCase getCurrencyUseCase;
+    private  final SearchCurrencyUseCase searchCurrencyUseCase;
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final Log economyLogger;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
     private final EventManager eventManager;
 
-    public ExchangeUseCase(GetCurrencyUseCase getCurrencyUseCase,GetAccountsUseCase getAccountsUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger,EventManager eventManager) {
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public ExchangeUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
         this.eventManager = eventManager;
     }
 
     public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        Result<Account> accountResult = this.getAccountsUseCase.getAccount(accountUuid);
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountUuid);
 
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
-        Result<Currency> currencyFromResult = this.getCurrencyUseCase.getCurrency(currencyFromName);
+        Result<Currency> currencyFromResult = this.searchCurrencyUseCase.getCurrency(currencyFromName);
         if (!currencyFromResult.isSuccess()) {
             return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
         }
 
-        Result<Currency> currencyToResult = this.getCurrencyUseCase.getCurrency(currencyToname);
+        Result<Currency> currencyToResult = this.searchCurrencyUseCase.getCurrency(currencyToname);
         if (!currencyToResult.isSuccess()) {
             return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
         }
@@ -55,17 +55,17 @@ public class ExchangeUseCase {
     }
 
     public Result<BigDecimal> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        Result<Account> accountResult = this.getAccountsUseCase.getAccount(accountString);
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountString);
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
 
-        Result<Currency> currencyFromResult = this.getCurrencyUseCase.getCurrency(currencyFromName);
+        Result<Currency> currencyFromResult = this.searchCurrencyUseCase.getCurrency(currencyFromName);
         if (!currencyFromResult.isSuccess()) {
             return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
         }
 
-        Result<Currency> currencyToResult = this.getCurrencyUseCase.getCurrency(currencyToname);
+        Result<Currency> currencyToResult = this.searchCurrencyUseCase.getCurrency(currencyToname);
         if (!currencyToResult.isSuccess()) {
             return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
         }
@@ -98,7 +98,7 @@ public class ExchangeUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
         this.economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
         this.eventManager.emit(new ExchangeEvent(account.getPlayer(),currencyFrom,currencyTo,amountFrom,currencyTo.getExchangeRate(),amountTo));

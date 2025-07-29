@@ -6,9 +6,9 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.result.TransferResult;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -21,31 +21,31 @@ public class TransferFundsUseCase {
     private final Courier updateForwarder;
     private final Log economyLogger;
     private final EventManager eventManager;
-    private final GetAccountsUseCase getAccountsUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public TransferFundsUseCase(GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, IRepository dataStore,
+    public TransferFundsUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
                                 Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
         this.eventManager = eventManager;
     }
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
-        Result<Account> accountFromResult = this.getAccountsUseCase.getAccount(userFrom);
+        Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
-        Result<Account> accountToResult = this.getAccountsUseCase.getAccount(userTo);
+        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
-        Result<Currency> currencyResult = this.getCurrencyUseCase.getCurrency(currency);
+        Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
@@ -55,17 +55,17 @@ public class TransferFundsUseCase {
     }
 
     public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
-        Result<Account> accountFromResult = this.getAccountsUseCase.getAccount(userFrom);
+        Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
-        Result<Account> accountToResult = this.getAccountsUseCase.getAccount(userTo);
+        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
-        Result<Currency> currencyResult = this.getCurrencyUseCase.getCurrency(currency);
+        Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
@@ -92,8 +92,8 @@ public class TransferFundsUseCase {
         }
 
         //actualizar cache con las cuentas contenidas en result
-        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getTo());
-        this.getAccountsUseCase.syncCacheWithAccount(result.getValue().getFrom());
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getTo());
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getFrom());
 
         //messageService.sendMessage(TransferResult, currency, amount, "transfer successful");
         //.................

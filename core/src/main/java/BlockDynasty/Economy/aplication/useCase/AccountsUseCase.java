@@ -3,25 +3,25 @@ package BlockDynasty.Economy.aplication.useCase;
 import BlockDynasty.Economy.aplication.services.ServicesManager;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 public class AccountsUseCase {
-     private final GetAccountsUseCase getAccountsUseCase;
+     private final SearchAccountUseCase searchAccountUseCase;
      private final CreateAccountUseCase createAccountUseCase;
      private final GetBalanceUseCase getBalanceUseCase;
      private final DeleteAccountUseCase deleteAccountUseCase;
 
      public AccountsUseCase(ServicesManager servicesManager, IRepository repository) {
-          this.getAccountsUseCase = new GetAccountsUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), repository);
-          this.createAccountUseCase = new CreateAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), this.getAccountsUseCase, repository);
-          this.getBalanceUseCase = new GetBalanceUseCase( this.getAccountsUseCase);
-          this.deleteAccountUseCase = new DeleteAccountUseCase(repository, servicesManager.getAccountService(), this.getAccountsUseCase);
+          this.searchAccountUseCase = new SearchAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), repository);
+          this.createAccountUseCase = new CreateAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), this.searchAccountUseCase, repository);
+          this.getBalanceUseCase = new GetBalanceUseCase( this.searchAccountUseCase);
+          this.deleteAccountUseCase = new DeleteAccountUseCase(repository, servicesManager.getAccountService(), this.searchAccountUseCase);
      }
 
-     public GetAccountsUseCase getGetAccountsUseCase() {
-            return getAccountsUseCase;
+     public SearchAccountUseCase getGetAccountsUseCase() {
+            return searchAccountUseCase;
      }
      public CreateAccountUseCase getCreateAccountUseCase() {
             return createAccountUseCase;
@@ -29,7 +29,7 @@ public class AccountsUseCase {
      public GetBalanceUseCase getGetBalanceUseCase() {
             return getBalanceUseCase;
      }
-        public DeleteAccountUseCase getDeleteAccountUseCase() {
+     public DeleteAccountUseCase getDeleteAccountUseCase() {
                 return deleteAccountUseCase;
         }
 }

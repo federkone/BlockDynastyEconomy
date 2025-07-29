@@ -6,7 +6,7 @@ import BlockDynasty.BukkitImplementation.GUI.views.admins.CurrencyPanelGUI;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,17 +18,17 @@ public class CurrencyPanelCommand implements CommandExecutor {
     private final GUIService guiService;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     private final EditCurrencyUseCase editCurrencyUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
     public CurrencyPanelCommand(JavaPlugin plugin, GUIService guiService,
-                                GetCurrencyUseCase getCurrencyUseCase,
+                                SearchCurrencyUseCase searchCurrencyUseCase,
                                 EditCurrencyUseCase editCurrencyUseCase,
                                 CreateCurrencyUseCase createCurrencyUseCase, DeleteCurrencyUseCase deleteCurrencyUseCase) {
         this.plugin = plugin;
         this.createCurrencyUseCase = createCurrencyUseCase;
         this.editCurrencyUseCase = editCurrencyUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.deleteCurrencyUseCase = deleteCurrencyUseCase;
         this.guiService = guiService;
     }
@@ -45,7 +45,7 @@ public class CurrencyPanelCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        IGUI gui = new CurrencyPanelGUI(guiService,plugin, player,getCurrencyUseCase,editCurrencyUseCase,createCurrencyUseCase,deleteCurrencyUseCase);
+        IGUI gui = new CurrencyPanelGUI(guiService,plugin, player, searchCurrencyUseCase,editCurrencyUseCase,createCurrencyUseCase,deleteCurrencyUseCase);
         this.guiService.registerGUI(player, gui);
         gui.open(player);
         return true;

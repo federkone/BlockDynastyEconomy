@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -11,16 +11,16 @@ import org.bukkit.entity.Player;
 
 public class EconomyListenerOffline extends  EconomyListenerOnline {
 
-    public EconomyListenerOffline(CreateAccountUseCase createAccountUseCase, GetAccountsUseCase getAccountsUseCase, IAccountService accountService, ICurrencyService currencyService) {
-        super(createAccountUseCase, getAccountsUseCase, accountService, currencyService);
+    public EconomyListenerOffline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
+        super(createAccountUseCase, searchAccountUseCase, accountService, currencyService);
     }
 
     //si se comienza a trabajar en offline se van a buscar las cuentas por nombre y se va a preguntar si cambio el uuid para actualizar en sistema.
     @Override
     protected void loadPlayerAccount(Player player){
-        Result<Account> result = getAccountsUseCase.getAccount(player.getName());
+        Result<Account> result = searchAccountUseCase.getAccount(player.getName());
         if (result.isSuccess()) {
-            Result<Void> resultChangeUuid = getAccountsUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
+            Result<Void> resultChangeUuid = searchAccountUseCase.checkUuidChange(result.getValue(), player.getUniqueId());
             if(!resultChangeUuid.isSuccess()){
                 //player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
                 player.kickPlayer("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");

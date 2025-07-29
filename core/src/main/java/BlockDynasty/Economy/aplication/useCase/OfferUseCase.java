@@ -1,7 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase;
 
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
@@ -13,8 +13,8 @@ public class OfferUseCase {
     private final CreateOfferUseCase createOfferUseCase;
     private final CancelOfferUseCase cancelOfferUseCase;
 
-    public OfferUseCase(IOfferService offerService, GetCurrencyUseCase getCurrencyUseCase, GetAccountsUseCase getAccountsUseCase, TradeCurrenciesUseCase tradeCurrenciesUseCase) {
-        this.createOfferUseCase = new CreateOfferUseCase(offerService,getCurrencyUseCase, getAccountsUseCase);
+    public OfferUseCase(IOfferService offerService, SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, TradeCurrenciesUseCase tradeCurrenciesUseCase) {
+        this.createOfferUseCase = new CreateOfferUseCase(offerService, searchCurrencyUseCase, searchAccountUseCase);
         this.acceptOfferUseCase = new AcceptOfferUseCase(offerService, tradeCurrenciesUseCase);
         this.cancelOfferUseCase = new CancelOfferUseCase(offerService);
     }
@@ -22,11 +22,9 @@ public class OfferUseCase {
     public AcceptOfferUseCase getAcceptOfferUseCase() {
         return acceptOfferUseCase;
     }
-
     public CreateOfferUseCase getCreateOfferUseCase() {
         return createOfferUseCase;
     }
-
     public CancelOfferUseCase getCancelOfferUseCase() {
         return cancelOfferUseCase;
     }

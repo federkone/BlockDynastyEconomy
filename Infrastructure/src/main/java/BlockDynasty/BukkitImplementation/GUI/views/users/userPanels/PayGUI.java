@@ -4,7 +4,7 @@ import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,18 +22,18 @@ public class PayGUI extends AbstractGUI {
     private final Player sender;
     private final GUIService guiService;
     private final PayUseCase payUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private MessageService messageService;
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
 
-    public PayGUI(JavaPlugin plugin, PayUseCase payUseCase, Player sender, GUIService guiService, GetCurrencyUseCase getCurrencyUseCase, MessageService messageService) {
+    public PayGUI(JavaPlugin plugin, PayUseCase payUseCase, Player sender, GUIService guiService, SearchCurrencyUseCase searchCurrencyUseCase, MessageService messageService) {
         super("Seleccionar Jugador", 5);
         this.plugin = plugin;
         this.guiService = guiService;
         this.sender = sender;
         this.payUseCase = payUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.messageService = messageService;
 
         showPlayersPage();
@@ -92,7 +92,7 @@ public class PayGUI extends AbstractGUI {
     }
 
     private void openCurrencySelectionGUI(Player targetPlayer) {
-        CurrencyListPay gui = new CurrencyListPay(plugin,guiService, sender, targetPlayer,getCurrencyUseCase,payUseCase,messageService,this);
+        CurrencyListPay gui = new CurrencyListPay(plugin,guiService, sender, targetPlayer, searchCurrencyUseCase,payUseCase,messageService,this);
         sender.openInventory(gui.getInventory());
 
         // Register the GUI with the GUIService

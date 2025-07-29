@@ -3,7 +3,7 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import org.bukkit.command.Command;
@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.bukkit.ChatColor;
 
 public class ViewCommand implements CommandExecutor {
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public ViewCommand(GetCurrencyUseCase getCurrencyUseCase) {
-        this.getCurrencyUseCase = getCurrencyUseCase;
+    public ViewCommand(SearchCurrencyUseCase searchCurrencyUseCase) {
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -26,7 +26,7 @@ public class ViewCommand implements CommandExecutor {
         }
 
         Scheduler.runAsync(ContextualTask.build(() -> {
-            Result<Currency> resultCurrency = getCurrencyUseCase.getCurrency(args[0]);
+            Result<Currency> resultCurrency = searchCurrencyUseCase.getCurrency(args[0]);
             if (!resultCurrency.isSuccess()) {
                 sender.sendMessage(Message.getUnknownCurrency());
                 return;

@@ -2,7 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.currency;
 
 
 import BlockDynasty.Economy.domain.services.courier.Courier;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
@@ -16,11 +16,11 @@ public class CreateCurrencyUseCase {
     private final ICurrencyService currencyService;
     private final IRepository dataStore;
     private final Courier updateForwarder;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
-    public CreateCurrencyUseCase(ICurrencyService currencyService, GetAccountsUseCase getAccountsUseCase, Courier updateForwarder, IRepository dataStore) {
+    public CreateCurrencyUseCase(ICurrencyService currencyService, SearchAccountUseCase searchAccountUseCase, Courier updateForwarder, IRepository dataStore) {
         this.currencyService = currencyService;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
@@ -37,7 +37,7 @@ public class CreateCurrencyUseCase {
         try {
             dataStore.saveCurrency(currency);
             currencyService.add(currency);//cache
-            getAccountsUseCase.syncDbWithCache();
+            searchAccountUseCase.syncDbWithCache();
             if (updateForwarder != null){
                 updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }

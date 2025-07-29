@@ -4,7 +4,7 @@ import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.AbstractCurrenciesList;
 import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
@@ -22,8 +22,8 @@ public class CurrencyListPay  extends AbstractCurrenciesList {
     private final JavaPlugin plugin;
     private final MessageService messageService;
 
-    public CurrencyListPay(JavaPlugin plugin, GUIService guiService, Player player, Player targetPlayer, GetCurrencyUseCase getCurrencyUseCase, PayUseCase payUseCase, MessageService messageService,AbstractGUI parentGUI) {
-        super(guiService, player, getCurrencyUseCase, parentGUI);
+    public CurrencyListPay(JavaPlugin plugin, GUIService guiService, Player player, Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
+        super(guiService, player, searchCurrencyUseCase, parentGUI);
         this.payUseCase = payUseCase;
         this.targetPlayer = targetPlayer;
         this.messageService = messageService;

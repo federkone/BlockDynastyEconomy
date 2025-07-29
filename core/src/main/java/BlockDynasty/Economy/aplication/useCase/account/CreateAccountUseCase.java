@@ -17,17 +17,17 @@ public class CreateAccountUseCase {
     private final IAccountService accountService;
     private final ICurrencyService currencyService;
     private final IRepository dataStore;
-    private final GetAccountsUseCase getAccountsUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
-    public CreateAccountUseCase(IAccountService accountService, ICurrencyService currencyService, GetAccountsUseCase getAccountsUseCase, IRepository dataStore) {
+    public CreateAccountUseCase(IAccountService accountService, ICurrencyService currencyService, SearchAccountUseCase searchAccountUseCase, IRepository dataStore) {
         this.accountService = accountService;
         this.currencyService = currencyService;
         this.dataStore = dataStore;
-        this.getAccountsUseCase = getAccountsUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Account> executeOffline(UUID userUuid , String userName) {
-        Result<Account> accountResult =  this.getAccountsUseCase.getAccount(userName);
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(userName);
         if (accountResult.isSuccess()) {
             return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
         }
@@ -44,7 +44,7 @@ public class CreateAccountUseCase {
 
 
     public Result<Account> execute(UUID userUuid , String userName) {
-        Result<Account> accountResult =  this.getAccountsUseCase.getAccount(userUuid);
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(userUuid);
         if (accountResult.isSuccess()) {
             return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
         }

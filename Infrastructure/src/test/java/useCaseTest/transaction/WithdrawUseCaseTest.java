@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -32,7 +32,7 @@ public class WithdrawUseCaseTest {
     ICurrencyService currencyService;
     AccountService accountService;
     WithdrawUseCase withdrawUseCase;
-    GetAccountsUseCase getAccountsUseCase;
+    SearchAccountUseCase searchAccountUseCase;
     Core core;
 
     @BeforeEach
@@ -50,7 +50,7 @@ public class WithdrawUseCaseTest {
         core.getTransactionsUseCase().getDepositUseCase().execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
 
         withdrawUseCase = core.getTransactionsUseCase().getWithdrawUseCase();
-        getAccountsUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
+        searchAccountUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
 
     }
 

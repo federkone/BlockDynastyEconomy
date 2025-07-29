@@ -3,8 +3,8 @@ package useCaseTest.transaction;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -27,8 +27,8 @@ public class ExchangeUseCaseTest {
     IRepository repository;
     CurrencyService currencyService;
     AccountService accountService;
-    GetAccountsUseCase getAccountsUseCase;
-    GetCurrencyUseCase getCurrencyUseCase;
+    SearchAccountUseCase searchAccountUseCase;
+    SearchCurrencyUseCase searchCurrencyUseCase;
     ExchangeUseCase exchangeUseCase;
     Currency coin;
     Currency dinero;
@@ -64,11 +64,11 @@ public class ExchangeUseCaseTest {
         accountService = new AccountService(5);
 
         // Initialize use cases
-        getAccountsUseCase = new GetAccountsUseCase(accountService, currencyService, repository);
-        getCurrencyUseCase = new GetCurrencyUseCase(currencyService, repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService, repository);
+        searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
         // Initialize the exchange use case to test
-        exchangeUseCase = new ExchangeUseCase(getCurrencyUseCase, getAccountsUseCase,
+        exchangeUseCase = new ExchangeUseCase(searchCurrencyUseCase, searchAccountUseCase,
                 repository, new CourierTest(), new LoggerTest(),new EventManager());
     }
 
@@ -84,7 +84,7 @@ public class ExchangeUseCaseTest {
         assertEquals(BigDecimal.valueOf(30000).doubleValue(), result.getValue().doubleValue());
 
         // Verify balances were updated correctly
-        Account updatedAccount = getAccountsUseCase.getAccount("player").getValue();
+        Account updatedAccount = searchAccountUseCase.getAccount("player").getValue();
         assertEquals(BigDecimal.valueOf(101).setScale(2), updatedAccount.getMoney(coin).getAmount().setScale(2));
         assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getMoney(dinero).getAmount().doubleValue());
     }

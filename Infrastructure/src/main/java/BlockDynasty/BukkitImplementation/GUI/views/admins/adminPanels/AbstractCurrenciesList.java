@@ -2,7 +2,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,24 +13,24 @@ import java.util.List;
 public abstract class AbstractCurrenciesList extends AbstractGUI {
     private final GUIService guiService;
     private final Player player;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final AbstractGUI parentGUI;
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public AbstractCurrenciesList( GUIService guiService, Player player, GetCurrencyUseCase getCurrencyUseCase,AbstractGUI parentGUI) {
+    public AbstractCurrenciesList(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
         super("Lista de Monedas", 5);
         this.guiService = guiService;
         this.player = player;
         this.parentGUI = parentGUI;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
 
         showCurrenciesPage();
     }
 
     private void showCurrenciesPage() {
         // Get all currencies
-        List<Currency> currencies = getCurrencyUseCase.getCurrencies();
+        List<Currency> currencies = searchCurrencyUseCase.getCurrencies();
 
         // Calculate pagination
         int startIndex = currentPage * CURRENCIES_PER_PAGE;

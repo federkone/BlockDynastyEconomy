@@ -7,7 +7,7 @@ import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.GetCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,16 +20,16 @@ public class BankGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
     private final Player player;
     private final PayUseCase payUseCase;
-    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public BankGUI(JavaPlugin plugin, Player player, GUIService guiService, PayUseCase payUseCase, GetCurrencyUseCase getCurrencyUseCase, GetBalanceUseCase getBalanceUseCase,MessageService messageService) {
+    public BankGUI(JavaPlugin plugin, Player player, GUIService guiService, PayUseCase payUseCase, SearchCurrencyUseCase searchCurrencyUseCase, GetBalanceUseCase getBalanceUseCase, MessageService messageService) {
         super("Banco", 3);
         this.plugin = plugin;
         this.guiService = guiService;
         this.messageService = messageService;
         this.player = player;
         this.payUseCase = payUseCase;
-        this.getCurrencyUseCase = getCurrencyUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
 
         setupGUI();
@@ -64,7 +64,7 @@ public class BankGUI extends AbstractGUI {
     }
 
     private void openPayGUI() {
-        PayGUI payGUI = new PayGUI(plugin, payUseCase, player, guiService,getCurrencyUseCase,messageService);
+        PayGUI payGUI = new PayGUI(plugin, payUseCase, player, guiService, searchCurrencyUseCase,messageService);
         player.openInventory(payGUI.getInventory());
 
         // Register the GUI with the GUIService

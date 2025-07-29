@@ -23,11 +23,9 @@ public class ServicesManager {
     public ICurrencyService getCurrencyService() {
         return currencyService;
     }
-
     public IAccountService getAccountService() {
         return accountService;
     }
-
     public IOfferService getOfferService() {
         return offerService;
     }
