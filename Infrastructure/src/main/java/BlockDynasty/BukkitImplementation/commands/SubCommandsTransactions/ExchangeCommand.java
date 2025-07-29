@@ -5,7 +5,6 @@ import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,9 +16,9 @@ import java.math.BigDecimal;
 
 public class ExchangeCommand implements CommandExecutor {
     private ExchangeUseCase exchange;
-    private MessageService messageService;
+    private BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public ExchangeCommand(ExchangeUseCase exchange, MessageService messageService) {
+    public ExchangeCommand(ExchangeUseCase exchange, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.exchange = exchange;
         this.messageService = messageService;
     }

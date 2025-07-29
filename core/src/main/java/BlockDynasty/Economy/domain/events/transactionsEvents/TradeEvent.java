@@ -16,10 +16,10 @@ public class TradeEvent extends Event {
     private final BigDecimal amountTo;
 
     public TradeEvent(Player fromPlayer, Player toPlayer, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo) {
-        this.fromPlayer = fromPlayer;
-        this.toPlayer = toPlayer;
-        this.currencyFrom = currencyFrom;
-        this.currencyTo = currencyTo;
+        this.fromPlayer = new Player(fromPlayer);
+        this.toPlayer = new Player(toPlayer);
+        this.currencyFrom = new Currency( currencyFrom );
+        this.currencyTo = new Currency( currencyTo );
         this.amountFrom = amountFrom;
         this.amountTo = amountTo;
     }

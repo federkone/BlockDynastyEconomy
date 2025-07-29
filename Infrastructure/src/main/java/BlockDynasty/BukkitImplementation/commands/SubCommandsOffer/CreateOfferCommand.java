@@ -3,7 +3,6 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,9 +14,9 @@ import java.math.BigDecimal;
 
 public class CreateOfferCommand implements CommandExecutor {
     private final CreateOfferUseCase createOfferUseCase;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public CreateOfferCommand(CreateOfferUseCase createOfferUseCase , MessageService messageService) {
+    public CreateOfferCommand(CreateOfferUseCase createOfferUseCase , BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.createOfferUseCase = createOfferUseCase;
         this.messageService = messageService;
     }

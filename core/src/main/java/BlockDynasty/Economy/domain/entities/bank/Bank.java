@@ -1,5 +1,6 @@
 package BlockDynasty.Economy.domain.entities.bank;
 
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 
@@ -26,14 +27,12 @@ obtener bancos(): lista de bancos
 * */
 public class Bank {
     private String name;
-    private String owner;
-    private UUID ouwnerUUID; //puede ser el UUID del server o del jugador
+    private Player owner;
     private List<Money> vault;
 
     public Bank(String name,UUID ouwnerUUID, String owner) {
-        this.ouwnerUUID = ouwnerUUID;
         this.name = name;
-        this.owner = owner;
+        this.owner = new Player(owner, ouwnerUUID.toString());
         this.vault = new ArrayList<>();
     }
 
@@ -50,11 +49,11 @@ public class Bank {
     }
 
     public String getOwnerName() {
-        return owner;
+        return owner.getNickname();
     }
 
-    public UUID getOwnerUUID() {
-        return ouwnerUUID;
+    public String getOwnerUUID() {
+        return owner.getUuid();
     }
 
     public BigDecimal getBalance(Currency currency) {

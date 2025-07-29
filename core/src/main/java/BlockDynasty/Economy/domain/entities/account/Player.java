@@ -8,6 +8,10 @@ public class Player {
         this.uuid = uuid;
         this.nickname = nickname;
     }
+    public Player(Player player) {
+        this.uuid = player.uuid;
+        this.nickname = player.nickname;
+    }
     public String getUuid() {
         return uuid;
     }
@@ -19,5 +23,13 @@ public class Player {
     }
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "uuid='" + uuid + '\'' +
+                ", nickname='" + nickname + '\'' +
+                '}';
     }
 }

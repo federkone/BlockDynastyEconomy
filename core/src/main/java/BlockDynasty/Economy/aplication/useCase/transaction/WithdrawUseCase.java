@@ -73,24 +73,21 @@ public class WithdrawUseCase {
 
     private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
-            //messageservice.sendMessage(account,currency,amount, result.getErrorCode(), "Amount must be greater than 0");
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
 
         if(!currency.isValidAmount(amount)){
-            //messageservice.sendMessage(account,currency,amount, ErrorCode.DECIMAL_NOT_SUPPORTED, "Decimal not supported");
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
         Result<Account> result = this.dataStore.withdraw(account.getUuid().toString(), currency, amount);
         if(!result.isSuccess()){
-            //messageservice.sendMessage(account,currency,amount, result.getErrorCode(), "Withdraw failed: " + result.getErrorMessage());
             this.logger.log("[WITHDRAW Failure] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular()+ " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
             return Result.failure( result.getErrorMessage(), result.getErrorCode());
         }
 
         this.getAccountsUseCase.syncCacheWithAccount(result.getValue());
-        //messageservice.sendMessage(account,currency,amount, ErrorCode.SUCCESS, "Withdraw successful");
+
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount));

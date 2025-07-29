@@ -3,7 +3,6 @@ package BlockDynasty.BukkitImplementation.commands.SubCommandsOffer;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,9 +12,9 @@ import org.bukkit.Bukkit;
 
 public class DenyOfferCommand  implements CommandExecutor {
     private final CancelOfferUseCase cancelOfferUseCase;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public DenyOfferCommand(CancelOfferUseCase cancelOfferUseCase, MessageService messageService) {
+    public DenyOfferCommand(CancelOfferUseCase cancelOfferUseCase, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.cancelOfferUseCase = cancelOfferUseCase;
         this.messageService = messageService;
     }

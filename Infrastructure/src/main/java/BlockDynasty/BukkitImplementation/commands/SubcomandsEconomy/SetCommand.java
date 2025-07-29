@@ -5,7 +5,6 @@ import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,9 +16,9 @@ import java.math.BigDecimal;
 
 public class SetCommand implements CommandExecutor {
     private final SetBalanceUseCase setbalance;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public SetCommand(SetBalanceUseCase setbalance, MessageService messageService) {
+    public SetCommand(SetBalanceUseCase setbalance, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.setbalance = setbalance;
         this.messageService = messageService;
     }

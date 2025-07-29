@@ -4,7 +4,6 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,9 +14,9 @@ import BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 
 public class AcceptOfferCommand  implements CommandExecutor {
     private final AcceptOfferUseCase acceptOfferUseCase;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public AcceptOfferCommand(AcceptOfferUseCase acceptOfferUseCase, MessageService messageService) {
+    public AcceptOfferCommand(AcceptOfferUseCase acceptOfferUseCase, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.acceptOfferUseCase = acceptOfferUseCase;
         this.messageService = messageService;
     }

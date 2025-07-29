@@ -5,6 +5,8 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
+import BlockDynasty.BukkitImplementation.commands.SubCommandsAccount.DeleteAccount;
+import BlockDynasty.BukkitImplementation.commands.SubCommandsAccount.GetAccounts;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
@@ -12,7 +14,7 @@ import BlockDynasty.BukkitImplementation.listeners.TransactionsListener;
 
 import BlockDynasty.BukkitImplementation.GUI.RegisterGuiModule;
 import BlockDynasty.BukkitImplementation.logs.VaultLogger;
-import BlockDynasty.BukkitImplementation.config.file.Configuration;
+import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.BukkitImplementation.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.logs.EconomyLogger;
@@ -26,23 +28,21 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import BlockDynasty.repository.InitDatabase;
 
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
-    private static Api api;
-
+    private Api api;
     private Core core;
     private MessageService messageService;
     private IRepository repository;
 
-    private boolean disabling = false;
-
     @Override
     public void onLoad() {
-        Configuration.init(this);
+        ConfigurationFile.init(this);
     }
 
     @Override
@@ -55,20 +55,19 @@ public class BlockDynastyEconomy extends JavaPlugin {
             registerEvents();
             registerGUI();
             setupIntegrations();
+
+            api = new BlockDynastyEconomyApi(core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase());
+            getServer().getServicesManager().register(Api.class, api, this, ServicePriority.Low);
+
             UtilServer.consoleLog("Plugin enabled successfully!");
         } catch (Exception e) {
             UtilServer.consoleLogError("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
-
-        //registrar api
-        api = new BlockDynastyEconomyApi(core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase());
-        getServer().getServicesManager().register(Api.class, api, this, ServicePriority.Low);
     }
 
     @Override
     public void onDisable() {
-        disabling = true;
         if (getDataStore() != null) getDataStore().close();
         Vault.unhook();
         PlaceHolder.unregister();
@@ -89,10 +88,12 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void initCoreServices() {
         int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         this.core = new Core( getDataStore(),expireCacheTopMinutes,new OfferListenerImpl(),new CourierImpl(this),EconomyLogger.build(this)); //init core application
-        this.messageService = new MessageService(core.getServices().getCurrencyService());
+        this.messageService = new MessageService(core.getServicesManager().getCurrencyService());
     }
     private void registerCommands(){
         CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
+        //getCommand("getPlayers").setExecutor(new GetAccounts(core.getAccountsUseCase().getGetAccountsUseCase()));
+        //getCommand("deleteAccount").setExecutor(new DeleteAccount(core.getAccountsUseCase().getDeleteAccountUseCase()));
     }
     private void registerGUI(){
         RegisterGuiModule.register(this,
@@ -104,15 +105,15 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void registerEvents() {
         Listener economyListener;
         if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
-            economyListener = new EconomyListenerOnline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServices().getAccountService(), core.getServices().getCurrencyService());
+            economyListener = new EconomyListenerOnline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
             UtilServer.consoleLog("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
-            economyListener = new EconomyListenerOffline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServices().getAccountService(), core.getServices().getCurrencyService());
+            economyListener = new EconomyListenerOffline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
             UtilServer.consoleLog("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
 
         getServer().getPluginManager().registerEvents(economyListener, this);
-        TransactionsListener.register(core.getServices().getEventManager());
+        TransactionsListener.register(core.getServicesManager().getEventManager());
     }
     private void setupIntegrations() {
         Vault.init( core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(new VaultLogger( this)));
@@ -123,8 +124,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static BlockDynastyEconomy getInstance() {
         return instance;
     }
-    public static Api getApi() {
-        return api;
+    public Api getApi() {
+        return this.api;
     }
     private IRepository getDataStore() {
         if (repository == null) {
@@ -132,12 +133,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
         return repository;
     }
-
     public MessageService getMessageService() {
         return messageService;
-    }
-
-    public boolean isDisabling() {
-        return disabling;
     }
 }

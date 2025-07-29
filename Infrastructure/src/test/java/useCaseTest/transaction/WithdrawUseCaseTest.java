@@ -1,12 +1,9 @@
 package useCaseTest.transaction;
 
 import BlockDynasty.Economy.Core;
-import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
@@ -46,7 +43,7 @@ public class WithdrawUseCaseTest {
         repository = FactoryRepo.getDb();
 
        this.core = new Core(repository, 5, new MockListener(), new CourierTest(),new LoggerTest());
-       currencyService = core.getServices().getCurrencyService();
+       currencyService = core.getServicesManager().getCurrencyService();
 
         core.getCurrencyUseCase().getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());
         core.getAccountsUseCase().getCreateAccountUseCase().execute(nullplague.getUuid(), nullplague.getNickname());

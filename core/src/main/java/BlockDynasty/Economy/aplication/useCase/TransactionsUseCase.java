@@ -16,13 +16,48 @@ public class TransactionsUseCase {
     private final TransferFundsUseCase transferFundsUseCase;
 
     public TransactionsUseCase(CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase, IRepository repository, Courier courier, Log economyLogger, EventManager eventManager) {
-        this.withdrawUseCase = new WithdrawUseCase( currencyUseCase.getGetCurrencyUseCase() , accountsUseCase.getGetAccountsUseCase(), repository, courier, economyLogger,eventManager);
-        this.depositUseCase = new DepositUseCase( currencyUseCase.getGetCurrencyUseCase(),  accountsUseCase.getGetAccountsUseCase(),repository, courier, economyLogger,eventManager);
-        this.setBalanceUseCase = new SetBalanceUseCase( currencyUseCase.getGetCurrencyUseCase(),   accountsUseCase.getGetAccountsUseCase(),repository, courier, economyLogger,eventManager);
-        this.payUseCase = new PayUseCase(currencyUseCase.getGetCurrencyUseCase(), accountsUseCase.getGetAccountsUseCase(), repository, courier, economyLogger,eventManager);
-        this.exchangeUseCase = new ExchangeUseCase( currencyUseCase.getGetCurrencyUseCase(),  accountsUseCase.getGetAccountsUseCase(), repository, courier, economyLogger,eventManager);
-        this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( currencyUseCase.getGetCurrencyUseCase(),  accountsUseCase.getGetAccountsUseCase(), repository, courier, economyLogger,eventManager);
-        this.transferFundsUseCase = new TransferFundsUseCase(currencyUseCase.getGetCurrencyUseCase(), accountsUseCase.getGetAccountsUseCase(), repository, courier, economyLogger,eventManager);
+        this.withdrawUseCase = new WithdrawUseCase( currencyUseCase.getGetCurrencyUseCase() ,
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.depositUseCase = new DepositUseCase( currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.setBalanceUseCase = new SetBalanceUseCase( currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.payUseCase = new PayUseCase(currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.exchangeUseCase = new ExchangeUseCase( currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.tradeCurrenciesUseCase = new TradeCurrenciesUseCase( currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
+        this.transferFundsUseCase = new TransferFundsUseCase(currencyUseCase.getGetCurrencyUseCase(),
+                accountsUseCase.getGetAccountsUseCase(),
+                repository,
+                courier,
+                economyLogger,
+                eventManager);
     }
 
     public WithdrawUseCase getWithdrawUseCase() {
@@ -52,5 +87,4 @@ public class TransactionsUseCase {
     public TransferFundsUseCase getTransferFundsUseCase() {
         return transferFundsUseCase;
     }
-
 }

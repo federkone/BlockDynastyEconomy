@@ -15,9 +15,9 @@ public class ExchangeEvent extends Event {
     private final BigDecimal exchangedAmount;
 
     public ExchangeEvent(Player player, Currency fromCurrency, Currency toCurrency, BigDecimal amount, double exchangeRate, BigDecimal exchangedAmount) {
-        this.player = player;
-        this.fromCurrency = fromCurrency;
-        this.toCurrency = toCurrency;
+        this.player = new Player(player);
+        this.fromCurrency = new Currency(fromCurrency);
+        this.toCurrency = new Currency(toCurrency);
         this.amount = amount;
         this.exchangeRate = exchangeRate;
         this.exchangedAmount = exchangedAmount;

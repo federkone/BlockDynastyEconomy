@@ -23,6 +23,24 @@ public class GetAccountsUseCase {
         this.currencyService = currencyService;
     }
 
+    /**
+     * Retrieves all system accounts.
+     *
+     * @return Result containing a list of system accounts or an error if none found.
+     */
+    public Result<List<Account>> getOfflineAccounts() {
+        List<Account> accounts = dataStore.loadAccounts();
+        if (accounts.isEmpty()) {
+            return Result.failure("No accounts found", ErrorCode.ACCOUNT_NOT_FOUND);
+        }
+        return Result.success(accounts);
+    }
+
+    /**
+     * Retrieves an account by its name.
+     * @param name the name of the account to retrieve
+     * @return Result containing the account if found, or an error if not found
+     */
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccountCache(name);
        if(account == null){
@@ -38,6 +56,11 @@ public class GetAccountsUseCase {
        return Result.success(account);
     }
 
+    /**
+     * Retrieves an account by its UUID.
+     * @param uuid the UUID of the account to retrieve
+     * @return Result containing the account if found, or an error if not found
+     */
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccountCache(uuid);
        if(account == null){
@@ -53,6 +76,12 @@ public class GetAccountsUseCase {
        return Result.success(account);
     }
 
+    /**
+     * Synchronizes the cache with the provided account.
+     * Updates the balances in the cache with the balances from the account.
+     *
+     * @param account the account to synchronize with
+     */
     public void syncCacheWithAccount(Account account) {
         UUID uuid = account.getUuid();
         Account cachedAccount = this.accountService.getAccountCache(uuid);
@@ -129,6 +158,14 @@ public class GetAccountsUseCase {
         return Result.success(null);
     }
 
+    /**
+     * Retrieves the top accounts for a given currency.
+     * If the cache is available and contains enough accounts, it returns the cached list.
+     * @param currency the currency for which to retrieve the top accounts
+     * @param limit the maximum number of accounts to return
+     * @param offset the offset from which to start returning accounts
+     * @return Result containing a list of top accounts or an error if none found
+     */
    public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {
        if (limit <= 0) {
            return Result.failure("Limit must be greater than 0", ErrorCode.INVALID_ARGUMENT);

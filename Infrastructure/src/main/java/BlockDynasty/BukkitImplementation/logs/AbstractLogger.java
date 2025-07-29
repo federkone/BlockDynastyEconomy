@@ -14,7 +14,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public abstract class AbstractLogger implements Log {
-    private final BlockDynastyEconomy plugin;
+    //private final BlockDynastyEconomy plugin;
+    private static boolean firstInstanceCreated = false;
     private final File folder;
     private final File latest;
     private final Set<String> toAdd;
@@ -26,7 +27,7 @@ public abstract class AbstractLogger implements Log {
      * @param plugin The BlockDynastyEconomy plugin instance.
      */
     public AbstractLogger(BlockDynastyEconomy plugin) {
-        this.plugin = plugin;
+        //this.plugin = plugin;
         this.folder = new File(plugin.getDataFolder() + File.separator + "logs");
         this.latest = new File(folder, "LATEST.log");
         if (!folder.exists()) {
@@ -42,7 +43,10 @@ public abstract class AbstractLogger implements Log {
         this.toAdd = Sets.newHashSet();
         this.zipping = false;
 
-        this.save();
+        if (!firstInstanceCreated) {
+            this.zipAndReplace();
+            firstInstanceCreated = true;
+        }
     }
 
     public void log(String message) {
@@ -89,13 +93,12 @@ public abstract class AbstractLogger implements Log {
                 fis.close();
                 fos.close();
                 latest.delete();
-                if (!plugin.isDisabling()) {
-                    latest.createNewFile();
-                    PrintWriter writer = new PrintWriter(new FileWriter(latest, true));
-                    toAdd.forEach(writer::println);
-                    toAdd.clear();
-                    writer.close();
-                }
+                latest.createNewFile();
+                PrintWriter writer = new PrintWriter(new FileWriter(latest, true));
+                toAdd.forEach(writer::println);
+                toAdd.clear();
+                writer.close();
+
                 zipping = false;
             } catch (Exception e) {
                UtilServer.consoleLogError(e.getMessage());
@@ -103,7 +106,25 @@ public abstract class AbstractLogger implements Log {
         }));
     }
 
-    private File getLatest() {
+    private void appendDate(StringBuilder builder) {
+        builder.append('[').append(getDateAndTime()).append(']').append(' ');
+    }
+
+    private void writeToFile(String string) throws IOException {
+        if (zipping) {
+            toAdd.add(string);
+            return;
+        }
+        PrintWriter writer = new PrintWriter(new FileWriter(latest, true));
+        writer.println(string);
+        writer.close();
+    }
+
+    private String getDateAndTime() {
+        return UtilTime.now();
+    }
+
+    /*private File getLatest() {
         return latest;
     }
 
@@ -137,23 +158,5 @@ public abstract class AbstractLogger implements Log {
         } catch (IOException e) {
             UtilServer.consoleLogError( ex.getMessage());
         }
-    }
-
-    private  void appendDate(StringBuilder builder) {
-        builder.append('[').append(getDateAndTime()).append(']').append(' ');
-    }
-
-    private  void writeToFile(String string) throws IOException {
-        if (zipping) {
-            toAdd.add(string);
-            return;
-        }
-        PrintWriter writer = new PrintWriter(new FileWriter(latest, true));
-        writer.println(string);
-        writer.close();
-    }
-
-    private String getDateAndTime() {
-        return UtilTime.now();
-    }
+    }*/
 }

@@ -7,12 +7,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 
-public class Configuration {
+public class ConfigurationFile {
     private static BlockDynastyEconomy plugin;
 
     public static void init(BlockDynastyEconomy plugin) {
-        Configuration.plugin = plugin;
+        ConfigurationFile.plugin = plugin;
         loadDefaultConfig();
+        MessageFile.init(plugin);
     }
 
     private static void loadDefaultConfig() {
@@ -65,7 +66,15 @@ public class Configuration {
         config.addDefault("cheque.console_name", "Console");
         config.addDefault("cheque.enabled", false);
 
-        config.addDefault(path + "prefix", "&2&lBlockDynasty> ");
+
+        config.options().copyDefaults(true);
+        plugin.saveConfig();
+        plugin.reloadConfig();
+    }
+
+}
+
+        /*config.addDefault(path + "prefix", "&2&lBlockDynasty> ");
         config.addDefault(path + "nopermission", "&7You don't have permission to do this.");
         config.addDefault(path + "noconsole", "&7Console cannot do this.");
         config.addDefault(path + "invalidamount", "&7Not a valid amount.");
@@ -203,11 +212,4 @@ public class Configuration {
         config.addDefault(path+"buy_no_perms","&7No tienes permiso para ejecutar el comando de compra.");
         config.addDefault(path+"buy_usage","&2&l>> &aUso: /eco buycommand <jugador> <cantidad> <tipo> <comandoAEntregar>");
         config.addDefault(path+"buy_no_player","&cEl jugador no está en línea.");
-
-
-        config.options().copyDefaults(true);
-        plugin.saveConfig();
-        plugin.reloadConfig();
-    }
-
-}
+*/

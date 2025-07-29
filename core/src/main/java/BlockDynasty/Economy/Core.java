@@ -1,7 +1,7 @@
 package BlockDynasty.Economy;
 
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
-import BlockDynasty.Economy.aplication.services.ServicesFactory;
+import BlockDynasty.Economy.aplication.services.ServicesManager;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
@@ -14,7 +14,7 @@ public class Core {
     private final IRepository repository;
     private final Courier courier;
 
-    private final ServicesFactory services;
+    private final ServicesManager services;
     private final AccountsUseCase accountsUseCase;
     private final CurrencyUseCase currencyUseCase;
     private final TransactionsUseCase transactionsUseCase;
@@ -24,14 +24,14 @@ public class Core {
         this.repository = repository;
         this.courier = courier;
 
-        this.services = new ServicesFactory( repository, cacheTopMinutes, offerListener);
+        this.services = new ServicesManager( repository, cacheTopMinutes, offerListener);
         this.accountsUseCase = new AccountsUseCase(services, repository);
         this.currencyUseCase = new CurrencyUseCase(services, repository, accountsUseCase, courier);
         this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, repository, courier, log, services.getEventManager());
         this.offerUseCase = new OfferUseCase(services.getOfferService(), this.currencyUseCase.getGetCurrencyUseCase(),this.accountsUseCase.getGetAccountsUseCase(),this.transactionsUseCase.getTradeCurrenciesUseCase());
     }
 
-    public ServicesFactory getServices() {
+    public ServicesManager getServicesManager() {
         return this.services;
     }
     public AccountsUseCase getAccountsUseCase() {

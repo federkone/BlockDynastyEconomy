@@ -147,5 +147,16 @@ public class GetAccountsUseCaseTest {
         assertEquals(ErrorCode.INVALID_ARGUMENT, resultTopaccounts.getErrorCode());
     }
 
+    @Test
+    void getOfflineAccounts(){
+        Result<List<Account>> result = getAccountsUseCase.getOfflineAccounts();
+        assertTrue(result.isSuccess());
+        result.getValue().forEach(System.out::println);
+        List<Account> accounts = result.getValue();
+        assertFalse(accounts.isEmpty());
+        assertEquals(10, accounts.size());
+        assertTrue(accounts.stream().anyMatch(account -> account.getNickname().equals("robert")));
+        assertTrue(accounts.stream().anyMatch(account -> account.getNickname().equals("nullplague")));
+    }
 
 }

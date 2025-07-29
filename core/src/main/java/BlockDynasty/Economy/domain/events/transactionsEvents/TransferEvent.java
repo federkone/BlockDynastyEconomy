@@ -13,9 +13,9 @@ public class TransferEvent extends Event {
     private final BigDecimal amount;
 
     public TransferEvent(Player fromPlayer, Player toPlayer, Currency currency, BigDecimal amount) {
-        this.fromPlayer = fromPlayer;
-        this.toPlayer = toPlayer;
-        this.currency = currency;
+        this.fromPlayer = new Player(fromPlayer);
+        this.toPlayer = new Player(toPlayer);
+        this.currency = new Currency( currency );
         this.amount = amount;
     }
 

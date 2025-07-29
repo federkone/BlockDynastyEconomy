@@ -12,8 +12,8 @@ public class DepositEvent extends Event {
     private final BigDecimal amount;
 
     public DepositEvent(Player player, Currency currency, BigDecimal amount) {
-        this.currency = currency;
-        this.player = player;
+        this.currency = new Currency(currency);
+        this.player = new Player(player);
         this.amount = amount;
     }
 

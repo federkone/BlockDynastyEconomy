@@ -56,7 +56,7 @@ public class InitDatabase {
 
     private static Result<IRepository> h2(Plugin plugin,boolean enableServerConsole) {
         try {
-            IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath(),enableServerConsole));
+            IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath()+"/database",enableServerConsole));
             return Result.success(repository);
         } catch (Exception e) {
             UtilServer.consoleLogError(e.getMessage());

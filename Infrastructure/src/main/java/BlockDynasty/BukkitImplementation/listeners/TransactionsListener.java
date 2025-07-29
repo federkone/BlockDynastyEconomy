@@ -19,6 +19,7 @@ public class TransactionsListener {
 
         eventManager.subscribe(DepositEvent.class, event -> {
             UtilServer.consoleLog("Event DepositEvent emitted: " + event);
+            event.getCurrency().setColor("WHITE");
             //Player player = Bukkit.getPlayer(event.getPlayer().getNickname());
             //player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
 

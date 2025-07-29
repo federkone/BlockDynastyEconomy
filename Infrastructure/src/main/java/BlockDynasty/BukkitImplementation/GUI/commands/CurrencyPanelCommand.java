@@ -16,10 +16,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CurrencyPanelCommand implements CommandExecutor {
     private final JavaPlugin plugin;
     private final GUIService guiService;
-    private CreateCurrencyUseCase createCurrencyUseCase;
-    private EditCurrencyUseCase editCurrencyUseCase;
-    private GetCurrencyUseCase getCurrencyUseCase;
-    private DeleteCurrencyUseCase deleteCurrencyUseCase;
+    private final CreateCurrencyUseCase createCurrencyUseCase;
+    private final EditCurrencyUseCase editCurrencyUseCase;
+    private final GetCurrencyUseCase getCurrencyUseCase;
+    private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
     public CurrencyPanelCommand(JavaPlugin plugin, GUIService guiService,
                                 GetCurrencyUseCase getCurrencyUseCase,

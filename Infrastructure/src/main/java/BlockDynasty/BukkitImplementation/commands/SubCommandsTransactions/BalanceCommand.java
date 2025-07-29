@@ -13,16 +13,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class BalanceCommand implements CommandExecutor {
     private final GetBalanceUseCase balance;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public BalanceCommand(GetBalanceUseCase balance, MessageService messageService) {
+    public BalanceCommand(GetBalanceUseCase balance, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.balance = balance;
         this.messageService = messageService;
     }

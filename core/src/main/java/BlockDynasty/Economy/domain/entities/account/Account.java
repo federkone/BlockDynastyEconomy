@@ -32,6 +32,12 @@ public class Account implements IAccount {
         this.canReceiveCurrency = canReceiveCurrency;
     }
 
+    public Account(Account account) {
+        this.player = new Player(account.getPlayer());
+        this.wallet = new Wallet(account.getWallet());
+        this.canReceiveCurrency = account.canReceiveCurrency();
+    }
+
     public Result<Void> subtract(Currency currency, BigDecimal amount){
         Money money = getMoney(currency);
         if (money == null) {
@@ -143,5 +149,13 @@ public class Account implements IAccount {
     }
     public Player getPlayer() {
         return player;
+    }
+    @Override
+    public String toString() {
+        return "Account{" +
+                "player=" + player +
+                ", wallet=" + wallet +
+                ", canReceiveCurrency=" + canReceiveCurrency +
+                '}';
     }
 }

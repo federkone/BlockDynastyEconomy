@@ -11,15 +11,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 
 import java.math.BigDecimal;
 
 public class PayCommand implements CommandExecutor {
     private final PayUseCase pay;
-    MessageService messageService;
+    BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public PayCommand(PayUseCase pay, MessageService messageService) {
+    public PayCommand(PayUseCase pay, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.pay = pay;
         this.messageService = messageService;
     }

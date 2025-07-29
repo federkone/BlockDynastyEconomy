@@ -7,13 +7,13 @@ import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 
-public class ServicesFactory {
+public class ServicesManager {
     private final ICurrencyService currencyService;
     private final IAccountService accountService;
     private final IOfferService offerService;
     private final EventManager eventManager;
 
-    public ServicesFactory(IRepository repository,int cacheTopMinutes, OfferListener offerListener) {
+    public ServicesManager(IRepository repository, int cacheTopMinutes, OfferListener offerListener) {
         this.currencyService = new CurrencyService(repository);
         this.accountService = new AccountService(cacheTopMinutes);
         this.offerService = new OfferService(offerListener);

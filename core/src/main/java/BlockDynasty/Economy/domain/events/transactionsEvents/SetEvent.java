@@ -12,8 +12,8 @@ public class SetEvent extends Event {
     private final BigDecimal amount;
 
     public SetEvent(Player player, Currency currency, BigDecimal amount) {
-        this.currency = currency;
-        this.player = player;
+        this.currency = new Currency( currency );
+        this.player = new Player(player);
         this.amount = amount;
     }
     public Currency getCurrency() {

@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class Message {
     private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
-    private static FileConfiguration cfg = plugin.getConfig();
-
-    public Message(){
-    }
+    private static FileConfiguration cfg = MessageFile.getMessageConfig();
 
     private static String get(String path){
         return colorize(cfg.getString(path));
@@ -182,7 +179,6 @@ public class Message {
         return getPrefix() + colorize(cfg.getString("Messages.cannotReceiveMoney"));
     }
 
-
     public static String getCurrencyUsage_Create() { return get("Messages.usage.currency_create"); }
     public static String getCurrencyUsage_Delete() { return get("Messages.usage.currency_delete"); }
     public static String getCurrencyUsage_View() { return get("Messages.usage.currency_view"); }
@@ -201,7 +197,6 @@ public class Message {
     public static String getCurrencyUsage_Convert() {
         return get("Messages.usage.currency_convert");
     }
-
     public static String getOfferUsage() {return get("Messages.usage.offer");}
     public static String getOfferUsageCreate() {return get("Messages.usage.offer_create");}
     public static String getOfferUsageAccept() {return get("Messages.usage.offer_accept");}
@@ -224,11 +219,9 @@ public class Message {
     public static boolean getEnableDistanceLimitOffer(){
         return cfg.getBoolean("enableDistanceLimitOffer");
     }
-
     public static double getDistanceLimitOffer(){
         return cfg.getDouble("maxDistanceOffer");
     }
-
     public static String getTooFar(double limit) {
         return getPrefix() + colorize(cfg.getString("Messages.too_far")).replace("{limit}", String.valueOf(limit));
     }
@@ -236,13 +229,9 @@ public class Message {
     public static String getBuyCommandUsage() {
         return  getPrefix() + colorize(cfg.getString("Messages.usage.buy_usage"));
     }
-
-
-
     public static String getBuyCommandSuccess() {
         return  getPrefix() + colorize(cfg.getString("Messages.buy_success"));
     }
-
     public static String getBuyCommandOffline() {
         return getPrefix() + colorize(cfg.getString("Messages.buy_no_player"));
     }
@@ -256,15 +245,12 @@ public class Message {
     public static String getExchangeSuccess(){
         return getPrefix() + colorize(cfg.getString("Messages.exchange_success"));
     }
-
     public static String getWithdrawSuccess(){
         return getPrefix() + colorize(cfg.getString("Messages.withdraw_success"));
     }
-
     public static String getDepositSuccess(){
         return getPrefix() + colorize(cfg.getString("Messages.deposit_success"));
     }
-
     public static String getSetSuccess(){
         return getPrefix() + colorize(cfg.getString("Messages.setbalance_success"));
     }

@@ -20,6 +20,11 @@ public class Money implements IBalance{
         this.amount = amount;
     }
 
+    public Money(Money money){
+        this.currency = new Currency(money.getCurrency());
+        this.amount = money.getAmount();
+    }
+
     public void setCurrency(Currency currency){
         this.currency = currency;
     }
@@ -70,5 +75,13 @@ public class Money implements IBalance{
         }
         this.amount = this.amount.add(amount);
         return Result.success(null);
+    }
+
+    @Override
+    public String toString() {
+        return "Money{" +
+                "currency=" + currency +
+                ", amount=" + amount.toString() +
+                '}';
     }
 }

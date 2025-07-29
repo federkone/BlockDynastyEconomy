@@ -18,6 +18,13 @@ public class Wallet implements IWallet {
         this.balances = monies;
     }
 
+    public Wallet(Wallet wallet) {
+        this.balances = new ArrayList<>();
+        for (Money money : wallet.getBalances()) {
+            this.balances.add(new Money(money));
+        }
+    }
+
     public boolean hasCurrency( String currencyName){
         return balances.stream().anyMatch(b ->
                 b.getCurrency().getSingular().equals(currencyName) || b.getCurrency().getPlural().equals(currencyName));
@@ -55,5 +62,12 @@ public class Wallet implements IWallet {
 
     public List<Money> getBalances() {
         return balances;
+    }
+
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "balances=" + balances +
+                '}';
     }
 }

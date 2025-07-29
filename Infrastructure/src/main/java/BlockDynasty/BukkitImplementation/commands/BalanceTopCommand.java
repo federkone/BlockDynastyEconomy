@@ -6,7 +6,6 @@ import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.BukkitImplementation.services.MessageService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,9 +15,9 @@ import java.util.List;
 
 public class BalanceTopCommand implements CommandExecutor {
     private final GetAccountsUseCase getAccountsUseCase;
-    private final MessageService messageService;
+    private final BlockDynasty.BukkitImplementation.services.MessageService messageService;
 
-    public BalanceTopCommand(GetAccountsUseCase getAccountsUseCase, MessageService messageService) {
+    public BalanceTopCommand(GetAccountsUseCase getAccountsUseCase, BlockDynasty.BukkitImplementation.services.MessageService messageService) {
         this.getAccountsUseCase = getAccountsUseCase;
         this.messageService = messageService;
     }

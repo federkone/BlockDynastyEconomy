@@ -57,6 +57,19 @@ public class Currency implements ICurrency{
         this.exchangeRate = exchangeRate;
     }
 
+    public Currency(Currency currency) {
+        this.uuid = currency.uuid;
+        this.singular = currency.singular;
+        this.plural = currency.plural;
+        this.symbol = currency.symbol;
+        this.color = currency.color;
+        this.decimalSupported = currency.decimalSupported;
+        this.payable = currency.payable;
+        this.defaultCurrency = currency.defaultCurrency;
+        this.defaultBalance = currency.defaultBalance;
+        this.exchangeRate = currency.exchangeRate;
+    }
+
     public void setUuid(UUID uuid) {
         this.uuid = uuid.toString();
     }

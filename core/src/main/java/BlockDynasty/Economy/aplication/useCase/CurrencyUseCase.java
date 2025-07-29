@@ -1,7 +1,6 @@
 package BlockDynasty.Economy.aplication.useCase;
 
-import BlockDynasty.Economy.aplication.services.ServicesFactory;
-import BlockDynasty.Economy.aplication.useCase.account.GetAccountsUseCase;
+import BlockDynasty.Economy.aplication.services.ServicesManager;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
@@ -15,11 +14,11 @@ public class CurrencyUseCase {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
     private  final EditCurrencyUseCase editCurrencyUseCase;
 
-    public CurrencyUseCase(ServicesFactory servicesFactory, IRepository repository,AccountsUseCase accountsUseCase, Courier courier) {
-        this.getCurrencyUseCase = new GetCurrencyUseCase(servicesFactory.getCurrencyService(),repository);
-        this.createCurrencyUseCase = new CreateCurrencyUseCase(servicesFactory.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), courier,repository);
-        this.deleteCurrencyUseCase = new DeleteCurrencyUseCase( servicesFactory.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), repository, courier);
-        this.editCurrencyUseCase = new EditCurrencyUseCase(servicesFactory.getCurrencyService(), courier, repository);
+    public CurrencyUseCase(ServicesManager servicesManager, IRepository repository, AccountsUseCase accountsUseCase, Courier courier) {
+        this.getCurrencyUseCase = new GetCurrencyUseCase(servicesManager.getCurrencyService(),repository);
+        this.createCurrencyUseCase = new CreateCurrencyUseCase(servicesManager.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), courier,repository);
+        this.deleteCurrencyUseCase = new DeleteCurrencyUseCase( servicesManager.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), repository, courier);
+        this.editCurrencyUseCase = new EditCurrencyUseCase(servicesManager.getCurrencyService(), courier, repository);
     }
 
     public GetCurrencyUseCase getGetCurrencyUseCase() {

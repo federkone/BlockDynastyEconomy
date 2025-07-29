@@ -13,9 +13,9 @@ public class PayEvent  extends Event {
     private final BigDecimal amount;
 
     public PayEvent(Player player, Player received,Currency currency,  BigDecimal amount ) {
-            this.currency = currency;
-            this.payer = player;
-            this.received = received;
+            this.currency = new Currency( currency );
+            this.payer = new Player(player);
+            this.received = new Player(received);
             this.amount = amount;
         }
 
