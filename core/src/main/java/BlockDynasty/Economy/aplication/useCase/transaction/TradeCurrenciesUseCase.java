@@ -86,7 +86,9 @@ public class TradeCurrenciesUseCase {
     }
 
     private Result<Void> performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
-
+        if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
+            return Result.failure("You can't trade with yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
         if(!accountTo.canReceiveCurrency()){
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }

@@ -72,7 +72,6 @@ public class DepositUseCase {
     }
 
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
-
         if (!account.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }

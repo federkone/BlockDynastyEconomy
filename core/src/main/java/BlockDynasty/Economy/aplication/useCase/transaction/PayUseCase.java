@@ -37,19 +37,16 @@ public class PayUseCase {
     public Result<Void> execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
         Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
-            //messageservice.sendMessage(userFrom,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
-            //messageservice.sendMessage(userTo,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
-            //messageservice.sendMessage(currencyName,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
@@ -59,19 +56,16 @@ public class PayUseCase {
     public Result<Void> execute (String userFrom, String userTo, String currencyName, BigDecimal amount) {
         Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
         if (!accountFromResult.isSuccess()) {
-            //messageservice.sendMessage(userFrom,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
         Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
-            //messageservice.sendMessage(userTo,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
 
         Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
-            //messageservice.sendMessage(currencyName,result.getErrorMessage(), result.getErrorCode());
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
@@ -80,12 +74,12 @@ public class PayUseCase {
 
 
     private Result<Void> performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+        //no se debe poder pagar a si mismo
+        if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
+            return Result.failure("You can't pay to yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
         if (!accountTo.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
-        }
-
-        if(!currency.isPayable()){
-            return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }
 
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
@@ -95,6 +89,11 @@ public class PayUseCase {
         if(!currency.isValidAmount(amount)){
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
+
+        if(!currency.isPayable()){
+            return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
+        }
+
 
         Result<TransferResult> result = dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
         if(!result.isSuccess()){

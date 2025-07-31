@@ -74,6 +74,10 @@ public class TransferFundsUseCase {
     }
 
     private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
+        //no debe pagarse a si mismo
+        if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
+            return Result.failure("You can't transfer to yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
         if (!accountTo.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
