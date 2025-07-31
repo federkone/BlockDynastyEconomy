@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
+package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;

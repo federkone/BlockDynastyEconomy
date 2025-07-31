@@ -30,7 +30,7 @@ Todo list:
     -complete use case and comand for delete accountDb
 
 
--placeholder for top currency holders (ex: %gemseco_<currency>_top_#_#%)- check
+-placeholder for top currency holders (ex: %blockdynasty_<currency>_top_#_#%)- check
 -añadir al placeholder la posibilidad de tener el money ademas de formateado con simbolo o sin simbolo -CHECK
 
 

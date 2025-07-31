@@ -36,7 +36,7 @@ commands:
     description: Opens the bank GUI.
     usage: /bank
     aliases: [bank, banco]
-  currencyPanel:
-    description: Opens the currency panel GUI.
-    usage: /currencyPanel
-    aliases: [panelMonedas, monedas]
+  admin:
+    description: Admin commands for BlockDynastyEconomy.
+    usage: /admin
+    aliases: [bdadmin, bdeconomyadmin, bdeadmin]

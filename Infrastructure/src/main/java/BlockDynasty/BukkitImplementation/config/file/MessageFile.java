@@ -122,7 +122,6 @@ public class MessageFile {
         messageConfig.addDefault(path + "help.currency_command", Arrays.asList("{prefix}&e&lCurrency Help",
                 "&2&l>> &a/eco currency create <singular> <plural> &8- &7Create a currency.",
                 "&2&l>> &a/eco currency delete <plural> &8- &7Delete a currency.",
-                "&2&l>> &a/eco currency convert <method> &8- &7Convert storage method. WARN: Take backups first and make sure the storage you are switching to is empty!",
                 "&2&l>> &a/eco currency backend <method> &8- &7Switch backend. This does not convert.",
                 "&2&l>> &a/eco currency view <plural> &8- &7View information about a currency.",
                 "&2&l>> &a/eco currency list &8- &7List of currencies.",
@@ -137,7 +136,6 @@ public class MessageFile {
 
         messageConfig.addDefault(path + "usage.currency_create", "&2&l>> &a/eoc currency create <singular> <plural> &8- &7Create a currency.");
         messageConfig.addDefault(path + "usage.currency_delete", "&2&l>> &a/eco currency delete <plural> &8- &7Delete a currency.");
-        messageConfig.addDefault(path + "usage.currency_convert", "&2&l>> &a/eco currency convert <method> &8- &7Convert storage method. WARN: Take backups first and make sure the storage you are switching to is empty!");
         messageConfig.addDefault(path + "usage.currency_backend", "&2&l>> &a/eco currency backend <method> &8- &7Switch backend. This does not convert.");
         messageConfig.addDefault(path + "usage.currency_view", "&2&l>> &a/eco currency view <plural> &8- &7View information about a currency.");
         messageConfig.addDefault(path + "usage.currency_list", "&2&l>> &a/eco currency list &8- &7List of currencies.");

@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
+import BlockDynasty.BukkitImplementation.GUI.commands.AdminGUICommand;
 import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
-import BlockDynasty.BukkitImplementation.GUI.commands.CurrencyPanelCommand;
 import BlockDynasty.BukkitImplementation.GUI.listeners.GUIListener;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.services.MessageService;
@@ -22,7 +22,9 @@ public  class RegisterGuiModule {
         GUIService guiService= new GUIService();
 
         plugin.getCommand("bank").setExecutor(new BankGUICommand(plugin,guiService,transactionsUseCase.getPayUseCase(), currencyUseCase.getGetCurrencyUseCase(), accountsUseCase.getGetBalanceUseCase(),messageService));
-        plugin.getCommand("currencyPanel").setExecutor(new CurrencyPanelCommand(plugin,guiService,currencyUseCase.getGetCurrencyUseCase(),currencyUseCase.getEditCurrencyUseCase(),currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getDeleteCurrencyUseCase()));
+        //plugin.getCommand("currencyPanel").setExecutor(new CurrencyPanelCommand(plugin,guiService,currencyUseCase.getGetCurrencyUseCase(),currencyUseCase.getEditCurrencyUseCase(),currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getDeleteCurrencyUseCase()));
+        //plugin.getCommand("deleteAccount").setExecutor(new DeletePlayerCommand(accountsUseCase.getGetAccountsUseCase(),accountsUseCase.getDeleteAccountUseCase(),guiService));
+        plugin.getCommand("admin").setExecutor(new AdminGUICommand(plugin, guiService,accountsUseCase,currencyUseCase,transactionsUseCase));
 
         // Register GUI event listener
         plugin.getServer().getPluginManager().registerEvents(new GUIListener(guiService), plugin);

@@ -1,7 +1,8 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
+import BlockDynasty.Economy.domain.entities.account.Player;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -36,18 +37,19 @@ public class MaterialAdapter {
         return Material.PLAYER_HEAD; // 1.13+
     }
 
-    public static ItemStack createPlayerHead(Player player) {
+    public static ItemStack createPlayerHead(String playerName) {
         if(isLegacy()){
             ItemStack skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
-            meta.setDisplayName(player.getDisplayName());
+            meta.setOwner(playerName);
+            meta.setDisplayName(playerName);
             skull.setItemMeta(meta);
             return skull;
         }else{
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) head.getItemMeta();
-            meta.setOwningPlayer(player);
-            meta.setDisplayName("§e" + player.getName());
+            meta.setOwner(playerName);
+            meta.setDisplayName("§e" + playerName);
             meta.setLore(Collections.singletonList("§7Click para pagar a este jugador"));
             head.setItemMeta(meta);
             return head;

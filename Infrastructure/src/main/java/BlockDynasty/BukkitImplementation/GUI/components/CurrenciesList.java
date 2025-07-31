@@ -1,6 +1,5 @@
-package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
+package BlockDynasty.BukkitImplementation.GUI.components;
 
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public abstract class AbstractCurrenciesList extends AbstractGUI {
+public abstract class CurrenciesList extends AbstractGUI {
     private final GUIService guiService;
     private final Player player;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
@@ -18,7 +17,7 @@ public abstract class AbstractCurrenciesList extends AbstractGUI {
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public AbstractCurrenciesList(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
+    public CurrenciesList(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
         super("Lista de Monedas", 5);
         this.guiService = guiService;
         this.player = player;

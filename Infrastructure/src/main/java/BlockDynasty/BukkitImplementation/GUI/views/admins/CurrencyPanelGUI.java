@@ -2,9 +2,9 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.CreateCurrencyGUI;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListDelete;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.CurrencyListEdit;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CreateCurrencyGUI;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CurrencyListDelete;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CurrencyListEdit;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;

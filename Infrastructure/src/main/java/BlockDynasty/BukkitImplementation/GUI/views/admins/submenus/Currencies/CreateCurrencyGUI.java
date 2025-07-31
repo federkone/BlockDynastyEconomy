@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
+package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;

@@ -2,27 +2,30 @@ package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels.AbstractCurrenciesList;
+import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-public class CurrencyListPay  extends AbstractCurrenciesList {
+public class CurrencyListPay  extends CurrenciesList {
     private final PayUseCase payUseCase;
-    private final Player targetPlayer;
+    private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
     private final JavaPlugin plugin;
     private final MessageService messageService;
 
-    public CurrencyListPay(JavaPlugin plugin, GUIService guiService, Player player, Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
+    public CurrencyListPay(JavaPlugin plugin, GUIService guiService, Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
         super(guiService, player, searchCurrencyUseCase, parentGUI);
         this.payUseCase = payUseCase;
         this.targetPlayer = targetPlayer;
@@ -39,11 +42,11 @@ public class CurrencyListPay  extends AbstractCurrenciesList {
                     }
                     try {
                         BigDecimal amount = new BigDecimal(stateSnapshot.getText());
-                        Result<Void> result = payUseCase.execute(sender.getUniqueId(), targetPlayer.getUniqueId(), currency.getSingular(), amount);
+                        Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
 
                         if (result.isSuccess()) {
-                            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getName(), currency.getSingular(), amount));
-                            targetPlayer.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
+                            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getNickname(), currency.getSingular(), amount));
+                            Objects.requireNonNull(Bukkit.getPlayer(targetPlayer.getNickname())).sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
 
                             return List.of(AnvilGUI.ResponseAction.close());
                         } else {

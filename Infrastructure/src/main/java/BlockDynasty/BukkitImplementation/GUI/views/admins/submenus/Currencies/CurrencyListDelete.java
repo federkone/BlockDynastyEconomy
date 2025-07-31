@@ -1,6 +1,7 @@
-package BlockDynasty.BukkitImplementation.GUI.views.admins.adminPanels;
+package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
@@ -10,7 +11,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import org.bukkit.entity.Player;
 
-public class CurrencyListDelete extends AbstractCurrenciesList {
+public class CurrencyListDelete extends CurrenciesList {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
     public CurrencyListDelete(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase,
