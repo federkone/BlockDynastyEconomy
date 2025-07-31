@@ -17,10 +17,14 @@ public abstract class AccountsList extends AbstractGUI {
     private final int PLAYERS_PER_PAGE = 21;
     private final JavaPlugin plugin = BlockDynastyEconomy.getInstance();
     private final GUIService guiService;
+    private final AbstractGUI parent;
 
-    public AccountsList(String title, int rows, GUIService guiService) {
+    public AccountsList(String title, int rows, GUIService guiService,AbstractGUI parent) {
         super(title, rows);
-        this.guiService  = guiService; }
+        this.parent = parent;
+        this.guiService  = guiService;
+    }
+
 
     protected void showPlayersPage(List<Player> players, org.bukkit.entity.Player sender) {
         // Calculate pagination
@@ -64,14 +68,17 @@ public abstract class AccountsList extends AbstractGUI {
             });
         }
 
-        setItem(34, createItem(Material.NAME_TAG, "§aBuscar Jugador",
+        setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador",
                 "§7Click para buscar un jugador por nombre"), unused -> {
             openAnvilSearch(sender);
         });
 
         // Cancel button
-        setItem(40, createItem(Material.BARRIER, "§cCancelar",
-                "§7Click para cancelar"), unused -> sender.closeInventory());
+        setItem(41, createItem(Material.BARRIER, "§7Atrás",
+                "§7Click para Atrás"), unused -> {
+            sender.openInventory(parent.getInventory());
+            guiService.registerGUI(sender, parent);
+        });
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {

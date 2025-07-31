@@ -13,10 +13,12 @@ public class GUIService {
 
     public void registerGUI(Player player, IGUI gui) {
         openGUIs.put(player.getUniqueId(), gui);
+        System.out.println("cantidad de guis abiertas: "+ openGUIs.size());
     }
 
     public void unregisterGUI(Player player) {
         openGUIs.remove(player.getUniqueId());
+        System.out.println("cantidad de guis abiertas: "+ openGUIs.size());
     }
 
     public void handleClick(InventoryClickEvent event) {

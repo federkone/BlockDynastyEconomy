@@ -29,7 +29,7 @@ public class AdminPanelGUI extends AbstractGUI {
                          AccountsUseCase accountsUseCase,
                          TransactionsUseCase transactionsUseCase
                          ) {
-        super("Economy Admin Panel", 5);
+        super("Economy Admin Panel", 3);
         this.sender = sender;
         this.guiService = guiService;
         this.plugin = plugin;
@@ -41,21 +41,31 @@ public class AdminPanelGUI extends AbstractGUI {
     }
 
     private  void initializeButtons() {
-        setItem(10, createItem(Material.PAPER, "Edit Currencies", "Click to edit currencies"), event -> {
+        setItem(11, createItem(Material.PAPER, "Edit Currencies", "Click to edit currencies"), event -> {
             IGUI gui = new CurrencyPanelGUI(guiService,plugin,sender,currencyUseCase.getGetCurrencyUseCase(),
                     currencyUseCase.getEditCurrencyUseCase(),
                     currencyUseCase.getCreateCurrencyUseCase(),
-                    currencyUseCase.getDeleteCurrencyUseCase());
+                    currencyUseCase.getDeleteCurrencyUseCase(),this);
             gui.open(sender);
             this.guiService.registerGUI(sender, gui);
 
         });
 
 
-        setItem(14, createItem(Material.DIAMOND_SWORD, "Manage Accounts", "Click to manage accounts"), event -> {
-            IGUI gui = new AccountPanelGUI(sender,guiService,accountsUseCase.getGetAccountsUseCase(),accountsUseCase.getDeleteAccountUseCase());
+        setItem(15, createItem(Material.DIAMOND_SWORD, "Manage Accounts", "Click to manage accounts"), event -> {
+            IGUI gui = new AccountPanelGUI(sender, guiService,
+                    accountsUseCase.getGetAccountsUseCase(),
+                    accountsUseCase.getDeleteAccountUseCase(),
+                    transactionsUseCase,
+                    currencyUseCase.getGetCurrencyUseCase(),this);
             gui.open(sender);
             this.guiService.registerGUI(sender, gui);
         });
+
+        setItem(22, createItem(Material.BARRIER, "Close", "Click to close this menu"), event -> {
+            sender.closeInventory();
+        });
+
+
     }
 }

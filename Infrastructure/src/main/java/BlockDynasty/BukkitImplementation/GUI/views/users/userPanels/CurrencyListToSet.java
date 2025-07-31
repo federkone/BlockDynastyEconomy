@@ -1,11 +1,12 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
+import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -19,18 +20,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class CurrencyListPay  extends CurrenciesList {
-    private final PayUseCase payUseCase;
+public class CurrencyListToSet extends CurrenciesList {
+    SetBalanceUseCase setBalanceUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
     private final JavaPlugin plugin;
-    private final MessageService messageService;
 
-    public CurrencyListPay(JavaPlugin plugin, GUIService guiService, Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
+    public CurrencyListToSet(JavaPlugin plugin, GUIService guiService, Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
+                             SearchCurrencyUseCase searchCurrencyUseCase, SetBalanceUseCase setBalanceUseCase, AbstractGUI parentGUI) {
         super(guiService, player, searchCurrencyUseCase, parentGUI);
-        this.payUseCase = payUseCase;
         this.targetPlayer = targetPlayer;
-        this.messageService = messageService;
         this.plugin = plugin;
+        this.setBalanceUseCase = setBalanceUseCase;
+
     }
 
     @Override
@@ -42,16 +43,13 @@ public class CurrencyListPay  extends CurrenciesList {
                     }
                     try {
                         BigDecimal amount = new BigDecimal(stateSnapshot.getText());
-                        Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
+                        Result<Void> result = setBalanceUseCase.execute(UUID.fromString(targetPlayer.getUuid()),currency.getSingular(), amount);
 
                         if (result.isSuccess()) {
-                            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getNickname(), currency.getSingular(), amount));
-                            Objects.requireNonNull(Bukkit.getPlayer(targetPlayer.getNickname())).sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
-
+                            sender.sendMessage("§aSaldo actualizado exitosamente");
                             return List.of(AnvilGUI.ResponseAction.close());
                         } else {
-                            return List.of(AnvilGUI.ResponseAction.replaceInputText(
-                                    "§c" + result.getErrorMessage()));
+                            return List.of(AnvilGUI.ResponseAction.replaceInputText("§c" + result.getErrorMessage()));
                         }
                     } catch (NumberFormatException e) {
                         return List.of(AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
@@ -61,5 +59,6 @@ public class CurrencyListPay  extends CurrenciesList {
                 .title("Ingresar Monto")
                 .plugin(plugin)
                 .open(sender);
+
     }
 }

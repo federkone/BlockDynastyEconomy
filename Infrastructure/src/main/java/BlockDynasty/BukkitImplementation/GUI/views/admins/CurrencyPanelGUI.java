@@ -17,12 +17,15 @@ public class CurrencyPanelGUI extends AbstractGUI {
     private final Player player;
     private final GUIService guiService;
     private final JavaPlugin plugin;
+    private final AbstractGUI parent;
     private  final CreateCurrencyUseCase createCurrencyUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final EditCurrencyUseCase editCurrencyUseCase;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, SearchCurrencyUseCase searchCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase, DeleteCurrencyUseCase deleteCurrencyUseCase) {
+    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, SearchCurrencyUseCase searchCurrencyUseCase,
+                            EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase,
+                            DeleteCurrencyUseCase deleteCurrencyUseCase,AbstractGUI parent) {
         super("Administrador de Monedas", 3);
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.editCurrencyUseCase = editCurrencyUseCase;
@@ -30,6 +33,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         this.deleteCurrencyUseCase = deleteCurrencyUseCase;
         this.guiService = guiService;
         this.player = player;
+        this.parent = parent;
         this.plugin = plugin;
         setupGUI();
     }
@@ -67,8 +71,11 @@ public class CurrencyPanelGUI extends AbstractGUI {
         });
 
         // Exit button
-        setItem(22, createItem(Material.BARRIER, "§cSalir",
-                "§7Click para salir"), unused -> player.closeInventory());
+        setItem(22, createItem(Material.BARRIER, "§cAtrás",
+                "§7Click para atrás"), unused -> {
+            player.openInventory(parent.getInventory());
+            guiService.registerGUI(player, parent);
+        });
     }
 
     private void openCurrencyListGUI() {

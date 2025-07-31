@@ -39,35 +39,27 @@ public class BankGUI extends AbstractGUI {
         // Balance option
         setItem(11, createItem(Material.GOLD_INGOT, "§6Ver Balance",
                 "§7Click para ver tu balance"), unused -> {
-            //player.closeInventory();
             openBalanceGUI();
         });
 
-        // Pay option
         setItem(15, createItem(MaterialAdapter.getPlayerHead(), "§aPagar a un Jugador",
                 "§7Click para pagar a otro jugador"), unused -> {
-            //player.closeInventory();
             openPayGUI();
         });
 
-        // Exit button
         setItem(22, createItem(Material.BARRIER, "§cSalir",
                 "§7Click para salir"), unused -> player.closeInventory());
     }
 
     private void openBalanceGUI() {
-        BalanceGUI balanceGUI = new BalanceGUI(plugin, player,getBalanceUseCase);
+        BalanceGUI balanceGUI = new BalanceGUI(plugin,guiService, player,getBalanceUseCase,this);
         player.openInventory(balanceGUI.getInventory());
-
-        // Register the GUI with the GUIService
         guiService.registerGUI(player, balanceGUI);
     }
 
     private void openPayGUI() {
-        PayGUI payGUI = new PayGUI(plugin, payUseCase, player, guiService, searchCurrencyUseCase,messageService);
+        PayGUI payGUI = new PayGUI(plugin, payUseCase, player, guiService, searchCurrencyUseCase,messageService,this);
         player.openInventory(payGUI.getInventory());
-
-        // Register the GUI with the GUIService
         guiService.registerGUI(player, payGUI);
     }
 }

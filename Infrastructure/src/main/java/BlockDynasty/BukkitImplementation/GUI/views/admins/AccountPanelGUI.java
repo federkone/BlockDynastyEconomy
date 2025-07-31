@@ -1,10 +1,13 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins;
 
+import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AccountsList;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts.EditAccountGUI;
+import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Player;
@@ -14,16 +17,22 @@ import java.util.List;
 public class AccountPanelGUI extends AccountsList {
     private final DeleteAccountUseCase deleteAccountUseCase;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final TransactionsUseCase transactionsUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final GUIService guiService;
     private final org.bukkit.entity.Player sender;
     //private EditAccountUseCase edit...
 
-    public AccountPanelGUI(org.bukkit.entity.Player sender, GUIService guiService, SearchAccountUseCase searchAccountUseCase, DeleteAccountUseCase deleteAccountUseCase) {
-        super("Seleccionar Jugador", 5,guiService);
+    public AccountPanelGUI(org.bukkit.entity.Player sender, GUIService guiService, SearchAccountUseCase searchAccountUseCase, DeleteAccountUseCase deleteAccountUseCase,
+                           TransactionsUseCase transactionsUseCase, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parent) {
+        super("Seleccionar Jugador", 5,guiService,parent);
         this.guiService = guiService;
         this.sender = sender;
         this.deleteAccountUseCase = deleteAccountUseCase;
         this.searchAccountUseCase = searchAccountUseCase;
+        this.transactionsUseCase = transactionsUseCase;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
+
 
         Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
         if(result.isSuccess()) {
@@ -42,7 +51,7 @@ public class AccountPanelGUI extends AccountsList {
 
     @Override
     public void openNextSection(Player target) {
-        EditAccountGUI editAccountGUI = new EditAccountGUI(deleteAccountUseCase,sender,target,guiService,this);//sender tambien
+        EditAccountGUI editAccountGUI = new EditAccountGUI(searchCurrencyUseCase,deleteAccountUseCase,transactionsUseCase,sender,target,guiService,this);//sender tambien
         sender.openInventory(editAccountGUI.getInventory());
         guiService.registerGUI(sender, editAccountGUI);
     }

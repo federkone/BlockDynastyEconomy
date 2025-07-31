@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
+import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
@@ -19,15 +20,19 @@ import java.util.function.Function;
 
 public class BalanceGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
+    private final GUIService guiService;
     private final Player player;
     private final JavaPlugin plugin;
+    private final AbstractGUI parent;
 
     //CONSULTA SALDO
-    public BalanceGUI(JavaPlugin plugin, Player player,GetBalanceUseCase getBalanceUseCase) {
+    public BalanceGUI(JavaPlugin plugin, GUIService guiService,Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
         super("Balance de cuenta", 3);
         this.getBalanceUseCase = getBalanceUseCase;
+        this.parent = parent;
         this.player = player;
         this.plugin = plugin;
+        this.guiService = guiService;
 
         setupGUI();
     }
@@ -59,8 +64,11 @@ public class BalanceGUI extends AbstractGUI {
             }
 
             // Add a close button
-            setItem(22, createItem(Material.BARRIER, "§cCerrar",
-                    "§7Click para cerrar"), unused -> player.closeInventory());
+            setItem(22, createItem(Material.BARRIER, "§cAtrás",
+                    "§7Click para atrás"), unused -> {
+                player.openInventory(parent.getInventory());
+                guiService.registerGUI(player, parent);
+            });
         } else {
             // Show error message if balances couldn't be retrieved
             setItem(13, createItem(Material.BARRIER, "§cError",
