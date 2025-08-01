@@ -16,14 +16,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CurrencyPanelGUI extends AbstractGUI {
     private final Player player;
     private final GUIService guiService;
-    private final JavaPlugin plugin;
     private final AbstractGUI parent;
     private  final CreateCurrencyUseCase createCurrencyUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final EditCurrencyUseCase editCurrencyUseCase;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyPanelGUI(GUIService guiService, JavaPlugin plugin, Player player, SearchCurrencyUseCase searchCurrencyUseCase,
+    public CurrencyPanelGUI(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase,
                             EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase,
                             DeleteCurrencyUseCase deleteCurrencyUseCase,AbstractGUI parent) {
         super("Administrador de Monedas", 3);
@@ -34,7 +33,6 @@ public class CurrencyPanelGUI extends AbstractGUI {
         this.guiService = guiService;
         this.player = player;
         this.parent = parent;
-        this.plugin = plugin;
         setupGUI();
     }
 
@@ -43,7 +41,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         setItem(10, createItem(Material.EMERALD, "§aCrear Moneda",
                 "§7Click para crear una nueva moneda"), unused -> {
             player.closeInventory();
-            new CreateCurrencyGUI(plugin, player, this.createCurrencyUseCase);
+            new CreateCurrencyGUI(player, this.createCurrencyUseCase);
             //player.sendMessage("§6[Sistema] §eCrear moneda: Función en desarrollo");
         });
 
@@ -79,7 +77,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListEdit currencyListEdit = new CurrencyListEdit(guiService,plugin, player,this.searchCurrencyUseCase,this.editCurrencyUseCase,this);
+        CurrencyListEdit currencyListEdit = new CurrencyListEdit(guiService,player,this.searchCurrencyUseCase,this.editCurrencyUseCase,this);
         player.openInventory(currencyListEdit.getInventory());
 
         // Register the GUI with the GUIService

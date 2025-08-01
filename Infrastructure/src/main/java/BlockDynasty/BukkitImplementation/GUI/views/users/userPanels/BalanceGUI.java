@@ -22,16 +22,14 @@ public class BalanceGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
     private final GUIService guiService;
     private final Player player;
-    private final JavaPlugin plugin;
     private final AbstractGUI parent;
 
     //CONSULTA SALDO
-    public BalanceGUI(JavaPlugin plugin, GUIService guiService,Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
+    public BalanceGUI(GUIService guiService,Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
         super("Balance de cuenta", 3);
         this.getBalanceUseCase = getBalanceUseCase;
         this.parent = parent;
         this.player = player;
-        this.plugin = plugin;
         this.guiService = guiService;
 
         setupGUI();
@@ -74,56 +72,5 @@ public class BalanceGUI extends AbstractGUI {
             setItem(13, createItem(Material.BARRIER, "§cError",
                     "§7No se pudieron obtener los balances"), null);
         }
-    }
-
-
-    private void setupGUItest() {
-
-       /* setItem(11, createItem(Material.EMERALD, "§aDepositar", "§7Click para depositar"), unused -> {
-            player.closeInventory();
-            openAmountInputGUI(
-                    player,
-                    "Depositar monto",
-                    amount -> usesCase.getDepositUseCase().execute(player.getUniqueId(), amount),
-                    "§aHas depositado: §f%amount%"
-            );
-        });
-
-        setItem(15, createItem(Material.REDSTONE, "§cExtraer", "§7Click para extraer"), unused -> {
-            player.closeInventory();
-            openAmountInputGUI(
-                    player,
-                    "Extraer monto",
-                    amount -> usesCase.getWithdrawUseCase().execute(player.getUniqueId(), amount),
-                    "§cHas extraído: §f%amount%"
-            );
-        });*/
-    }
-
-    // Método para abrir el AnvilGUI y manejar la entrada de montos
-    private void openAmountInputGUI(Player player, String title, Function<BigDecimal, Result<Void>> operation, String successMessage) {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-                    try {
-                        BigDecimal amount = new BigDecimal(stateSnapshot.getText());
-                        Result<Void> result = operation.apply(amount);
-
-                        if (result.isSuccess()) {
-                            player.sendMessage(successMessage.replace("%amount%", amount.toString()));
-                            return List.of(AnvilGUI.ResponseAction.close());
-                        } else {
-                            return List.of( AnvilGUI.ResponseAction.replaceInputText("§c" + result.getErrorMessage()) );
-                        }
-                    } catch (NumberFormatException e) {
-                        return List.of( AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
-                    }
-                })
-                .text("0")
-                .title(title)
-                .plugin(plugin)
-                .open(player);
     }
 }

@@ -14,19 +14,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BankGUICommand implements CommandExecutor {
-    private final JavaPlugin plugin;
-    private GUIService guiService;
-    private PayUseCase payUseCase;
-    private SearchCurrencyUseCase searchCurrencyUseCase;
-    private GetBalanceUseCase getBalanceUseCase;
-    private MessageService messageService;
+    private final GUIService guiService;
+    private final PayUseCase payUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
+    private final GetBalanceUseCase getBalanceUseCase;
+    private final MessageService messageService;
 
-    public BankGUICommand(JavaPlugin plugin, GUIService guiService,
+    public BankGUICommand( GUIService guiService,
                           PayUseCase payUseCase,
                           SearchCurrencyUseCase searchCurrencyUseCase,
                           GetBalanceUseCase getBalanceUseCase,
                           MessageService messageService) {
-        this.plugin = plugin;
         this.payUseCase = payUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.getBalanceUseCase = getBalanceUseCase;
@@ -42,7 +40,7 @@ public class BankGUICommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        IGUI gui = new BankGUI(plugin, player,guiService,payUseCase, searchCurrencyUseCase,getBalanceUseCase,messageService);
+        IGUI gui = new BankGUI(player,guiService,payUseCase, searchCurrencyUseCase,getBalanceUseCase,messageService);
         this.guiService.registerGUI(player, gui);
         gui.open(player);
         return true;

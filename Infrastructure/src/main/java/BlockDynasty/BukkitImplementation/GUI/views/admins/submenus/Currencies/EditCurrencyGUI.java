@@ -2,22 +2,17 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.components.AnvilMenu;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Collections;
-import java.util.List;
 
 public class EditCurrencyGUI extends AbstractGUI {
-    private final JavaPlugin plugin;
     private final Player player;
     private final Currency currency;
     private final GUIService guiService;
@@ -25,10 +20,9 @@ public class EditCurrencyGUI extends AbstractGUI {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final AbstractGUI parentGUI;
 
-    public EditCurrencyGUI(JavaPlugin plugin, GUIService guiService, Player player, Currency currency,
+    public EditCurrencyGUI(GUIService guiService, Player player, Currency currency,
                            EditCurrencyUseCase editCurrencyUseCase, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
         super("Editar Moneda: " + currency.getSingular(), 4);
-        this.plugin = plugin;
         this.player = player;
         this.guiService = guiService;
         this.parentGUI = parentGUI;
@@ -152,178 +146,94 @@ public class EditCurrencyGUI extends AbstractGUI {
         });
     }
 
-    private void openStartBalanceInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    try {
-                        double startBal = Double.parseDouble(stateSnapshot.getText());
-                        return List.of(
-                                AnvilGUI.ResponseAction.close(),
-                                AnvilGUI.ResponseAction.run(() -> {
-                                    try {
-                                        editCurrencyUseCase.editStartBal(currency.getSingular(), startBal);
-                                        player.sendMessage("§6[Banco] §aSaldo inicial actualizado correctamente.");
-                                        openEditCurrencyGUI();
-                                    } catch (Exception e) {
-                                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
-                                        openEditCurrencyGUI();
-                                    }
-                                })
-                        );
-                    } catch (NumberFormatException e) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
-                    }
-                })
-                .text(currency.getDefaultBalance().toString())
-                .title("Saldo Inicial")
-                .plugin(plugin)
-                .open(player);
-    }
-
-    private void openExchangeRateInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    try {
-                        double rate = Double.parseDouble(stateSnapshot.getText());
-                        return List.of(
-                                AnvilGUI.ResponseAction.close(),
-                                AnvilGUI.ResponseAction.run(() -> {
-                                    try {
-                                        editCurrencyUseCase.setCurrencyRate(currency.getSingular(), rate);
-                                        player.sendMessage("§6[Banco] §aTasa de cambio actualizada correctamente.");
-                                        openEditCurrencyGUI();
-                                    } catch (Exception e) {
-                                        player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
-                                        openEditCurrencyGUI();
-                                    }
-                                })
-                        );
-                    } catch (NumberFormatException e) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
-                    }
-                })
-                .text(String.valueOf(currency.getExchangeRate()))
-                .title("Tasa de Cambio")
-                .plugin(plugin)
-                .open(player);
-    }
-
     private void openColorSelectionGUI() {
         ColorSelectionGUI colorGUI = new ColorSelectionGUI();
         player.openInventory(colorGUI.getInventory());
         guiService.registerGUI(player, colorGUI);
     }
-
-    private void openSymbolInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    String symbol = stateSnapshot.getText().trim();
-                    if (symbol.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cSímbolo no válido"));
-                    }
-
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> {
-                                try {
-                                    editCurrencyUseCase.editSymbol(currency.getSingular(), symbol);
-                                    player.sendMessage("§6[Banco] §aSímbolo actualizado correctamente.");
-                                    openEditCurrencyGUI();
-                                } catch (Exception e) {
-                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
-                                    openEditCurrencyGUI();
-                                }
-                            })
-                    );
-                })
-                .text(currency.getSymbol())
-                .title("Símbolo de Moneda")
-                .plugin(plugin)
-                .open(player);
-    }
-
-    private void openSingularNameInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    String name = stateSnapshot.getText().trim();
-                    if (name.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cNombre no válido"));
-                    }
-
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> {
-                                try {
-                                    editCurrencyUseCase.setSingularName(currency.getSingular(), name);
-                                    player.sendMessage("§6[Banco] §aNombre singular actualizado correctamente.");
-                                    openEditCurrencyGUI();
-                                } catch (Exception e) {
-                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
-                                    openEditCurrencyGUI();
-                                }
-                            })
-                    );
-                })
-                .text(currency.getSingular())
-                .title("Nombre Singular")
-                .plugin(plugin)
-                .open(player);
-    }
-
-    private void openPluralNameInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    String name = stateSnapshot.getText().trim();
-                    if (name.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cNombre no válido"));
-                    }
-
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> {
-                                try {
-                                    editCurrencyUseCase.setPluralName(currency.getSingular(), name);
-                                    player.sendMessage("§6[Banco] §aNombre plural actualizado correctamente.");
-                                    openEditCurrencyGUI();
-                                } catch (Exception e) {
-                                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
-                                    openEditCurrencyGUI();
-                                }
-                            })
-                    );
-                })
-                .text(currency.getPlural())
-                .title("Nombre Plural")
-                .plugin(plugin)
-                .open(player);
-    }
-
     private void openEditCurrencyGUI() {
-        EditCurrencyGUI gui = new EditCurrencyGUI(plugin, guiService,player, currency,editCurrencyUseCase, searchCurrencyUseCase,parentGUI);
+        EditCurrencyGUI gui = new EditCurrencyGUI(guiService,player, currency,editCurrencyUseCase, searchCurrencyUseCase,parentGUI);
         player.openInventory(gui.getInventory());
         guiService.registerGUI(player, gui);
     }
 
+    private void openStartBalanceInput(){
+        AnvilMenu.open(player,"saldo inicial",currency.getDefaultBalance().toString(), s->{
+            try {
+                double startBal = Double.parseDouble(s);
+                try {
+                    editCurrencyUseCase.editStartBal(currency.getSingular(), startBal);
+                    player.sendMessage("§6[Banco] §aSaldo inicial actualizado correctamente.");
+                    openEditCurrencyGUI();
+                } catch (Exception e) {
+                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                    openEditCurrencyGUI();
+                }
+            }catch (NumberFormatException e){
+                return "Formato inválido";
+            }
+            return null;
+        });
+    }
+
+    private void openExchangeRateInput(){
+        AnvilMenu.open(player,"tasa de cambio",String.valueOf(currency.getExchangeRate()),s->{
+            try {
+                double rate = Double.parseDouble(s);
+                try {
+                    editCurrencyUseCase.setCurrencyRate(currency.getSingular(), rate);
+                    player.sendMessage("§6[Banco] §aTasa de cambio actualizada correctamente.");
+                    openEditCurrencyGUI();
+                } catch (Exception e) {
+                    player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                    openEditCurrencyGUI();
+                }
+            } catch (NumberFormatException e) {
+                return "Formato inválido";
+            }
+            return null;
+        });
+    }
+    private void openSymbolInput(){
+        AnvilMenu.open(player,"Simbolo de moneda",currency.getSymbol(),s ->{
+            try {
+                editCurrencyUseCase.editSymbol(currency.getSingular(), s);
+                player.sendMessage("§6[Banco] §aSímbolo actualizado correctamente.");
+                openEditCurrencyGUI();
+            } catch (Exception e) {
+                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                openEditCurrencyGUI();
+            }
+            return null;
+        });
+    }
+
+    private void openSingularNameInput(){
+        AnvilMenu.open(player,"Nombre Singular",currency.getSingular(), s ->{
+            try {
+                editCurrencyUseCase.setSingularName(currency.getSingular(), s);
+                player.sendMessage("§6[Banco] §aNombre singular actualizado correctamente.");
+                openEditCurrencyGUI();
+            } catch (Exception e) {
+                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                openEditCurrencyGUI();
+            }
+            return null;
+        });
+    }
+    private void openPluralNameInput() {
+        AnvilMenu.open(player,"Nombre Plural", currency.getPlural(),s->{
+            try {
+                editCurrencyUseCase.setPluralName(currency.getSingular(), s);
+                player.sendMessage("§6[Banco] §aNombre plural actualizado correctamente.");
+                openEditCurrencyGUI();
+            } catch (Exception e) {
+                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                openEditCurrencyGUI();
+            }
+            return null;
+        });
+    }
 
     // Inner class for color selection
     private class ColorSelectionGUI extends AbstractGUI {

@@ -1,21 +1,16 @@
 package BlockDynasty.BukkitImplementation.GUI.components;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.domain.entities.account.Player;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
 import java.util.List;
 
 public abstract class AccountsList extends AbstractGUI {
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
-    private final JavaPlugin plugin = BlockDynastyEconomy.getInstance();
     private final GUIService guiService;
     private final AbstractGUI parent;
 
@@ -24,7 +19,6 @@ public abstract class AccountsList extends AbstractGUI {
         this.parent = parent;
         this.guiService  = guiService;
     }
-
 
     protected void showPlayersPage(List<Player> players, org.bukkit.entity.Player sender) {
         // Calculate pagination
@@ -82,37 +76,18 @@ public abstract class AccountsList extends AbstractGUI {
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
+        AnvilMenu.open(sender,"Buscar Jugador","", s ->{
+            Player foundPlayer = findPlayerByName(s);
 
-                    String playerName = stateSnapshot.getText().trim();
-                    if (playerName.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cNombre no válido"));
-                    }
-
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> searchPlayerByName(playerName, sender))
-                    );
-                })
-                .text("Nombre del jugador")
-                .title("Buscar Jugador")
-                .plugin(plugin)
-                .open(sender);
-    }
-    protected void searchPlayerByName(String playerName, org.bukkit.entity.Player searcher) {
-        Player foundPlayer = findPlayerByName(playerName);
-
-        if (foundPlayer != null) {
-            openNextSection(foundPlayer);
-        } else {
-            searcher.sendMessage("§cJugador no encontrado");
-            searcher.openInventory(this.getInventory());
-            guiService.registerGUI(searcher, this);
-        }
+            if (foundPlayer != null) {
+                openNextSection(foundPlayer);
+            } else {
+                sender.sendMessage("§cJugador no encontrado");
+                sender.openInventory(this.getInventory());
+                guiService.registerGUI(sender, this);
+            }
+            return null;
+        });
     }
     public abstract Player findPlayerByName(String playerName);
     public abstract void openNextSection(Player target);

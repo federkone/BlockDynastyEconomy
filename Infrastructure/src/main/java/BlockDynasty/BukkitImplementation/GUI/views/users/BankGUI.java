@@ -11,10 +11,8 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class BankGUI extends AbstractGUI {
-    private final JavaPlugin plugin;
     private final GUIService guiService;
     private final MessageService messageService;
     private final GetBalanceUseCase getBalanceUseCase;
@@ -22,9 +20,8 @@ public class BankGUI extends AbstractGUI {
     private final PayUseCase payUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public BankGUI(JavaPlugin plugin, Player player, GUIService guiService, PayUseCase payUseCase, SearchCurrencyUseCase searchCurrencyUseCase, GetBalanceUseCase getBalanceUseCase, MessageService messageService) {
+    public BankGUI( Player player, GUIService guiService, PayUseCase payUseCase, SearchCurrencyUseCase searchCurrencyUseCase, GetBalanceUseCase getBalanceUseCase, MessageService messageService) {
         super("Banco", 3);
-        this.plugin = plugin;
         this.guiService = guiService;
         this.messageService = messageService;
         this.player = player;
@@ -52,13 +49,13 @@ public class BankGUI extends AbstractGUI {
     }
 
     private void openBalanceGUI() {
-        BalanceGUI balanceGUI = new BalanceGUI(plugin,guiService, player,getBalanceUseCase,this);
+        BalanceGUI balanceGUI = new BalanceGUI(guiService, player,getBalanceUseCase,this);
         player.openInventory(balanceGUI.getInventory());
         guiService.registerGUI(player, balanceGUI);
     }
 
     private void openPayGUI() {
-        PayGUI payGUI = new PayGUI(plugin, payUseCase, player, guiService, searchCurrencyUseCase,messageService,this);
+        PayGUI payGUI = new PayGUI( payUseCase, player, guiService, searchCurrencyUseCase,messageService,this);
         player.openInventory(payGUI.getInventory());
         guiService.registerGUI(player, payGUI);
     }

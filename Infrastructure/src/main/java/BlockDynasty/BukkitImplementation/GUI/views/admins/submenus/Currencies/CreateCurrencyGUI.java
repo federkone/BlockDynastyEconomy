@@ -1,22 +1,16 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
+import BlockDynasty.BukkitImplementation.GUI.components.AnvilMenu;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;
-import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CreateCurrencyGUI {
-    private final JavaPlugin plugin;
     private final Player player;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     private String singularName;
 
-    public CreateCurrencyGUI(JavaPlugin plugin, Player player,CreateCurrencyUseCase createCurrencyUseCase) {
-        this.plugin = plugin;
+    public CreateCurrencyGUI( Player player,CreateCurrencyUseCase createCurrencyUseCase) {
         this.player = player;
         this.createCurrencyUseCase = createCurrencyUseCase;
 
@@ -24,52 +18,18 @@ public class CreateCurrencyGUI {
     }
 
     private void openSingularNameInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    String input = stateSnapshot.getText().trim();
-                    if (input.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cNombre no válido"));
-                    }
-
-                    // Save the singular name and proceed to plural input
-                    singularName = input;
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> openPluralNameInput())
-                    );
-                })
-                .text("Dólar")
-                .title("Nombre Singular")
-                .plugin(plugin)
-                .open(player);
+        AnvilMenu.open(player,"Nombre Singular","Name..", s -> {
+            singularName = s.trim();
+            openPluralNameInput();
+            return null;
+        });
     }
 
     private void openPluralNameInput() {
-        new AnvilGUI.Builder()
-                .onClick((slot, stateSnapshot) -> {
-                    if (slot != AnvilGUI.Slot.OUTPUT) {
-                        return Collections.emptyList();
-                    }
-
-                    String pluralName = stateSnapshot.getText().trim();
-                    if (pluralName.isEmpty()) {
-                        return List.of(AnvilGUI.ResponseAction.replaceInputText("§cNombre no válido"));
-                    }
-
-                    // Execute the create currency use case
-                    return List.of(
-                            AnvilGUI.ResponseAction.close(),
-                            AnvilGUI.ResponseAction.run(() -> createCurrency(singularName, pluralName))
-                    );
-                })
-                .text("Dólares")
-                .title("Nombre Plural")
-                .plugin(plugin)
-                .open(player);
+        AnvilMenu.open(player,"Nombre plural", "Name..", s -> {
+            createCurrency(singularName, s.trim());
+            return null;
+        });
     }
 
     private void createCurrency(String singular, String plural) {

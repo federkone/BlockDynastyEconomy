@@ -14,15 +14,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class AdminGUICommand implements CommandExecutor {
-    private final JavaPlugin plugin;
     private final GUIService guiService;
     private final AccountsUseCase accountsUseCase;
     private final CurrencyUseCase currencyUseCase;
     private final TransactionsUseCase transactionsUseCase;
 
-    public AdminGUICommand(JavaPlugin plugin, GUIService guiService, AccountsUseCase accountsUseCase
+    public AdminGUICommand( GUIService guiService, AccountsUseCase accountsUseCase
     , CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
-        this.plugin = plugin;
         this.guiService = guiService;
         this.accountsUseCase = accountsUseCase;
         this.currencyUseCase = currencyUseCase;
@@ -37,7 +35,7 @@ public class AdminGUICommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) sender;
-        IGUI gui = new AdminPanelGUI(player, guiService, plugin,
+        IGUI gui = new AdminPanelGUI(player, guiService,
                 currencyUseCase, accountsUseCase, transactionsUseCase);
         this.guiService.registerGUI(player,gui);
         gui.open(player);
