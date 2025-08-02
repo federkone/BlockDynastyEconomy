@@ -20,8 +20,8 @@ public class CurrencyListToPay extends CurrenciesList {
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
     private final MessageService messageService;
 
-    public CurrencyListToPay(GUIService guiService, Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
-        super(guiService, player, searchCurrencyUseCase, parentGUI);
+    public CurrencyListToPay(Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
+        super(player, searchCurrencyUseCase, parentGUI);
         this.payUseCase = payUseCase;
         this.targetPlayer = targetPlayer;
         this.messageService = messageService;
@@ -32,7 +32,11 @@ public class CurrencyListToPay extends CurrenciesList {
         Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (result.isSuccess()) {
             sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getNickname(), currency.getSingular(), amount));
-            Objects.requireNonNull(Bukkit.getPlayer(targetPlayer.getNickname())).sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
+
+            Player p = Bukkit.getPlayer(targetPlayer.getNickname());
+            if (p != null) {
+                p.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
+            }
             return "payment successful";
         }else{
             return result.getErrorMessage();

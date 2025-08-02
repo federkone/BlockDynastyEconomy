@@ -37,6 +37,14 @@ public class MaterialAdapter {
         return Material.PLAYER_HEAD; // 1.13+
     }
 
+    public static ItemStack getPanelGlass(){
+        if (isLegacy()) {
+            return new ItemStack(Material.valueOf("THIN_GLASS"));
+        }else {
+            return new ItemStack(Material.GLASS_PANE);
+        }
+    }
+
     public static ItemStack createPlayerHead(String playerName) {
         if(isLegacy()){
             ItemStack skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);

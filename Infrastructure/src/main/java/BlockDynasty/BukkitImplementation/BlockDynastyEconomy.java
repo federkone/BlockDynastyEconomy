@@ -5,8 +5,6 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
-import BlockDynasty.BukkitImplementation.commands.SubCommandsAccount.DeleteAccount;
-import BlockDynasty.BukkitImplementation.commands.SubCommandsAccount.GetAccounts;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
@@ -28,7 +26,6 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import BlockDynasty.repository.InitDatabase;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -92,8 +89,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
     private void registerCommands(){
         CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
-        //getCommand("getPlayers").setExecutor(new GetAccounts(core.getAccountsUseCase().getGetAccountsUseCase()));
-        //getCommand("deleteAccount").setExecutor(new DeleteAccount(core.getAccountsUseCase().getDeleteAccountUseCase()));
     }
     private void registerGUI(){
         RegisterGuiModule.register(this,

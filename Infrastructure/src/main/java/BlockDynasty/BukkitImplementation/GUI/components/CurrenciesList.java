@@ -14,16 +14,14 @@ import java.util.List;
 
 public abstract class CurrenciesList extends AbstractGUI {
     private final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
-    private final GUIService guiService;
     private final Player player;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final AbstractGUI parentGUI;
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public CurrenciesList(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
+    public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
         super("Lista de Monedas", 5);
-        this.guiService = guiService;
         this.player = player;
         this.parentGUI = parentGUI;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
@@ -40,9 +38,7 @@ public abstract class CurrenciesList extends AbstractGUI {
         int endIndex = Math.min(startIndex + CURRENCIES_PER_PAGE, currencies.size());
 
         // Clear GUI
-        for (int i = 0; i < getInventory().getSize(); i++) {
-            setItem(i, null, null);
-        }
+        clearGui();
 
         if (currencies.isEmpty()) {
             setItem(22, createItem(Material.BARRIER, "§cNo hay monedas",
@@ -52,8 +48,7 @@ public abstract class CurrenciesList extends AbstractGUI {
             setItem(40, createItem(Material.ARROW, "§aVolver",
                     "§7Click para volver"), unused -> {
                 //player.closeInventory();
-                player.openInventory(parentGUI.getInventory());
-                guiService.registerGUI(player, parentGUI);
+                parentGUI.open(player);
             });
 
             return;
@@ -100,8 +95,7 @@ public abstract class CurrenciesList extends AbstractGUI {
         setItem(40, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
             //player.closeInventory();
-            player.openInventory(parentGUI.getInventory());
-            guiService.registerGUI(player, parentGUI);
+            parentGUI.open(player);
         });
     }
 

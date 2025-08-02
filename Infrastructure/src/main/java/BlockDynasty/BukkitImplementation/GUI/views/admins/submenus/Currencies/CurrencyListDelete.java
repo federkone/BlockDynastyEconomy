@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 public class CurrencyListDelete extends CurrenciesList {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyListDelete(GUIService guiService, Player player, SearchCurrencyUseCase searchCurrencyUseCase,
+    public CurrencyListDelete( Player player, SearchCurrencyUseCase searchCurrencyUseCase,
                               DeleteCurrencyUseCase deleteCurrencyUseCase, AbstractGUI abstractGUI)  {
-            super(guiService, player, searchCurrencyUseCase,abstractGUI);
+            super( player, searchCurrencyUseCase,abstractGUI);
             this.deleteCurrencyUseCase =deleteCurrencyUseCase;
     }
 

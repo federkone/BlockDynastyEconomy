@@ -1,14 +1,15 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
-import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
+import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
+import BlockDynasty.BukkitImplementation.config.file.Message;
 //import net.kyori.adventure.text.Component; //paper messages
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,7 +63,7 @@ public class EconomyListenerOnline implements Listener {
     private void checkDefaultCurrency(Player player) {
         Scheduler.runLater(40L, ContextualTask.build(() -> {
             if (!currencyService.existsDefaultCurrency() &&
-                    (player.isOp() || player.hasPermission("gemseconomy.command.currency"))) {
+                    (player.isOp() || player.hasPermission("blockdynastyeconomy.command.currency"))) {
                 player.sendMessage(Message.getPrefix() + "§cNo has creado una moneda predeterminada. Hazlo con \"§e/currency§c\".");
             }
         }));

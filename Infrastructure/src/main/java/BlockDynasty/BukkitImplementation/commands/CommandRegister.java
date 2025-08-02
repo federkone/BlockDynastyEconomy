@@ -1,6 +1,10 @@
 package BlockDynasty.BukkitImplementation.commands;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.GUI.RegisterGuiModule;
+import BlockDynasty.BukkitImplementation.GUI.commands.AdminGUICommand;
+import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
+import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.commands.SubCommandsCurrency.*;
 import BlockDynasty.BukkitImplementation.commands.SubCommandsOffer.*;
 import BlockDynasty.BukkitImplementation.commands.SubCommandsTransactions.BalanceCommand;
@@ -45,6 +49,7 @@ public class CommandRegister {
         EconomyCommand economyCommand = new EconomyCommand();
         CurrencyCommand currencyCommand = new CurrencyCommand();
 
+        economyCommand.registerSubCommand("admin", RegisterGuiModule.AdminCommand( plugin, transactionsUseCase, accountsUseCase, currencyUseCase));
         economyCommand.registerSubCommand("take", withdrawCommand);
         economyCommand.registerSubCommand("give", depositCommand);
         economyCommand.registerSubCommand("set", setCommand);
@@ -71,6 +76,7 @@ public class CommandRegister {
         plugin.getCommand("economy").setExecutor(economyCommand);
 
         plugin.getCommand("pay").setExecutor(new PayCommand(transactionsUseCase.getPayUseCase(), plugin.getMessageService()));
+        plugin.getCommand("bank").setExecutor(RegisterGuiModule.BankCommand( plugin, transactionsUseCase, accountsUseCase, currencyUseCase, plugin.getMessageService()));
 
         offerCommand.registerSubCommand("create", createOfferCommand);
         offerCommand.registerSubCommand("cancel", cancelOfferCommand);

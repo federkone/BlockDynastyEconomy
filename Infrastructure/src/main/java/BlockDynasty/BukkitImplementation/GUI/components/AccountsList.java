@@ -11,13 +11,11 @@ import java.util.List;
 public abstract class AccountsList extends AbstractGUI {
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
-    private final GUIService guiService;
     private final AbstractGUI parent;
 
-    public AccountsList(String title, int rows, GUIService guiService,AbstractGUI parent) {
+    public AccountsList(String title, int rows,AbstractGUI parent) {
         super(title, rows);
         this.parent = parent;
-        this.guiService  = guiService;
     }
 
     protected void showPlayersPage(List<Player> players, org.bukkit.entity.Player sender) {
@@ -26,9 +24,7 @@ public abstract class AccountsList extends AbstractGUI {
         int endIndex = Math.min(startIndex + PLAYERS_PER_PAGE, players.size());
 
         // Clear GUI
-        for (int i = 0; i < getInventory().getSize(); i++) {
-            setItem(i, null, null);
-        }
+        clearGui();
 
         // Add players to GUI
         int slot = 10;
@@ -36,9 +32,7 @@ public abstract class AccountsList extends AbstractGUI {
             Player target = players.get(i);
             ItemStack playerHead = MaterialAdapter.createPlayerHead(target.getNickname());
 
-            setItem(slot, playerHead, unused -> {
-                openNextSection(target);
-            });
+            setItem(slot, playerHead, unused -> {openNextSection(target);});
 
             // Adjust slot position
             slot++;
@@ -55,36 +49,27 @@ public abstract class AccountsList extends AbstractGUI {
         }
 
         if (endIndex < players.size()) {
-            setItem(42, createItem(Material.ARROW, "§aPágina Siguiente",
-                    "§7Click para ver más jugadores"), unused -> {
+            setItem(42, createItem(Material.ARROW, "§aPágina Siguiente", "§7Click para ver más jugadores"), unused -> {
                 currentPage++;
                 showPlayersPage(players,sender);
             });
         }
 
-        setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador",
-                "§7Click para buscar un jugador por nombre"), unused -> {
-            openAnvilSearch(sender);
-        });
+        setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador", "§7Click para buscar un jugador por nombre"), unused -> {openAnvilSearch(sender);});
 
         // Cancel button
-        setItem(41, createItem(Material.BARRIER, "§7Atrás",
-                "§7Click para Atrás"), unused -> {
-            sender.openInventory(parent.getInventory());
-            guiService.registerGUI(sender, parent);
-        });
+        setItem(41, createItem(Material.BARRIER, "§7Atrás", "§7Click para Atrás"),unused -> {parent.open(sender);});
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {
-        AnvilMenu.open(sender,"Buscar Jugador","", s ->{
+        AnvilMenu.open(sender,"Buscar Jugador","Name..", s ->{
             Player foundPlayer = findPlayerByName(s);
 
             if (foundPlayer != null) {
                 openNextSection(foundPlayer);
             } else {
                 sender.sendMessage("§cJugador no encontrado");
-                sender.openInventory(this.getInventory());
-                guiService.registerGUI(sender, this);
+                this.open(sender);
             }
             return null;
         });

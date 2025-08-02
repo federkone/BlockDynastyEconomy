@@ -15,15 +15,13 @@ import java.util.List;
 //la ui para pagar, va a mostrar primero: las personas Online indexadas, luego elegir la moneda "monedas disponibles del sistema" indexada, luego abrir AnvilGUI para escribir monto.Fin
 public class PayGUI extends AccountsList {
     private final org.bukkit.entity.Player sender;
-    private final GUIService guiService;
     private final PayUseCase payUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final MessageService messageService;
     private final AbstractGUI parent;
 
-    public PayGUI( PayUseCase payUseCase, org.bukkit.entity.Player sender, GUIService guiService, SearchCurrencyUseCase searchCurrencyUseCase, MessageService messageService, AbstractGUI parent) {
-        super("Seleccionar Jugador", 5,guiService,parent);
-        this.guiService = guiService;
+    public PayGUI( PayUseCase payUseCase, org.bukkit.entity.Player sender, SearchCurrencyUseCase searchCurrencyUseCase, MessageService messageService, AbstractGUI parent) {
+        super("Seleccionar Jugador", 5,parent);
         this.sender = sender;
         this.parent = parent;
         this.payUseCase = payUseCase;
@@ -47,9 +45,7 @@ public class PayGUI extends AccountsList {
 
     @Override
     public void openNextSection(Player target) {
-        CurrencyListToPay gui = new CurrencyListToPay(guiService, sender, target, searchCurrencyUseCase,payUseCase,messageService,this);
-        sender.openInventory(gui.getInventory());
-        guiService.registerGUI(sender, gui);
-
+        CurrencyListToPay gui = new CurrencyListToPay( sender, target, searchCurrencyUseCase,payUseCase,messageService,this);
+        gui.open(sender);
     }
 }

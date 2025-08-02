@@ -16,34 +16,42 @@ import java.math.BigDecimal;
 import java.util.Collections;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class BalanceGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
-    private final GUIService guiService;
     private final Player player;
     private final AbstractGUI parent;
 
     //CONSULTA SALDO
-    public BalanceGUI(GUIService guiService,Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
+    public BalanceGUI(Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
         super("Balance de cuenta", 3);
         this.getBalanceUseCase = getBalanceUseCase;
         this.parent = parent;
         this.player = player;
-        this.guiService = guiService;
 
-        setupGUI();
+        setupGUI(player.getUniqueId());
     }
 
-    private void setupGUI() {
-        Result<List<Money>> result = getBalanceUseCase.getBalances(player.getUniqueId());
+    public BalanceGUI(Player sender, UUID target, GetBalanceUseCase getBalanceUseCase, AbstractGUI parent){
+        super("Balance de cuenta", 3);
+        this.getBalanceUseCase = getBalanceUseCase;
+        this.parent = parent;
+        this.player = sender;
+
+        setupGUI(target);
+    }
+
+    private void setupGUI(UUID target) {
+        Result<List<Money>> result = getBalanceUseCase.getBalances(target);
 
         if (result.isSuccess() && result.getValue() != null) {
             List<Money> monies = result.getValue();
 
             // Add title item
-            setItem(4, createItem(Material.BOOK, "§6Balance de tu cuenta",
-                    "§7Tus saldos disponibles"), null);
+            setItem(4, createItem(Material.BOOK, "§6Balance de cuenta",
+                    "§7Saldos disponibles"), null);
 
             // Display each balance in separate slots
             int slot = 10;
@@ -62,15 +70,10 @@ public class BalanceGUI extends AbstractGUI {
             }
 
             // Add a close button
-            setItem(22, createItem(Material.BARRIER, "§cAtrás",
-                    "§7Click para atrás"), unused -> {
-                player.openInventory(parent.getInventory());
-                guiService.registerGUI(player, parent);
-            });
+            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para atrás"), f -> { parent.open(player);});
         } else {
             // Show error message if balances couldn't be retrieved
-            setItem(13, createItem(Material.BARRIER, "§cError",
-                    "§7No se pudieron obtener los balances"), null);
+            setItem(13, createItem(Material.BARRIER, "§cError", "§7No se pudieron obtener los balances"), null);
         }
     }
 }

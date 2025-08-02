@@ -10,22 +10,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CurrencyListEdit extends CurrenciesList {
-    private final GUIService guiService;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public CurrencyListEdit(GUIService guiService , Player player, SearchCurrencyUseCase searchCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, AbstractGUI abstractGUI) {
-        super(guiService, player, searchCurrencyUseCase,abstractGUI);
+    public CurrencyListEdit( Player player, SearchCurrencyUseCase searchCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, AbstractGUI abstractGUI) {
+        super( player, searchCurrencyUseCase,abstractGUI);
         this.editCurrencyUseCase = editCurrencyUseCase;
-        this.guiService = guiService;
+
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 
     @Override
     public void openSubMenu(Currency currency, Player player) {
-        EditCurrencyGUI editCurrencyGUI = new EditCurrencyGUI(guiService,player,currency,editCurrencyUseCase, searchCurrencyUseCase,this);
-        player.openInventory(editCurrencyGUI.getInventory());
-        guiService.registerGUI(player, editCurrencyGUI);
+        EditCurrencyGUI editCurrencyGUI = new EditCurrencyGUI(player,currency,editCurrencyUseCase, searchCurrencyUseCase,this);
+        editCurrencyGUI.open(player);
     }
 
 }
