@@ -26,7 +26,7 @@ public class BalanceGUI extends AbstractGUI {
 
     //CONSULTA SALDO
     public BalanceGUI(Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
-        super("Balance de cuenta", 3);
+        super("Balance de cuenta", 3,player);
         this.getBalanceUseCase = getBalanceUseCase;
         this.parent = parent;
         this.player = player;
@@ -35,7 +35,7 @@ public class BalanceGUI extends AbstractGUI {
     }
 
     public BalanceGUI(Player sender, UUID target, GetBalanceUseCase getBalanceUseCase, AbstractGUI parent){
-        super("Balance de cuenta", 3);
+        super("Balance de cuenta", 3,sender);
         this.getBalanceUseCase = getBalanceUseCase;
         this.parent = parent;
         this.player = sender;
@@ -70,7 +70,7 @@ public class BalanceGUI extends AbstractGUI {
             }
 
             // Add a close button
-            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para atrás"), f -> { parent.open(player);});
+            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para atrás"), f -> { parent.open();});
         } else {
             // Show error message if balances couldn't be retrieved
             setItem(13, createItem(Material.BARRIER, "§cError", "§7No se pudieron obtener los balances"), null);

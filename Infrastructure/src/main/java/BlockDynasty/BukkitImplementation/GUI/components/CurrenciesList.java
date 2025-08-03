@@ -1,7 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.components;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
@@ -9,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class CurrenciesList extends AbstractGUI {
@@ -21,7 +19,7 @@ public abstract class CurrenciesList extends AbstractGUI {
     private final int CURRENCIES_PER_PAGE = 21;
 
     public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
-        super("Lista de Monedas", 5);
+        super("Lista de Monedas", 5,player);
         this.player = player;
         this.parentGUI = parentGUI;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
@@ -48,7 +46,7 @@ public abstract class CurrenciesList extends AbstractGUI {
             setItem(40, createItem(Material.ARROW, "§aVolver",
                     "§7Click para volver"), unused -> {
                 //player.closeInventory();
-                parentGUI.open(player);
+                parentGUI.open();
             });
 
             return;
@@ -95,7 +93,7 @@ public abstract class CurrenciesList extends AbstractGUI {
         setItem(40, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
             //player.closeInventory();
-            parentGUI.open(player);
+            parentGUI.open();
         });
     }
 
@@ -115,52 +113,3 @@ public abstract class CurrenciesList extends AbstractGUI {
     };
 
 }
-
-//test anoter implementation:
-/*  private void setupGUItest() {
-       /* setItem(11, createItem(Material.EMERALD, "§aDepositar", "§7Click para depositar"), unused -> {
-            player.closeInventory();
-            openAmountInputGUI(
-                    player,
-                    "Depositar monto",
-                    amount -> usesCase.getDepositUseCase().execute(player.getUniqueId(), amount),
-                    "§aHas depositado: §f%amount%"
-            );
-        });
-
-        setItem(15, createItem(Material.REDSTONE, "§cExtraer", "§7Click para extraer"), unused -> {
-            player.closeInventory();
-            openAmountInputGUI(
-                    player,
-                    "Extraer monto",
-                    amount -> usesCase.getWithdrawUseCase().execute(player.getUniqueId(), amount),
-                    "§cHas extraído: §f%amount%"
-            );
-        });
-    }
-
-private void openAmountInputGUI(Player player, String title, Function<BigDecimal, Result<Void>> operation, String successMessage) {
-    new AnvilGUI.Builder()
-            .onClick((slot, stateSnapshot) -> {
-                if (slot != AnvilGUI.Slot.OUTPUT) {
-                    return Collections.emptyList();
-                }
-                try {
-                    BigDecimal amount = new BigDecimal(stateSnapshot.getText());
-                    Result<Void> result = operation.apply(amount);
-
-                    if (result.isSuccess()) {
-                        player.sendMessage(successMessage.replace("%amount%", amount.toString()));
-                        return List.of(AnvilGUI.ResponseAction.close());
-                    } else {
-                        return List.of( AnvilGUI.ResponseAction.replaceInputText("§c" + result.getErrorMessage()) );
-                    }
-                } catch (NumberFormatException e) {
-                    return List.of( AnvilGUI.ResponseAction.replaceInputText("§cFormato inválido"));
-                }
-            })
-            .text("0")
-            .title(title)
-            .plugin(plugin)
-            .open(player);
-} */

@@ -20,10 +20,7 @@ public  class RegisterGuiModule {
                                 CurrencyUseCase currencyUseCase,
                                 MessageService messageService) {
 
-
-        //bank is a command end user like a pay command
-        //plugin.getCommand("bank").setExecutor(new BankGUICommand(guiService,transactionsUseCase.getPayUseCase(), currencyUseCase.getGetCurrencyUseCase(), accountsUseCase.getGetBalanceUseCase(),messageService));
-        //plugin.getCommand("admin").setExecutor(new AdminGUICommand(guiService,accountsUseCase,currencyUseCase,transactionsUseCase));
+        GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,messageService);
 
         // Register GUI event listener
         plugin.getServer().getPluginManager().registerEvents(new GUIListener(guiService), plugin);
@@ -34,19 +31,12 @@ public  class RegisterGuiModule {
         return guiService;
     }
 
-    public static AdminGUICommand AdminCommand(JavaPlugin plugin,
-                                     TransactionsUseCase transactionsUseCase,
-                                     AccountsUseCase accountsUseCase,
-                                     CurrencyUseCase currencyUseCase){
-        return new AdminGUICommand(accountsUseCase,currencyUseCase,transactionsUseCase);
+    public static AdminGUICommand AdminCommand(){
+        return new AdminGUICommand();
     }
 
-    public static BankGUICommand BankCommand(JavaPlugin plugin,
-                                     TransactionsUseCase transactionsUseCase,
-                                     AccountsUseCase accountsUseCase,
-                                     CurrencyUseCase currencyUseCase,
-                                     MessageService messageService){
-        return new BankGUICommand(transactionsUseCase.getPayUseCase(), currencyUseCase.getGetCurrencyUseCase(), accountsUseCase.getGetBalanceUseCase(),messageService);
+    public static BankGUICommand BankCommand(){
+        return new BankGUICommand();
     }
 
 }

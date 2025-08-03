@@ -40,7 +40,7 @@ public class CurrencyListToSet extends CurrenciesList {
                 p.sendMessage(messageService.getSetSuccess(currency.getSingular(), amount));
             }
             sender.sendMessage("success");
-            parentGUI.open(sender);
+            parentGUI.open();
             return null;
         } else {
            return result.getErrorMessage();

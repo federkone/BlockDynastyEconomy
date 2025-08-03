@@ -1,34 +1,13 @@
 package BlockDynasty.BukkitImplementation.GUI.commands;
 
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
-import BlockDynasty.BukkitImplementation.GUI.views.users.BankGUI;
-import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
+import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class BankGUICommand implements CommandExecutor {
-    private final PayUseCase payUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final GetBalanceUseCase getBalanceUseCase;
-    private final MessageService messageService;
-
-    public BankGUICommand(
-                          PayUseCase payUseCase,
-                          SearchCurrencyUseCase searchCurrencyUseCase,
-                          GetBalanceUseCase getBalanceUseCase,
-                          MessageService messageService) {
-        this.payUseCase = payUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.getBalanceUseCase = getBalanceUseCase;
-        this.messageService = messageService;
-
+    public BankGUICommand() {
     }
 
     @Override
@@ -39,8 +18,7 @@ public class BankGUICommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
-        IGUI gui = new BankGUI(player,payUseCase, searchCurrencyUseCase,getBalanceUseCase,messageService);
-        gui.open(player);
+        GUIFactory.bankPanel(player).open();
         return true;
     }
 }

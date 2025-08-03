@@ -18,11 +18,13 @@ import java.util.function.Consumer;
 public abstract class AbstractGUI implements IGUI {
     private final GUIService guiService= RegisterGuiModule.getGuiService();
     private final Inventory inventory;
+    private final Player owner;
     private final String title;
     private final Map<Integer, Consumer<Player>> actions = new HashMap<>();
 
-    public AbstractGUI(String title, int rows) {
+    public AbstractGUI(String title, int rows,Player owner) {
         this.title = title;
+        this.owner = owner;
         this.inventory = Bukkit.createInventory(null, rows * 9, title);
         clearGui();
     }
@@ -35,9 +37,9 @@ public abstract class AbstractGUI implements IGUI {
     }
 
     @Override
-    public void open(Player player) {
-        player.openInventory(inventory);
-        guiService.registerGUI(player, this); //esto reemplaza automaticamente el GUI anterior ya que esta basado en un mapa con key del jugador
+    public void open() {
+        owner.openInventory(inventory);
+        guiService.registerGUI(owner, this); //esto reemplaza automaticamente el GUI anterior ya que esta basado en un mapa con key del jugador
     }
 
     @Override

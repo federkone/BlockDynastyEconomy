@@ -40,7 +40,7 @@ public class CurrencyListToDeposit extends CurrenciesList {
                 p.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
             }
             sender.sendMessage(messageService.getDepositMessage(sender.getName(), currency.getSingular(), amount));
-            parentGUI.open(sender);
+            parentGUI.open();
             return null;
         } else {
             return result.getErrorMessage();

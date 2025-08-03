@@ -1,33 +1,17 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users;
 
+import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
-import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
-import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.BalanceGUI;
-import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.PayGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
-import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class BankGUI extends AbstractGUI {
-    private final MessageService messageService;
-    private final GetBalanceUseCase getBalanceUseCase;
     private final Player player;
-    private final PayUseCase payUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public BankGUI( Player player, PayUseCase payUseCase, SearchCurrencyUseCase searchCurrencyUseCase, GetBalanceUseCase getBalanceUseCase, MessageService messageService) {
-        super("Banco", 3);
-        this.messageService = messageService;
+    public BankGUI( Player player) {
+        super("Banco", 3,player);
         this.player = player;
-        this.payUseCase = payUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.getBalanceUseCase = getBalanceUseCase;
-
         setupGUI();
     }
 
@@ -48,12 +32,10 @@ public class BankGUI extends AbstractGUI {
     }
 
     private void openBalanceGUI() {
-        BalanceGUI balanceGUI = new BalanceGUI( player,getBalanceUseCase,this);
-        balanceGUI.open(player);
+        GUIFactory.balancePanel(player,this).open();
     }
 
     private void openPayGUI() {
-        IGUI payGUI = new PayGUI( payUseCase, player, searchCurrencyUseCase,messageService,this);
-        payGUI.open(player);
+        GUIFactory.payPanel(player,this).open();
     }
 }

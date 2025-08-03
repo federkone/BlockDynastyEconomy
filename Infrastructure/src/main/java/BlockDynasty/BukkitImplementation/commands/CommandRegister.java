@@ -49,7 +49,7 @@ public class CommandRegister {
         EconomyCommand economyCommand = new EconomyCommand();
         CurrencyCommand currencyCommand = new CurrencyCommand();
 
-        economyCommand.registerSubCommand("admin", RegisterGuiModule.AdminCommand( plugin, transactionsUseCase, accountsUseCase, currencyUseCase));
+        economyCommand.registerSubCommand("admin", RegisterGuiModule.AdminCommand());
         economyCommand.registerSubCommand("take", withdrawCommand);
         economyCommand.registerSubCommand("give", depositCommand);
         economyCommand.registerSubCommand("set", setCommand);
@@ -76,7 +76,7 @@ public class CommandRegister {
         plugin.getCommand("economy").setExecutor(economyCommand);
 
         plugin.getCommand("pay").setExecutor(new PayCommand(transactionsUseCase.getPayUseCase(), plugin.getMessageService()));
-        plugin.getCommand("bank").setExecutor(RegisterGuiModule.BankCommand( plugin, transactionsUseCase, accountsUseCase, currencyUseCase, plugin.getMessageService()));
+        plugin.getCommand("bank").setExecutor(RegisterGuiModule.BankCommand());
 
         offerCommand.registerSubCommand("create", createOfferCommand);
         offerCommand.registerSubCommand("cancel", cancelOfferCommand);

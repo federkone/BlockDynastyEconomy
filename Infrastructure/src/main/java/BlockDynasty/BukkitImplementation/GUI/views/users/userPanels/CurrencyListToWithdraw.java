@@ -39,7 +39,7 @@ public class CurrencyListToWithdraw extends CurrenciesList {
                 p.sendMessage(messageService.getWithdrawSuccess(currency.getSingular(), amount));
             }
             sender.sendMessage(messageService.getWithdrawMessage(sender.getName(), currency.getSingular(), amount));
-            parentGUI.open(sender);
+            parentGUI.open();
             return null;
         } else {
             return result.getErrorMessage();

@@ -1,7 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.components;
 
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,8 +12,8 @@ public abstract class AccountsList extends AbstractGUI {
     private final int PLAYERS_PER_PAGE = 21;
     private final AbstractGUI parent;
 
-    public AccountsList(String title, int rows,AbstractGUI parent) {
-        super(title, rows);
+    public AccountsList(String title, int rows,AbstractGUI parent,org.bukkit.entity.Player sender) {
+        super(title, rows,sender);
         this.parent = parent;
     }
 
@@ -58,7 +57,7 @@ public abstract class AccountsList extends AbstractGUI {
         setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador", "§7Click para buscar un jugador por nombre"), unused -> {openAnvilSearch(sender);});
 
         // Cancel button
-        setItem(41, createItem(Material.BARRIER, "§7Atrás", "§7Click para Atrás"),unused -> {parent.open(sender);});
+        setItem(41, createItem(Material.BARRIER, "§7Atrás", "§7Click para Atrás"),unused -> {parent.open();});
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {
@@ -69,7 +68,7 @@ public abstract class AccountsList extends AbstractGUI {
                 openNextSection(foundPlayer);
             } else {
                 sender.sendMessage("§cJugador no encontrado");
-                this.open(sender);
+                this.open();
             }
             return null;
         });

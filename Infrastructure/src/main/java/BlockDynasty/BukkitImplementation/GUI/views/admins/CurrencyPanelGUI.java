@@ -1,32 +1,16 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins;
 
+import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CreateCurrencyGUI;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CurrencyListDelete;
-import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.CurrencyListEdit;
-import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class CurrencyPanelGUI extends AbstractGUI {
     private final Player player;
     private final AbstractGUI parent;
-    private  final CreateCurrencyUseCase createCurrencyUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final EditCurrencyUseCase editCurrencyUseCase;
-    private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
-    public CurrencyPanelGUI( Player player, SearchCurrencyUseCase searchCurrencyUseCase,
-                            EditCurrencyUseCase editCurrencyUseCase, CreateCurrencyUseCase createCurrencyUseCase,
-                            DeleteCurrencyUseCase deleteCurrencyUseCase,AbstractGUI parent) {
-        super("Administrador de Monedas", 3);
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.editCurrencyUseCase = editCurrencyUseCase;
-        this.createCurrencyUseCase = createCurrencyUseCase;
-        this.deleteCurrencyUseCase = deleteCurrencyUseCase;
+    public CurrencyPanelGUI( Player player, AbstractGUI parent) {
+        super("Administrador de Monedas", 3,player);
         this.player = player;
         this.parent = parent;
         setupGUI();
@@ -36,8 +20,8 @@ public class CurrencyPanelGUI extends AbstractGUI {
         // Create Currency button
         setItem(10, createItem(Material.EMERALD, "§aCrear Moneda",
                 "§7Click para crear una nueva moneda"), unused -> {
-            player.closeInventory();
-            new CreateCurrencyGUI(player, this.createCurrencyUseCase);
+            GUIFactory.createCurrencyPanel(player);
+
         });
 
         // Delete Currency button
@@ -61,17 +45,15 @@ public class CurrencyPanelGUI extends AbstractGUI {
         // Exit button
         setItem(22, createItem(Material.BARRIER, "§cAtrás",
                 "§7Click para atrás"), unused -> {
-            parent.open(player);
+            parent.open();
         });
     }
 
     private void openCurrencyListGUI() {
-        CurrencyListEdit currencyListEdit = new CurrencyListEdit(player,this.searchCurrencyUseCase,this.editCurrencyUseCase,this);
-        currencyListEdit.open(player);
+        GUIFactory.currencyListEditPanel(player, this).open();
     }
 
     private void currencyListDelete() {
-        CurrencyListDelete currencyListDelete = new CurrencyListDelete( player,this.searchCurrencyUseCase,this.deleteCurrencyUseCase,this);
-        currencyListDelete.open(player);
+        GUIFactory.currencyListDeletePanel(player, this).open();
     }
 }

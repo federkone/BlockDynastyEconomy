@@ -1,10 +1,10 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
+import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AnvilMenu;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,17 +15,15 @@ public class EditCurrencyGUI extends AbstractGUI {
     private final Player player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final AbstractGUI parentGUI;
 
     public EditCurrencyGUI( Player player, Currency currency,
-                           EditCurrencyUseCase editCurrencyUseCase, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
-        super("Editar Moneda: " + currency.getSingular(), 4);
+                           EditCurrencyUseCase editCurrencyUseCase, AbstractGUI parentGUI) {
+        super("Editar Moneda: " + currency.getSingular(), 4,player);
         this.player = player;
         this.parentGUI = parentGUI;
         this.currency = currency;
         this.editCurrencyUseCase =editCurrencyUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
 
         setupGUI();
     }
@@ -117,17 +115,17 @@ public class EditCurrencyGUI extends AbstractGUI {
         // Back button
         setItem(34, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), f -> {
-            parentGUI.open(player);
+            parentGUI.open();
         });
     }
 
     private void openColorSelectionGUI() {
-        ColorSelectionGUI colorGUI = new ColorSelectionGUI();
-        colorGUI.open(player);
+        //todo refactor with GUIFactory
+        ColorSelectionGUI colorGUI = new ColorSelectionGUI(player);
+        colorGUI.open();
     }
     private void openEditCurrencyGUI() {
-        EditCurrencyGUI gui = new EditCurrencyGUI(player, currency,editCurrencyUseCase, searchCurrencyUseCase,parentGUI);
-        gui.open(player);
+        GUIFactory.editCurrencyPanel(player, currency, this).open();
     }
 
     private void openStartBalanceInput(){
@@ -209,10 +207,10 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     // Inner class for color selection
-    private class ColorSelectionGUI extends AbstractGUI {
+    public class ColorSelectionGUI extends AbstractGUI {
 
-        public ColorSelectionGUI() {
-            super("Seleccionar Color", 4);
+        public ColorSelectionGUI(Player player) {
+            super("Seleccionar Color", 4,player);
             setupColorGUI();
         }
 
