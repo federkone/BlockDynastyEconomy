@@ -3,6 +3,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
@@ -10,13 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-// Inner class for color selection
 public class ColorSelectionGUI extends AbstractGUI {
     private final Player player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public ColorSelectionGUI(Player player, Currency currency,EditCurrencyUseCase editCurrencyUseCase,EditCurrencyGUI parent) {
+    public ColorSelectionGUI(Player player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parent) {
         super("Seleccionar Color", 4,player,parent);
         this.player = player;
         this.currency = currency;
@@ -25,7 +25,6 @@ public class ColorSelectionGUI extends AbstractGUI {
     }
 
     private void setupColorGUI() {
-        // Create slots for each color
         setItem(10, createColorItem("WHITE_WOOL", ChatColor.WHITE, "Blanco"),
                 unused -> handleColorSelection(ChatColor.WHITE, "Blanco"));
         setItem(11, createColorItem("YELLOW_WOOL", ChatColor.YELLOW, "Amarillo"),
@@ -40,7 +39,6 @@ public class ColorSelectionGUI extends AbstractGUI {
                 unused -> handleColorSelection(ChatColor.GOLD, "Dorado"));
         setItem(16, createColorItem("LIME_WOOL", ChatColor.GREEN, "Verde"),
                 unused -> handleColorSelection(ChatColor.GREEN, "Verde"));
-
         setItem(19, createColorItem("GRAY_WOOL", ChatColor.GRAY, "Gris"),
                 unused -> handleColorSelection(ChatColor.GRAY, "Gris"));
         setItem(20, createColorItem("LIGHT_GRAY_WOOL", ChatColor.DARK_GRAY, "Gris Oscuro"),
@@ -56,7 +54,6 @@ public class ColorSelectionGUI extends AbstractGUI {
         setItem(25, createColorItem("GREEN_WOOL", ChatColor.DARK_GREEN, "Verde Oscuro"),
                 unused -> handleColorSelection(ChatColor.DARK_GREEN, "Verde Oscuro"));
 
-        // Back button
         setItem(31, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
             this.openParent();

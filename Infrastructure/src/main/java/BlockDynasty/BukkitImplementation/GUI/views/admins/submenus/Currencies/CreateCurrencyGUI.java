@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AnvilMenu;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;
 import org.bukkit.entity.Player;
@@ -9,8 +10,10 @@ public class CreateCurrencyGUI {
     private final Player player;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     private String singularName;
+    private IGUI parent;
 
-    public CreateCurrencyGUI( Player player,CreateCurrencyUseCase createCurrencyUseCase) {
+    public CreateCurrencyGUI(Player player, CreateCurrencyUseCase createCurrencyUseCase, IGUI parent) {
+        this.parent = parent;
         this.player = player;
         this.createCurrencyUseCase = createCurrencyUseCase;
 
@@ -18,7 +21,7 @@ public class CreateCurrencyGUI {
     }
 
     private void openSingularNameInput() {
-        AnvilMenu.open(player,"Nombre Singular","Name..", s -> {
+        AnvilMenu.open(parent,player,"Nombre Singular","Name..", s -> {
             singularName = s.trim();
             openPluralNameInput();
             return null;

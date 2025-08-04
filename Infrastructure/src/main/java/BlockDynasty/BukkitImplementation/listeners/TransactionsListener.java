@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class TransactionsListener {
 
-    //todo: por ejemplo aqui informar a los jugadores sobre el estado de la transaccion
+    //todo: subscribe a los eventos de transacciones de la aplicacion/core
     //ejemplos:
     public static void register(EventManager eventManager) {
         eventManager.subscribe(PayEvent.class, event -> {
@@ -20,7 +20,7 @@ public class TransactionsListener {
             UtilServer.consoleLog("Event DepositEvent emitted: " + event);
 
 
-           // Player player = Bukkit.getPlayer(event.getPlayer().getNickname());
+            //Player player = Bukkit.getPlayer(event.getPlayer().getNickname());
             //if (player != null) {
             //    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
             //} //not work ENTITY_EXPERIENCE_ORB_PICKUP in 1.8

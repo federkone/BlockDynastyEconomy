@@ -36,14 +36,6 @@ public abstract class AbstractGUI implements IGUI {
         this.parent = parent; // Set the parent GUI if provided
     }
 
-    protected void fill() {
-        ItemStack filler = MaterialAdapter.getPanelGlass();
-
-        for (int slot = 0; slot < inventory.getSize(); slot++) {
-            setItem(slot, filler, null);   //filler can be null for empty slots
-        }
-    }
-
     @Override
     public void open() {
         owner.openInventory(inventory);
@@ -99,7 +91,7 @@ public abstract class AbstractGUI implements IGUI {
         return createItem(item, name, lore);
     }
 
-    public ItemStack createItem(ItemStack base, String name, String... lore) {
+    protected ItemStack createItem(ItemStack base, String name, String... lore) {
         ItemMeta meta = base.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(name);
@@ -111,8 +103,13 @@ public abstract class AbstractGUI implements IGUI {
         return base;
     }
 
+    private void fill() {
+        ItemStack filler = MaterialAdapter.getPanelGlass();
 
-
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            setItem(slot, filler, null);   //filler can be null for empty slots
+        }
+    }
     protected void clearGui(){
         fill();
     }

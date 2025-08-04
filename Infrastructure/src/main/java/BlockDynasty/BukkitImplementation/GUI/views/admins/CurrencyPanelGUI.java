@@ -19,20 +19,20 @@ public class CurrencyPanelGUI extends AbstractGUI {
         // Create Currency button
         setItem(10, createItem(Material.EMERALD, "§aCrear Moneda",
                 "§7Click para crear una nueva moneda"), unused -> {
-            GUIFactory.createCurrencyPanel(player);
+            GUIFactory.createCurrencyPanel(player,this);
 
         });
 
         // Delete Currency button
         setItem(12, createItem(Material.REDSTONE, "§cEliminar Moneda",
                 "§7Click para eliminar una moneda existente"), unused -> {
-            currencyListDelete();
+            GUIFactory.currencyListDeletePanel(player, this).open();
         });
 
         // Edit Currency button
         setItem(14, createItem(Material.BOOK, "§eEditar Moneda",
                 "§7Click para editar una moneda existente"), unused -> {
-            openCurrencyListGUI();
+            GUIFactory.currencyListEditPanel(player, this).open();
         });
 
         // Toggle Features button
@@ -48,11 +48,4 @@ public class CurrencyPanelGUI extends AbstractGUI {
         });
     }
 
-    private void openCurrencyListGUI() {
-        GUIFactory.currencyListEditPanel(player, this).open();
-    }
-
-    private void currencyListDelete() {
-        GUIFactory.currencyListDeletePanel(player, this).open();
-    }
 }

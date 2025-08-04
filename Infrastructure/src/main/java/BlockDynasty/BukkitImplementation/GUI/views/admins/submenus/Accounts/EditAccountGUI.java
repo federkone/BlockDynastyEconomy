@@ -18,7 +18,7 @@ public class EditAccountGUI extends AbstractGUI {
     public EditAccountGUI(
             DeleteAccountUseCase deleteAccountUseCase,
             org.bukkit.entity.Player sender, Player target, IGUI parent) {
-        super("Edit account", 3,sender,parent);
+        super("Edit Account: "+target.getNickname(), 3,sender,parent);
         this.deleteAccountUseCase = deleteAccountUseCase;
 
         buttons(sender,target);
@@ -27,7 +27,7 @@ public class EditAccountGUI extends AbstractGUI {
     private void buttons(org.bukkit.entity.Player sender, Player target) {
         setItem(5,createItem(Material.BARRIER,"Borrar Cuenta","se borra la cuenta del jugador"),
                 f -> {
-                    AnvilMenu.open(sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
+                    AnvilMenu.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
                         if(s.equals("yes")){
                             Result<Void> result = deleteAccountUseCase.execute(target.getNickname());
                             if(result.isSuccess()){

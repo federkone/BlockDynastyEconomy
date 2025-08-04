@@ -125,7 +125,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openStartBalanceInput(){
-        AnvilMenu.open(player,"saldo inicial",currency.getDefaultBalance().toString(), s->{
+        AnvilMenu.open(this,player,"saldo inicial",currency.getDefaultBalance().toString(), s->{
             try {
                 double startBal = Double.parseDouble(s);
                 try {
@@ -144,7 +144,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openExchangeRateInput(){
-        AnvilMenu.open(player,"tasa de cambio",String.valueOf(currency.getExchangeRate()),s->{
+        AnvilMenu.open(this,player,"tasa de cambio",String.valueOf(currency.getExchangeRate()),s->{
             try {
                 double rate = Double.parseDouble(s);
                 try {
@@ -163,7 +163,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openSymbolInput(){
-        AnvilMenu.open(player,"Simbolo de moneda",currency.getSymbol(),s ->{
+        AnvilMenu.open(this,player,"Simbolo de moneda",currency.getSymbol(),s ->{
             try {
                 editCurrencyUseCase.editSymbol(currency.getSingular(), s);
                 player.sendMessage("§a[Banco] §7Símbolo actualizado correctamente.");
@@ -177,7 +177,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openSingularNameInput(){
-        AnvilMenu.open(player,"Nombre Singular",currency.getSingular(), s ->{
+        AnvilMenu.open(this,player,"Nombre Singular",currency.getSingular(), s ->{
             try {
                 editCurrencyUseCase.setSingularName(currency.getSingular(), s);
                 player.sendMessage("§a[Banco] §7Nombre singular actualizado correctamente.");
@@ -191,7 +191,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openPluralNameInput() {
-        AnvilMenu.open(player,"Nombre Plural", currency.getPlural(),s->{
+        AnvilMenu.open(this,player,"Nombre Plural", currency.getPlural(),s->{
             try {
                 editCurrencyUseCase.setPluralName(currency.getSingular(), s);
                 player.sendMessage("§a[Banco] §7Nombre plural actualizado correctamente.");

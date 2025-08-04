@@ -19,23 +19,15 @@ public class BankGUI extends AbstractGUI {
         // Balance option
         setItem(11, createItem(Material.BOOK, "§6Ver Balance",
                 "§7Click para ver tu balance"), unused -> {
-            openBalanceGUI();
+            GUIFactory.balancePanel(player,this).open();
         });
 
         setItem(15, createItem(MaterialAdapter.getPlayerHead(), "§aPagar a un Jugador",
                 "§7Click para pagar a otro jugador"), unused -> {
-            openPayGUI();
+            GUIFactory.payPanel(player,this).open();
         });
 
         setItem(22, createItem(Material.BARRIER, "§cSalir",
                 "§7Click para salir"), unused -> player.closeInventory());
-    }
-
-    private void openBalanceGUI() {
-        GUIFactory.balancePanel(player,this).open();
-    }
-
-    private void openPayGUI() {
-        GUIFactory.payPanel(player,this).open();
     }
 }

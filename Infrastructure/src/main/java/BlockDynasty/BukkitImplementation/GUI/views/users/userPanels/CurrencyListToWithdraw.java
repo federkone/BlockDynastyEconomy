@@ -1,7 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.services.MessageService;

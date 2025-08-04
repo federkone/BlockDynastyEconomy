@@ -59,7 +59,7 @@ public abstract class AccountsList extends AbstractGUI {
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {
-        AnvilMenu.open(sender,"Buscar Jugador","Name..", s ->{
+        AnvilMenu.open(this,sender,"Buscar Jugador","Name..", s ->{
             Player foundPlayer = findPlayerByName(s);
 
             if (foundPlayer != null) {

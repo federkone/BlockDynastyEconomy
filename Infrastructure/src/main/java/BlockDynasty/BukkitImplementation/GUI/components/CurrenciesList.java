@@ -93,7 +93,7 @@ public abstract class CurrenciesList extends AbstractGUI {
     }
 
     private void openAnvilInput(Player sender,Currency currency) {
-        AnvilMenu.open(sender,"Ingresar Monto","0", s->{
+        AnvilMenu.open(this,sender,"Ingresar Monto","0", s->{
             try {
                 BigDecimal amount = new BigDecimal(s);
                 return execute(sender, currency, amount);

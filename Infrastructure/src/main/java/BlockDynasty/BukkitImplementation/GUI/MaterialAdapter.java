@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
-import BlockDynasty.Economy.domain.entities.account.Player;
 import org.bukkit.Material;
 
 import org.bukkit.inventory.ItemStack;
@@ -120,7 +119,6 @@ public class MaterialAdapter {
                 return 0; // Default a white wool
         }
     }
-
 
     public static boolean isLegacy() {
         String version = org.bukkit.Bukkit.getBukkitVersion(); // "1.8.8-R0.1-SNAPSHOT"

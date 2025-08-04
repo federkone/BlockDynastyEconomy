@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.AccountPanelGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.AdminPanelGUI;
@@ -39,8 +38,8 @@ public class GUIFactory {
     public static IGUI currencyPanel(Player player, IGUI parent) {
         return new CurrencyPanelGUI(player, parent);
     }
-    public static void createCurrencyPanel(Player sender) {
-        new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase());
+    public static void createCurrencyPanel(Player sender,IGUI parent) {
+        new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),parent);
     }
     public static IGUI editAccountPanel(Player sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
         return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), sender, target, parent);

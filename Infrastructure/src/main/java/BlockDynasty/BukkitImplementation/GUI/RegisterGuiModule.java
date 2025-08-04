@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public  class RegisterGuiModule {
     private static final GUIService guiService= new GUIService();
-    //need to be admin subcommand for eco
+
     public static void register(JavaPlugin plugin,
                                 TransactionsUseCase transactionsUseCase,
                                 AccountsUseCase accountsUseCase,
@@ -24,7 +24,7 @@ public  class RegisterGuiModule {
 
         // Register GUI event listener
         plugin.getServer().getPluginManager().registerEvents(new GUIListener(guiService), plugin);
-        UtilServer.consoleLog("GUI modules registered successfully.");
+        UtilServer.consoleLog("GUI events registered successfully.");
     }
 
     public static GUIService getGuiService() {

@@ -1,8 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
-import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
@@ -13,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.UUID;
 
 public class CurrencyListToPay extends CurrenciesList {
