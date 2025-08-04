@@ -1,22 +1,19 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AccountsList;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import org.bukkit.Bukkit;
 
 import java.util.List;
 
-//la ui para pagar, va a mostrar primero: las personas Online indexadas, luego elegir la moneda "monedas disponibles del sistema" indexada, luego abrir AnvilGUI para escribir monto.Fin
 public class PayGUI extends AccountsList {
     private final org.bukkit.entity.Player sender;
-    private final AbstractGUI parent;
 
-    public PayGUI( org.bukkit.entity.Player sender, AbstractGUI parent) {
+    public PayGUI( org.bukkit.entity.Player sender, IGUI parent) {
         super("Seleccionar Jugador", 5,parent,sender);
         this.sender = sender;
-        this.parent = parent;
 
         List<Player> players = Bukkit.getOnlinePlayers().stream().map(p-> new Player(p.getUniqueId().toString(),p.getName())).toList();
         showPlayersPage(players,sender);
@@ -35,6 +32,6 @@ public class PayGUI extends AccountsList {
 
     @Override
     public void openNextSection(Player target) {
-        GUIFactory.currencyListToPayPanel(sender,target,parent).open();
+        GUIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
     }
 }

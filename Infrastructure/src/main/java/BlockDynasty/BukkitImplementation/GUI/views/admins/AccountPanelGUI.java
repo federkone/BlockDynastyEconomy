@@ -3,6 +3,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins;
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AccountsList;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
@@ -14,7 +15,7 @@ public class AccountPanelGUI extends AccountsList {
     private final org.bukkit.entity.Player sender;
     private final SearchAccountUseCase searchAccountUseCase;
 
-    public AccountPanelGUI(org.bukkit.entity.Player sender, SearchAccountUseCase searchAccountUseCase, AbstractGUI parent) {
+    public AccountPanelGUI(org.bukkit.entity.Player sender, SearchAccountUseCase searchAccountUseCase, IGUI parent) {
         super("Seleccionar Jugador", 5,parent,sender);
         this.searchAccountUseCase = searchAccountUseCase;
         this.sender = sender;

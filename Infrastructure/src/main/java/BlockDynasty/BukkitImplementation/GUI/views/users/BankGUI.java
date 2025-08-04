@@ -17,7 +17,7 @@ public class BankGUI extends AbstractGUI {
 
     private void setupGUI() {
         // Balance option
-        setItem(11, createItem(Material.GOLD_INGOT, "§6Ver Balance",
+        setItem(11, createItem(Material.BOOK, "§6Ver Balance",
                 "§7Click para ver tu balance"), unused -> {
             openBalanceGUI();
         });

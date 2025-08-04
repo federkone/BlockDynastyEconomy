@@ -10,11 +10,9 @@ import java.util.List;
 public abstract class AccountsList extends AbstractGUI {
     private int currentPage = 0;
     private final int PLAYERS_PER_PAGE = 21;
-    private final AbstractGUI parent;
 
-    public AccountsList(String title, int rows,AbstractGUI parent,org.bukkit.entity.Player sender) {
-        super(title, rows,sender);
-        this.parent = parent;
+    public AccountsList(String title, int rows,IGUI parent,org.bukkit.entity.Player sender) {
+        super(title, rows,sender,parent);
     }
 
     protected void showPlayersPage(List<Player> players, org.bukkit.entity.Player sender) {
@@ -57,7 +55,7 @@ public abstract class AccountsList extends AbstractGUI {
         setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador", "§7Click para buscar un jugador por nombre"), unused -> {openAnvilSearch(sender);});
 
         // Cancel button
-        setItem(41, createItem(Material.BARRIER, "§7Atrás", "§7Click para Atrás"),unused -> {parent.open();});
+        setItem(41, createItem(Material.BARRIER, "§7Atrás", "§7Click para Atrás"),unused -> {this.openParent();});
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {

@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
@@ -22,28 +23,103 @@ import java.util.function.Function;
 public class BalanceGUI extends AbstractGUI {
     private final GetBalanceUseCase getBalanceUseCase;
     private final Player player;
-    private final AbstractGUI parent;
+    private int currentPage = 0;
+    private final int CURRENCIES_PER_PAGE = 7; // 7 items in a single row (9 slots minus edge slots)
+    private List<Money> monies;
+    private UUID targetUUID;
 
     //CONSULTA SALDO
-    public BalanceGUI(Player player,GetBalanceUseCase getBalanceUseCase,AbstractGUI parent) {
-        super("Balance de cuenta", 3,player);
+    public BalanceGUI(Player player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
+        super("Balance de cuenta", 3, player, parent);
         this.getBalanceUseCase = getBalanceUseCase;
-        this.parent = parent;
         this.player = player;
+        this.targetUUID = player.getUniqueId();
 
-        setupGUI(player.getUniqueId());
+        loadBalances();
     }
 
-    public BalanceGUI(Player sender, UUID target, GetBalanceUseCase getBalanceUseCase, AbstractGUI parent){
-        super("Balance de cuenta", 3,sender);
+    public BalanceGUI(Player sender, UUID target, GetBalanceUseCase getBalanceUseCase, IGUI parent){
+        super("Balance de cuenta", 3, sender, parent);
         this.getBalanceUseCase = getBalanceUseCase;
-        this.parent = parent;
         this.player = sender;
+        this.targetUUID = target;
 
-        setupGUI(target);
+        loadBalances();
     }
 
-    private void setupGUI(UUID target) {
+    private void loadBalances() {
+        Result<List<Money>> result = getBalanceUseCase.getBalances(targetUUID);
+
+        if (result.isSuccess() && result.getValue() != null) {
+            monies = result.getValue();
+            showBalancePage();
+        } else {
+            // Show error message if balances couldn't be retrieved
+            clearGui();
+            setItem(13, createItem(Material.BARRIER, "§cError", "§7No se pudieron obtener los balances"), null);
+        }
+    }
+    private void showBalancePage() {
+        clearGui();
+
+        // Add title item
+        setItem(4, createItem(Material.BOOK, "§6Balance de cuenta",
+                "§7Saldos disponibles"), null);
+
+        if (monies.isEmpty()) {
+            setItem(13, createItem(Material.BARRIER, "§cSin monedas",
+                    "§7No hay monedas en la cuenta"), null);
+
+            // Back button
+            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para volver"), f -> {
+                this.openParent();
+            });
+
+            return;
+        }
+
+        // Calculate pagination
+        int startIndex = currentPage * CURRENCIES_PER_PAGE;
+        int endIndex = Math.min(startIndex + CURRENCIES_PER_PAGE, monies.size());
+
+        // Display each balance in a single row
+        int slot = 10;
+        for (int i = startIndex; i < endIndex; i++) {
+            Money money = monies.get(i);
+            String currencyName = money.getCurrency().getSingular();
+            BigDecimal amount = money.getAmount();
+            Currency currency = money.getCurrency();
+
+            setItem(slot, createItem(Material.GOLD_INGOT,
+                    "§6" + currencyName,
+                    "§eBalance: §f" + ChatColor.valueOf(currency.getColor()) + currency.format(amount)), null);
+
+            slot++;
+        }
+
+        // Navigation buttons
+        if (currentPage > 0) {
+            setItem(21, createItem(Material.ARROW, "§aPágina Anterior",
+                    "§7Click para ver monedas anteriores"), unused -> {
+                currentPage--;
+                showBalancePage();
+            });
+        }
+
+        // Back button
+        setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para volver"), f -> {
+            this.openParent();
+        });
+
+        if (endIndex < monies.size()) {
+            setItem(23, createItem(Material.ARROW, "§aPágina Siguiente",
+                    "§7Click para ver más monedas"), unused -> {
+                currentPage++;
+                showBalancePage();
+            });
+        }
+    }
+    /*private void setupGUI(UUID target) {
         Result<List<Money>> result = getBalanceUseCase.getBalances(target);
 
         if (result.isSuccess() && result.getValue() != null) {
@@ -70,10 +146,10 @@ public class BalanceGUI extends AbstractGUI {
             }
 
             // Add a close button
-            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para atrás"), f -> { parent.open();});
+            setItem(22, createItem(Material.BARRIER, "§cAtrás", "§7Click para atrás"), f -> { this.openParent();});
         } else {
             // Show error message if balances couldn't be retrieved
             setItem(13, createItem(Material.BARRIER, "§cError", "§7No se pudieron obtener los balances"), null);
         }
-    }
+    }*/
 }

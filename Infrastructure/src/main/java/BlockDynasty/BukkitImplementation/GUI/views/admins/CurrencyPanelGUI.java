@@ -2,17 +2,16 @@ package BlockDynasty.BukkitImplementation.GUI.views.admins;
 
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class CurrencyPanelGUI extends AbstractGUI {
     private final Player player;
-    private final AbstractGUI parent;
 
-    public CurrencyPanelGUI( Player player, AbstractGUI parent) {
-        super("Administrador de Monedas", 3,player);
+    public CurrencyPanelGUI( Player player, IGUI parent) {
+        super("Administrador de Monedas", 3,player,parent);
         this.player = player;
-        this.parent = parent;
         setupGUI();
     }
 
@@ -45,7 +44,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         // Exit button
         setItem(22, createItem(Material.BARRIER, "§cAtrás",
                 "§7Click para atrás"), unused -> {
-            parent.open();
+            this.openParent();
         });
     }
 

@@ -14,14 +14,12 @@ public abstract class CurrenciesList extends AbstractGUI {
     private final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private final Player player;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final AbstractGUI parentGUI;
     private int currentPage = 0;
     private final int CURRENCIES_PER_PAGE = 21;
 
-    public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, AbstractGUI parentGUI) {
-        super("Lista de Monedas", 5,player);
+    public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI) {
+        super("Lista de Monedas", 5,player,parentGUI);
         this.player = player;
-        this.parentGUI = parentGUI;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
 
         showCurrenciesPage();
@@ -45,8 +43,7 @@ public abstract class CurrenciesList extends AbstractGUI {
             // Back button
             setItem(40, createItem(Material.ARROW, "§aVolver",
                     "§7Click para volver"), unused -> {
-                //player.closeInventory();
-                parentGUI.open();
+                this.openParent();
             });
 
             return;
@@ -63,7 +60,6 @@ public abstract class CurrenciesList extends AbstractGUI {
                             "§7Singular: " + color + currency.getSingular(),
                             "§7Plural: " + color + currency.getPlural()),
                     unused -> {
-                        //player.closeInventory();
                         openSubMenu(currency,player);
                     });
 
@@ -92,8 +88,7 @@ public abstract class CurrenciesList extends AbstractGUI {
         // Back button
         setItem(40, createItem(Material.BARRIER, "§cVolver",
                 "§7Click para volver"), unused -> {
-            //player.closeInventory();
-            parentGUI.open();
+            this.openParent();
         });
     }
 

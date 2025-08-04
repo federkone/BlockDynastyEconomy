@@ -3,6 +3,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
@@ -19,14 +20,13 @@ public class CurrencyListToWithdraw extends CurrenciesList {
     private final WithdrawUseCase withdrawUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
     private final MessageService messageService;
-    private final AbstractGUI parentGUI;
 
-    public CurrencyListToWithdraw( Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,SearchCurrencyUseCase searchCurrencyUseCase, WithdrawUseCase withdrawUseCase,
-                                  AbstractGUI parentGUI) {
+    public CurrencyListToWithdraw( Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
+                                   SearchCurrencyUseCase searchCurrencyUseCase, WithdrawUseCase withdrawUseCase,
+                                   IGUI parentGUI) {
         super( player, searchCurrencyUseCase, parentGUI);
         this.targetPlayer = targetPlayer;
         this.withdrawUseCase = withdrawUseCase;
-        this.parentGUI = parentGUI;
         this.messageService = BlockDynastyEconomy.getInstance().getMessageService();
     }
 
@@ -39,7 +39,7 @@ public class CurrencyListToWithdraw extends CurrenciesList {
                 p.sendMessage(messageService.getWithdrawSuccess(currency.getSingular(), amount));
             }
             sender.sendMessage(messageService.getWithdrawMessage(sender.getName(), currency.getSingular(), amount));
-            parentGUI.open();
+            this.openParent();
             return null;
         } else {
             return result.getErrorMessage();

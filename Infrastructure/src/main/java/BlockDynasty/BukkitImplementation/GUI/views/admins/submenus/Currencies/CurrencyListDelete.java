@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies;
 
-import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
@@ -14,8 +14,8 @@ public class CurrencyListDelete extends CurrenciesList {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
     public CurrencyListDelete( Player player, SearchCurrencyUseCase searchCurrencyUseCase,
-                              DeleteCurrencyUseCase deleteCurrencyUseCase, AbstractGUI abstractGUI)  {
-            super( player, searchCurrencyUseCase,abstractGUI);
+                              DeleteCurrencyUseCase deleteCurrencyUseCase, IGUI parent)  {
+            super( player, searchCurrencyUseCase,parent);
             this.deleteCurrencyUseCase =deleteCurrencyUseCase;
     }
 

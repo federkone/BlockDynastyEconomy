@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.services.MessageService;
@@ -20,7 +21,8 @@ public class CurrencyListToPay extends CurrenciesList {
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
     private final MessageService messageService;
 
-    public CurrencyListToPay(Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer, SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, AbstractGUI parentGUI) {
+    public CurrencyListToPay(Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
+                             SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, MessageService messageService, IGUI parentGUI) {
         super(player, searchCurrencyUseCase, parentGUI);
         this.payUseCase = payUseCase;
         this.targetPlayer = targetPlayer;

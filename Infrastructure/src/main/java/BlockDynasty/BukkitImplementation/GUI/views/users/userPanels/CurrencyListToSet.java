@@ -3,6 +3,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
+import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.GUI.services.GUIService;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
@@ -19,15 +20,13 @@ import java.util.UUID;
 public class CurrencyListToSet extends CurrenciesList {
     private final SetBalanceUseCase setBalanceUseCase;
     private final MessageService messageService;
-    private final AbstractGUI parentGUI;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
     public CurrencyListToSet( Player player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
-                             SearchCurrencyUseCase searchCurrencyUseCase, SetBalanceUseCase setBalanceUseCase, AbstractGUI parentGUI) {
+                             SearchCurrencyUseCase searchCurrencyUseCase, SetBalanceUseCase setBalanceUseCase, IGUI parentGUI) {
         super( player, searchCurrencyUseCase, parentGUI);
         this.targetPlayer = targetPlayer;
         this.setBalanceUseCase = setBalanceUseCase;
-        this.parentGUI = parentGUI;
         this.messageService = BlockDynastyEconomy.getInstance().getMessageService();
     }
 
@@ -40,7 +39,7 @@ public class CurrencyListToSet extends CurrenciesList {
                 p.sendMessage(messageService.getSetSuccess(currency.getSingular(), amount));
             }
             sender.sendMessage("success");
-            parentGUI.open();
+            this.openParent();
             return null;
         } else {
            return result.getErrorMessage();

@@ -21,13 +21,21 @@ public abstract class AbstractGUI implements IGUI {
     private final Player owner;
     private final String title;
     private final Map<Integer, Consumer<Player>> actions = new HashMap<>();
+    private IGUI parent; // Optional parent GUI for nested GUIs
 
     public AbstractGUI(String title, int rows,Player owner) {
         this.title = title;
         this.owner = owner;
+        parent= null; // Initialize parent as null
         this.inventory = Bukkit.createInventory(null, rows * 9, title);
         clearGui();
     }
+
+    public AbstractGUI(String title, int rows, Player owner, IGUI parent) {
+        this(title, rows, owner);
+        this.parent = parent; // Set the parent GUI if provided
+    }
+
     protected void fill() {
         ItemStack filler = MaterialAdapter.getPanelGlass();
 
@@ -40,6 +48,23 @@ public abstract class AbstractGUI implements IGUI {
     public void open() {
         owner.openInventory(inventory);
         guiService.registerGUI(owner, this); //esto reemplaza automaticamente el GUI anterior ya que esta basado en un mapa con key del jugador
+    }
+
+    @Override
+    public void openParent() {
+        if (hasParent()) {
+            parent.open();
+        }
+    }
+
+    @Override
+    public boolean hasParent() {
+        return parent != null;
+    }
+
+    @Override
+    public IGUI getParent(){
+        return parent;
     }
 
     @Override
@@ -85,6 +110,8 @@ public abstract class AbstractGUI implements IGUI {
         }
         return base;
     }
+
+
 
     protected void clearGui(){
         fill();
