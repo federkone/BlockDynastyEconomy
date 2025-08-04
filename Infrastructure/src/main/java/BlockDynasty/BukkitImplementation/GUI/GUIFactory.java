@@ -39,7 +39,7 @@ public class GUIFactory {
         return new CurrencyPanelGUI(player, parent);
     }
     public static void createCurrencyPanel(Player sender,IGUI parent) {
-        new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),parent);
+        new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getGetCurrencyUseCase(),parent);
     }
     public static IGUI editAccountPanel(Player sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
         return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), sender, target, parent);

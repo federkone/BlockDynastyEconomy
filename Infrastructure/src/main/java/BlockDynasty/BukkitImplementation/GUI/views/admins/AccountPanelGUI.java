@@ -16,14 +16,20 @@ public class AccountPanelGUI extends AccountsList {
     private final SearchAccountUseCase searchAccountUseCase;
 
     public AccountPanelGUI(org.bukkit.entity.Player sender, SearchAccountUseCase searchAccountUseCase, IGUI parent) {
-        super("Seleccionar Jugador", 5,parent,sender);
+        super("Seleccionar Jugador", 5,sender,parent);
         this.searchAccountUseCase = searchAccountUseCase;
         this.sender = sender;
 
         Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
         if(result.isSuccess()) {
-            List<Player> players = result.getValue().stream().map(Account::getPlayer).toList();
-            showPlayersPage(players,sender);
+            List<Player> players = new java.util.ArrayList<>(result.getValue().stream().map(Account::getPlayer).toList());
+
+            //test
+            //for (int i=0; i < 45 ; i++) {
+            //    players.add(new Player("empty", "empty"));
+           // }
+
+            showPlayers(players);
         }
     }
 
