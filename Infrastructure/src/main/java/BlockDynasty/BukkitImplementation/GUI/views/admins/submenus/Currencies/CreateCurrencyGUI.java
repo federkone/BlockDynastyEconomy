@@ -26,7 +26,7 @@ public class CreateCurrencyGUI {
     }
 
     private void openSingularNameInput() {
-        AnvilMenu.open(parent,player,"Nombre Singular","Name..", s -> {
+        AnvilMenu.open(parent,player,"Singular Name","Name..", s -> {
             singularName = s.trim();
             openPluralNameInput();
             return null;
@@ -34,7 +34,7 @@ public class CreateCurrencyGUI {
     }
 
     private void openPluralNameInput() {
-        AnvilMenu.open(player,"Nombre plural", "Name..", s -> {
+        AnvilMenu.open(player,"Plural Name", "Name..", s -> {
             createCurrency(singularName, s.trim());
             return null;
         });
@@ -43,7 +43,7 @@ public class CreateCurrencyGUI {
     private void createCurrency(String singular, String plural) {
         try {
             createCurrencyUseCase.createCurrency(singular, plural);
-            player.sendMessage("§6[Banco] §aLa moneda §e" + singular + "§a ha sido creada correctamente.");
+            player.sendMessage("§6[Banco] §aThe currency §e" + singular + "§a has been created successfully.");
 
             Result<Currency> result = searchCurrencyUseCase.getCurrency(singular);
             if (result.isSuccess()) {
@@ -51,7 +51,7 @@ public class CreateCurrencyGUI {
             }
         }
         catch (CurrencyException e) {
-            player.sendMessage("§6[Banco] §cError al crear la moneda: §e" + e.getMessage());
+            player.sendMessage("§6[Banco] §cError creating currency: §e" + e.getMessage());
             player.closeInventory();
         }
     }

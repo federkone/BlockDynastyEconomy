@@ -19,7 +19,7 @@ public class BalanceGUI extends PaginatedGUI<Money> {
     private final UUID targetUUID;
 
     public BalanceGUI(Player player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
-        super("Balance de cuenta", 3, player, parent, 7); // 7 currencies per page
+        super("Account balance", 3, player, parent, 7); // 7 currencies per page
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = player.getUniqueId();
 
@@ -27,7 +27,7 @@ public class BalanceGUI extends PaginatedGUI<Money> {
     }
 
     public BalanceGUI(Player sender, UUID target, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
-        super("Balance de cuenta", 3, sender, parent, 7);
+        super("Account balance", 3, sender, parent, 7);
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = target;
 
@@ -57,11 +57,11 @@ public class BalanceGUI extends PaginatedGUI<Money> {
 
     @Override
     protected ItemStack createEmptyMessage() {
-        return createItem(Material.BARRIER, "§cSin monedas", "§7No hay monedas en la cuenta");
+        return createItem(Material.BARRIER, "§cNo Currencies", "§7There are no coins in the account");
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Material.BOOK, "§6Balance de cuenta", "§7Saldos disponibles"), null);
+        setItem(4, createItem(Material.BOOK, "§6Account balance", "§7Available balances"), null);
     }
 }

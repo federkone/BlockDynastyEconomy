@@ -16,7 +16,7 @@ public class AccountPanelGUI extends AccountsList {
     private final SearchAccountUseCase searchAccountUseCase;
 
     public AccountPanelGUI(org.bukkit.entity.Player sender, SearchAccountUseCase searchAccountUseCase, IGUI parent) {
-        super("Seleccionar Jugador", 5,sender,parent);
+        super("Select player", 5,sender,parent);
         this.searchAccountUseCase = searchAccountUseCase;
         this.sender = sender;
 

@@ -83,8 +83,8 @@ public class AnvilMenu {
         ItemStack backItem = new ItemStack(Material.BARRIER);
         ItemMeta meta = backItem.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("§cAtrás");
-            meta.setLore(Arrays.asList("§7Click para volver"));
+            meta.setDisplayName("§cBack");
+            meta.setLore(Arrays.asList("§7Click to go back"));
             backItem.setItemMeta(meta);
         }
         return backItem;

@@ -29,19 +29,19 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
 
     @Override
     protected void addCustomButtons() {
-        setItem(39, createItem(Material.NAME_TAG, "§aBuscar Jugador",
-                        "§7Click para buscar un jugador por nombre"),
+        setItem(39, createItem(Material.NAME_TAG, "§aSearch Player",
+                        "§7Click to search for a player by name"),
                 unused -> openAnvilSearch(unused));
     }
 
     protected void openAnvilSearch(org.bukkit.entity.Player sender) {
-        AnvilMenu.open(this, sender, "Buscar Jugador", "Name..", s -> {
+        AnvilMenu.open(this, sender, "Search Player", "Name..", s -> {
             Player foundPlayer = findPlayerByName(s);
 
             if (foundPlayer != null) {
                 openNextSection(foundPlayer);
             } else {
-                sender.sendMessage("§cJugador no encontrado");
+                sender.sendMessage("§cPlayer not found.");
                 this.open();
             }
             return null;

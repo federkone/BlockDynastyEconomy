@@ -25,16 +25,16 @@ public class EditAccountGUI extends AbstractGUI {
     }
 
     private void buttons(org.bukkit.entity.Player sender, Player target) {
-        setItem(5,createItem(Material.BARRIER,"Borrar Cuenta","se borra la cuenta del jugador"),
+        setItem(5,createItem(Material.BARRIER,"Delete account","the player's account is deleted"),
                 f -> {
                     AnvilMenu.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
                         if(s.equals("yes")){
                             Result<Void> result = deleteAccountUseCase.execute(target.getNickname());
                             if(result.isSuccess()){
-                                sender.sendMessage("Se ha eliminado el jugador "+ target.getNickname());
+                                sender.sendMessage("The player has been eliminated "+ target.getNickname());
                                 org.bukkit.entity.Player p = Bukkit.getPlayer(target.getNickname());
                                 if(p != null){
-                                    p.kickPlayer("Su cuenta de economia se ha eliminado.");
+                                    p.kickPlayer("Your economy account has been deleted.");
                                 }
                                 return null;
                             }else{
@@ -48,30 +48,30 @@ public class EditAccountGUI extends AbstractGUI {
                     });
                 });
 
-        setItem(18,createItem(Material.BARRIER, "atras",""),f->{this.openParent();});
+        setItem(18,createItem(Material.BARRIER, "Back","go back"),f->{this.openParent();});
 
-        setItem(11,createItem(Material.PAPER,"depositar moneda",""),
+        setItem(11,createItem(Material.PAPER,"Deposit Currency","Deposit currency into the player's account"),
                 f -> {
                     GUIFactory.depositPanel(sender , target, this).open();
                 });
 
-        setItem(13,createItem(Material.PAPER,"establecer moneda",""),
+        setItem(13,createItem(Material.PAPER,"Set balance currency","Set the balance of a currency in the player's account"),
                 f -> {
                     GUIFactory.setPanel(sender , target, this).open();
                 });
 
-        setItem(15,createItem(Material.PAPER,"retirar moneda",""),
+        setItem(15,createItem(Material.PAPER,"Withdraw Currency","Withdraw currency from the player's account"),
                 f -> {
                     GUIFactory.withdrawPanel(sender , target, this).open();
                 });
 
-        setItem(3,createItem(Material.BOOK, "ver balance",""),
+        setItem(3,createItem(Material.BOOK, "See Balance","See the balance of the player's account"),
                 f -> {
                     GUIFactory.balancePanel( sender, UUID.fromString(target.getUuid()), this).open();
                 });
-        setItem(22, createItem(Material.PAPER, "Bloquear Transacciones", " "),
+        setItem(22, createItem(Material.PAPER, "Block transactions", "Block transactions for the player"),
                 f -> {
-                    sender.sendMessage("Esta funcionalidad no esta implementada aun.");
+                    sender.sendMessage("This feature is not implemented yet.");
                 });
     }
 }

@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.GUI.commands.AdminGUICommand;
 import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
 import BlockDynasty.BukkitImplementation.GUI.listeners.GUIListener;
@@ -14,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public  class RegisterGuiModule {
     private static final GUIService guiService= new GUIService();
 
-    public static void register(JavaPlugin plugin,
+    public static void register(
                                 TransactionsUseCase transactionsUseCase,
                                 AccountsUseCase accountsUseCase,
                                 CurrencyUseCase currencyUseCase,
@@ -22,11 +23,12 @@ public  class RegisterGuiModule {
 
         GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,messageService);
 
-        // Register GUI event listener
-        plugin.getServer().getPluginManager().registerEvents(new GUIListener(guiService), plugin);
-        UtilServer.consoleLog("GUI events registered successfully.");
+        UtilServer.consoleLog("GUI registered successfully.");
     }
 
+    public static GUIListener guiListener(){
+        return new GUIListener(guiService);
+    };
     public static GUIService getGuiService() {
         return guiService;
     }

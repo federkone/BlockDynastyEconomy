@@ -10,40 +10,40 @@ public class CurrencyPanelGUI extends AbstractGUI {
     private final Player player;
 
     public CurrencyPanelGUI( Player player, IGUI parent) {
-        super("Administrador de Monedas", 3,player,parent);
+        super("Currency Manager", 3,player,parent);
         this.player = player;
         setupGUI();
     }
 
     private void setupGUI() {
         // Create Currency button
-        setItem(10, createItem(Material.EMERALD, "§aCrear Moneda",
-                "§7Click para crear una nueva moneda"), unused -> {
+        setItem(10, createItem(Material.EMERALD, "§aCreate Currency",
+                "§7Click to create new currency"), unused -> {
             GUIFactory.createCurrencyPanel(player,this);
 
         });
 
         // Delete Currency button
-        setItem(12, createItem(Material.REDSTONE, "§cEliminar Moneda",
-                "§7Click para eliminar una moneda existente"), unused -> {
-            GUIFactory.currencyListDeletePanel(player, this).open();
+        setItem(12, createItem(Material.REDSTONE, "§cDelete Currency",
+                "§7Click to delete currency"), unused -> {
+            GUIFactory.currencyListToDeletePanel(player, this).open();
         });
 
         // Edit Currency button
-        setItem(14, createItem(Material.BOOK, "§eEditar Moneda",
-                "§7Click para editar una moneda existente"), unused -> {
-            GUIFactory.currencyListEditPanel(player, this).open();
+        setItem(14, createItem(Material.BOOK, "§eEdit Currency",
+                "§7Click to edit Currency"), unused -> {
+            GUIFactory.currencyListToEditPanel(player, this).open();
         });
 
         // Toggle Features button
-        setItem(16, createItem(Material.PAPER, "§bConfigurar Características",
-                "§7Click para activar/desactivar características"), unused -> {
-            player.sendMessage("§a[Banco] §7Función no disponible en este momento.");
+        setItem(16, createItem(Material.PAPER, "§bConfig Features",
+                "§7Click"), unused -> {
+            player.sendMessage("§a[Banco] §7This feature is not implemented yet.");
         });
 
         // Exit button
-        setItem(22, createItem(Material.BARRIER, "§cAtrás",
-                "§7Click para atrás"), unused -> {
+        setItem(22, createItem(Material.BARRIER, "§cBack",
+                "§7Click to go back"), unused -> {
             this.openParent();
         });
     }

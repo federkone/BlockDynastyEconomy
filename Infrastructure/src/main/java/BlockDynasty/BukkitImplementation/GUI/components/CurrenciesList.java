@@ -17,7 +17,7 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
     private final Player player;
 
     public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI) {
-        super("Lista de Monedas", 5,player,parentGUI,21);
+        super("Currency List", 5,player,parentGUI,21);
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.player = player;
         showCurrencies();
@@ -46,12 +46,12 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
 
     @Override
     protected void handleItemClick(Currency currency) {
-        AnvilMenu.open(this,player,"Ingresar Monto","0", s->{
+        AnvilMenu.open(this,player,"Insert amount","0", s->{
             try {
                 BigDecimal amount = new BigDecimal(s);
                 return execute(player, currency, amount);
             } catch (NumberFormatException e) {
-                return "Formato inválido";
+                return "Invalid Format";
             }
         });
     }

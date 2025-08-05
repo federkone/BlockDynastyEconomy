@@ -57,7 +57,7 @@ public class MaterialAdapter {
             SkullMeta meta = (SkullMeta) head.getItemMeta();
             meta.setOwner(playerName);
             meta.setDisplayName("§e" + playerName);
-            meta.setLore(Collections.singletonList("§7Click para pagar a este jugador"));
+            meta.setLore(Collections.singletonList("§7Click to select this player"));
             head.setItemMeta(meta);
             return head;
         }

@@ -49,8 +49,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
             initRepository();
             initCoreServices();
             registerCommands();
-            registerEvents();
             registerGUI();
+            registerEvents();
             setupIntegrations();
 
             api = new BlockDynastyEconomyApi(core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase());
@@ -91,7 +91,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
     }
     private void registerGUI(){
-        RegisterGuiModule.register(this,
+        RegisterGuiModule.register(
                 core.getTransactionsUseCase(),
                 core.getAccountsUseCase(),
                 core.getCurrencyUseCase(),
@@ -108,6 +108,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(economyListener, this);
+        getServer().getPluginManager().registerEvents(RegisterGuiModule.guiListener(),this);
         TransactionsListener.register(core.getServicesManager().getEventManager());
     }
     private void setupIntegrations() {

@@ -12,7 +12,7 @@ public class PayGUI extends AccountsList {
     private final org.bukkit.entity.Player sender;
 
     public PayGUI( org.bukkit.entity.Player sender, IGUI parent) {
-        super("Seleccionar Jugador", 5,sender,parent);
+        super("Select Player", 5,sender,parent);
         this.sender = sender;
 
         List<Player> players = Bukkit.getOnlinePlayers().stream().map(p-> new Player(p.getUniqueId().toString(),p.getName())).toList();
