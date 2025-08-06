@@ -49,15 +49,14 @@ public class BalanceTopCommand implements CommandExecutor {
         int finalLimit = limit;
         Scheduler.runAsync(ContextualTask.build(() -> {
             Result<List<Account>> resultAccounts = searchAccountUseCase.getTopAccounts(nameCurrency, finalLimit,0);
-            if (resultAccounts.isSuccess()){
-                sender.sendMessage("Top "+ finalLimit +" "+ nameCurrency+" : ");
-                sender.sendMessage(messageService.getBalanceTopMessage(resultAccounts.getValue(),nameCurrency));
+            if (!resultAccounts.isSuccess()){
+                messageService.sendErrorMessage(resultAccounts.getErrorCode(),sender, nameCurrency);
+
+            }else{
+                sender.sendMessage(messageService.getBalanceTopMessage(resultAccounts.getValue(),nameCurrency,finalLimit));
                 //for (Account account : resultAccounts.getValue()) {
                 //    sender.sendMessage(account.getNickname() + " " + account.getBalance(nameCurrency).getBalance());
                 //}
-
-            }else{
-                messageService.sendErrorMessage(resultAccounts.getErrorCode(),sender, nameCurrency);
             }
 
         }));

@@ -11,6 +11,7 @@ import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.*;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import org.bukkit.entity.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -20,13 +21,15 @@ public class GUIFactory {
     private static CurrencyUseCase currencyUseCase;
     private static AccountsUseCase accountsUseCase;
     private static TransactionsUseCase transactionsUseCase;
+    private static OfferUseCase offerUseCase;
     private static MessageService messageService;
 
-    public static void init(CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase, TransactionsUseCase transactionsUseCase, MessageService messageService) {
+    public static void init(CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase, TransactionsUseCase transactionsUseCase,OfferUseCase offerUseCase, MessageService messageService) {
         GUIFactory.messageService = messageService;
         GUIFactory.currencyUseCase = currencyUseCase;
         GUIFactory.accountsUseCase = accountsUseCase;
         GUIFactory.transactionsUseCase = transactionsUseCase;
+        GUIFactory.offerUseCase = offerUseCase;
     }
 
     //main admin panel
@@ -82,6 +85,9 @@ public class GUIFactory {
     //main bank user panel
     public static IGUI bankPanel(Player sender) {
             return new BankGUI(sender);
+        }
+        public static IGUI currencyListToOffer(Player sender,BlockDynasty.Economy.domain.entities.account.Player target,IGUI parent ){
+            return new CurrencyListToOffer(sender,target,currencyUseCase.getGetCurrencyUseCase(),offerUseCase.getCreateOfferUseCase(), parent);
         }
         //submenus for bankPanel
             public static IGUI balancePanel(Player sender, IGUI parent) {

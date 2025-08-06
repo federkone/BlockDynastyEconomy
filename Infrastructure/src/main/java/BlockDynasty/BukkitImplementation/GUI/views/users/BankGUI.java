@@ -3,6 +3,7 @@ package BlockDynasty.BukkitImplementation.GUI.views.users;
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
+import BlockDynasty.BukkitImplementation.GUI.views.users.userPanels.OfferGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -26,6 +27,11 @@ public class BankGUI extends AbstractGUI {
                 "§7Click to pay another player"), unused -> {
             GUIFactory.payPanel(player,this).open();
         });
+
+        setItem(16, createItem(Material.EMERALD,"Create Offer","Click to create an offer"),
+                f -> {
+            new OfferGUI(player,this).open();
+         });
 
         setItem(22, createItem(Material.BARRIER, "§cExit",
                 "§7Click to exit"), unused -> player.closeInventory());

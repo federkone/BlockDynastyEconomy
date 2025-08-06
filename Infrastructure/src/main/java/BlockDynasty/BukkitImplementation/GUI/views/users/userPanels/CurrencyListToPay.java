@@ -29,13 +29,8 @@ public class CurrencyListToPay extends CurrenciesList {
     @Override
     public String execute(Player sender,Currency currency, BigDecimal amount){
         Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
-        if (result.isSuccess()) {
-            sender.sendMessage(messageService.getSuccessMessage(sender.getName(), targetPlayer.getNickname(), currency.getSingular(), amount));
-
-            Player p = Bukkit.getPlayer(targetPlayer.getNickname());
-            if (p != null) {
-                p.sendMessage(messageService.getReceivedMessage(sender.getName(), currency.getSingular(), amount));
-            }
+        if (!result.isSuccess()) {
+            messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());
             return "payment successful";
         }else{
             return result.getErrorMessage();

@@ -95,6 +95,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
                 core.getTransactionsUseCase(),
                 core.getAccountsUseCase(),
                 core.getCurrencyUseCase(),
+                core.getOfferUseCase(),
                 messageService);
     }
     private void registerEvents() {
@@ -109,7 +110,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(economyListener, this);
         getServer().getPluginManager().registerEvents(RegisterGuiModule.guiListener(),this);
-        TransactionsListener.register(core.getServicesManager().getEventManager());
+        TransactionsListener.register(core.getServicesManager().getEventManager(), messageService);
     }
     private void setupIntegrations() {
         Vault.init( core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(new VaultLogger( this)));

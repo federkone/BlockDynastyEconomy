@@ -225,8 +225,9 @@ public class MessageService {
         return Message.getBalanceNone().replace("{player}", name);
     }
 
-    public String getBalanceTopMessage(List<Account> accounts,String nameCurrency) {
+    public String getBalanceTopMessage(List<Account> accounts,String nameCurrency,int finalLimit) {
         StringBuilder aux = new StringBuilder();
+        aux.append("Top ").append(finalLimit).append(" ").append(nameCurrency).append(" : ").append("\n");
         for (int i = 0; i < accounts.size(); i++) {
             Account account = accounts.get(i);
             Money money = account.getMoney(nameCurrency);

@@ -74,15 +74,7 @@ public class PayCommand implements CommandExecutor {
 
             // Volver al hilo principal para enviar mensajes, que usan la API de Bukkit
             Scheduler.run( ContextualTask.build(() -> {
-                if (result.isSuccess()){
-                    player.sendMessage(messageService.getSuccessMessage(player.getName(), targetName, currencyName, finalAmount));
-
-                    Player targetPlayer = Bukkit.getPlayer(targetName);
-                    if (targetPlayer != null) {
-                        // Si el jugador objetivo está en línea, envía el mensaje de éxito
-                        Scheduler.run( ContextualTask.build(() -> {targetPlayer.sendMessage(messageService.getReceivedMessage(player.getName(), currencyName, finalAmount));},targetPlayer));
-                    }
-                } else {
+                if (!result.isSuccess()){
                     messageService.sendErrorMessage( result.getErrorCode(), player, currencyName);
                 }
             },player));

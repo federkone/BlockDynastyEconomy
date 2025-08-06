@@ -24,6 +24,10 @@ public class CreateOfferUseCase {
     }
 
     public Result<Void> execute (UUID playerSender, UUID playerReciber, String currencyNameValue, BigDecimal amountCurrencyValue, String currencyNameOffer, BigDecimal amountCurrencyOffer) {
+        if (playerSender.equals(playerReciber)) {
+            return Result.failure( "Sender and receiver cannot be the same player", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
+
         Result<Account> accountSenderResult = this.searchAccountUseCase.getAccount(playerSender);
         if (!accountSenderResult.isSuccess()) {
             return Result.failure(accountSenderResult.getErrorMessage(), accountSenderResult.getErrorCode());

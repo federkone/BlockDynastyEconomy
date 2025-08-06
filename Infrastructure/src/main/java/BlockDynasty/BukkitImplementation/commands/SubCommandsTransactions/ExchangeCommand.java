@@ -85,77 +85,9 @@ public class ExchangeCommand implements CommandExecutor {
 
         Scheduler.runAsync(ContextualTask.build(() -> {
             Result<BigDecimal> result = exchange.execute(player, toExchange, toReceive, null, BigDecimal.valueOf(finalToReceiveAmount));
-
-            Runnable resultTask = () -> {
-                if (result.isSuccess()) {
-                    Runnable successMessage = () -> {
-                        String message = messageService.getExchangeSuccess(toExchange, result.getValue(), toReceive);
-                        if (targetPlayer != null) {
-                            targetPlayer.sendMessage(message);
-                        } else {
-                            sender.sendMessage(message);
-                        }
-                    };
-
-                    // Ejecutar el mensaje en el contexto correcto
-                    if (targetPlayer != null) {
-                        Scheduler.run(ContextualTask.build(successMessage, targetPlayer));
-                    } else if (sender instanceof Player) {
-                        Scheduler.run(ContextualTask.build(successMessage, (Player) sender));
-                    } else {
-                        successMessage.run(); // consola o comando externo
-                    }
-
-                } else {
-                    Runnable errorTask = () -> {
-                        switch (result.getErrorCode()) {
-                            case ACCOUNT_CAN_NOT_RECEIVE:
-                                sender.sendMessage(Message.getCannotReceive());
-                                break;
-                            case ACCOUNT_NOT_FOUND:
-                                sender.sendMessage(messageService.getAccountNotFoundMessage());
-                                break;
-                            case CURRENCY_NOT_FOUND:
-                                sender.sendMessage(Message.getUnknownCurrency());
-                                break;
-                            case DECIMAL_NOT_SUPPORTED:
-                                sender.sendMessage("Intercambio inválido: no se puede extraer " + result.getValue() + " " + toExchange + ", intenta con otro monto en " + toReceive);
-                                break;
-                            case INVALID_AMOUNT:
-                                sender.sendMessage(Message.getUnvalidAmount());
-                                break;
-                            case INSUFFICIENT_FUNDS:
-                                if (targetPlayer != null) {
-                                    Scheduler.run(ContextualTask.build(() -> {
-                                        targetPlayer.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                                    }, targetPlayer));
-                                } else {
-                                    sender.sendMessage(messageService.getInsufficientFundsMessage(toExchange));
-                                }
-                                break;
-                            case DATA_BASE_ERROR:
-                                if (targetPlayer != null) {
-                                    Scheduler.run(ContextualTask.build(() -> {
-                                        targetPlayer.sendMessage(messageService.getUnexpectedErrorMessage());
-                                    }, targetPlayer));
-                                } else {
-                                    sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                                }
-                                break;
-                            default:
-                                sender.sendMessage(messageService.getUnexpectedErrorMessage());
-                                break;
-                        }
-                    };
-
-                    if (sender instanceof Player player1) {
-                        Scheduler.run(ContextualTask.build(errorTask, player1));
-                    } else {
-                        errorTask.run();
-                    }
+                if (!result.isSuccess()) {
+                    messageService.sendErrorMessage(result.getErrorCode(),targetPlayer,toReceive);
                 }
-            };
-            Scheduler.run(ContextualTask.build(resultTask,targetPlayer));
         }));
         return true;
     }

@@ -22,6 +22,7 @@ public class OfferService implements IOfferService {
             this.delay = delay;
         }
     }
+
     public OfferService(OfferListener listener) {
         this.listener = listener;
     }
@@ -33,6 +34,7 @@ public class OfferService implements IOfferService {
             listener.onOfferExpired(offer);
         }, this.delay, TimeUnit.SECONDS);
         ofertasPendientes.put(offer, expirationTask);
+        listener.onOfferCreated(offer); // Assuming you have a method to notify about the offer creation
     }
 
     public boolean hasOfferTo(UUID player) {
@@ -53,6 +55,7 @@ public class OfferService implements IOfferService {
                 }).findFirst().orElse(null);
         if (entryToRemove != null) {
             entryToRemove.getValue().cancel(false);
+            listener.onOfferCanceled(entryToRemove.getKey());
             this.ofertasPendientes.remove(entryToRemove.getKey());
             return true;
         }

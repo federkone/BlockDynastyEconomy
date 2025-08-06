@@ -28,10 +28,7 @@ public class BalanceCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        //if (!sender.hasPermission("BlockDynastyEconomy.command.economy")) {
-        //    sender.sendMessage(Message.getNoPerms());
-        //    return true;
-        //}
+
         if (!sender.hasPermission("BlockDynastyEconomy.command.balance")) {
             sender.sendMessage(Message.getNoPerms());
             return true;
@@ -51,19 +48,14 @@ public class BalanceCommand implements CommandExecutor {
 
         Scheduler.runAsync(ContextualTask.build(() -> {
             Result<List<Money>> resultBalances = balance.getBalances(target);
-            if (resultBalances.isSuccess()) {
+            if (!resultBalances.isSuccess()) {
+                messageService.sendErrorMessage(resultBalances.getErrorCode(),sender,target);
+            }else{
                 sender.sendMessage(Message.getBalanceMultiple().replace("{player}", target));
                 for (Money entry : resultBalances.getValue()) {
                     Currency currency = entry.getCurrency();
                     BigDecimal balance = entry.getAmount();
                     sender.sendMessage(Message.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", currency.format(balance)));
-                }
-            }else{
-                switch (resultBalances.getErrorCode()){
-                    case ACCOUNT_NOT_FOUND:
-                        sender.sendMessage(messageService.getAccountNotFoundMessage());
-                    case CURRENCY_NOT_FOUND:
-                        sender.sendMessage(messageService.getNoCurrencyFund(target));
                 }
             }
         }));

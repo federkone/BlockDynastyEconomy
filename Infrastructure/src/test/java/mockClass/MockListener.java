@@ -9,4 +9,14 @@ public class MockListener implements OfferListener {
     public void onOfferExpired(Offer offer) {
         System.out.println("Offer with seller " + offer.getVendedor() + " has expired.");
     }
+
+    @Override
+    public void onOfferCreated(Offer offer) {
+
+    }
+
+    @Override
+    public void onOfferCanceled(Offer offer) {
+
+    }
 }
