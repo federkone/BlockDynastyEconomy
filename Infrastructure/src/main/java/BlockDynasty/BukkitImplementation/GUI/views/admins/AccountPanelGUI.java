@@ -9,6 +9,7 @@ import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountPanelGUI extends AccountsList {
@@ -22,7 +23,7 @@ public class AccountPanelGUI extends AccountsList {
 
         Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
         if(result.isSuccess()) {
-            List<Player> players = new java.util.ArrayList<>(result.getValue().stream().map(Account::getPlayer).toList());
+            List<Player> players = new ArrayList<>(result.getValue().stream().map(Account::getPlayer).toList());
 
             //test
             //for (int i=0; i < 45 ; i++) {

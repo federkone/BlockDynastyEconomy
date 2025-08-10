@@ -14,6 +14,7 @@ public class AccountMapper {
         accountDb.setUuid(domain.getUuid().toString());
         accountDb.setNickname(domain.getNickname());
         accountDb.setCanReceiveCurrency(domain.canReceiveCurrency());
+        accountDb.setBlock(domain.isBlocked());
 
         // Create wallet or find existing one (this would need repository access)
         WalletDb walletDb = WalletMapper.toEntity(domain.getWallet());
@@ -27,6 +28,6 @@ public class AccountMapper {
             return null;
         }
         Wallet wallet = WalletMapper.toDomain(entity.getWallet());
-        return new Account(entity.getUuid(), entity.getNickname(), wallet, entity.isCanReceiveCurrency());
+        return new Account(entity.getUuid(), entity.getNickname(), wallet, entity.isCanReceiveCurrency(),entity.isBlocked());
     }
 }

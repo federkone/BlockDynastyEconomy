@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.UUID;
 
 public class CurrencyListToPay extends CurrenciesList {
@@ -31,9 +32,17 @@ public class CurrencyListToPay extends CurrenciesList {
         Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (!result.isSuccess()) {
             messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());
-            return "payment successful";
+            return null;
         }else{
-            return result.getErrorMessage();
+            return "Payment successful!";
         }
+    }
+
+    @Override
+    public void addCustomButtons() {
+        setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Currency to Pay",
+                Arrays.asList("§7Click to select the currency you want to pay", "§7And before that, the amount")),
+                unused -> {});
+
     }
 }

@@ -89,6 +89,15 @@ public class TradeCurrenciesUseCase {
         if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
             return Result.failure("You can't trade with yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
+
+        if (accountFrom.isBlocked()){
+            return Result.failure("Sender account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+
+        if (accountTo.isBlocked()){
+            return Result.failure("Target account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+
         if(!accountTo.canReceiveCurrency()){
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }

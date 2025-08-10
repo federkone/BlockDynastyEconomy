@@ -33,7 +33,7 @@ public class AccountMongoDb {
     }
 
     public Account toEntity() {
-        return new Account(this.uuid,this.nickname,balancesToEntity(), this.canReceiveCurrency);
+        return new Account(this.uuid,this.nickname,balancesToEntity(), this.canReceiveCurrency, false);
     }
 
     private List<Money> balancesToEntity() {

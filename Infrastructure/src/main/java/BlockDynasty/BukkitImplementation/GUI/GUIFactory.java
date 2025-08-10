@@ -42,7 +42,7 @@ public class GUIFactory {
         }
             //submenus for accountPanel
             public static IGUI editAccountPanel(Player sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
-                return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), sender, target, parent);
+                return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), accountsUseCase.getEditAccountUseCase(),accountsUseCase.getGetAccountsUseCase(),sender, target, parent);
             }
             //submenus for editAccountPanel
                 public static IGUI balancePanel(Player sender, UUID target, IGUI parent) {
@@ -84,10 +84,10 @@ public class GUIFactory {
 
     //main bank user panel
     public static IGUI bankPanel(Player sender) {
-            return new BankGUI(sender);
+            return new BankGUI(sender, accountsUseCase.getGetAccountsUseCase());
         }
         public static IGUI currencyListToOffer(Player sender,BlockDynasty.Economy.domain.entities.account.Player target,IGUI parent ){
-            return new CurrencyListToOffer(sender,target,currencyUseCase.getGetCurrencyUseCase(),offerUseCase.getCreateOfferUseCase(), parent);
+            return new CurrencyListToOfferFirst(sender,target,currencyUseCase.getGetCurrencyUseCase(),offerUseCase.getCreateOfferUseCase(), parent);
         }
         //submenus for bankPanel
             public static IGUI balancePanel(Player sender, IGUI parent) {

@@ -1,10 +1,14 @@
 package BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts;
 
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
+import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.AbstractGUI;
 import BlockDynasty.BukkitImplementation.GUI.components.AnvilMenu;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
 import org.bukkit.Bukkit;
@@ -14,12 +18,18 @@ import java.util.UUID;
 
 public class EditAccountGUI extends AbstractGUI {
     private final DeleteAccountUseCase deleteAccountUseCase;
+    private final EditAccountUseCase editAccountUseCase;
+    private final SearchAccountUseCase searchAccountUseCase;
 
     public EditAccountGUI(
             DeleteAccountUseCase deleteAccountUseCase,
+            EditAccountUseCase editAccountUseCase,
+            SearchAccountUseCase searchAccountUseCase,
             org.bukkit.entity.Player sender, Player target, IGUI parent) {
         super("Edit Account: "+target.getNickname(), 3,sender,parent);
         this.deleteAccountUseCase = deleteAccountUseCase;
+        this.editAccountUseCase = editAccountUseCase;
+        this.searchAccountUseCase = searchAccountUseCase;
 
         buttons(sender,target);
     }
@@ -69,9 +79,30 @@ public class EditAccountGUI extends AbstractGUI {
                 f -> {
                     GUIFactory.balancePanel( sender, UUID.fromString(target.getUuid()), this).open();
                 });
-        setItem(22, createItem(Material.PAPER, "Block transactions", "Block transactions for the player"),
-                f -> {
-                    sender.sendMessage("This feature is not implemented yet.");
-                });
+
+        boolean isBlocked = searchAccountUseCase.getAccount(UUID.fromString(target.getUuid())).getValue().isBlocked();
+        if (isBlocked) {
+            setItem(22, createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Click to unblock transactions"),
+                    f -> {
+                        Result<Void>result= editAccountUseCase.unblockAccount(UUID.fromString(target.getUuid()));
+                        if (result.isSuccess()){
+                            GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
+                        }
+                        else {
+                            sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
+                        }
+                    });
+        } else {
+            setItem(22, createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Click to block transactions Account"),
+                    f -> {
+                        Result<Void>result= editAccountUseCase.blockAccount(UUID.fromString(target.getUuid()));
+                        if (result.isSuccess()){
+                            GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
+                        }
+                        else {
+                            sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
+                        }
+                    });
+        }
     }
 }

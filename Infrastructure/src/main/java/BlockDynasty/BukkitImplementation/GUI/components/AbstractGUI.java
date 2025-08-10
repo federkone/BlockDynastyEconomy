@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -97,6 +98,23 @@ public abstract class AbstractGUI implements IGUI {
             meta.setDisplayName(name);
             if (lore.length > 0) {
                 meta.setLore(Arrays.asList(lore));
+            }
+            base.setItemMeta(meta);
+        }
+        return base;
+    }
+
+    protected ItemStack createItem(Material material, String name, List<String> lore) {
+        ItemStack item = new ItemStack(material);
+        return createItem(item, name, lore);
+    }
+
+    protected ItemStack createItem(ItemStack base, String name, List<String> lore) {
+        ItemMeta meta = base.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(name);
+            if (lore != null && !lore.isEmpty()) {
+                meta.setLore(lore);
             }
             base.setItemMeta(meta);
         }

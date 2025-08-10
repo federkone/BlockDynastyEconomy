@@ -72,8 +72,11 @@ public class DepositUseCase {
     }
 
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
+        if (account.isBlocked()){
+            return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
         if (!account.canReceiveCurrency()) {
-            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+            return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0){

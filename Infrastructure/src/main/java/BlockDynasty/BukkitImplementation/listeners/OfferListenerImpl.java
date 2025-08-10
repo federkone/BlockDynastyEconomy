@@ -45,6 +45,6 @@ public class OfferListenerImpl implements OfferListener {
 
     @Override
     public void onOfferCanceled(Offer offer) {
-        onOfferExpired(offer);
+        //onOfferExpired(offer);
     }
 }

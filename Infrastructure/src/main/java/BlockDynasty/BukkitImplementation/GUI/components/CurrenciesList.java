@@ -46,7 +46,7 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
 
     @Override
     protected void handleItemClick(Currency currency) {
-        AnvilMenu.open(this,player,"Insert amount","0", s->{
+        AnvilMenu.open(this,player,"Amount to "+currency.getSingular(),"0", s->{
             try {
                 BigDecimal amount = new BigDecimal(s);
                 return execute(player, currency, amount);

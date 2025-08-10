@@ -74,6 +74,9 @@ public class ExchangeUseCase {
     }
 
     private Result<BigDecimal> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        if (account.isBlocked()){
+            return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
         if (!account.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }

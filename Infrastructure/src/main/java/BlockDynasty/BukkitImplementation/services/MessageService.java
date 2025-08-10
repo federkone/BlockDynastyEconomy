@@ -23,6 +23,9 @@ public class MessageService {
             case ACCOUNT_NOT_FOUND:
                 sender.sendMessage(getAccountNotFoundMessage());
                 break;
+            case ACCOUNT_BLOCKED:
+                sender.sendMessage(Message.getPrefix() + "Account is blocked");
+                break;
             case INSUFFICIENT_FUNDS:
                 sender.sendMessage(getInsufficientFundsMessage(currencyName));
                 break;
@@ -43,7 +46,7 @@ public class MessageService {
                 sender.sendMessage(Message.getAlreadyOffer());
                 break;
             case ACCOUNT_CAN_NOT_RECEIVE:
-                sender.sendMessage(Message.getCannotReceive());
+                sender.sendMessage(getCannotReceiveMessage(sender.getName()));
                 break;
             case OFFER_NOT_FOUND:
                 sender.sendMessage(Message.getNotOffers());

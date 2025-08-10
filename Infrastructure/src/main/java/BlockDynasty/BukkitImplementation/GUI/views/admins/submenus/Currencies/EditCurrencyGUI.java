@@ -125,7 +125,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openStartBalanceInput(){
-        AnvilMenu.open(this,player,"Initial balance",currency.getDefaultBalance().toString(), s->{
+        AnvilMenu.open(this,player,"Initial balance:"+currency.getSingular(),currency.getDefaultBalance().toString(), s->{
             try {
                 double startBal = Double.parseDouble(s);
                 try {
@@ -144,7 +144,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openExchangeRateInput(){
-        AnvilMenu.open(this,player,"Exchange rate",String.valueOf(currency.getExchangeRate()),s->{
+        AnvilMenu.open(this,player,"Exchange rate:"+currency.getSingular(),String.valueOf(currency.getExchangeRate()),s->{
             try {
                 double rate = Double.parseDouble(s);
                 try {
@@ -163,7 +163,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openSymbolInput(){
-        AnvilMenu.open(this,player,"Currency symbol",currency.getSymbol(),s ->{
+        AnvilMenu.open(this,player,"Currency symbol:"+currency.getSingular(),currency.getSymbol(),s ->{
             try {
                 editCurrencyUseCase.editSymbol(currency.getSingular(), s);
                 player.sendMessage("§a[Banco] §7Symbol updated successfully.");

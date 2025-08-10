@@ -81,6 +81,12 @@ public class TransferFundsUseCase {
         if (!accountTo.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
+        if(accountFrom.isBlocked()){
+            return  Result.failure("Sender is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+        if(accountTo.isBlocked()){
+            return Result.failure("Target account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
 
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);

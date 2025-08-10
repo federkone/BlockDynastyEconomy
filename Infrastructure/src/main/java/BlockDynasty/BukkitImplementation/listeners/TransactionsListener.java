@@ -1,13 +1,10 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
-import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.BukkitImplementation.utils.UtilServer;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class TransactionsListener {

@@ -72,6 +72,10 @@ public class WithdrawUseCase {
     }
 
     private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {
+        if (account.isBlocked()){
+            return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+
         if(amount.compareTo(BigDecimal.ZERO) <= 0){
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }

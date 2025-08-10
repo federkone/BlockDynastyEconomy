@@ -34,4 +34,9 @@ public class PayGUI extends AccountsList {
     public void openNextSection(Player target) {
         GUIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
     }
+    @Override
+    public void addCustomButtons(){
+        setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Player to Pay",
+                List.of("§7Click to select the player you want to pay")), unused -> {});
+    }
 }

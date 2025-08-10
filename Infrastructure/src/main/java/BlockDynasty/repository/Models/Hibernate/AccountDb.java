@@ -2,6 +2,7 @@ package BlockDynasty.repository.Models.Hibernate;
 
 import jakarta.persistence.*;
 import BlockDynasty.Economy.domain.entities.account.Account;
+import net.bytebuddy.implementation.bind.annotation.Default;
 
 @Entity
 @Table(name = "account")
@@ -23,15 +24,20 @@ public class AccountDb {
     @Column(name = "can_receive_currency")
     private boolean canReceiveCurrency;
 
+    @Column(name = "block") //default false
+    @org.hibernate.annotations.ColumnDefault("false")
+    private boolean block;
+
     public AccountDb() {
     }
 
-    public void updateFromEntity(Account account) {
-        // No need to update balances directly here since wallet is now separate
-        this.setNickname(account.getNickname());
-        this.setCanReceiveCurrency(account.canReceiveCurrency());
+    //public void updateFromEntity(Account account) {
+      //  // No need to update balances directly here since wallet is now separate
+        //this.setNickname(account.getNickname());
+        //this.setCanReceiveCurrency(account.canReceiveCurrency());
+        //this.block = account.isBlocked();
         // UUID shouldn't change
-    }
+    //}
 
     public void setWallet(WalletDb wallet) {
         this.wallet = wallet;
@@ -68,7 +74,12 @@ public class AccountDb {
     public boolean isCanReceiveCurrency() {
         return this.canReceiveCurrency;
     }
-
+    public boolean isBlocked() {
+        return this.block;
+    }
+    public void setBlock(boolean block) {
+        this.block = block;
+    }
     public void setCanReceiveCurrency(boolean canReceiveCurrency) {
         this.canReceiveCurrency = canReceiveCurrency;
     }

@@ -116,6 +116,7 @@ public class AccountRepository implements IAccountRepository {
                 accountDb.setNickname(account.getNickname());
                 accountDb.setUuid(account.getUuid().toString());
                 accountDb.setCanReceiveCurrency(account.canReceiveCurrency());
+                accountDb.setBlock(account.isBlocked());
 
                 // Use the helper method from TransactionRepository for balance updates
                 updateBalancesInWallet(account, accountDb.getWallet(), session);

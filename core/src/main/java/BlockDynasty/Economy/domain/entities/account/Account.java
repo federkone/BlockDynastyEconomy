@@ -12,30 +12,35 @@ import java.util.*;
 public class Account implements IAccount {
     private final Player player;
     private Wallet wallet;
-    private boolean canReceiveCurrency ;
+    private boolean canReceiveCurrency;
+    private boolean blocked;
 
     public Account(UUID uuid, String nickname) {
         this.player = new Player(uuid.toString(), nickname);
         this.wallet = new Wallet();
+        this.blocked = false;
         this.canReceiveCurrency = true;
     }
 
-    public Account(UUID uuid, String nickname, List<Money> moneyList, boolean canReceiveCurrency) {
+    public Account(UUID uuid, String nickname, List<Money> moneyList, boolean canReceiveCurrency,boolean blocked) {
         this.player = new Player(uuid.toString(), nickname);
         this.wallet = new Wallet(moneyList);
         this.canReceiveCurrency = canReceiveCurrency;
+        this.blocked = blocked;
     }
 
-    public Account(String uuid, String nickname, Wallet wallet, boolean canReceiveCurrency) {
+    public Account(String uuid, String nickname, Wallet wallet, boolean canReceiveCurrency, boolean blocked) {
         this.player = new Player(uuid, nickname);
         this.wallet = wallet;
         this.canReceiveCurrency = canReceiveCurrency;
+        this.blocked = blocked;
     }
 
     public Account(Account account) {
         this.player = new Player(account.getPlayer());
         this.wallet = new Wallet(account.getWallet());
         this.canReceiveCurrency = account.canReceiveCurrency();
+        this.blocked = account.isBlocked();
     }
 
     public Result<Void> subtract(Currency currency, BigDecimal amount){
@@ -146,6 +151,15 @@ public class Account implements IAccount {
     }
     public boolean canReceiveCurrency() {
         return canReceiveCurrency;
+    }
+    public boolean isBlocked() {
+        return blocked;
+    }
+    public void block(){
+        this.blocked = true;
+    }
+    public void unblock(){
+        this.blocked = false;
     }
     public Player getPlayer() {
         return player;
