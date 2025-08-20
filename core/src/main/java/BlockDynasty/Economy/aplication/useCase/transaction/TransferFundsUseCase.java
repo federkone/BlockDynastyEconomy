@@ -36,83 +36,82 @@ public class TransferFundsUseCase {
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
         Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
-        if (!accountFromResult.isSuccess()) {
-            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
-        }
-
         Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
-        if (!accountToResult.isSuccess()) {
-            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
-        }
-
-        Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-
-        return performTransfer(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+        return execute(accountFromResult, accountToResult, currency, amount);
     }
 
     public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
         Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
+        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
+        return execute(accountFromResult, accountToResult, currency, amount);
+    }
+    //new
+    public Result<Void> execute(Result<Account> accountFromResult, Result<Account> accountToResult, String currency, BigDecimal amount) {
         if (!accountFromResult.isSuccess()) {
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
-
-        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
-
         Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
-        return performTransfer(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+        return performTransaction(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
     }
 
-    private Result<Void> performTransfer(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
-        //no debe pagarse a si mismo
+    private Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+        if(!currency.isTransferable()){
+            return Result.failure("Currency is not transferable", ErrorCode.CURRENCY_NOT_PAYABLE);
+        }
         if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
             return Result.failure("You can't transfer to yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
         if (!accountTo.canReceiveCurrency()) {
             return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
-        if(accountFrom.isBlocked()){
-            return  Result.failure("Sender is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        if (accountFrom.isBlocked()) {
+            return Result.failure("Sender account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }
-        if(accountTo.isBlocked()){
+        if (accountTo.isBlocked()) {
             return Result.failure("Target account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }
-
-        if(amount.compareTo(BigDecimal.ZERO) <= 0){
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
         }
-        if(!currency.isValidAmount(amount)){
+        if (!currency.isValidAmount(amount)) {
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
-        
-        Result<TransferResult> result = this.dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
-        if(!result.isSuccess()){
-            this.economyLogger.log("[TRANSFER Failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
+
+        Result<TransferResult> result = this.dataStore.transfer(accountFrom.getUuid().toString(), accountTo.getUuid().toString(), currency, amount);
+        if (!result.isSuccess()) {
+            logFailure(accountFrom, accountTo, currency, amount, result);
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        //actualizar cache con las cuentas contenidas en result
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getTo());
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getFrom());
-
-        //messageService.sendMessage(TransferResult, currency, amount, "transfer successful");
-        //.................
-        this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-        this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
-        this.economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
-        eventManager.emit(new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount));
-        //................
-
+        updateCacheAndEmitEvents(accountFrom, accountTo, currency, amount, result);
         return Result.success(null);
     }
+
+    private void updateCacheAndEmitEvents(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result) {
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getTo());
+        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getFrom());
+        this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
+        this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        logSuccess(accountFrom, accountTo, currency, amount);
+        emitEvent(accountFrom, accountTo, currency, amount);
+    }
+
+    protected void logSuccess(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
+        this.economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " send " + currency.format(amount) + " to " + accountTo.getNickname());
+    };
+
+    protected void logFailure(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result){
+        this.economyLogger.log("[TRANSFER Failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
+    };
+
+    protected void emitEvent(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
+        this.eventManager.emit(new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount));
+    };
 }

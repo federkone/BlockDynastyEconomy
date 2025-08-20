@@ -21,7 +21,7 @@ public abstract class ConnectionHibernate implements Connection {
             configuration.addAnnotatedClass(WalletDb.class);
         }
 
-        protected   void init(){
+        protected void init(){
             try {
                 this.sessionFactory = this.configuration.buildSessionFactory();
                 //sessionFactory = new Configuration().configure().buildSessionFactory(); //bildea la sesion con los parametros del archivo hibernate.cfg.xml

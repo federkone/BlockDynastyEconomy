@@ -16,111 +16,27 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class PayUseCase {
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final IRepository dataStore;
-    private final Courier updateForwarder;
+public class PayUseCase extends TransferFundsUseCase {
     private final Log economyLogger;
     private final EventManager eventManager;
-    private final SearchAccountUseCase searchAccountUseCase;
 
     public PayUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
                       Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.dataStore = dataStore;
-        this.updateForwarder = updateForwarder;
+        super( searchCurrencyUseCase, searchAccountUseCase, dataStore, updateForwarder, economyLogger, eventManager);
         this.economyLogger = economyLogger;
-        this.searchAccountUseCase = searchAccountUseCase;
         this.eventManager = eventManager;
     }
 
-    public Result<Void> execute(UUID userFrom, UUID userTo, String currencyName, BigDecimal amount) {
-        Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
-        if (!accountFromResult.isSuccess()) {
-            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
-        }
-
-        Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
-        if (!accountToResult.isSuccess()) {
-            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
-        }
-
-        Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-        return performPay(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+    @Override
+    protected void logSuccess(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+        this.economyLogger.log("[PAY] Account: " + accountFrom.getNickname() + " paid " + currency.format(amount) + " to " + accountTo.getNickname());
     }
-
-    public Result<Void> execute (String userFrom, String userTo, String currencyName, BigDecimal amount) {
-        Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
-        if (!accountFromResult.isSuccess()) {
-            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
-        }
-
-        Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
-        if (!accountToResult.isSuccess()) {
-            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
-        }
-
-        Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-        return performPay(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+    @Override
+    protected void logFailure(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result) {
+        this.economyLogger.log("[PAY Failed] Account: " + accountFrom.getNickname() + " paid " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
     }
-
-
-    private Result<Void> performPay (Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
-        //no se debe poder pagar a si mismo
-        if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
-            return Result.failure("You can't pay to yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
-        }
-
-        if (accountFrom.isBlocked()){
-            return Result.failure("Sender account is blocked", ErrorCode.ACCOUNT_BLOCKED);
-        }
-
-        if (accountTo.isBlocked()){
-            return Result.failure("Target account is blocked", ErrorCode.ACCOUNT_BLOCKED);
-        }
-
-        if (!accountTo.canReceiveCurrency()) {
-            return Result.failure("Target account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
-        }
-
-        if(amount.compareTo(BigDecimal.ZERO) <= 0){
-            return Result.failure("Amount must be greater than 0", ErrorCode.INVALID_AMOUNT);
-        }
-
-        if(!currency.isValidAmount(amount)){
-            return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
-        }
-
-        if(!currency.isPayable()){
-            return Result.failure("Currency is not payable", ErrorCode.CURRENCY_NOT_PAYABLE);
-        }
-
-
-        Result<TransferResult> result = dataStore.transfer(accountFrom.getUuid().toString(),accountTo.getUuid().toString(),currency, amount);
-        if(!result.isSuccess()){
-            this.economyLogger.log("[Pay failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
-            return Result.failure(result.getErrorMessage(), result.getErrorCode());
-        }
-
-        //actualizar cache con las cuentas contenidas en result
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getTo());
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getFrom());
-
-        //.................
-        this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-        this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
-        this.economyLogger.log("[Pay] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname());
+    @Override
+    protected void emitEvent(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         this.eventManager.emit(new PayEvent(accountFrom.getPlayer(), accountTo.getPlayer(), currency, amount));
-        //................
-
-        return Result.success(null);
     }
 }

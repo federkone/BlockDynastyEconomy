@@ -177,7 +177,7 @@ public class VaultHook extends AbstractEconomy {
             return false;
         }
         try{
-            createAccountUseCase.executeOffline(player.getUniqueId(),playerName);
+            createAccountUseCase.execute(player.getUniqueId(),playerName);
         }catch (Exception e){
             return false;
         }

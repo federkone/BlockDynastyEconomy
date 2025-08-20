@@ -29,8 +29,8 @@ public class CurrencyDb {
     @Column(name = "decimal_supported")
     private boolean decimalSupported ;
 
-    @Column(name = "payable")
-    private boolean payable ;
+    @Column(name = "transferable")
+    private boolean transferable ;
 
     @Column(name = "default_currency")
     private boolean defaultCurrency ;
@@ -96,12 +96,12 @@ public class CurrencyDb {
         this.decimalSupported = decimalSupported;
     }
 
-    public boolean isPayable() {
-        return payable;
+    public boolean isTransferable() {
+        return transferable;
     }
 
-    public void setPayable(boolean payable) {
-        this.payable = payable;
+    public void setTransferable(boolean transferable) {
+        this.transferable = transferable;
     }
 
     public boolean isDefaultCurrency() {
@@ -134,10 +134,10 @@ public class CurrencyDb {
         setPlural(currency.getPlural());
         setColor(currency.getColor());
         setDecimalSupported(currency.isDecimalSupported());
-        setPayable(currency.isPayable());
+        setTransferable(currency.isTransferable());
         setDefaultCurrency(currency.isDefaultCurrency());
         setDefaultBalance(currency.getDefaultBalance());
         setExchangeRate(currency.getExchangeRate());
-         setSymbol(currency.getSymbol());
+        setSymbol(currency.getSymbol());
     }
 }

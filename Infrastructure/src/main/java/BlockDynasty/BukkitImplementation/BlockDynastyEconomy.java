@@ -16,7 +16,7 @@ import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
 import BlockDynasty.BukkitImplementation.services.MessageService;
 import BlockDynasty.BukkitImplementation.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.logs.EconomyLogger;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 
 import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.api.Api;
@@ -56,9 +56,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
             api = new BlockDynastyEconomyApi(core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase());
             getServer().getServicesManager().register(Api.class, api, this, ServicePriority.Low);
 
-            UtilServer.consoleLog("Plugin enabled successfully!");
+            Console.log("§aPlugin enabled successfully!");
         } catch (Exception e) {
-            UtilServer.consoleLogError("An error occurred during plugin initialization: " + e.getMessage());
+            Console.logError("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -72,13 +72,13 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void initRepository() {
-        UtilServer.consoleLog("§a Initializing data store BlockDynastyEconomy...");
+        Console.log("Initializing data store BlockDynastyEconomy...");
         Result<IRepository> result = InitDatabase.init(this);
         if (result.isSuccess()) {
             repository = result.getValue();
-            UtilServer.consoleLog("§a Data store BlockDynastyEconomy initialized successfully.");
+            Console.log("Data store BlockDynastyEconomy initialized successfully.");
         } else {
-            UtilServer.consoleLogError(result.getErrorMessage());
+            Console.logError(result.getErrorMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
     }
@@ -102,10 +102,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Listener economyListener;
         if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
             economyListener = new EconomyListenerOnline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
-            UtilServer.consoleLog("Online mode is enabled. The plugin will use UUID to identify players.");
+            Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
             economyListener = new EconomyListenerOffline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
-            UtilServer.consoleLog("Online mode is disabled, The plugin will use NICKNAME to identify players.");
+            Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
 
         getServer().getPluginManager().registerEvents(economyListener, this);

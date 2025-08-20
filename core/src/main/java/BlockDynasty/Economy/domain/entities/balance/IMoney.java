@@ -5,7 +5,7 @@ import BlockDynasty.Economy.domain.result.Result;
 
 import java.math.BigDecimal;
 
-public interface IBalance {
+public interface IMoney {
     Result<Void> subtract(BigDecimal amount);
     Result<Void> add(BigDecimal amount);
     Result<Void> setAmount(BigDecimal amount);

@@ -18,7 +18,7 @@ public class CurrencyMapper {
         entity.setPlural(domain.getPlural());
         entity.setColor(domain.getColor()); // Si tu dominio tiene color
         entity.setDecimalSupported(domain.isDecimalSupported());
-        entity.setPayable(domain.isPayable());
+        entity.setTransferable(domain.isTransferable());
         entity.setDefaultCurrency(domain.isDefaultCurrency());
         entity.setDefaultBalance(domain.getDefaultBalance());
         entity.setExchangeRate(domain.getExchangeRate());
@@ -38,7 +38,7 @@ public class CurrencyMapper {
                 entity.getSymbol(),
                 entity.getColor(),
                 entity.isDecimalSupported(),
-                entity.isPayable(),
+                entity.isTransferable(),
                 entity.isDefaultCurrency(),
                 entity.getDefaultBalance(),
                 entity.getExchangeRate()

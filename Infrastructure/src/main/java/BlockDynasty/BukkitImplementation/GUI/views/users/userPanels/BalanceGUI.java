@@ -52,7 +52,7 @@ public class BalanceGUI extends PaginatedGUI<Money> {
         Currency currency = money.getCurrency();
         return createItem(Material.GOLD_INGOT,
                 "§6" + currency.getSingular(),
-                "§eBalance: §f" + ChatColor.valueOf(currency.getColor()) + currency.format(money.getAmount()));
+                "§eBalance: §f" + ChatColor.valueOf(currency.getColor()) + money.format());
     }
 
     @Override

@@ -7,7 +7,7 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -46,14 +46,14 @@ public class BungeeImpl implements PluginMessageListener {
                 String[] info = in.readUTF().split(",");
                 String type = info[0];
                 String name = info[1];
-                UtilServer.consoleLog(channelName + " - Received: " + type + " = " + name);
+                Console.debug(channelName + " - Received: " + type + " = " + name);
 
                 UUID uuid = UUID.fromString(name);
                 switch (type) {
                     case "account":
                         Player player = Bukkit.getPlayer(uuid);
                         if (player == null || !player.isOnline()) {
-                            UtilServer.consoleLog(channelName + " - User is not online. Skipping update.");
+                            Console.debug(channelName + " - User is not online. Skipping update.");
                             return;
                         }
 
@@ -62,7 +62,7 @@ public class BungeeImpl implements PluginMessageListener {
                             player.sendMessage("§a¡Cuenta bancaria actualizada, se ha realizado un depostio o extraccion en tu cuenta!");
                         }));
 
-                        UtilServer.consoleLog(channelName + " - Account " + name + " updated.");
+                        Console.debug(channelName + " - Account " + name + " updated.");
                         break;
                         //si es currency, traerlas de db y actualizar el cache/service
                     case "currency":
@@ -73,12 +73,12 @@ public class BungeeImpl implements PluginMessageListener {
                         }*/
                         break;
                     default:
-                        UtilServer.consoleLog(channelName + " - Unknown type: " + type);
+                        Console.debug(channelName + " - Unknown type: " + type);
                         break;
                 }
             }
         }catch (IOException exception){
-            UtilServer.consoleLogError(exception.getMessage());
+            Console.logError(exception.getMessage());
         }
     }
 }

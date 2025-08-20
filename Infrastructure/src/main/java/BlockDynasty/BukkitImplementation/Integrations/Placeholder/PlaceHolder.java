@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import org.bukkit.Bukkit;
@@ -10,12 +10,12 @@ public class PlaceHolder {
 
     public static void register(SearchAccountUseCase searchAccountUseCase, SearchCurrencyUseCase searchCurrencyUseCase){
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            UtilServer.consoleLog("PlaceholderAPI not found. Expansion won't be loaded.");
+            Console.log("PlaceholderAPI not found. Expansion won't be loaded.");
             return;
         }
         expansion = new PlaceHolderExpansion(searchAccountUseCase, searchCurrencyUseCase);
         expansion.register();
-        UtilServer.consoleLog("PlaceholderAPI Expansion registered successfully!");
+        Console.log("PlaceholderAPI Expansion registered successfully!");
     }
 
     public static void unregister(){

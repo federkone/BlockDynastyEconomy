@@ -45,7 +45,7 @@ public class CurrencyMongoDb {
         this.symbol = currency.getSymbol();
         this.color = currency.getColor();
         this.decimalSupported = currency.isDecimalSupported();
-        this.payable = currency.isPayable();
+        this.payable = currency.isTransferable();
         this.defaultCurrency = currency.isDefaultCurrency();
         this.defaultBalance = currency.getDefaultBalance();
         this.exchangeRate = currency.getExchangeRate();
@@ -59,7 +59,7 @@ public class CurrencyMongoDb {
         currency.setSymbol(this.symbol);
         currency.setColor(this.color);
         currency.setDecimalSupported(this.decimalSupported);
-        currency.setPayable(this.payable);
+        currency.setTransferable(this.payable);
         currency.setDefaultCurrency(this.defaultCurrency);
         currency.setDefaultBalance(this.defaultBalance);
         currency.setExchangeRate(this.exchangeRate);

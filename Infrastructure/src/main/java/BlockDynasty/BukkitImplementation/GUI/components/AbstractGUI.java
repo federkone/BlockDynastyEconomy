@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -99,6 +100,7 @@ public abstract class AbstractGUI implements IGUI {
             if (lore.length > 0) {
                 meta.setLore(Arrays.asList(lore));
             }
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             base.setItemMeta(meta);
         }
         return base;

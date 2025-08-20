@@ -3,7 +3,7 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.Integrations.vaultUnloked.VaultUnlockedHandler;
 import BlockDynasty.BukkitImplementation.utils.JavaUtil;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
@@ -15,12 +15,12 @@ public class Vault {
 
     public static void init(AccountsUseCase accountsUseCase, CurrencyUseCase currencyUseCase, TransactionsUseCase transactionsUseCase) {
         if (!plugin.getConfig().getBoolean("vault")) {
-            UtilServer.consoleLog("Vault integration is disabled.");
+            Console.log("Vault integration is disabled.");
             return;
         }
 
         if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-            UtilServer.consoleLog("Vault plugin not found. Vault integration will not be enabled.");
+            Console.log("Vault plugin not found. Vault integration will not be enabled.");
             return;
         }
 

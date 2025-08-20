@@ -13,13 +13,10 @@ public class Currency implements ICurrency{
     private String symbol ;
     private String color ;
     private boolean decimalSupported ;
-    private boolean payable ;
+    private boolean transferable;
     private boolean defaultCurrency ;
     private BigDecimal defaultBalance ;
     private double exchangeRate ;
-
-     //todo: cambiar nombre a transferible, ya que payable es mas una forma de transferir, por lo tanto necesitariamos bloquear la moneda para todo tipo de transacciones //transferable
-    //todo una vez hecho el cambio, en account los metodo trade y transfer, tengo que validar el caso de payable, y eliminar la pregunta en el caso de uso payUsecase
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
@@ -27,7 +24,7 @@ public class Currency implements ICurrency{
         this.color = "WHITE";
         this.symbol = "";
         this.decimalSupported = true;
-        this.payable = true;
+        this.transferable = true;
         this.defaultCurrency = false;
         this.uuid = uuid.toString();
         this.singular = singular;
@@ -40,18 +37,18 @@ public class Currency implements ICurrency{
         this.color = "WHITE";
         this.symbol = "";
         this.decimalSupported = true;
-        this.payable = true;
+        this.transferable = true;
         this.defaultCurrency = false;
     }
 
-    public Currency(UUID uuid, String singular, String plural, String symbol, String color, boolean decimalSupported, boolean payable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate) {
+    public Currency(UUID uuid, String singular, String plural, String symbol, String color, boolean decimalSupported, boolean transferable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate) {
         this.uuid = uuid.toString();
         this.singular = singular;
         this.plural = plural;
         this.symbol = symbol;
         this.color = color;
         this.decimalSupported = decimalSupported;
-        this.payable = payable;
+        this.transferable = transferable;
         this.defaultCurrency = defaultCurrency;
         this.defaultBalance = defaultBalance;
         this.exchangeRate = exchangeRate;
@@ -64,7 +61,7 @@ public class Currency implements ICurrency{
         this.symbol = currency.symbol;
         this.color = currency.color;
         this.decimalSupported = currency.decimalSupported;
-        this.payable = currency.payable;
+        this.transferable = currency.transferable;
         this.defaultCurrency = currency.defaultCurrency;
         this.defaultBalance = currency.defaultBalance;
         this.exchangeRate = currency.exchangeRate;
@@ -145,12 +142,12 @@ public class Currency implements ICurrency{
         this.defaultCurrency = defaultCurrency;
     }
 
-    public boolean isPayable() {
-        return this.payable;
+    public boolean isTransferable() {
+        return this.transferable;
     }
 
-    public void setPayable(boolean payable) {
-        this.payable = payable;
+    public void setTransferable(boolean transferable) {
+        this.transferable = transferable;
     }
 
     public boolean isDecimalSupported() {
@@ -194,7 +191,7 @@ public class Currency implements ICurrency{
                 ", symbol='" + symbol + '\'' +
                 ", color='" + color + '\'' +
                 ", decimalSupported=" + decimalSupported +
-                ", payable=" + payable +
+                ", transferable=" + transferable +
                 ", defaultCurrency=" + defaultCurrency +
                 ", defaultBalance=" + defaultBalance +
                 ", exchangeRate=" + exchangeRate +

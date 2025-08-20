@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 
 import java.math.BigDecimal;
 
-public class Money implements IBalance{
+public class Money implements IMoney{
     private Currency currency;
     private BigDecimal amount;
 
@@ -35,6 +35,10 @@ public class Money implements IBalance{
 
     public Currency getCurrency() {
         return currency;
+    }
+
+    public String format(){
+        return this.currency.format(amount);
     }
 
     public boolean hasEnough(BigDecimal amount){

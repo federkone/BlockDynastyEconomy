@@ -2,7 +2,7 @@ package BlockDynasty.BukkitImplementation.logs;
 
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import com.google.common.collect.Sets;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.UtilTime;
@@ -37,7 +37,7 @@ public abstract class AbstractLogger implements Log {
             try {
                 latest.createNewFile();
             } catch (IOException ex) {
-                UtilServer.consoleLogError(ex.getMessage());
+                Console.logError(ex.getMessage());
             }
         }
         this.toAdd = Sets.newHashSet();
@@ -57,7 +57,7 @@ public abstract class AbstractLogger implements Log {
             builder.append(message);
             writeToFile(builder.toString());
         } catch (IOException ex) {
-            UtilServer.consoleLogError(ex.getMessage());
+            Console.logError(ex.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class AbstractLogger implements Log {
 
                 zipping = false;
             } catch (Exception e) {
-               UtilServer.consoleLogError(e.getMessage());
+               Console.logError(e.getMessage());
             }
         }));
     }

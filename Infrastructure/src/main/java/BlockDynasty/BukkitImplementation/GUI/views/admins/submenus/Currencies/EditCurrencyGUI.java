@@ -34,7 +34,7 @@ public class EditCurrencyGUI extends AbstractGUI {
                         "§7Color: " + color + currency.getColor(),
                         "§7Beginning balance: " + color + currency.getDefaultBalance(),
                         "§7exchange rate: " + color + currency.getExchangeRate(),
-                        "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"),
+                        "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo"),
                         "§7Default currency: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"),
                         "§7Supports decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo")),
                 null);
@@ -60,26 +60,26 @@ public class EditCurrencyGUI extends AbstractGUI {
                 "§7Click to make this currency default"), f -> {
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
-                player.sendMessage("§a[Banco] §7" + currency.getSingular() + " is now the default currency.");
+                player.sendMessage("§a[Bank] §7" + currency.getSingular() + " is now the default currency.");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
         });
 
         // Toggle Payable button
         setItem(20, createItem(
-                        currency.isPayable() ? MaterialAdapter.getLimeConcrete(): MaterialAdapter.getRedConcrete(),
-                        currency.isPayable() ? "§aToggle Pagable: §aActivated" : "§cToggle Pagable: §cDisabled",
-                        "§7Click to " + (currency.isPayable() ? "Disable" : "Enable") + " the payment option"),
+                        currency.isTransferable() ? MaterialAdapter.getLimeConcrete(): MaterialAdapter.getRedConcrete(),
+                        currency.isTransferable() ? "Transferable: §aActivated" : "Transferable: §cDisabled",
+                        "§7Click to " + (currency.isTransferable() ? "Disable" : "Enable")),
                 f -> {
                     try {
                         editCurrencyUseCase.togglePayable(currency.getSingular());
-                        player.sendMessage("§a[Banco] §7Payment option changed");
+                        player.sendMessage("§a[Bank] §7Transfer option changed");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
-                        player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                        player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                         openEditCurrencyGUI();
                     }
                 });
@@ -95,15 +95,15 @@ public class EditCurrencyGUI extends AbstractGUI {
         // Toggle Decimals button
         setItem(24, createItem(
                         currency.isDecimalSupported() ?MaterialAdapter.getLimeConcrete() : MaterialAdapter.getRedConcrete(),
-                        currency.isDecimalSupported() ? "§aToggle Decimales: §aActivated" : "§cToggle Decimales: §cDisabled",
+                        currency.isDecimalSupported() ? "Decimals support: §aActivated" : "Decimals support: §cDisabled",
                         "§7Click para " + (currency.isDecimalSupported() ? "Disable" : "Enable") + " decimal support"),
                 f -> {
                     try {
                         editCurrencyUseCase.toggleDecimals(currency.getSingular());
-                        player.sendMessage("§a[Banco] §7Decimal support changed.");
+                        player.sendMessage("§a[Bank] §7Decimal support changed.");
                         openEditCurrencyGUI();
                     } catch (Exception e) {
-                        player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                        player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                         openEditCurrencyGUI();
                     }
                 });
@@ -130,10 +130,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                 double startBal = Double.parseDouble(s);
                 try {
                     editCurrencyUseCase.editStartBal(currency.getSingular(), startBal);
-                    player.sendMessage("§a[Banco] §7Initial balance updated correctly.");
+                    player.sendMessage("§a[Bank] §7Initial balance updated correctly.");
                     openEditCurrencyGUI();
                 } catch (Exception e) {
-                    player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                    player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                     openEditCurrencyGUI();
                 }
             }catch (NumberFormatException e){
@@ -149,10 +149,10 @@ public class EditCurrencyGUI extends AbstractGUI {
                 double rate = Double.parseDouble(s);
                 try {
                     editCurrencyUseCase.setCurrencyRate(currency.getSingular(), rate);
-                    player.sendMessage("§a[Banco] §7Exchange rate updated correctly.");
+                    player.sendMessage("§a[Bank] §7Exchange rate updated correctly.");
                     openEditCurrencyGUI();
                 } catch (Exception e) {
-                    player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                    player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                     openEditCurrencyGUI();
                 }
             } catch (NumberFormatException e) {
@@ -166,10 +166,10 @@ public class EditCurrencyGUI extends AbstractGUI {
         AnvilMenu.open(this,player,"Currency symbol:"+currency.getSingular(),currency.getSymbol(),s ->{
             try {
                 editCurrencyUseCase.editSymbol(currency.getSingular(), s);
-                player.sendMessage("§a[Banco] §7Symbol updated successfully.");
+                player.sendMessage("§a[Bank] §7Symbol updated successfully.");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
             return null;
@@ -180,10 +180,10 @@ public class EditCurrencyGUI extends AbstractGUI {
         AnvilMenu.open(this,player,"Singular Name",currency.getSingular(), s ->{
             try {
                 editCurrencyUseCase.setSingularName(currency.getSingular(), s);
-                player.sendMessage("§a[Banco] §7Singular name updated correctly.");
+                player.sendMessage("§a[Bank] §7Singular name updated correctly.");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+                player.sendMessage("§a[Bank] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
             return null;
@@ -194,10 +194,10 @@ public class EditCurrencyGUI extends AbstractGUI {
         AnvilMenu.open(this,player,"Plural Name", currency.getPlural(),s->{
             try {
                 editCurrencyUseCase.setPluralName(currency.getSingular(), s);
-                player.sendMessage("§a[Banco] §7Plural noun updated correctly.");
+                player.sendMessage("§a[Bank] §7Plural noun updated correctly.");
                 openEditCurrencyGUI();
             } catch (Exception e) {
-                player.sendMessage("§6[Banco] §cError: §e" + e.getMessage());
+                player.sendMessage("§6[Bank] §cError: §e" + e.getMessage());
                 openEditCurrencyGUI();
             }
             return null;

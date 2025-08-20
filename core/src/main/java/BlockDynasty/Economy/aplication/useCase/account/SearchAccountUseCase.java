@@ -12,6 +12,7 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//todo, transladar toda la logica propia de sincronizacion al servicio de cuenta que contiene la cache.
 public class SearchAccountUseCase {
     private final IAccountService accountService;
     private final IRepository dataStore;
@@ -53,7 +54,7 @@ public class SearchAccountUseCase {
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
        }//else { System.out.println("CAHCE HIT ->");}
-       return Result.success(account);
+       return Result.success(account); //podemos hacer un new Account(account); como programación defensiva, o elaborar un value Object para mostrar valores hacia el exterior
     }
 
     /**
@@ -73,7 +74,7 @@ public class SearchAccountUseCase {
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
        }//else { System.out.println("CAHCE HIT ->");}
-       return Result.success(account);
+       return Result.success(account); //podemos hacer un new Account(account); como programación defensiva, o elaborar un value Object para mostrar valores hacia el exterior
     }
 
     /**

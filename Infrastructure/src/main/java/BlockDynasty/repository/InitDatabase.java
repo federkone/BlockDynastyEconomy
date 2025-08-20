@@ -1,6 +1,6 @@
 package BlockDynasty.repository;
 
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import BlockDynasty.repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -41,7 +41,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateMysql(config.getString("mysql.host"), config.getInt("mysql.port"), config.getString("mysql.database"), config.getString("mysql.username"), config.getString("mysql.password")));
             return Result.success(repository);
         }catch (Exception e) {
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }
@@ -59,7 +59,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateH2(plugin.getDataFolder().getAbsolutePath()+"/database",enableServerConsole));
             return Result.success(repository);
         } catch (Exception e) {
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }
@@ -69,7 +69,7 @@ public class InitDatabase {
             IRepository repository = new RepositorySql(new ConnectionHibernateSQLite(plugin.getDataFolder().getAbsolutePath()));
             return Result.success(repository);
         } catch (Exception e) {
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
             return Result.failure("§cCannot load initial data from DataStore. Check your files, then try again.",null);
         }
     }

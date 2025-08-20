@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.scheduler;
 
 import BlockDynasty.BukkitImplementation.utils.JavaUtil;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.FoliaImplementation.scheduler.SchedulerFolia;
 
 public class SchedulerFactory {
@@ -16,10 +16,10 @@ public class SchedulerFactory {
 
         if(isFolia || isCanvas){
             schedulerInstance = SchedulerFolia.init();
-            UtilServer.consoleLog("Folia detected, applying Folia scheduler implementation.");
+            Console.log("Folia detected, applying Folia scheduler implementation.");
         }else{
             schedulerInstance = SchedulerBukkit.init();
-            UtilServer.consoleLog("Bukkit detected, applying Bukkit scheduler implementation.");
+            Console.log("Bukkit detected, applying Bukkit scheduler implementation.");
         }
         return schedulerInstance;
     }

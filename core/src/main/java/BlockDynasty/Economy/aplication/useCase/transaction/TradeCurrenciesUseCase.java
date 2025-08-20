@@ -16,7 +16,6 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-//TODO: TAMBIEN SE PODRIA COBRAR IMPUESTO POR TRADE
 public class TradeCurrenciesUseCase {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final IRepository dataStore;
@@ -38,36 +37,21 @@ public class TradeCurrenciesUseCase {
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
-        if (!accountFromResult.isSuccess()) {
-            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
-        }
-
         Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
-        if (!accountToResult.isSuccess()) {
-            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
-        }
-
-        Result<Currency> currencyFromResult =  this.searchCurrencyUseCase.getCurrency(currencyFromS);
-        if (!currencyFromResult.isSuccess()) {
-            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
-        }
-
-        Result<Currency> currencyToResult =  this.searchCurrencyUseCase.getCurrency(currencyToS);
-        if (!currencyToResult.isSuccess()) {
-            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
-        }
-
-        return performTrade(accountFromResult.getValue(), accountToResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
-
+        return execute(accountFromResult, accountToResult, currencyFromS, currencyToS, amountFrom, amountTo);
     }
 
     public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         Result<Account> accountFromResult =  this.searchAccountUseCase.getAccount(userFrom);
+        Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
+        return execute(accountFromResult, accountToResult, currencyFromS, currencyToS, amountFrom, amountTo);
+    }
+
+    private Result<Void> execute(Result<Account> accountFromResult,Result<Account> accountToResult,  String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
         if (!accountFromResult.isSuccess()) {
             return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
         }
 
-        Result<Account> accountToResult =  this.searchAccountUseCase.getAccount(userTo);
         if (!accountToResult.isSuccess()) {
             return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
         }
@@ -86,6 +70,10 @@ public class TradeCurrenciesUseCase {
     }
 
     private Result<Void> performTrade (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        if(!currencyFrom.isTransferable() || !currencyTo.isTransferable()){
+            return Result.failure("Currency not transferable", ErrorCode.CURRENCY_NOT_PAYABLE);
+        }
+
         if (accountFrom.getUuid().equals(accountTo.getUuid()) || accountFrom.getNickname().equals(accountTo.getNickname())) {
             return Result.failure("You can't trade with yourself", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }

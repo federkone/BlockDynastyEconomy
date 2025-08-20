@@ -129,7 +129,7 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean createAccount(@NotNull UUID accountID, @NotNull String name) {
-        Result<Account> result = createAccountUseCase.executeOffline(accountID, name);
+        Result<Account> result = createAccountUseCase.execute(accountID, name);
         return result.isSuccess();
     }
 

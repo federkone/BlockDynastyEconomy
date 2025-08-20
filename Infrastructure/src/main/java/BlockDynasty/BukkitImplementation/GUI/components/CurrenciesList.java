@@ -41,7 +41,9 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
         return createItem(Material.GOLD_INGOT,
                 color + currency.getSingular(),
                 "§7Singular: " + color + currency.getSingular(),
-                "§7Plural: " + color + currency.getPlural());
+                "§7Plural: " + color + currency.getPlural(),
+                "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo")
+        );
     }
 
     @Override

@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
 import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import org.bukkit.Bukkit;
@@ -13,13 +13,13 @@ public class TransactionsListener {
     //ejemplos:
     public static void register(EventManager eventManager, MessageService messageService) {
         eventManager.subscribe(PayEvent.class, event -> {
-            UtilServer.consoleLog("Event PayEvent emitted: " +event);
+            Console.debug("Event PayEvent emitted: " +event);
             //informar a ambos jugadores que se ha realizado la transaccion
             Player player = Bukkit.getPlayer(event.getPayer().getNickname());
             Player target = Bukkit.getPlayer(event.getReceived().getNickname());
 
             if (player == null || target == null) {
-                UtilServer.consoleLog("Player not found for PayEvent: " + event);
+                Console.debug("Player not found for PayEvent: " + event);
                 return;
             }
 
@@ -28,13 +28,13 @@ public class TransactionsListener {
         });
 
         eventManager.subscribe(ExchangeEvent.class, event -> {
-            UtilServer.consoleLog("Event ExchangeEvent emitted: "+event);
+            Console.debug("Event ExchangeEvent emitted: "+event);
             messageService.getExchangeSuccess(event.getFromCurrency().getSingular(), event.getAmount(), event.getToCurrency().getSingular());
         });
 
         //este evento se esta siendo ejecutado tambien por acceptOffer Use Case, lo cual puede servir como informe unificado para todos los casos de trade
         eventManager.subscribe(TradeEvent.class, event -> {
-            UtilServer.consoleLog("Event Trade emitted: "+event);
+            Console.debug("Event Trade emitted: "+event);
 
             //Player player = Bukkit.getPlayer(event.getFromPlayer().getNickname());
             //Player target = Bukkit.getPlayer(event.getToPlayer().getNickname());
@@ -46,14 +46,14 @@ public class TransactionsListener {
         });
 
         eventManager.subscribe(TransferEvent.class, event -> {
-            UtilServer.consoleLog("Event TransferEvent emitted: "+event);
+            Console.debug("Event TransferEvent emitted: "+event);
 
         });
 
 
         //no puedo informar aqui, ya que estas transacciones son invasivas y no se deben informar siempre al jugador
         eventManager.subscribe(DepositEvent.class, event -> {
-            UtilServer.consoleLog("Event DepositEvent emitted: " + event);
+            Console.debug("Event DepositEvent emitted: " + event);
 
             //Player player = Bukkit.getPlayer(event.getPlayer().getNickname());
             //if (player != null) {
@@ -64,11 +64,11 @@ public class TransactionsListener {
         });
 
         eventManager.subscribe(WithdrawEvent.class, event -> {
-            UtilServer.consoleLog("Event WithdrawEvent emitted: "+event);
+            Console.debug("Event WithdrawEvent emitted: "+event);
         });
 
         eventManager.subscribe(SetEvent.class, event -> {
-            UtilServer.consoleLog("Event SetEvent emitted: "+event);
+            Console.debug("Event SetEvent emitted: "+event);
         });
 
 

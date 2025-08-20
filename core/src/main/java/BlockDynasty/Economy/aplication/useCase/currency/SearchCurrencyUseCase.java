@@ -6,6 +6,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchCurrencyUseCase {
@@ -27,7 +28,7 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(currency);
+        return Result.success(new Currency(currency));
     }
 
     public Result<Currency>  getDefaultCurrency() {
@@ -40,11 +41,10 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(defaultCurrency);
-
+        return Result.success(new Currency(defaultCurrency));
     }
 
     public List<Currency> getCurrencies(){
-        return currencyService.getCurrencies();
+        return new ArrayList<>(currencyService.getCurrencies());
     }
 }

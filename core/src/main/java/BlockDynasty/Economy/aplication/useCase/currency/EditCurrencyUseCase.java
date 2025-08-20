@@ -147,7 +147,7 @@ public class EditCurrencyUseCase {
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
-        currency.setPayable(!currency.isPayable());
+        currency.setTransferable(!currency.isTransferable());
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());

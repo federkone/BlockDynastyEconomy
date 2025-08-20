@@ -1,5 +1,5 @@
 package BlockDynasty.repository.ConnectionHandler.Hibernate;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import org.h2.tools.Server;
 
 import java.sql.SQLException;
@@ -29,11 +29,11 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
                     "-baseDir",dbFilePath);
             webServer.start();
 
-            UtilServer.consoleLog("H2 console started at: http://localhost:8082"
+            Console.log("H2 console started at: http://localhost:8082"
                     + "\n                               ->  JDBC URL: jdbc:h2:file:" + dbFilePath + "/h2Database"
                     + "\n                               ->  User: sa , Password: Admin123" );
         } catch (SQLException e) {
-            UtilServer.consoleLogError("Failed to start H2 console: " + e.getMessage());
+            Console.logError("Failed to start H2 console: " + e.getMessage());
         }
 
 

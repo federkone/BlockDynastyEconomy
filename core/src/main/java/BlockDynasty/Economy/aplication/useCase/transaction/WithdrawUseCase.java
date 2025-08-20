@@ -32,22 +32,6 @@ public class WithdrawUseCase {
         this.eventManager = eventManager;
     }
 
-    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
-        if (!accountResult.isSuccess()) {
-            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
-        }
-        return this.execute(accountResult.getValue(), currencyName, amount);
-    }
-
-    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
-        if (!accountResult.isSuccess()) {
-            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
-        }
-        return this.execute(accountResult.getValue(), currencyName, amount);
-    }
-
     public Result<Void> execute(UUID targetUUID, BigDecimal amount) {
         return this.execute(targetUUID, null, amount);
     }
@@ -56,19 +40,26 @@ public class WithdrawUseCase {
         return this.execute(targetName, null, amount);
     }
 
-    private Result<Void> execute(Account account, String currencyName, BigDecimal amount) {
-        Result<Currency> currencyResult = this.getCurrency(currencyName);
+    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
+        return this.execute(accountResult, currencyName, amount);
+    }
+
+    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
+        return this.execute(accountResult, currencyName, amount);
+    }
+
+    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount) {
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
+
+        Result<Currency> currencyResult = currencyName == null ? this.searchCurrencyUseCase.getDefaultCurrency() : this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
-        return performWithdraw(account, currencyResult.getValue(), amount);
-    }
-
-    private Result<Currency> getCurrency(String currencyName) {
-        if (currencyName == null) {
-            return this.searchCurrencyUseCase.getDefaultCurrency();
-        }
-        return this.searchCurrencyUseCase.getCurrency(currencyName);
+        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
     }
 
     private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {

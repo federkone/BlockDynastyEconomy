@@ -18,8 +18,8 @@ public interface ICurrency {
      void setStartBalance(BigDecimal startBalance);
      void setDefaultBalance(BigDecimal defaultBalance);
      void setDefaultCurrency(boolean defaultCurrency);
-     boolean isPayable();
-     void setPayable(boolean payable);
+     boolean isTransferable();
+     void setTransferable(boolean transferable);
      boolean isDecimalSupported();
      void setDecimalSupported(boolean decimalSupported);
      String getColor();

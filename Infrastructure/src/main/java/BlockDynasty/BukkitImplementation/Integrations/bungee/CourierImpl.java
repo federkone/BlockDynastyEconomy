@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.Integrations.bungee;
 
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public class CourierImpl implements Courier {
     }
     public void sendUpdateMessage(String type, String name) {
         if (Bukkit.getOnlinePlayers().isEmpty()) {
-            UtilServer.consoleLog(channelName + " - Player is Null. Cancelled.");
+            Console.debug(channelName + " - Player is Null. Cancelled.");
             return;
         }
         try {
@@ -46,7 +46,7 @@ public class CourierImpl implements Courier {
 
         } catch (IOException e) {
             //plugin.getLogger().severe("Failed to send plugin message: " + e.getMessage());
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
         }
     }
 

@@ -30,7 +30,7 @@ public class EconomyListenerOffline extends  EconomyListenerOnline {
             return;
         }
 
-        Result<Account> creationResult = createAccountUseCase.executeOffline(player.getUniqueId(), player.getName());
+        Result<Account> creationResult = createAccountUseCase.execute(player.getUniqueId(), player.getName());
         if (!creationResult.isSuccess()) {
             //player.kick(Component.text("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador."));
             player.kickPlayer("Error al crear o cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");

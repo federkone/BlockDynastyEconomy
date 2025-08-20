@@ -36,24 +36,18 @@ public class SetBalanceUseCase {
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetUUID);
-        if (!accountResult.isSuccess()) {
-            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
-        }
-
-        Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-        return performSet(accountResult.getValue(), currencyResult.getValue(), amount);
+        return execute(accountResult, currencyName, amount);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetName);
+        return execute(accountResult,currencyName,amount);
+    }
+
+    private Result<Void> execute(Result<Account> accountResult,String currencyName, BigDecimal amount){
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
-
         Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currencyName);
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());

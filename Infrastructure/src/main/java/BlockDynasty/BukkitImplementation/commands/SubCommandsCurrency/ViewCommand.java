@@ -40,7 +40,7 @@ public class ViewCommand implements CommandExecutor {
             sender.sendMessage(Message.getPrefix() + "§7Start Balance: " + ChatColor.valueOf(currency.getColor()) + currency.format(currency.getDefaultBalance()) + "§7.");
             sender.sendMessage(Message.getPrefix() + "§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"));
             sender.sendMessage(Message.getPrefix() + "§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"));
-            sender.sendMessage(Message.getPrefix() + "§7Payable: " + (currency.isPayable() ? "§aYes" : "§cNo"));
+            sender.sendMessage(Message.getPrefix() + "§7Payable: " + (currency.isTransferable() ? "§aYes" : "§cNo"));
             sender.sendMessage(Message.getPrefix() + "§7Rate: " + ChatColor.valueOf(currency.getColor()) + currency.getExchangeRate());
 
         }));

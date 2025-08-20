@@ -12,12 +12,11 @@ public class BankGUICommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cOnly players can use this command.");
             return true;
         }
 
-        Player player = (Player) sender;
         GUIFactory.bankPanel(player).open();
         return true;
     }

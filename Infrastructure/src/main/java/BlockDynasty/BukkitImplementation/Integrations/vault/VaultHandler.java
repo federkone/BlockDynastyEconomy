@@ -5,7 +5,7 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
@@ -39,9 +39,9 @@ public class VaultHandler implements  IVaultHandler {
             ServicesManager sm = Bukkit.getServicesManager();
             sm.register(Economy.class, this.economy, plugin, ServicePriority.Highest);
 
-            UtilServer.consoleLog("Vault link enabled.");
+            Console.log("Vault link enabled.");
         } catch (Exception e) {
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
         }
     }
 

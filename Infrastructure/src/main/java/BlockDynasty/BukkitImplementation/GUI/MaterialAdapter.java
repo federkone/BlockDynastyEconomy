@@ -1,10 +1,13 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
+import BlockDynasty.BukkitImplementation.utils.Version;
 import org.bukkit.Material;
 
+import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @SuppressWarnings("deprecation")
@@ -17,27 +20,27 @@ import java.util.Collections;
 public class MaterialAdapter {
 
     public static Material getLimeDye() {
-        if (isLegacy()) return Material.SLIME_BALL;
+        if (Version.isLegacy()) return Material.SLIME_BALL;
         return Material.LIME_DYE;
     }
 
     public static Material getLimeConcrete() {
-        if (isLegacy()) return Material.EMERALD_BLOCK;
+        if (Version.isLegacy()) return Material.EMERALD_BLOCK;
         return Material.LIME_CONCRETE;
     }
 
     public static Material getRedConcrete() {
-        if (isLegacy()) return Material.REDSTONE_BLOCK;
+        if (Version.isLegacy()) return Material.REDSTONE_BLOCK;
         return Material.RED_CONCRETE;
     }
 
     public static Material getPlayerHead() {
-        if (isLegacy()) return Material.valueOf("SKULL_ITEM"); // 1.8-1.12
+        if (Version.isLegacy()) return Material.valueOf("SKULL_ITEM"); // 1.8-1.12
         return Material.PLAYER_HEAD; // 1.13+
     }
 
     public static ItemStack getPanelGlass(){
-        if (isLegacy()) {
+        if (Version.isLegacy()) {
             return new ItemStack(Material.valueOf("THIN_GLASS"));
         }else {
             return new ItemStack(Material.GLASS_PANE);
@@ -45,7 +48,7 @@ public class MaterialAdapter {
     }
 
     public static ItemStack createPlayerHead(String playerName) {
-        if(isLegacy()){
+        if(Version.isLegacy()){
             ItemStack skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
             meta.setOwner(playerName);
@@ -64,7 +67,7 @@ public class MaterialAdapter {
     }
 
     public static ItemStack adaptWool(String material) {
-        if (!isLegacy()) {
+        if (!Version.isLegacy()) {
             return new ItemStack(Material.getMaterial(material));
         }
 
@@ -75,6 +78,14 @@ public class MaterialAdapter {
             return new ItemStack(legacyWool, 1, data);
         } catch (IllegalArgumentException ignored) {
             return new ItemStack(Material.PAPER);
+        }
+    }
+
+    public static Sound getClickSound() {
+        if (Version.match("1.8", "1.9", "1.10","1.11")) {
+            return Sound.valueOf("CLICK");
+        } else {
+            return Sound.UI_BUTTON_CLICK;
         }
     }
 
@@ -120,8 +131,5 @@ public class MaterialAdapter {
         }
     }
 
-    public static boolean isLegacy() {
-        String version = org.bukkit.Bukkit.getBukkitVersion(); // "1.8.8-R0.1-SNAPSHOT"
-        return version.startsWith("1.8") || version.startsWith("1.9") || version.startsWith("1.10") || version.startsWith("1.11") || version.startsWith("1.12");
-    }
+
 }

@@ -2,7 +2,7 @@ package BlockDynasty.BukkitImplementation.Integrations.vaultUnloked;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.Integrations.vault.IVaultHandler;
-import BlockDynasty.BukkitImplementation.utils.UtilServer;
+import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
@@ -34,9 +34,9 @@ public class VaultUnlockedHandler implements IVaultHandler {
             ServicesManager sm = Bukkit.getServicesManager();
             sm.register(Economy.class, this.vaultUnlockedHook, plugin, ServicePriority.Highest);
 
-            UtilServer.consoleLog("Vault Unlocked detect, link enabled.");
+            Console.log("Vault Unlocked detect, link enabled.");
         } catch (Exception e) {
-            UtilServer.consoleLogError(e.getMessage());
+            Console.logError(e.getMessage());
         }
     }
 
