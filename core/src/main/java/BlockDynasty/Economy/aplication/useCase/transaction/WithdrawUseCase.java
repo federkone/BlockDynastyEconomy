@@ -82,11 +82,10 @@ public class WithdrawUseCase {
         }
 
         this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
-
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount));
 
-    return Result.success(null);
+        return Result.success(null);
     }
 }

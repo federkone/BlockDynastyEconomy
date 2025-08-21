@@ -17,7 +17,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditCurrencyGUI( Player player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parentGUI) {
-        super("Edit Currency: " + currency.getSingular(), 4,player, parentGUI);
+        super("Edit Currency: " + currency.getSingular(), 5,player, parentGUI);
         this.player = player;
         this.currency = currency;
         this.editCurrencyUseCase =editCurrencyUseCase;
@@ -28,7 +28,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     private void setupGUI() {
         // Current currency info
         ChatColor color = ChatColor.valueOf(currency.getColor());
-        setItem(4, createItem(Material.GOLD_INGOT,
+        setItem(13, createItem(Material.GOLD_INGOT,
                         color + currency.getSingular() + " / " + currency.getPlural(),
                         "§7Symbol: " + color + currency.getSymbol(),
                         "§7Color: " + color + currency.getColor(),
@@ -40,23 +40,23 @@ public class EditCurrencyGUI extends AbstractGUI {
                 null);
 
         // Edit Start Balance button
-        setItem(10, createItem(Material.EMERALD_BLOCK, "§aEdit Opening Balance",
+        setItem(11, createItem(Material.EMERALD_BLOCK, "§aEdit Opening Balance",
                 "§7Click to modify the initial balance"), f -> {openStartBalanceInput();});
 
         // Set Currency Rate button
-        setItem(12, createItem(Material.GOLD_NUGGET, "§eSet Exchange Rate",
+        setItem(13, createItem(Material.GOLD_NUGGET, "§eSet Exchange Rate",
                 "§7Click to modify the exchange rate"), f -> {openExchangeRateInput();});
 
         // Edit Color button
-        setItem(14, createItem(MaterialAdapter.getLimeDye(), "§aEdit Color",
+        setItem(15, createItem(MaterialAdapter.getLimeDye(), "§aEdit Color",
                 "§7Click to change the color of the currency"), f -> {openColorSelectionGUI();});
 
         // Edit Symbol button
-        setItem(16, createItem(Material.NAME_TAG, "§eEdit Symbol",
+        setItem(20, createItem(Material.NAME_TAG, "§eEdit Symbol",
                 "§7Click to change the currency symbol"), f -> {openSymbolInput();});
 
         // Set Default Currency button
-        setItem(28, createItem(Material.NETHER_STAR, "§bSet as Default",
+        setItem(22, createItem(Material.NETHER_STAR, "§bSet as Default",
                 "§7Click to make this currency default"), f -> {
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
@@ -69,7 +69,7 @@ public class EditCurrencyGUI extends AbstractGUI {
         });
 
         // Toggle Payable button
-        setItem(20, createItem(
+        setItem(24, createItem(
                         currency.isTransferable() ? MaterialAdapter.getLimeConcrete(): MaterialAdapter.getRedConcrete(),
                         currency.isTransferable() ? "Transferable: §aActivated" : "Transferable: §cDisabled",
                         "§7Click to " + (currency.isTransferable() ? "Disable" : "Enable")),
@@ -85,18 +85,18 @@ public class EditCurrencyGUI extends AbstractGUI {
                 });
 
         // Edit Singular Name button
-        setItem(30, createItem(Material.PAPER, "§eEdit Singular Name",
+        setItem(29, createItem(Material.PAPER, "§eEdit Singular Name",
                 "§7Click to change the singular name"), f -> {openSingularNameInput();});
 
         // Edit Plural Name button
-        setItem(32, createItem(Material.BOOK, "§eEdit Plural Name",
+        setItem(31, createItem(Material.BOOK, "§eEdit Plural Name",
                 "§7Click to change the plural name"), f -> {openPluralNameInput();});
 
         // Toggle Decimals button
-        setItem(24, createItem(
+        setItem(33, createItem(
                         currency.isDecimalSupported() ?MaterialAdapter.getLimeConcrete() : MaterialAdapter.getRedConcrete(),
                         currency.isDecimalSupported() ? "Decimals support: §aActivated" : "Decimals support: §cDisabled",
-                        "§7Click para " + (currency.isDecimalSupported() ? "Disable" : "Enable") + " decimal support"),
+                        "§7Click to " + (currency.isDecimalSupported() ? "Disable" : "Enable") + " decimal support"),
                 f -> {
                     try {
                         editCurrencyUseCase.toggleDecimals(currency.getSingular());
@@ -109,19 +109,18 @@ public class EditCurrencyGUI extends AbstractGUI {
                 });
 
         // Back button
-        setItem(34, createItem(Material.BARRIER, "§cBack",
+        setItem(40, createItem(Material.BARRIER, "§cBack",
                 "§7Click to go back"), f -> {
-            GUIFactory.currencyListToEditPanel( player, this.getParent().getParent()).open();
-            //this.openParent();
+            GUIFactory.currencyListToEditPanel(player, this.getParent().getParent()).open();
         });
-    }
-
-    private void openColorSelectionGUI() {
-        GUIFactory.colorSelectorPanel(player,currency,this).open();
     }
 
     private void openEditCurrencyGUI() {
         GUIFactory.editCurrencyPanel(player, currency, this.getParent()).open();
+    }
+
+    private void openColorSelectionGUI() {
+        GUIFactory.colorSelectorPanel(player,currency,this).open();
     }
 
     private void openStartBalanceInput(){
@@ -163,7 +162,7 @@ public class EditCurrencyGUI extends AbstractGUI {
     }
 
     private void openSymbolInput(){
-        AnvilMenu.open(this,player,"Currency symbol:"+currency.getSingular(),currency.getSymbol(),s ->{
+        AnvilMenu.open(this,player,"Symbol:"+currency.getSingular(),currency.getSymbol(),s ->{
             try {
                 editCurrencyUseCase.editSymbol(currency.getSingular(), s);
                 player.sendMessage("§a[Bank] §7Symbol updated successfully.");
@@ -203,5 +202,4 @@ public class EditCurrencyGUI extends AbstractGUI {
             return null;
         });
     }
-
 }

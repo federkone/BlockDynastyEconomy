@@ -30,7 +30,7 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
     @Override
     protected void addCustomButtons() {
         setItem(39, createItem(Material.NAME_TAG, "§aSearch Player",
-                        "§7Click to search for a player by name"),
+                        "§7Click to search for a player by name, CaseSensitive"),
                 unused -> openAnvilSearch(unused));
     }
 

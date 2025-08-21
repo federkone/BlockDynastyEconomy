@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 public class CreateCurrencyGUI {
     private final Player player;
     private final CreateCurrencyUseCase createCurrencyUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
+    //private final SearchCurrencyUseCase searchCurrencyUseCase;
     private String singularName;
     private final IGUI parent;
 
@@ -21,7 +21,7 @@ public class CreateCurrencyGUI {
         this.parent = parent;
         this.player = player;
         this.createCurrencyUseCase = createCurrencyUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
+        //this.searchCurrencyUseCase = searchCurrencyUseCase;
         openSingularNameInput();
     }
 
@@ -43,15 +43,16 @@ public class CreateCurrencyGUI {
     private void createCurrency(String singular, String plural) {
         try {
             createCurrencyUseCase.createCurrency(singular, plural);
-            player.sendMessage("§6[Banco] §aThe currency §e" + singular + "§a has been created successfully.");
+            player.sendMessage("§6[Bank] §aThe currency §e" + singular + "§a has been created successfully.");
 
-            Result<Currency> result = searchCurrencyUseCase.getCurrency(singular);
-            if (result.isSuccess()) {
-                GUIFactory.editCurrencyPanel(player, result.getValue(), parent).open();
-            }
+            //Result<Currency> result = searchCurrencyUseCase.getCurrency(singular);
+            //if (result.isSuccess()) {
+            //    GUIFactory.editCurrencyPanel(player, result.getValue(), parent).open();
+            //}
+            GUIFactory.currencyPanel(player, parent).open();
         }
         catch (CurrencyException e) {
-            player.sendMessage("§6[Banco] §cError creating currency: §e" + e.getMessage());
+            player.sendMessage("§6[Bank] §cError creating currency: §e" + e.getMessage());
             player.closeInventory();
         }
     }

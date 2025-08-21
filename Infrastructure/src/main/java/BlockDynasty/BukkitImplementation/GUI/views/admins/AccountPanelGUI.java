@@ -8,8 +8,10 @@ import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Player;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountPanelGUI extends AccountsList {
@@ -27,13 +29,20 @@ public class AccountPanelGUI extends AccountsList {
 
             //test
             //for (int i=0; i < 45 ; i++) {
-            //    players.add(new Player("empty", "empty"));
-           // }
+            //   players.add(new Player("empty", "empty"));
+            //}
 
             showPlayers(players);
         }
     }
 
+    @Override
+    protected void addCustomButtons(){
+        super.addCustomButtons();
+        setItem(4, createItem(Material.PAPER, "§aSelect Account to edit",
+                        Arrays.asList("§7Click to select an account, or search by name")),
+                unused -> {});
+    }
     @Override
     public Player findPlayerByName(String playerName) {
         Result<Account> result = searchAccountUseCase.getAccount(playerName);

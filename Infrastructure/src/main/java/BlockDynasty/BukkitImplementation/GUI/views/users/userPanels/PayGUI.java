@@ -36,6 +36,7 @@ public class PayGUI extends AccountsList {
     }
     @Override
     public void addCustomButtons(){
+        super.addCustomButtons(); // Call the parent method to add the default buttons accountList
         setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Player to Pay",
                 List.of("§7Click to select the player you want to pay")), unused -> {});
     }

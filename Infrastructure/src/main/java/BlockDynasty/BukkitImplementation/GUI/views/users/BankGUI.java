@@ -24,7 +24,7 @@ public class BankGUI extends AbstractGUI {
 
     private void setupGUI() {
         // Balance option
-        setItem(4, createItem(Material.BOOK, "§6See Balance",
+        setItem(13, createItem(Material.BOOK, "§6See Balance",
                 "§7Click to see your balance"), unused -> {
             GUIFactory.balancePanel(player,this).open();
         });
@@ -48,9 +48,9 @@ public class BankGUI extends AbstractGUI {
 
         boolean isBlocked = searchAccountUseCase.getAccount(player.getUniqueId()).getValue().isBlocked();
         if (isBlocked) {
-            setItem(13, createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Your account is temporary blocked"), f -> {});
+            setItem(4, createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Your account is temporary blocked"), f -> {});
         } else{
-            setItem(13, createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Your account is allowed to do transactions"), f -> {});
+            setItem(4, createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Your account is allowed to do transactions"), f -> {});
         }
     }
 }

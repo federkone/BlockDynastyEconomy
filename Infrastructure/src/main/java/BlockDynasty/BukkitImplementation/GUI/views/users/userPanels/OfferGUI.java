@@ -20,6 +20,7 @@ public class OfferGUI extends PayGUI{
 
     @Override
     public void addCustomButtons() {
+        super.addCustomButtons();
         setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Player to Offer",
                         Arrays.asList("§7Click to select the player you want to offer", "§7And before that, the Currencies")),
                 unused -> {});

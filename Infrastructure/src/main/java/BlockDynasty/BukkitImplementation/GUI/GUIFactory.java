@@ -4,6 +4,9 @@ import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.AccountPanelGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.AdminPanelGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.CurrencyPanelGUI;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts.CurrencyListToDeposit;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts.CurrencyListToSet;
+import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts.CurrencyListToWithdraw;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Accounts.EditAccountGUI;
 import BlockDynasty.BukkitImplementation.GUI.views.admins.submenus.Currencies.*;
 import BlockDynasty.BukkitImplementation.GUI.views.users.BankGUI;
@@ -17,6 +20,7 @@ import org.bukkit.entity.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import java.util.UUID;
 
+//this is a General Tree concept.., we can rework this later
 public class GUIFactory {
     private static CurrencyUseCase currencyUseCase;
     private static AccountsUseCase accountsUseCase;
@@ -80,7 +84,7 @@ public class GUIFactory {
                     public static IGUI colorSelectorPanel(Player sender,Currency currency, EditCurrencyGUI parent) {
                     return new ColorSelectionGUI( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent);
                 }
-
+//_-------------------------------------------------------------------------------
 
     //main bank user panel
     public static IGUI bankPanel(Player sender) {

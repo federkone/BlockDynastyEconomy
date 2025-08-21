@@ -20,24 +20,24 @@ public class DepositUseCase {
     private final IRepository dataStore;
     private final Courier updateForwarder;
     private final EventManager eventManager;
-    private final Log economyLogger;
+    private final Log logger;
     private final SearchAccountUseCase searchAccountUseCase;
 
-    public DepositUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
+    public DepositUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
-        this.economyLogger = economyLogger;
+        this.logger = logger;
         this.eventManager = eventManager;
         this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Void> execute(UUID targetUUID, BigDecimal amount) {
-        return execute(targetUUID, null, amount);
+        return this.execute(targetUUID, null, amount);
     }
 
     public Result<Void> execute(String targetName, BigDecimal amount) {
-        return execute(targetName, null, amount);
+        return this.execute(targetName, null, amount);
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
@@ -63,11 +63,12 @@ public class DepositUseCase {
     }
 
     private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
-        if (account.isBlocked()){
-            return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
-        }
         if (!account.canReceiveCurrency()) {
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
+        }
+
+        if (account.isBlocked()){
+            return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0){
@@ -80,13 +81,13 @@ public class DepositUseCase {
 
         Result<Account> result = dataStore.deposit(account.getUuid().toString(), currency, amount);
         if(!result.isSuccess()){
-            this.economyLogger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
+            this.logger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
         this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
-        this.economyLogger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
+        this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount));
 
         return Result.success(null);

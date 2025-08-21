@@ -38,7 +38,7 @@ public class CurrencyPanelGUI extends AbstractGUI {
         // Toggle Features button
         setItem(16, createItem(Material.PAPER, "§bConfig Features",
                 "§7Click"), unused -> {
-            player.sendMessage("§a[Banco] §7This feature is not implemented yet.");
+            player.sendMessage("§a[Bank] §7This feature is not implemented yet.");
         });
 
         // Exit button

@@ -104,7 +104,6 @@ public class SearchAccountUseCase {
             syncWalletWithSystemCurrencies(account);
             try {
                 dataStore.saveAccount(account);
-                System.out.println("Cuenta guardada con el nuevo balance.");
             } catch (TransactionException e) {
                 throw new TransactionException("Error in transaction", e);
             }

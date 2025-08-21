@@ -46,6 +46,13 @@ public class MaterialAdapter {
             return new ItemStack(Material.GLASS_PANE);
         }
     }
+    public static ItemStack getBluePanelGlass(){
+        if (Version.isLegacy()) {
+            return new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1,(short)11);
+        }else {
+            return new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
+        }
+    }
 
     public static ItemStack createPlayerHead(String playerName) {
         if(Version.isLegacy()){

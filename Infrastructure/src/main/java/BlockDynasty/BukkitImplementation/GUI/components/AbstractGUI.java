@@ -123,11 +123,28 @@ public abstract class AbstractGUI implements IGUI {
         return base;
     }
 
-    private void fill() {
+    /*private void fill() {
         ItemStack filler = MaterialAdapter.getPanelGlass();
 
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             setItem(slot, filler, null);   //filler can be null for empty slots
+        }
+    }*/
+
+    private void fill() {
+        ItemStack filler = MaterialAdapter.getPanelGlass();
+        ItemStack blueGlass = MaterialAdapter.getBluePanelGlass();
+
+        int rows = inventory.getSize() / 9;
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < 9; col++) {
+                int slot = row * 9 + col;
+                if (row == 0 || row == rows - 1 || col == 0 || col == 8) {
+                    setItem(slot, blueGlass, null); // Rellena el contorno con cristal azul
+                } else {
+                    setItem(slot, filler, null); // Deja el resto vacío
+                }
+            }
         }
     }
     protected void clearGui(){
