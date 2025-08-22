@@ -26,7 +26,12 @@ public class GUIService {
 
         if (gui != null && event.getView().getTitle().equals(gui.getTitle())) {
             event.setCancelled(true);
-            gui.handleClick(event.getRawSlot(), player);
+            if(event.isRightClick()){
+                gui.handleRightClick(event.getRawSlot(), player);
+            }else if (event.isLeftClick()) {
+                gui.handleLeftClick(event.getRawSlot(), player);
+            }
+
             player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
         }
     }

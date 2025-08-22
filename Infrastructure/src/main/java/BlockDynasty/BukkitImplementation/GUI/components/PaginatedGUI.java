@@ -37,6 +37,7 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
         if (items.isEmpty()) {
             setItem(getEmptyMessageSlot(), createEmptyMessage(), null);
             setItem(getBackButtonSlot(), createBackButton(), unused -> this.openParent());
+            addCustomButtons();
             return;
         }
 
@@ -45,7 +46,7 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
         for (int i = startIndex; i < endIndex; i++) {
             T item = items.get(i);
             final T finalItem = item; // Make final for lambda
-            setItem(slot, createItemFor(item), unused -> handleItemClick(finalItem));
+            setItem(slot, createItemFor(item), unused -> handleLeftItemClick(finalItem),unused -> handleRightItemClick(finalItem));
             slot = getNextSlot(slot);
         }
 
@@ -73,9 +74,8 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
 
     // Abstract methods
     protected abstract ItemStack createItemFor(T item);
-    protected void handleItemClick(T item){
-
-    };
+    protected void handleLeftItemClick(T item){};
+    protected void handleRightItemClick(T item){};
     protected  int getStartingSlot(){
         // Default starting slot is 10, can be overridden
         return 10;

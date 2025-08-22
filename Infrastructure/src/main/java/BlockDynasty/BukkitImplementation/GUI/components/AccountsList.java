@@ -22,7 +22,7 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
     }
 
     @Override
-    protected void handleItemClick(Player player) {
+    protected void handleLeftItemClick(Player player) {
         openNextSection(player);
     }
 

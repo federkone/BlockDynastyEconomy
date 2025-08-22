@@ -22,7 +22,8 @@ public abstract class AbstractGUI implements IGUI {
     private final Inventory inventory;
     private final Player owner;
     private final String title;
-    private final Map<Integer, Consumer<Player>> actions = new HashMap<>();
+    private final Map<Integer, Consumer<Player>> leftClickActions = new HashMap<>();
+    private final Map<Integer, Consumer<Player>> rightClickActions = new HashMap<>();
     private IGUI parent; // Optional parent GUI for nested GUIs
 
     public AbstractGUI(String title, int rows,Player owner) {
@@ -62,8 +63,16 @@ public abstract class AbstractGUI implements IGUI {
     }
 
     @Override
-    public void handleClick(int slot, Player player) {
-        Consumer<Player> action = actions.get(slot);
+    public void handleRightClick(int slot, Player player) {
+        Consumer<Player> action = rightClickActions.get(slot);
+        if (action != null) {
+            action.accept(player);
+        }
+    }
+
+    @Override
+    public void handleLeftClick(int slot, Player player) {
+        Consumer<Player> action = leftClickActions.get(slot);
         if (action != null) {
             action.accept(player);
         }
@@ -79,12 +88,27 @@ public abstract class AbstractGUI implements IGUI {
         return title;
     }
 
-    protected void setItem(int slot, ItemStack item, Consumer<Player> action) {
+    protected void setItem(int slot, ItemStack item, Consumer<Player> leftClickAction) {
         inventory.setItem(slot, item);
-        if (item == null || action == null) {
-            actions.remove(slot);
+        if (item == null || leftClickAction == null) {
+            leftClickActions.remove(slot);
         } else {
-            actions.put(slot, action);
+            leftClickActions.put(slot, leftClickAction);
+        }
+    }
+
+    protected void setItem(int slot, ItemStack item, Consumer<Player>leftClickAction ,Consumer<Player> rightClickAction) {
+        inventory.setItem(slot, item);
+        if (item == null || rightClickAction == null) {
+            rightClickActions.remove(slot);
+        } else {
+            rightClickActions.put(slot, rightClickAction);
+        }
+
+        if (item == null || leftClickAction == null) {
+            leftClickActions.remove(slot);
+        } else {
+            leftClickActions.put(slot, leftClickAction);
         }
     }
 

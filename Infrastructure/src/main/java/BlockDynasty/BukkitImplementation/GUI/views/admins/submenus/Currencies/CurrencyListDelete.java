@@ -24,7 +24,7 @@ public class CurrencyListDelete extends CurrenciesList {
     }
 
     @Override
-    public void handleItemClick(Currency currency) {
+    public void handleLeftItemClick(Currency currency) {
         openAnvilConfirmation(currency);
     }
 

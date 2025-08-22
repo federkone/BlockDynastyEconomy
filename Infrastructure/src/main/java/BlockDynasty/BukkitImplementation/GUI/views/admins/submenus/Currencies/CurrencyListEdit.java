@@ -15,7 +15,7 @@ public class CurrencyListEdit extends CurrenciesList {
     }
 
     @Override
-    public void handleItemClick(Currency currency) {
+    public void handleLeftItemClick(Currency currency) {
         GUIFactory.editCurrencyPanel(player, currency, this).open();
     }
 

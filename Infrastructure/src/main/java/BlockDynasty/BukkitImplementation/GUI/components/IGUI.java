@@ -8,7 +8,8 @@ public interface IGUI {
     void openParent();
     boolean hasParent();
     IGUI getParent();
-    void handleClick(int slot, Player player);
+    void handleRightClick(int slot, Player player);
+    void handleLeftClick(int slot, Player player);
     Inventory getInventory();
     String getTitle();
 }
