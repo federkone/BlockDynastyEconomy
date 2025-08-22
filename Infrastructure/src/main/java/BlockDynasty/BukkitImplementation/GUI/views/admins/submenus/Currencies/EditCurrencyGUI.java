@@ -28,12 +28,12 @@ public class EditCurrencyGUI extends AbstractGUI {
     private void setupGUI() {
         // Current currency info
         ChatColor color = ChatColor.valueOf(currency.getColor());
-        setItem(13, createItem(Material.GOLD_INGOT,
+        setItem(4, createItem(Material.GOLD_INGOT,
                         color + currency.getSingular() + " / " + currency.getPlural(),
                         "§7Symbol: " + color + currency.getSymbol(),
                         "§7Color: " + color + currency.getColor(),
                         "§7Beginning balance: " + color + currency.getDefaultBalance(),
-                        "§7exchange rate: " + color + currency.getExchangeRate(),
+                        "§7Exchange rate: " + color + currency.getExchangeRate(),
                         "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo"),
                         "§7Default currency: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"),
                         "§7Supports decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo")),
@@ -72,7 +72,7 @@ public class EditCurrencyGUI extends AbstractGUI {
         setItem(24, createItem(
                         currency.isTransferable() ? MaterialAdapter.getLimeConcrete(): MaterialAdapter.getRedConcrete(),
                         currency.isTransferable() ? "Transferable: §aActivated" : "Transferable: §cDisabled",
-                        "§7Click to " + (currency.isTransferable() ? "Disable" : "Enable")),
+                        "§7Click to " + (currency.isTransferable() ? "Disable" : "Enable"),"This option affects:","Transfer","Pay","Trade/Offers"),
                 f -> {
                     try {
                         editCurrencyUseCase.togglePayable(currency.getSingular());

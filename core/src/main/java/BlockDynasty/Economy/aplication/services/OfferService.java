@@ -6,9 +6,11 @@ import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import java.math.BigDecimal;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class OfferService implements IOfferService {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -67,5 +69,17 @@ public class OfferService implements IOfferService {
                 .filter(offer -> offer.getVendedor().equals(playerId))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<Offer> getOffersSeller(UUID playerId) {
+        return this.ofertasPendientes.keySet().stream()
+                .filter(offer -> offer.getVendedor().equals(playerId))
+                .collect(Collectors.toList());
+    }
+
+    public List<Offer> getOffersBuyer(UUID playerId) {
+        return this.ofertasPendientes.keySet().stream()
+                .filter(offer -> offer.getComprador().equals(playerId))
+                .collect(Collectors.toList());
     }
 }

@@ -15,7 +15,11 @@ public class PayGUI extends AccountsList {
         super("Select Player", 5,sender,parent);
         this.sender = sender;
 
-        List<Player> players = Bukkit.getOnlinePlayers().stream().map(p-> new Player(p.getUniqueId().toString(),p.getName())).toList();
+        List<Player> players = Bukkit.getOnlinePlayers().stream()
+                .map(p-> new Player(p.getUniqueId().toString(),p.getName()))
+                .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
+                .toList();
+
         showPlayers(players);
     }
 
@@ -38,6 +42,6 @@ public class PayGUI extends AccountsList {
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
         setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Player to Pay",
-                List.of("§7Click to select the player you want to pay")), unused -> {});
+                List.of("§7Click to select the player you want to pay","#Ordered by name")), unused -> {});
     }
 }

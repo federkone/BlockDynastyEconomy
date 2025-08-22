@@ -17,7 +17,7 @@ public class AdminPanelGUI extends AbstractGUI {
         initializeButtons();
     }
 
-    private  void initializeButtons() {
+    private void initializeButtons() {
         setItem(20, createItem(Material.EMERALD, "Edit Currencies", "Click to edit currencies"), event -> {
             GUIFactory.currencyPanel( sender, this).open();
         });

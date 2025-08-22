@@ -81,7 +81,7 @@ public class EditAccountGUI extends AbstractGUI {
 
         boolean isBlocked = searchAccountUseCase.getAccount(UUID.fromString(target.getUuid())).getValue().isBlocked();
         if (isBlocked) {
-            setItem(13, createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Click to unblock transactions"),
+            setItem(13, createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
                         Result<Void>result= editAccountUseCase.unblockAccount(UUID.fromString(target.getUuid()));
                         if (result.isSuccess()){
@@ -92,7 +92,7 @@ public class EditAccountGUI extends AbstractGUI {
                         }
                     });
         } else {
-            setItem(13, createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Click to block transactions Account"),
+            setItem(13, createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
                         Result<Void>result= editAccountUseCase.blockAccount(UUID.fromString(target.getUuid()));
                         if (result.isSuccess()){

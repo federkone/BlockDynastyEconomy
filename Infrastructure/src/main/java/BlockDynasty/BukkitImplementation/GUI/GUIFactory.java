@@ -90,16 +90,25 @@ public class GUIFactory {
     public static IGUI bankPanel(Player sender) {
             return new BankGUI(sender, accountsUseCase.getGetAccountsUseCase());
         }
-        public static IGUI currencyListToOffer(Player sender,BlockDynasty.Economy.domain.entities.account.Player target,IGUI parent ){
+        //submenus for bankPanel
+            public static IGUI currencyListToOffer(Player sender,BlockDynasty.Economy.domain.entities.account.Player target,IGUI parent ){
             return new CurrencyListToOfferFirst(sender,target,currencyUseCase.getGetCurrencyUseCase(),offerUseCase.getCreateOfferUseCase(), parent);
         }
-        //submenus for bankPanel
             public static IGUI balancePanel(Player sender, IGUI parent) {
             return new BalanceGUI(sender, accountsUseCase.getGetBalanceUseCase(), parent);
         }
+            public static IGUI transferFoundsPanel(Player sender,IGUI parent) {
+                return new TransferFoundsGUI(sender, parent, accountsUseCase.getGetAccountsUseCase());
+            }
+            public static IGUI exchangePanel(Player sender, IGUI parent) {
+                return new CurrencyListToExchangeFirst(sender, currencyUseCase.getGetCurrencyUseCase(), transactionsUseCase.getExchangeUseCase(), parent);
+            }
             public static IGUI payPanel(Player sender,IGUI parent) {
         return new PayGUI(sender, parent);
     }
+            public static IGUI seeOffersPanel(Player sender, IGUI parent) {
+                return new AccountListToOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getAcceptOfferUseCase(), sender, parent);
+            }
             //submenus for payPanel
                 public static IGUI currencyListToPayPanel(Player sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
                     return new CurrencyListToPay(

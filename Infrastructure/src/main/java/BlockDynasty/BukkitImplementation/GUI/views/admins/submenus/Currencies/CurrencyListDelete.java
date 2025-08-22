@@ -44,7 +44,7 @@ public class CurrencyListDelete extends CurrenciesList {
         try {
             deleteCurrencyUseCase.deleteCurrency(currency.getSingular());
             player.sendMessage(Message.getPrefix() + "§7Deleted currency: §a" + currency.getSingular());
-            GUIFactory.currencyListToDeletePanel(player,getParent().getParent()).open();
+            this.openParent();
             return "Currency deleted successfully.";
         } catch (CurrencyNotFoundException e) {
             player.sendMessage(Message.getPrefix()+"§7"+ e.getMessage()+" Make sure you have another default currency before deleting it.");

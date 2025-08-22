@@ -1,11 +1,10 @@
 
 package BlockDynasty.Economy.aplication.services;
 
-//todo: para utilizar la feature cheque, debemos declarar como dependencia a NBTAPI para manejar items del juego
 //los cheques deben ser creados como entidad y guardarlo en la db, donde un cheque tenga una uuid y un itemstack
 //se puede mantener una logica interna donde tengan vencimiento y se borre el registro de la db
 //esto con el fin de evitar que los cheques se queden en el inventario de los jugadores indefinidamente o si se pierde el item fisico del juego
-//a la hora de reclamarlos, se debe corroborar la integridad  del mismo, con la uuid o con algun hash de la entidad
+//a la hora de reclamarlos, se debe corroborar la integridad del mismo, con la uuid o con algun hash de la entidad
 //llamar al caso de uso de transferencia, esperar a que sea exitoso, y eliminar el cheque de la db y destruir el itemstack del cheque
 
 public class ChequeService {

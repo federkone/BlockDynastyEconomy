@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 /**
@@ -55,22 +56,32 @@ public class MaterialAdapter {
     }
 
     public static ItemStack createPlayerHead(String playerName) {
+        ItemStack skull;
         if(Version.isLegacy()){
-            ItemStack skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-            SkullMeta meta = (SkullMeta) skull.getItemMeta();
-            meta.setOwner(playerName);
-            meta.setDisplayName(playerName);
-            skull.setItemMeta(meta);
-            return skull;
+            skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
         }else{
-            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-            SkullMeta meta = (SkullMeta) head.getItemMeta();
-            meta.setOwner(playerName);
-            meta.setDisplayName("§e" + playerName);
-            meta.setLore(Collections.singletonList("§7Click to select this player"));
-            head.setItemMeta(meta);
-            return head;
+            skull = new ItemStack(Material.PLAYER_HEAD);
         }
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        meta.setOwner(playerName);
+        meta.setDisplayName(playerName);
+        skull.setItemMeta(meta);
+        return skull;
+    }
+
+    public static ItemStack createPlayerHead(String playerName, List<String> lore) {
+        ItemStack skull;
+        if(Version.isLegacy()){
+            skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+        }else{
+            skull = new ItemStack(Material.PLAYER_HEAD);
+        }
+        SkullMeta meta = (SkullMeta) skull.getItemMeta();
+        meta.setOwner(playerName);
+        meta.setDisplayName(playerName);
+        meta.setLore(lore);
+        skull.setItemMeta(meta);
+        return skull;
     }
 
     public static ItemStack adaptWool(String material) {

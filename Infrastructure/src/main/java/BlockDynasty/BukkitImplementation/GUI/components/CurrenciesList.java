@@ -24,6 +24,24 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
         showCurrencies();
     }
 
+    public CurrenciesList(Player player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI,Currency exceptCurrency) {
+        this(player, searchCurrencyUseCase, parentGUI);
+        showCurrenciesExcluding(exceptCurrency);
+    }
+
+    private void showCurrenciesExcluding(Currency exceptCurrency) {
+        List<Currency> currencies = searchCurrencyUseCase.getCurrencies().stream()
+                .filter(c -> !c.equals(exceptCurrency))
+                .toList();
+
+        //testing purposes
+        //for (int i = 0; i < 45; i++) {
+        //    currencies.add(new Currency(UUID.randomUUID(),"test","test"));
+        //}
+
+        showItemsPage(currencies);
+    }
+
     private void showCurrencies() {
         List<Currency> currencies = searchCurrencyUseCase.getCurrencies();
 
@@ -43,7 +61,8 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
                 color + currency.getSingular(),
                 "§7Singular: " + color + currency.getSingular(),
                 "§7Plural: " + color + currency.getPlural(),
-                "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo")
+                "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo"),
+                "§7Exchange Rate: "+ color+ currency.getExchangeRate()
         );
     }
 

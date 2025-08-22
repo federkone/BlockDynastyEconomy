@@ -63,6 +63,10 @@ public class ExchangeUseCase {
     }
 
     private Result<BigDecimal> performExchange(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        if (currencyFrom.equals(currencyTo)) {
+            return Result.failure("Cannot exchange the same currency", ErrorCode.CURRENCY_MUST_BE_DIFFERENT);
+        }
+
         if (account.isBlocked()){
             return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }

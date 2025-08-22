@@ -34,7 +34,7 @@ public class CurrencyListToPay extends CurrenciesList {
             messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());
             return null;
         }else{
-            return "Payment successful!";
+            return "Successful!";
         }
     }
 
