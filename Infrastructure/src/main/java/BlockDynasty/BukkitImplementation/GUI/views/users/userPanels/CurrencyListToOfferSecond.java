@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI.views.users.userPanels;
 
+import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
 import BlockDynasty.BukkitImplementation.GUI.components.CurrenciesList;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
@@ -35,8 +36,11 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
                 currency.getSingular(),
                 amount
         );
+
         if (!result.isSuccess()){
             sender.sendMessage("§cError: " + result.getErrorMessage()+ "."+result.getErrorCode());
+        }else{
+            GUIFactory.seeMyOffersPanel(sender,null).open();
         }
 
         return null;

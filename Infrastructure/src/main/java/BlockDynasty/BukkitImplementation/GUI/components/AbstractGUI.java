@@ -49,7 +49,7 @@ public abstract class AbstractGUI implements IGUI {
     public void openParent() {
         if (hasParent()) {
             parent.open();
-        }
+        }else {owner.closeInventory();} //method close??
     }
 
     @Override
@@ -175,4 +175,7 @@ public abstract class AbstractGUI implements IGUI {
     protected void clearGui(){
         fill();
     }
+
+    @Override
+    public void refresh(){};
 }

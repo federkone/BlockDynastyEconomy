@@ -31,14 +31,24 @@ public class OfferService implements IOfferService {
 
     public void addOffer(UUID playerSender, UUID playerReceiver, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer) {
         Offer offer = new Offer(playerSender, playerReceiver, amountCurrencyValue, amountCurrencyOffer, currencyValue, currencyOffer);
+
+        //prevent multiple offers from the same sender to the same receiver
+        ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
+        if (oldTask != null) {
+            oldTask.cancel(false);
+            ofertasPendientes.remove(offer);
+        }
+
         ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
             ofertasPendientes.remove(offer);
             listener.onOfferExpired(offer);
         }, this.delay, TimeUnit.SECONDS);
+
         ofertasPendientes.put(offer, expirationTask);
         listener.onOfferCreated(offer); // Assuming you have a method to notify about the offer creation
     }
 
+    //si el comprador tiene oferta
     public boolean hasOfferTo(UUID player) {
         for (Offer offer : this.ofertasPendientes.keySet()) {
             if (offer.getComprador().equals(player)) {
@@ -49,7 +59,7 @@ public class OfferService implements IOfferService {
     }
 
     public boolean removeOffer(UUID player) {
-        // Buscar la primera oferta que coincida con el vendedor o comprador
+        // Buscar la oferta que coincida con el vendedor o comprador
         Map.Entry<Offer, ScheduledFuture<?>> entryToRemove = this.ofertasPendientes.entrySet().stream()
                 .filter(entry -> {
                     Offer offer = entry.getKey();
@@ -57,8 +67,8 @@ public class OfferService implements IOfferService {
                 }).findFirst().orElse(null);
         if (entryToRemove != null) {
             entryToRemove.getValue().cancel(false);
-            listener.onOfferCanceled(entryToRemove.getKey());
             this.ofertasPendientes.remove(entryToRemove.getKey());
+            listener.onOfferCanceled(entryToRemove.getKey());
             return true;
         }
         return false;

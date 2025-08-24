@@ -57,7 +57,7 @@ public class EditAccountGUI extends AbstractGUI {
                     });
                 });
 
-        setItem(40,createItem(Material.BARRIER, "Back","go back"),f->{this.openParent();});
+        setItem(40,createItem(Material.BARRIER, "Back","go back"),f->{GUIFactory.accountPanel(sender,this.getParent().getParent()).open();});
 
         setItem(29,createItem(Material.PAPER,"Deposit Currency","Deposit currency into the player's account"),
                 f -> {

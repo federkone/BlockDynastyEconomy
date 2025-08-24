@@ -7,8 +7,6 @@ import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("deprecation")

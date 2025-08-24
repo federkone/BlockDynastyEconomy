@@ -36,13 +36,21 @@ public class TransactionsListener {
         eventManager.subscribe(TradeEvent.class, event -> {
             Console.debug("Event Trade emitted: "+event);
 
-            //Player player = Bukkit.getPlayer(event.getFromPlayer().getNickname());
-            //Player target = Bukkit.getPlayer(event.getToPlayer().getNickname());
+            Player sender = Bukkit.getPlayer(event.getFromPlayer().getNickname());
+            Player receiver = Bukkit.getPlayer(event.getToPlayer().getNickname());
 
-            //if (player == null || target == null) {
-            //    UtilServer.consoleLog("Player not found for PayEvent: " + event);
-            //    return;
-            //}
+            if (sender != null ) {
+                sender.sendMessage("You have trade " + event.getAmountFrom() + " " + event.getCurrencyFrom().getSingular() +
+                        " to " + receiver.getName() + " for " + event.getAmountTo() + " " + event.getCurrencyTo().getSingular());
+                sender.playSound(receiver.getLocation(), "entity.villager.yes", 1.0f, 1.0f);
+            }
+            if (receiver != null){
+                receiver.sendMessage("You have received " + event.getAmountFrom() + " " + event.getCurrencyFrom().getSingular() +
+                        " from " + sender.getName() + " for " + event.getAmountTo() + " " + event.getCurrencyTo().getSingular());
+                receiver.playSound(receiver.getLocation(), "entity.villager.yes" , 1.0f, 1.0f);
+
+            }
+
         });
 
         eventManager.subscribe(TransferEvent.class, event -> {

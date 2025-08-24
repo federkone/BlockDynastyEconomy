@@ -35,4 +35,11 @@ public class GUIService {
             player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
         }
     }
+
+    public void refresh(UUID playerId) {
+        IGUI gui = openGUIs.get(playerId);
+        if (gui != null) {
+            gui.refresh();
+        }
+    }
 }

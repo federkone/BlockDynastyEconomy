@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
+import BlockDynasty.BukkitImplementation.GUI.RegisterGuiModule;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -19,6 +20,8 @@ public class OfferListenerImpl implements OfferListener {
             receiver.sendMessage(Message.getOfferExpiredTo(sender.getName()));
             sender.sendMessage(Message.getOfferExpired(receiver.getName()));
         }
+
+        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
     }
 
     @Override
@@ -40,11 +43,24 @@ public class OfferListenerImpl implements OfferListener {
             receiver.sendMessage("You have received an offer from " + sender.getName() +
                     " offering " + amountOffered + " " + currencyOffered.getSingular() +
                     " in exchange for " + amountValue + " " + currencyValue.getSingular());
+            //testing
+            receiver.playSound(receiver.getLocation(), "block.note_block.pling" , 1.0f, 1.0f);
         }
+        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
     }
 
     @Override
     public void onOfferCanceled(Offer offer) {
-        //onOfferExpired(offer);
+        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
+        RegisterGuiModule.getGuiService().refresh(offer.getVendedor());
+
+        Player sender = Bukkit.getPlayer(offer.getVendedor());
+        Player receiver = Bukkit.getPlayer(offer.getComprador());
+        if (receiver != null) {
+            receiver.playSound(receiver.getLocation(), "entity.villager.no" , 1.0f, 1.0f);
+        }
+        if (sender != null) {
+            sender.playSound(sender.getLocation(), "entity.villager.no" , 1.0f, 1.0f);
+        }
     }
 }

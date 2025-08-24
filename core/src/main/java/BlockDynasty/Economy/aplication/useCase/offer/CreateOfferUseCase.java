@@ -47,10 +47,9 @@ public class CreateOfferUseCase {
             return Result.failure(currencyOfferResult.getErrorMessage(), currencyOfferResult.getErrorCode());
         }
 
-
-        if(this.offerService.hasOfferTo(playerReciber)){
-            return Result.failure("There is already an offer pending", ErrorCode.OFFER_ALREADY_EXISTS);
-        }
+        //if(this.offerService.hasOfferTo(playerReciber)){ //todo test, permitir ofertas multiples de diferentes jugadores
+        //    return Result.failure("There is already an offer pending", ErrorCode.OFFER_ALREADY_EXISTS);
+        //}
 
         if (currencyValueResult.getValue().getUuid().equals(currencyOfferResult.getValue().getUuid())) {
            return Result.failure("The currencies must be different", ErrorCode.CURRENCY_MUST_BE_DIFFERENT);

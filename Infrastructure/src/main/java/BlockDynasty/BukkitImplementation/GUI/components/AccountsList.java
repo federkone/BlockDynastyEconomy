@@ -39,7 +39,9 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
             Player foundPlayer = findPlayerByName(s);
 
             if (foundPlayer != null) {
-                openNextSection(foundPlayer);
+                //openNextSection(foundPlayer);
+                this.open();
+                showPlayers(List.of(foundPlayer));
             } else {
                 sender.sendMessage("§cPlayer not found.");
                 this.open();

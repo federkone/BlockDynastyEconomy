@@ -50,7 +50,17 @@ public class Offer implements IOffer {
     }
 
     @Override
-    public int hashCode() { //para usar en un map
-        return Objects.hash(this.vendedor, this.vendedor);
+    public int hashCode() {
+        return Objects.hash(this.vendedor, this.comprador);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return Objects.equals(vendedor, offer.vendedor) &&
+                Objects.equals(comprador, offer.comprador);
+    }
+
 }
