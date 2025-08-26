@@ -115,7 +115,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void setupIntegrations() {
         Vault.init( core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(new VaultLogger( this)));
         PlaceHolder.register(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
-        Bungee.init(this,core.getAccountsUseCase().getGetAccountsUseCase());
+        Bungee.init(this,core.getServicesManager().getAccountService());
     }
 
     public static BlockDynastyEconomy getInstance() {

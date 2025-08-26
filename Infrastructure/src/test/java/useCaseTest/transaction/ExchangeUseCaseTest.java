@@ -61,14 +61,14 @@ public class ExchangeUseCaseTest {
 
         // Initialize caches
         currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
+        accountService = new AccountService(5 , repository, currencyService);
 
         // Initialize use cases
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService, repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
         // Initialize the exchange use case to test
-        exchangeUseCase = new ExchangeUseCase(searchCurrencyUseCase, searchAccountUseCase,
+        exchangeUseCase = new ExchangeUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,
                 repository, new CourierTest(), new LoggerTest(),new EventManager());
     }
 

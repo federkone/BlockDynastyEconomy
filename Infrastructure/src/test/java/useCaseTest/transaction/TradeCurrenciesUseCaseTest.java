@@ -69,15 +69,15 @@ public class TradeCurrenciesUseCaseTest {
 
 
         currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
+        accountService = new AccountService(5 ,repository, currencyService);
 
         //accountManager.addAccountToCache(account1); //se conecto el player1
         //accountManager.addAccountToCache(account2); //se conecto el player2
 
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test

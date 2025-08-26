@@ -57,7 +57,7 @@ public class EconomyListenerOnline implements Listener {
     }
 
     private void removePlayerCache(Player player) {
-        accountService.removeAccountFromCache(player.getUniqueId());
+        accountService.removeAccountOnline(player.getUniqueId());
     }
 
     private void checkDefaultCurrency(Player player) {
@@ -73,13 +73,13 @@ public class EconomyListenerOnline implements Listener {
     protected void loadPlayerAccount(Player player) {
         Result<Account> result = searchAccountUseCase.getAccount(player.getUniqueId());
         if (result.isSuccess()) {
-            Result<Void> resultChangeName = searchAccountUseCase.checkNameChange(result.getValue(), player.getName());
+            Result<Void> resultChangeName = accountService.checkNameChange(result.getValue(), player.getName());
             if(!resultChangeName.isSuccess()){
                 //player.kick(Component.text("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.")); //paper
                 player.kickPlayer("Error al cargar tu cuenta de economía. Por favor, vuelve a ingresar o contacta a un administrador.");
                 return;
             }
-            accountService.addAccountToCache(result.getValue());
+            accountService.addAccountToOnline(result.getValue());
             return;
         }
 

@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -22,9 +23,12 @@ public class DepositUseCase {
     private final EventManager eventManager;
     private final Log logger;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
 
-    public DepositUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
+    public DepositUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService,
+                          IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.logger = logger;
@@ -85,7 +89,7 @@ public class DepositUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
+        this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount));

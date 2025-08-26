@@ -31,10 +31,10 @@ public class DeleteCurrencyUseCaseTest {
     public void setUp() {
         repository = FactoryRepo.getDb();
         currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService, repository);
-        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, searchAccountUseCase,repository,null);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, searchAccountUseCase, null,repository);
+        accountService = new AccountService(5 ,repository, currencyService);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, repository);
+        deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, accountService,repository,null);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, accountService, null,repository);
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
 
     }

@@ -40,7 +40,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
         if (!result.isSuccess()){
             sender.sendMessage("§cError: " + result.getErrorMessage()+ "."+result.getErrorCode());
         }else{
-            GUIFactory.seeMyOffersPanel(sender,null).open();
+            GUIFactory.seeMyOffersPanel(sender).open();
         }
 
         return null;

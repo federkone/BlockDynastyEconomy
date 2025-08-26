@@ -1,7 +1,9 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.events.transactionsEvents.ExchangeEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -23,10 +25,14 @@ public class ExchangeUseCase {
     private final Courier updateForwarder;
     private final Log economyLogger;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
     private final EventManager eventManager;
 
-    public ExchangeUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
+    public ExchangeUseCase(SearchCurrencyUseCase searchCurrencyUseCase,
+                           SearchAccountUseCase searchAccountUseCase, IAccountService accountService, IRepository dataStore, Courier updateForwarder,
+                           Log economyLogger, EventManager eventManager) {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
@@ -94,7 +100,7 @@ public class ExchangeUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
+        this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());// esto es para bungee
         this.economyLogger.log("[EXCHANGE] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo));
         this.eventManager.emit(new ExchangeEvent(account.getPlayer(),currencyFrom,currencyTo,amountFrom,currencyTo.getExchangeRate(),amountTo));

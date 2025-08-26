@@ -26,9 +26,9 @@ public class CreateAccountUseCaseTest {
     @BeforeEach
     void setUp() {
         repository = FactoryRepo.getDb();
-        accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        accountService = new AccountService(5 ,repository, currencyService);
+        searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
     }
 

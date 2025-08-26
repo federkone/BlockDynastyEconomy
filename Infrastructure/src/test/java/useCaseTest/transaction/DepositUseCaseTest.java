@@ -43,13 +43,13 @@ public class DepositUseCaseTest {
 
         repository = FactoryRepo.getDb();
         currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
+        accountService = new AccountService(5 ,repository, currencyService);
 
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService, repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService, repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
-        createCurrenyUseCase = new CreateCurrencyUseCase(currencyService, searchAccountUseCase, new CourierTest(), repository);
-        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase, repository,new CourierTest(),new LoggerTest(),new EventManager());
+        createCurrenyUseCase = new CreateCurrencyUseCase(currencyService, accountService, new CourierTest(), repository);
+        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
 
         createCurrenyUseCase.createCurrency(dinero.getSingular(), dinero.getPlural());
         createAccountUseCase.execute(nullplague.getUuid(), nullplague.getNickname());

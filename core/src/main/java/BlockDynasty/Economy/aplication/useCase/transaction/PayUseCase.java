@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.PayEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -19,10 +20,9 @@ import java.util.UUID;
 public class PayUseCase extends TransferFundsUseCase {
     private final Log economyLogger;
     private final EventManager eventManager;
-
-    public PayUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
+    public PayUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService,IRepository dataStore,
                       Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        super( searchCurrencyUseCase, searchAccountUseCase, dataStore, updateForwarder, economyLogger, eventManager);
+        super( searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore, updateForwarder, economyLogger, eventManager);
         this.economyLogger = economyLogger;
         this.eventManager = eventManager;
     }

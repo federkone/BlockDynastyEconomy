@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.TradeEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -22,12 +23,15 @@ public class TradeCurrenciesUseCase {
     private final Courier updateForwarder;
     private final Log economyLogger;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
     private final EventManager eventManager;
 
-    public TradeCurrenciesUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
+    public TradeCurrenciesUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase,
+                                  IAccountService accountService,IRepository dataStore,
                                   Courier updateForwarder, Log economyLogger, EventManager eventManager) {
 
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.searchAccountUseCase = searchAccountUseCase;
@@ -111,9 +115,8 @@ public class TradeCurrenciesUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getTo());
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue().getFrom());
-
+        this.accountService.syncOnlineAccount(result.getValue().getTo());
+        this.accountService.syncOnlineAccount(result.getValue().getFrom());
 
         this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());

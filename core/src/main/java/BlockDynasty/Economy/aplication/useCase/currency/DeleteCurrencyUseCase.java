@@ -1,5 +1,6 @@
 package BlockDynasty.Economy.aplication.useCase.currency;
 
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -11,14 +12,14 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 //todo: borrar currency y registro de esta moneda de todos los usuarios que la tengan. tanto en la cache como en la base de datos?
 public class DeleteCurrencyUseCase {
     private final ICurrencyService currencyService;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
     private final IRepository dataStore;
     private final Courier updateForwarder;
 
     //borrar una moneda del sistema implica que se tengan que borrar todos los balances de las cuentas que tengan esa moneda
-    public DeleteCurrencyUseCase(ICurrencyService currencyService, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder){
+    public DeleteCurrencyUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder){
         this.currencyService = currencyService;
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
@@ -33,7 +34,7 @@ public class DeleteCurrencyUseCase {
         try {
             dataStore.deleteCurrency(currency);
             currencyService.remove(currency);
-            searchAccountUseCase.syncDbWithCache();
+            accountService.syncDbWithOnlineAccounts();
             if (updateForwarder != null){
                 updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }

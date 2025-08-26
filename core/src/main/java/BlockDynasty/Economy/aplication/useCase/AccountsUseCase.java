@@ -16,7 +16,7 @@ public class AccountsUseCase {
      private final EditAccountUseCase editAccountUseCase;
 
      public AccountsUseCase(ServicesManager servicesManager, IRepository repository) {
-          this.searchAccountUseCase = new SearchAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), repository);
+          this.searchAccountUseCase = new SearchAccountUseCase(servicesManager.getAccountService(), repository);
           this.createAccountUseCase = new CreateAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), this.searchAccountUseCase, repository);
           this.getBalanceUseCase = new GetBalanceUseCase( this.searchAccountUseCase);
           this.editAccountUseCase = new EditAccountUseCase(this.searchAccountUseCase, repository);

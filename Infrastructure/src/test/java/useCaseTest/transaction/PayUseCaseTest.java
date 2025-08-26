@@ -66,15 +66,15 @@ public class PayUseCaseTest {
 
 
         currencyService = new CurrencyService(repository);
-        accountService = new AccountService(5);
+        accountService = new AccountService(5 ,repository, currencyService);
         eventManager = new EventManager();
 
-        accountService.addAccountToCache(nullplague); //se conecto el player1
-        accountService.addAccountToCache(cris); //se conecto el player2
+        accountService.addAccountToOnline(nullplague); //se conecto el player1
+        accountService.addAccountToOnline(cris); //se conecto el player2
 
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        payUseCase = new PayUseCase(searchCurrencyUseCase, searchAccountUseCase,repository,new CourierTest(),new LoggerTest(),eventManager);
+        payUseCase = new PayUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,repository,new CourierTest(),new LoggerTest(),eventManager);
         editCurrencyUseCase= new EditCurrencyUseCase(currencyService ,new CourierTest(),repository);
 
         eventManager.subscribe(PayEvent.class, event -> { System.out.println( event.getPayer().getNickname() + " realizo un pago a "+ event.getReceived().getNickname()+ " de un monto de " +event.getAmount()); } );

@@ -16,8 +16,8 @@ public class CurrencyUseCase {
 
     public CurrencyUseCase(ServicesManager servicesManager, IRepository repository, AccountsUseCase accountsUseCase, Courier courier) {
         this.searchCurrencyUseCase = new SearchCurrencyUseCase(servicesManager.getCurrencyService(),repository);
-        this.createCurrencyUseCase = new CreateCurrencyUseCase(servicesManager.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), courier,repository);
-        this.deleteCurrencyUseCase = new DeleteCurrencyUseCase( servicesManager.getCurrencyService(), accountsUseCase.getGetAccountsUseCase(), repository, courier);
+        this.createCurrencyUseCase = new CreateCurrencyUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), courier,repository);
+        this.deleteCurrencyUseCase = new DeleteCurrencyUseCase( servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier);
         this.editCurrencyUseCase = new EditCurrencyUseCase(servicesManager.getCurrencyService(), courier, repository);
     }
 

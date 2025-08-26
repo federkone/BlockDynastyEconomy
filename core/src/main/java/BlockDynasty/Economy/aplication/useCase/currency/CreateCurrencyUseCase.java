@@ -1,6 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.currency;
 
 
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -16,11 +17,11 @@ public class CreateCurrencyUseCase {
     private final ICurrencyService currencyService;
     private final IRepository dataStore;
     private final Courier updateForwarder;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
 
-    public CreateCurrencyUseCase(ICurrencyService currencyService, SearchAccountUseCase searchAccountUseCase, Courier updateForwarder, IRepository dataStore) {
+    public CreateCurrencyUseCase(ICurrencyService currencyService, IAccountService accountService, Courier updateForwarder, IRepository dataStore) {
         this.currencyService = currencyService;
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
     }
@@ -37,7 +38,7 @@ public class CreateCurrencyUseCase {
         try {
             dataStore.saveCurrency(currency);
             currencyService.add(currency);//cache
-            searchAccountUseCase.syncDbWithCache();
+            accountService.syncDbWithOnlineAccounts();
             if (updateForwarder != null){
                 updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
             }

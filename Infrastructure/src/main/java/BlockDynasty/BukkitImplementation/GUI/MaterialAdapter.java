@@ -38,6 +38,11 @@ public class MaterialAdapter {
         return Material.PLAYER_HEAD; // 1.13+
     }
 
+    public static Material getWritableBook() {
+        if (Version.isLegacy()) return Material.valueOf("BOOK_AND_QUILL"); // 1.8-1.12
+        return Material.WRITABLE_BOOK; // 1.13+
+    }
+
     public static ItemStack getPanelGlass(){
         if (Version.isLegacy()) {
             return new ItemStack(Material.valueOf("THIN_GLASS"));

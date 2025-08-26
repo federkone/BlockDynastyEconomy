@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -22,9 +23,12 @@ public class WithdrawUseCase {
     private final EventManager eventManager;
     private final Log logger;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
 
-    public WithdrawUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager){
+    public WithdrawUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase,
+                           IAccountService accountService,IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager){
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.logger = logger;
@@ -81,7 +85,7 @@ public class WithdrawUseCase {
             return Result.failure( result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
+        this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount));

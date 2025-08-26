@@ -13,7 +13,7 @@ public class BankGUI extends AbstractGUI {
     private final SearchAccountUseCase searchAccountUseCase;
 
     public BankGUI(Player player, SearchAccountUseCase searchAccountUseCase) {
-        super("Bank", 4,player);
+        super("Bank "+ "("+player.getName()+")", 4,player);
         this.player = player;
         this.searchAccountUseCase = searchAccountUseCase;
         setupGUI();
@@ -29,7 +29,7 @@ public class BankGUI extends AbstractGUI {
                 unused -> {
                     GUIFactory.exchangePanel(player, this).open();
                 });
-        setItem(24, createItem(Material.WRITABLE_BOOK,"Create Offer","Click to create an offer for trade currencies","with other players Online"),
+        setItem(24, createItem(MaterialAdapter.getWritableBook(),"Create Offer","Click to create an offer for trade currencies","with other players Online"),
                 f -> {
                     new OfferGUI(player,this).open();
                 });

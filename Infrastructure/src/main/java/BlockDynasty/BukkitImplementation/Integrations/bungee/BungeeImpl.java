@@ -8,6 +8,7 @@ import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.BukkitImplementation.utils.Console;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -26,11 +27,11 @@ import java.util.UUID;
 public class BungeeImpl implements PluginMessageListener {
     private final BlockDynastyEconomy plugin;
     private final String channelName = "BlockDynastyEconomy Data Channel";
-    private final SearchAccountUseCase getAccountUseCase;
+    private final IAccountService accountService;
 
-    public BungeeImpl(BlockDynastyEconomy plugin , SearchAccountUseCase getAccountUseCase) {
+    public BungeeImpl(BlockDynastyEconomy plugin , IAccountService accountService) {
         this.plugin = plugin;
-        this.getAccountUseCase = getAccountUseCase;
+        this.accountService = accountService;
     }
 
 //todo: testear en todos los servidores. esto funciona a modo de broadcast. lo cual puede generar trafico innecesario
@@ -58,7 +59,7 @@ public class BungeeImpl implements PluginMessageListener {
                         }
 
                         Scheduler.runAsync(ContextualTask.build(() -> {
-                            getAccountUseCase.syncCache(uuid);
+                            accountService.syncOnlineAccount(uuid);
                             player.sendMessage("§a¡Cuenta bancaria actualizada, se ha realizado un depostio o extraccion en tu cuenta!");
                         }));
 

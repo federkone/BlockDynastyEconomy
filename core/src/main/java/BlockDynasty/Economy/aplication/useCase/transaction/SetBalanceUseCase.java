@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -22,8 +23,10 @@ public class SetBalanceUseCase {
     private final EventManager eventManager;
     private final Log economyLogger;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final IAccountService accountService;
 
-    public SetBalanceUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase, IRepository dataStore,
+    public SetBalanceUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase,
+                             IAccountService accountService,IRepository dataStore,
                              Courier updateForwarder, Log economyLogger, EventManager eventManager) {
 
         this.searchCurrencyUseCase = searchCurrencyUseCase;
@@ -31,6 +34,8 @@ public class SetBalanceUseCase {
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
         this.searchAccountUseCase = searchAccountUseCase;
+        this.accountService = accountService;
+
         this.eventManager = eventManager;
     }
 
@@ -71,7 +76,7 @@ public class SetBalanceUseCase {
             return Result.failure(result.getErrorMessage(), result.getErrorCode());
         }
 
-        this.searchAccountUseCase.syncCacheWithAccount(result.getValue());
+        this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
         this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount));

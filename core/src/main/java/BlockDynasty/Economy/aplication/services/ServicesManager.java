@@ -15,7 +15,7 @@ public class ServicesManager {
 
     public ServicesManager(IRepository repository, int cacheTopMinutes, OfferListener offerListener) {
         this.currencyService = new CurrencyService(repository);
-        this.accountService = new AccountService(cacheTopMinutes);
+        this.accountService = new AccountService(cacheTopMinutes,repository,currencyService);
         this.offerService = new OfferService(offerListener);
         this.eventManager = new EventManager();
     }

@@ -27,7 +27,7 @@ public class DeleteAccountUseCase {
             return Result.failure("Account not found for player: " + name, accountResult.getErrorCode());
         }
         Result<Void> result =repository.deleteAccount(accountResult.getValue());
-        accountService.removeAccountFromCache(accountResult.getValue().getUuid());
+        accountService.removeAccountOnline(accountResult.getValue().getUuid());
         if (!result.isSuccess()) {
             return Result.failure("Failed to delete account for player: " + name, result.getErrorCode());
         }
@@ -41,7 +41,7 @@ public class DeleteAccountUseCase {
             return Result.failure("Account not found for UUID: " + uuid, accountResult.getErrorCode());
         }
         Result<Void> result = repository.deleteAccount(accountResult.getValue());
-        accountService.removeAccountFromCache(accountResult.getValue().getUuid());
+        accountService.removeAccountOnline(accountResult.getValue().getUuid());
         if (!result.isSuccess()) {
             return Result.failure("Failed to delete account for UUID: " + uuid, result.getErrorCode());
         }

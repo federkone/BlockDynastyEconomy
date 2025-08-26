@@ -35,11 +35,11 @@ public class CreateAccountUseCase {
         initializeAccountWithDefaultCurrencies(account);
         try {
             this.dataStore.createAccount(account);
-            this.accountService.addAccountToCache(account);
+            this.accountService.addAccountToOnline(account);
         } catch (TransactionException t) {
             return Result.failure("Error creating account for: " + account.getNickname(), ErrorCode.DATA_BASE_ERROR);
         }
-        return Result.success(new Account(account));
+        return Result.success(account);
     }
 
     private void initializeAccountWithDefaultCurrencies(Account account) {

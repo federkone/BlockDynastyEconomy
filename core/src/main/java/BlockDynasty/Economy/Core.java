@@ -27,7 +27,7 @@ public class Core {
         this.services = new ServicesManager( repository, cacheTopMinutes, offerListener);
         this.accountsUseCase = new AccountsUseCase(services, repository);
         this.currencyUseCase = new CurrencyUseCase(services, repository, accountsUseCase, courier);
-        this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, repository, courier, log, services.getEventManager());
+        this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, services.getAccountService(), repository, courier, log, services.getEventManager());
         this.offerUseCase = new OfferUseCase(services.getOfferService(), this.currencyUseCase.getGetCurrencyUseCase(),this.accountsUseCase.getGetAccountsUseCase(),this.transactionsUseCase.getTradeCurrenciesUseCase());
     }
 
@@ -44,7 +44,7 @@ public class Core {
         return this.transactionsUseCase;
     }
     public TransactionsUseCase getTransactionsUseCase(Log log) {
-        return new TransactionsUseCase(getCurrencyUseCase(), getAccountsUseCase(), this.repository, this.courier, log, this.services.getEventManager());
+        return new TransactionsUseCase(getCurrencyUseCase(), getAccountsUseCase(), services.getAccountService(),this.repository, this.courier, log, this.services.getEventManager());
     }
     public OfferUseCase getOfferUseCase() {
         return this.offerUseCase;

@@ -50,9 +50,10 @@ public class OfferUserCasesTest {
 
     @BeforeEach
     public void setup() {
-        this.accountService = new AccountService(5);   //cargar en cache alguna cuenta para las pruebas
+         //cargar en cache alguna cuenta para las pruebas
         this.dataStore = FactoryRepo.getDb();
         this.currencyService = new CurrencyService(dataStore);  //cargar en cache alguna moneda para las pruebas
+        this.accountService = new AccountService(5 ,dataStore, currencyService); //cargar en cache alguna cuenta para las pruebas
 
         this.coin= new Currency(UUID.randomUUID(),"coin","coins");
         this.dollar = new Currency(UUID.randomUUID(),"dollar","dollars");
@@ -67,16 +68,16 @@ public class OfferUserCasesTest {
         cris.setMoney(dollar, BigDecimal.valueOf(1000));
         cris.setMoney(coin, BigDecimal.valueOf(1000));
 
-        accountService.addAccountToCache(nullplague);
-        accountService.addAccountToCache(cris);
+        accountService.addAccountToOnline(nullplague);
+        accountService.addAccountToOnline(cris);
         dataStore.saveCurrency(dollar);
         dataStore.saveCurrency(coin);
         dataStore.saveAccount(nullplague);
         dataStore.saveAccount(cris);
 
-        searchAccountUseCase = new SearchAccountUseCase( accountService, currencyService, dataStore);
+        searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, dataStore,new CourierTest(),new LoggerTest(),new EventManager());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore,new CourierTest(),new LoggerTest(),new EventManager());
         offerService = new OfferService(new MockListener(),1);
 
         createOfferUseCase = new CreateOfferUseCase( offerService, searchCurrencyUseCase, searchAccountUseCase);

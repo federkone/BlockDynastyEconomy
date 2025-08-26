@@ -40,13 +40,13 @@ public class SearchAccountUseCaseTest {
     @BeforeEach
     void setUp() {
         repository = FactoryRepo.getDb();
-        accountService = new AccountService(5);
         currencyService = new CurrencyService(repository);
-        searchAccountUseCase = new SearchAccountUseCase(accountService, currencyService,repository);
+        accountService = new AccountService(5 ,repository, currencyService);
+        searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
-        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, searchAccountUseCase,null, repository);
+        createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, accountService,null, repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase, repository, null, null,new EventManager());
+        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService, repository, null, null,new EventManager());
         messageService = new MessageService(currencyService);
 
         //createCurrencyUseCase.createCurrency("dinero", "dinero");

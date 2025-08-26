@@ -112,6 +112,9 @@ public class GUIFactory {
             public static IGUI seeMyOffersPanel(Player sender, IGUI parent) {
                 return new AccountListFromOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getCancelOfferUseCase(), sender, parent);
             }
+            public static IGUI seeMyOffersPanel(Player sender) {
+                return new AccountListFromOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getCancelOfferUseCase(), sender, null);
+            }
             //submenus for payPanel
                 public static IGUI currencyListToPayPanel(Player sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
                     return new CurrencyListToPay(
