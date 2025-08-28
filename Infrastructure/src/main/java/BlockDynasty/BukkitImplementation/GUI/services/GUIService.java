@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation.GUI.services;
 
-import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.GUI.components.IGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -32,7 +31,6 @@ public class GUIService {
                 gui.handleLeftClick(event.getRawSlot(), player);
             }
 
-            player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
         }
     }
 

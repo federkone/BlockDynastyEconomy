@@ -47,7 +47,7 @@ public class AccountPanelGUI extends AccountsList {
         super.addCustomButtons();
         setItem(4, createItem(Material.PAPER, "§aSelect Account to edit",
                         Arrays.asList("§7Click to select an account, or search by name","#Ordered by name, CaseSensitive")),
-                unused -> {});
+                null);
     }
     @Override
     public Player findPlayerByName(String playerName) {

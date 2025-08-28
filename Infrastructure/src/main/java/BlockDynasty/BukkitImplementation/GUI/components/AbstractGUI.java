@@ -40,9 +40,18 @@ public abstract class AbstractGUI implements IGUI {
     }
 
     @Override
+    public void refresh(){};
+
+    @Override
     public void open() {
         owner.openInventory(inventory);
         guiService.registerGUI(owner, this); //esto reemplaza automaticamente el GUI anterior ya que esta basado en un mapa con key del jugador
+    }
+
+    @Override
+    public void close() {
+        owner.closeInventory();
+        guiService.unregisterGUI(owner);
     }
 
     @Override
@@ -67,6 +76,9 @@ public abstract class AbstractGUI implements IGUI {
         Consumer<Player> action = rightClickActions.get(slot);
         if (action != null) {
             action.accept(player);
+            player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
+        }else{
+            player.playSound(player.getLocation(), "block.note_block.bass" , 0.8f, 0.9f);
         }
     }
 
@@ -75,6 +87,9 @@ public abstract class AbstractGUI implements IGUI {
         Consumer<Player> action = leftClickActions.get(slot);
         if (action != null) {
             action.accept(player);
+            player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
+        }else {
+            player.playSound(player.getLocation(), "block.note_block.bass" , 0.8f, 0.9f);
         }
     }
 
@@ -147,14 +162,6 @@ public abstract class AbstractGUI implements IGUI {
         return base;
     }
 
-    /*private void fill() {
-        ItemStack filler = MaterialAdapter.getPanelGlass();
-
-        for (int slot = 0; slot < inventory.getSize(); slot++) {
-            setItem(slot, filler, null);   //filler can be null for empty slots
-        }
-    }*/
-
     private void fill() {
         ItemStack filler = MaterialAdapter.getPanelGlass();
         ItemStack blueGlass = MaterialAdapter.getBluePanelGlass();
@@ -175,7 +182,4 @@ public abstract class AbstractGUI implements IGUI {
     protected void clearGui(){
         fill();
     }
-
-    @Override
-    public void refresh(){};
 }

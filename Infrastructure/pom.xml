@@ -108,6 +108,11 @@
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <!--<repository>
+            <id>sponge-repo</id>
+            <name>Sponge Maven Repository</name>
+            <url>https://repo.spongepowered.org/repository/maven-public/</url>
+        </repository> -->
     </repositories>
 
     <dependencies>
@@ -125,6 +130,15 @@
             <version>1.16.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>-->
+        <!--
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeapi</artifactId>
+            <version>8.0.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+-->
         <dependency>
             <groupId>dev.folia</groupId>
             <artifactId>folia-api</artifactId>

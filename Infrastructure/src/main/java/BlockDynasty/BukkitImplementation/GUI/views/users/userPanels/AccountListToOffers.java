@@ -71,7 +71,7 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
             GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer accepted successfully!");
         } else {
-            sender.closeInventory();
+            this.close();
             sender.sendMessage("§cFailed to accept offer: " + result.getErrorMessage());
         }
     }
@@ -83,7 +83,7 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
             GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer cancelled");
         } else {
-            sender.closeInventory();
+            this.close();
             sender.sendMessage("§cFailed to cancel offer: " + result.getErrorMessage());
         }
     }

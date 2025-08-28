@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation.GUI.components;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import org.bukkit.ChatColor;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class CurrenciesList extends PaginatedGUI<Currency> {
-    private final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final Player player;
 

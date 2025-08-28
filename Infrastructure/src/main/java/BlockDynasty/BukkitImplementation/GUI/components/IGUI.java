@@ -5,6 +5,7 @@ import org.bukkit.inventory.Inventory;
 
 public interface IGUI {
     //method close??
+    void close();
     void open();
     void openParent();
     boolean hasParent();

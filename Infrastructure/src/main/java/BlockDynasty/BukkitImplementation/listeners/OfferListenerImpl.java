@@ -56,11 +56,11 @@ public class OfferListenerImpl implements OfferListener {
 
         Player sender = Bukkit.getPlayer(offer.getVendedor());
         Player receiver = Bukkit.getPlayer(offer.getComprador());
-        if (receiver != null) {
+        /*if (receiver != null) {
             receiver.playSound(receiver.getLocation(), "entity.villager.no" , 1.0f, 1.0f);
         }
         if (sender != null) {
             sender.playSound(sender.getLocation(), "entity.villager.no" , 1.0f, 1.0f);
-        }
+        }*/
     }
 }

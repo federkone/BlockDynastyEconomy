@@ -66,7 +66,7 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
             GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer cancelled");
         } else {
-            sender.closeInventory();
+            this.close();
             sender.sendMessage("§cFailed to cancel offer: " + result.getErrorMessage());
         }
     }
@@ -75,7 +75,6 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
     protected void addCustomButtons() {
         setItem(4, createItem(Material.PAPER, "§7Offer List",
                         List.of("")),
-                unused -> {
-                });
+                null);
     }
 }

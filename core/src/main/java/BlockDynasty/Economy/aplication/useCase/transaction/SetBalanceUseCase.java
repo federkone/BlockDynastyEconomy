@@ -25,6 +25,7 @@ public class SetBalanceUseCase {
     private final SearchAccountUseCase searchAccountUseCase;
     private final IAccountService accountService;
 
+    //que extiendan del caso de uso searchAccountUseCase y usamos los getters de ahi
     public SetBalanceUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase,
                              IAccountService accountService,IRepository dataStore,
                              Courier updateForwarder, Log economyLogger, EventManager eventManager) {

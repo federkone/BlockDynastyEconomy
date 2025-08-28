@@ -51,7 +51,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
         setItem(4, createItem(Material.PAPER, "§aSelect Currency to Receive",
                         Arrays.asList("§7Click to select the currency you want to receive", "And before that, the amount" )
                         ),
-                unused -> {});
+                null);
 
     }
 }

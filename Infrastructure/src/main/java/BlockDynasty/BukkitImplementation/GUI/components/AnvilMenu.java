@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.components;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ public class AnvilMenu {
     public static void open(Player owner, String title, String initialText, Function<String, String> function) {
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
+                    owner.playSound(owner.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
                     if (slot != AnvilGUI.Slot.OUTPUT) {
                         return Collections.emptyList();
                     }
@@ -48,6 +50,7 @@ public class AnvilMenu {
     public static void open(IGUI parent,Player owner, String title, String initialText, Function<String, String> function) {
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
+                    owner.playSound(owner.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
                     // When output slot is clicked (process input)
                     if (slot == AnvilGUI.Slot.OUTPUT) {
                         String input = stateSnapshot.getText();

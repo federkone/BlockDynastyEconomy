@@ -33,7 +33,7 @@ public class CurrencyListToExchangeFirst extends CurrenciesList {
     public void addCustomButtons() {
         setItem(4, createItem(Material.PAPER, "§aSelect Currency you want to give",
                         Arrays.asList("§7Click to select the currency you want to give")),
-                unused -> {});
+                null);
 
     }
 }

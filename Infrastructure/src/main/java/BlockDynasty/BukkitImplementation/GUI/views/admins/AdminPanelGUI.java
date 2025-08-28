@@ -28,7 +28,7 @@ public class AdminPanelGUI extends AbstractGUI {
         });
 
         setItem(40, createItem(Material.BARRIER, "Close", "Click to close this menu"), event -> {
-            sender.closeInventory();
+            this.close();
         });
 
 

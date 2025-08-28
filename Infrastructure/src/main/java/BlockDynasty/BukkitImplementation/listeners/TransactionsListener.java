@@ -47,7 +47,7 @@ public class TransactionsListener {
             if (receiver != null){
                 receiver.sendMessage("You have received " + event.getAmountFrom() + " " + event.getCurrencyFrom().getSingular() +
                         " from " + sender.getName() + " for " + event.getAmountTo() + " " + event.getCurrencyTo().getSingular());
-                receiver.playSound(receiver.getLocation(), "entity.villager.yes" , 1.0f, 1.0f);
+                //receiver.playSound(receiver.getLocation(), "entity.villager.yes" , 1.0f, 1.0f);
 
             }
 

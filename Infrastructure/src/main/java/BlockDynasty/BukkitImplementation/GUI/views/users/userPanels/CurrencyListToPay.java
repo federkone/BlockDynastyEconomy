@@ -42,7 +42,7 @@ public class CurrencyListToPay extends CurrenciesList {
     public void addCustomButtons() {
         setItem(4, createItem(org.bukkit.Material.PAPER, "§aSelect Currency to Pay",
                 Arrays.asList("§7Click to select the currency you want to pay", "§7And before that, the amount")),
-                unused -> {});
+                null);
 
     }
 }

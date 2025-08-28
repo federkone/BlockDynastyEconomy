@@ -117,10 +117,6 @@ public class AccountService implements IAccountService {
         }
 
     }
-
-    //---estos metodos se crearon con el objetivo de utilizarlos cuando se Crea una moneda y se borra una moneda, y sincronizar las cuentas que estan online
-    //-- iniciando el balance de la moneda con el monto por defecto y escribiendola en la db
-    //-- evaluar el nivel de confiabilidad de esta metodologia, ya que estamos escribiendo en la db el contenido de la cache
     public void syncDbWithOnlineAccounts(){ //check delete this
         List<Account> accounts = this.getAccountsOnline();
         for (Account account : accounts) {
@@ -147,7 +143,6 @@ public class AccountService implements IAccountService {
     //---------------
 
     //validators methods
-
 
     public Result<Void> checkNameChange(Account account , String newName) {
         if (!account.getNickname().equalsIgnoreCase(newName)) {

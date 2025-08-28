@@ -12,6 +12,7 @@
     <modules>
         <module>core</module>
         <module>Infrastructure</module>
+        <module>Sponge</module>
     </modules>
 
     <properties>

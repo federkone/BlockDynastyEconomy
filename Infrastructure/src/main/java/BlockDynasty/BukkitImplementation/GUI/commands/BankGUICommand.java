@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.commands;
 
 import BlockDynasty.BukkitImplementation.GUI.GUIFactory;
+import BlockDynasty.BukkitImplementation.GUI.MaterialAdapter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,7 @@ public class BankGUICommand implements CommandExecutor {
         }
 
         GUIFactory.bankPanel(player).open();
+        player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
         return true;
     }
 }

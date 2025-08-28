@@ -47,7 +47,7 @@ public class CurrencyListToOfferFirst extends CurrenciesList {
     public void addCustomButtons() {
         setItem(4, createItem(Material.PAPER, "§aSelect Currency to Offer",
                         Arrays.asList("§7Click to select the currency you want to offer", "§7And before that, the amount")),
-                unused -> {});
+                null);
 
     }
 }

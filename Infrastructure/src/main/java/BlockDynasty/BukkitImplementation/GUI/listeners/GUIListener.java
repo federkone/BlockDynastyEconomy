@@ -19,7 +19,7 @@ public class GUIListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(InventoryCloseEvent event) { //solo cuando el usuario cierra con ESC
         guiService.unregisterGUI((org.bukkit.entity.Player) event.getPlayer());
     }
 }

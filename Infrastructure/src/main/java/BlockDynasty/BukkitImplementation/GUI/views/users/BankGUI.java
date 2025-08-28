@@ -24,7 +24,7 @@ public class BankGUI extends AbstractGUI {
         setItem(4, isBlocked
                         ? createItem(MaterialAdapter.getRedConcrete(), "Account is blocked", "Your account is temporary blocked", "This affects:", "Withdraw", "Deposit", "Transfer", "Pay", "Trade", "Exchange", "All economy op")
                         : createItem(MaterialAdapter.getLimeConcrete(), "Account is enabled", "Your account is allowed to do transactions", "This affects:", "Withdraw", "Deposit", "Transfer", "Pay", "Trade", "Exchange", "All economy op"),
-                f -> {});
+                null);
         setItem(11,createItem(Material.DIAMOND, "§6Exchange currencies","§7Click to exchange currencies"),
                 unused -> {
                     GUIFactory.exchangePanel(player, this).open();
@@ -53,6 +53,6 @@ public class BankGUI extends AbstractGUI {
                 f->{
                     GUIFactory.transferFoundsPanel(player,this).open();
                 });
-        setItem(31, createItem(Material.BARRIER, "§cExit", "§7Click to exit"), unused -> player.closeInventory());
+        setItem(31, createItem(Material.BARRIER, "§cExit", "§7Click to exit"), unused -> this.close());
     }
 }

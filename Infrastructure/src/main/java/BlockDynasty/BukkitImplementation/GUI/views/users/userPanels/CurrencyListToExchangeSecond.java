@@ -37,7 +37,7 @@ public class CurrencyListToExchangeSecond extends CurrenciesList {
     public void addCustomButtons() {
         setItem(4, createItem(Material.BOOK, "§aSelect Currency you want to receive",
                         Arrays.asList("§7Click to select the currency you want to receive", "§7And before that, the amount")),
-                unused -> {});
+                null);
 
     }
 }
