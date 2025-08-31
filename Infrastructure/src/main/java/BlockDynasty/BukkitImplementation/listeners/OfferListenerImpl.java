@@ -5,6 +5,7 @@ import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
+import lib.GUIFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public class OfferListenerImpl implements OfferListener {
             sender.sendMessage(Message.getOfferExpired(receiver.getName()));
         }
 
-        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
+        GUIFactory.getGuiService().refresh(offer.getComprador());
     }
 
     @Override
@@ -46,7 +47,7 @@ public class OfferListenerImpl implements OfferListener {
             //testing
             receiver.playSound(receiver.getLocation(), "block.note_block.pling" , 1.0f, 1.0f);
         }
-        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
+        GUIFactory.getGuiService().refresh(offer.getComprador());
     }
 
     @Override

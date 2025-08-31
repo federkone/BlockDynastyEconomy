@@ -1,5 +1,6 @@
 package BlockDynasty;
 
+import BlockDynasty.GUI.commands.AdminGUICommand;
 import BlockDynasty.GUI.RegisterGuiModule;
 import BlockDynasty.GUI.commands.BankGUICommand;
 import BlockDynasty.listeners.Courier;
@@ -24,11 +25,12 @@ import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 
 import BlockDynasty.Economy.Core;
-import org.spongepowered.api.Server;
 import repository.RepositorySql;
+
 
 //todo need init core
 @Plugin("blockdynastyeco")
+
 public class SpongePlugin {
     private static PluginContainer container; // The plugin container
     private static Logger logger; // The logger instance
@@ -80,6 +82,7 @@ public class SpongePlugin {
                         .build(), "greet", "wave");
 
         event.register(container, Command.builder().executor(new BankGUICommand()).build(), "bank");
+        event.register(container, Command.builder().executor(new AdminGUICommand()).build(), "admin");
     }
 
 

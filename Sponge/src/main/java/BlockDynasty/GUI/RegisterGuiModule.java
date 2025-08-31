@@ -4,11 +4,13 @@ import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
-import BlockDynasty.GUI.services.GUIService;
+import BlockDynasty.GUI.adapters.SpongePlatformAdapter;
+import BlockDynasty.GUI.adapters.TextInput;
 import BlockDynasty.utils.Console;
+import lib.GUIFactory;
+
 
 public class RegisterGuiModule {
-    private static final GUIService guiService= new GUIService();
 
     public static void register(
             TransactionsUseCase transactionsUseCase,
@@ -17,12 +19,10 @@ public class RegisterGuiModule {
             OfferUseCase offerUseCase)
     {
 
-        GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,offerUseCase);
+        GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,offerUseCase,new TextInput(), new SpongePlatformAdapter());
 
         Console.log("GUI registered successfully.");
     }
 
-    public static GUIService getGuiService() {
-        return guiService;
-    }
+
 }

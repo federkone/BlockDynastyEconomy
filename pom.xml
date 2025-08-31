@@ -13,6 +13,7 @@
         <module>core</module>
         <module>Infrastructure</module>
         <module>Sponge</module>
+        <module>GUIMCLibrary</module>
     </modules>
 
     <properties>

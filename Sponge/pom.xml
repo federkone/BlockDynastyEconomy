@@ -47,7 +47,7 @@
     <repositories>
         <repository>
             <id>spongepowered-repo</id>
-            <url>https://repo.spongepowered.org/maven/</url>
+            <url>https://repo.spongepowered.org/repository/maven-public/</url>
         </repository>
     </repositories>
     <dependencies>
@@ -69,6 +69,14 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.BlockDynasty</groupId>
+            <artifactId>GUIMCLibrary</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
 
     </dependencies>
 

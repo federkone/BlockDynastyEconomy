@@ -1,5 +1,6 @@
 package BlockDynasty.BukkitImplementation;
 
+import BlockDynasty.BukkitImplementation.GUI.RegisterModule;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
@@ -91,7 +92,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
     }
     private void registerGUI(){
-        RegisterGuiModule.register(
+        RegisterModule.register(
                 core.getTransactionsUseCase(),
                 core.getAccountsUseCase(),
                 core.getCurrencyUseCase(),
@@ -109,7 +110,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(economyListener, this);
-        getServer().getPluginManager().registerEvents(RegisterGuiModule.guiListener(),this);
+        getServer().getPluginManager().registerEvents(RegisterModule.guiListener(),this);
         TransactionsListener.register(core.getServicesManager().getEventManager(), messageService);
     }
     private void setupIntegrations() {
