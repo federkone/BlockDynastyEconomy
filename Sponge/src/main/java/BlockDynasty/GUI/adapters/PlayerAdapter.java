@@ -1,26 +1,20 @@
 package BlockDynasty.GUI.adapters;
 
 import BlockDynasty.GUI.listener.ClickListener;
+import BlockDynasty.GUI.listener.CloseListener;
 import lib.components.IInventory;
 import lib.components.IPlayer;
-import lib.templates.abstractions.AbstractGUI;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.Cause;
-import org.spongepowered.api.item.inventory.Container;
-import org.spongepowered.api.item.inventory.Slot;
-import org.spongepowered.api.item.inventory.menu.ClickType;
-import org.spongepowered.api.item.inventory.menu.ClickTypes;
 import org.spongepowered.api.item.inventory.menu.InventoryMenu;
-import org.spongepowered.api.item.inventory.menu.handler.SlotClickHandler;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 
 import java.util.UUID;
 
-public class SpongePlayer implements IPlayer {
+public class PlayerAdapter implements IPlayer {
     ServerPlayer player;
 
-    public SpongePlayer(ServerPlayer player) {
+    public PlayerAdapter(ServerPlayer player) {
         this.player = player;
     }
 
@@ -45,14 +39,14 @@ public class SpongePlayer implements IPlayer {
     }
 
     @Override
-    public void openInventory(AbstractGUI gui) {
-        IInventory inventory = gui.getInventory();
+    public void openInventory(IInventory inventory) {
         if (inventory.getHandle() instanceof ViewableInventory) {
             ViewableInventory spongeInventory = (ViewableInventory) inventory.getHandle();
             InventoryMenu menu = spongeInventory.asMenu();
 
-            menu.setReadOnly(true).setTitle( Component.text( gui.getTitle()));
-            menu.registerSlotClick(new ClickListener(gui));
+            menu.setReadOnly(true).setTitle(Component.text(inventory.getTitle()));
+            menu.registerSlotClick(new ClickListener());
+            menu.registerClose(new CloseListener());
 
             menu.open(player);
         } else {

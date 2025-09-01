@@ -2,9 +2,7 @@ package lib.templates.abstractions;
 
 import lib.components.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class AbstractGUI implements IGUI {
@@ -13,17 +11,15 @@ public class AbstractGUI implements IGUI {
     protected IInventory inventory;
     protected final IPlayer owner;
     protected IGUI parent;
-    protected final int rows;
-    protected final String title;
     protected final Map<Integer, IItemStack> items = new HashMap<>();
     protected final Map<Integer, Consumer<IPlayer>> leftClickActions = new HashMap<>();
     protected final Map<Integer, Consumer<IPlayer>> rightClickActions = new HashMap<>();
 
     public interface PlatformAdapter {
-        IItemStack createItemStack(Materials material, String name, String... lore);
-        IInventory createInventory(AbstractGUI gui);
+        IItemStack createItemStack(Materials material);
+        IInventory createInventory(String title, int rows);
 
-        java.util.Optional<IPlayer> getPlayerOnlineByUUID(java.util.UUID uuid);
+        Optional<IPlayer> getPlayerOnlineByUUID(UUID uuid);
         List<IPlayer> getOnlinePlayers();
     }
     // Set the platform adapter at startup
@@ -33,20 +29,19 @@ public class AbstractGUI implements IGUI {
     }
 
     public AbstractGUI(String title, int rows, IPlayer owner) {
-        this.title = title;
-        this.owner = owner;
-        this.rows = rows;
-        this.parent = null;
+        createInventory(title, rows);
         fill();
-        recreateInventory();
+        this.owner = owner;
+        this.parent = null;
     }
     public AbstractGUI(String title, int rows, IPlayer owner, IGUI parent) {
         this(title, rows, owner);
         this.parent = parent;
     }
-
-    private void recreateInventory() { //create inventory and usage in open and in constructor
-        this.inventory =platformAdapter.createInventory(this);
+    private void createInventory(String title, int rows) {
+        this.inventory =platformAdapter.createInventory(title, rows);
+        this.inventory.setRows(rows);
+        this.inventory.setTitle(title);
         items.forEach((key, value) -> inventory.set(key, value));
     }
 
@@ -58,8 +53,8 @@ public class AbstractGUI implements IGUI {
 
     @Override
     public void open() {
-        recreateInventory();
-        owner.openInventory(this);
+        createInventory(inventory.getTitle(), inventory.getRows());
+        owner.openInventory(this.inventory);
         guiService.registerGUI(owner, this);
     }
 
@@ -83,11 +78,6 @@ public class AbstractGUI implements IGUI {
     }
 
     @Override
-    public IPlayer getOwner() {
-        return this.owner;
-    }
-
-    @Override
     public void handleRightClick(int slot, IPlayer player) {
         Consumer<IPlayer> action = rightClickActions.get(slot);
         if (action != null) {
@@ -104,13 +94,13 @@ public class AbstractGUI implements IGUI {
     }
 
     @Override
-    public String getTitle() {
-        return this.title;
+    public String getTitle(){
+        return this.inventory.getTitle();
     }
 
     @Override
-    public int getRows() {
-        return this.rows;
+    public int getRows(){
+        return this.inventory.getRows();
     }
 
     @Override
@@ -144,10 +134,6 @@ public class AbstractGUI implements IGUI {
     public void refresh() {
     }
 
-    public IGUIService getGuiService() {
-        return guiService;
-    }
-
     protected void setItem(int slot, IItemStack item, Consumer<IPlayer> leftClickAction) {
         items.put(slot, item);
         inventory.set(slot, item);
@@ -167,7 +153,10 @@ public class AbstractGUI implements IGUI {
         }
     }
     protected IItemStack createItem(Materials material, String name, String... lore) {
-        return platformAdapter.createItemStack(material, name, lore);
+        IItemStack item =platformAdapter.createItemStack(material);
+        item.setDisplayName(name);
+        item.setLore(Arrays.asList(lore));
+        return item;
     }
 
 

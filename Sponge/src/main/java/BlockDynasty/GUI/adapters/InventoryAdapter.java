@@ -5,16 +5,38 @@ import lib.components.IItemStack;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 
-public class SpongeInventory implements IInventory {
+public class InventoryAdapter implements IInventory {
     ViewableInventory inventory;
+    private int rows;
+    private String title;
 
-    public SpongeInventory(ViewableInventory inventory) {
+    public InventoryAdapter(ViewableInventory inventory) {
         this.inventory = inventory;
     }
 
     @Override
     public void set(int slot, IItemStack item) {
         this.inventory.set(slot, (ItemStack) item.getHandle());
+    }
+
+    @Override
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    @Override
+    public int getRows() {
+        return this.rows;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public String getTitle() {
+        return this.title;
     }
 
     @Override

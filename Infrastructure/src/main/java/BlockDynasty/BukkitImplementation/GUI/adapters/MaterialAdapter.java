@@ -23,7 +23,35 @@ public class MaterialAdapter {
                 Material bukkitMaterial = Material.valueOf(material.name());
                 MATERIAL_MAP.put(material, bukkitMaterial);
             } catch (IllegalArgumentException e) {
-                System.out.println("No mapping found for " + material.name() + ": " + e.getMessage());
+                //System.out.println("No mapping found for " + material.name() + ": " + e.getMessage());
+
+                if (Version.isLegacy()) {
+                    if (material == Materials.PLAYER_HEAD) {
+                        MATERIAL_MAP.put(material, Material.valueOf("SKULL_ITEM"));
+                    }
+                    if (material.name().contains("WOOL")) {
+                        MATERIAL_MAP.put(material, Material.valueOf("WOOL"));
+                    }
+                    if (material == Materials.LIME_DYE) {
+                        MATERIAL_MAP.put(material, Material.SLIME_BALL);
+                    }
+                    if (material == Materials.LIME_CONCRETE) {
+                        MATERIAL_MAP.put(material, Material.EMERALD_BLOCK);
+                    }
+                    if (material == Materials.RED_CONCRETE) {
+                        MATERIAL_MAP.put(material, Material.REDSTONE_BLOCK);
+                    }
+                    if (material == Materials.WRITABLE_BOOK) {
+                        MATERIAL_MAP.put(material, Material.valueOf("BOOK_AND_QUILL"));
+                    }
+                    if (material == Materials.GLASS_PANE) {
+                        MATERIAL_MAP.put(material, Material.valueOf("THIN_GLASS"));
+                    }
+                    if (material == Materials.BLUE_STAINED_GLASS_PANE) {
+                        MATERIAL_MAP.put(material, Material.valueOf("STAINED_GLASS_PANE"));
+                    }
+                    continue;
+                }
                 MATERIAL_MAP.put(material, FALLBACK);
             }
         }
@@ -35,88 +63,29 @@ public class MaterialAdapter {
         return MATERIAL_MAP.getOrDefault(material, FALLBACK);
     }
 
-    public static Material getLimeDye() {
-        if (Version.isLegacy()) return Material.SLIME_BALL;
-        return Material.LIME_DYE;
-    }
-
-    public static Material getLimeConcrete() {
-        if (Version.isLegacy()) return Material.EMERALD_BLOCK;
-        return Material.LIME_CONCRETE;
-    }
-
-    public static Material getRedConcrete() {
-        if (Version.isLegacy()) return Material.REDSTONE_BLOCK;
-        return Material.RED_CONCRETE;
-    }
-
-    public static Material getPlayerHead() {
-        if (Version.isLegacy()) return Material.valueOf("SKULL_ITEM"); // 1.8-1.12
-        return Material.PLAYER_HEAD; // 1.13+
-    }
-
-    public static Material getWritableBook() {
-        if (Version.isLegacy()) return Material.valueOf("BOOK_AND_QUILL"); // 1.8-1.12
-        return Material.WRITABLE_BOOK; // 1.13+
-    }
-
-    public static ItemStack getPanelGlass(){
+    public static ItemStack toBukkitItemStack(Materials materials) {
         if (Version.isLegacy()) {
-            return new ItemStack(Material.valueOf("THIN_GLASS"));
-        }else {
-            return new ItemStack(Material.GLASS_PANE);
+            switch (materials) {
+                case PLAYER_HEAD:
+                    return new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+                case BLUE_STAINED_GLASS_PANE:
+                    return new ItemStack(Material.valueOf("STAINED_GLASS_PANE"), 1, (short) 11);
+                default:
+                    if (materials.name().contains("WOOL")) {
+                        return new ItemStack(Material.valueOf("WOOL"), 1, getLegacyDataValue(materials.name()));
+                    }
+            }
         }
+        return new ItemStack(toBukkitMaterial(materials));
     }
-    public static ItemStack getBluePanelGlass(){
+
+    public static boolean isPlayerHead(Material material) {
         if (Version.isLegacy()) {
-            return new ItemStack(Material.valueOf("STAINED_GLASS_PANE"),1,(short)11);
-        }else {
-            return new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
-        }
-    }
-
-    public static ItemStack createPlayerHead(String playerName) {
-        ItemStack skull;
-        if(Version.isLegacy()){
-            skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-        }else{
-            skull = new ItemStack(Material.PLAYER_HEAD);
-        }
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(playerName);
-        meta.setDisplayName(playerName);
-        skull.setItemMeta(meta);
-        return skull;
-    }
-
-    public static ItemStack createPlayerHead(String playerName, List<String> lore) {
-        ItemStack skull;
-        if(Version.isLegacy()){
-            skull = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-        }else{
-            skull = new ItemStack(Material.PLAYER_HEAD);
-        }
-        SkullMeta meta = (SkullMeta) skull.getItemMeta();
-        meta.setOwner(playerName);
-        meta.setDisplayName(playerName);
-        meta.setLore(lore);
-        skull.setItemMeta(meta);
-        return skull;
-    }
-
-    public static ItemStack adaptWool(String material) {
-        if (!Version.isLegacy()) {
-            return new ItemStack(Material.getMaterial(material));
+            return material == Material.valueOf("SKULL_ITEM");
+        } else {
+            return material == Material.PLAYER_HEAD;
         }
 
-        Material legacyWool = null;
-        try {
-            legacyWool = Material.valueOf("WOOL");
-            short data = getLegacyDataValue(material);
-            return new ItemStack(legacyWool, 1, data);
-        } catch (IllegalArgumentException ignored) {
-            return new ItemStack(Material.PAPER);
-        }
     }
 
     public static Sound getClickSound() {

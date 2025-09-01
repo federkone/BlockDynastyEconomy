@@ -6,9 +6,9 @@ public interface IGUI {
     void refresh();
     void handleLeftClick(int slot, IPlayer player);
     void handleRightClick(int slot, IPlayer player);
-    String getTitle();
     int getRows();
-    IPlayer getOwner();
+    String getTitle();
+    IInventory getInventory();
     boolean hasParent();
     IGUI getParent();
     void openParent();

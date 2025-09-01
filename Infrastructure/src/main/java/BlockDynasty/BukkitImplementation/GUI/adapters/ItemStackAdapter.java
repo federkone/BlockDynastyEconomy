@@ -18,7 +18,7 @@ public class ItemStackAdapter implements IItemStack {
 
     @Override
     public IItemStack setDisplayName(String name) {
-        if(this.itemStack.getType() == Material.PLAYER_HEAD) {
+        if(MaterialAdapter.isPlayerHead(this.itemStack.getType())) {
             SkullMeta skullmeta = (SkullMeta) itemStack.getItemMeta();
             skullmeta.setOwner(name);
             skullmeta.setDisplayName(name);

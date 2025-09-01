@@ -2,20 +2,22 @@ package lib.templates.users;
 
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.components.IGUI;
-import lib.components.IPlayer;
-import lib.components.IPlayerManager;
-import lib.components.ITextInput;
+import lib.GUIFactory;
+import lib.components.*;
+import lib.templates.abstractions.AccountsList;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TransferFoundsGUI extends PayGUI{
+public class TransferFoundsGUI extends AccountsList {
+    private IPlayer sender;
     private final SearchAccountUseCase searchAccountUseCase;
     public TransferFoundsGUI(IPlayer sender, IGUI parent, SearchAccountUseCase searchAccountUseCase , ITextInput textInput) {
-        super(sender, parent , textInput );
+        super("Select Player", 5, sender, parent, textInput);
+        this.sender = sender;
         this.searchAccountUseCase = searchAccountUseCase;
         Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
         if(result.isSuccess()) {
@@ -41,5 +43,16 @@ public class TransferFoundsGUI extends PayGUI{
         if(result.isSuccess()){
             return result.getValue().getPlayer();
         }else {return null;}
+    }
+
+    @Override
+    public void openNextSection(Player target) {
+        GUIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
+    }
+
+    @Override
+    public void addCustomButtons(){
+        super.addCustomButtons(); // Call the parent method to add the default buttons accountList
+        setItem(4, createItem(Materials.PAPER, "§aSelect Player to Transfer", "§7Click to select the player you want to transfer","#Ordered by name"), null);
     }
 }

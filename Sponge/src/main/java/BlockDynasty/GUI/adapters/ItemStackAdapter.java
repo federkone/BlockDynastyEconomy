@@ -13,10 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-public class SpongeItemStack implements IItemStack {
+public class ItemStackAdapter implements IItemStack {
     ItemStack itemStack;
 
-    public SpongeItemStack(ItemStack itemStack) {
+    public ItemStackAdapter(ItemStack itemStack) {
         this.itemStack = itemStack;
     }
 

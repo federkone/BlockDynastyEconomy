@@ -9,6 +9,6 @@ public interface IPlayer {
     String getName();
     void sendMessage(String message);
     void closeInventory();
-    void openInventory(AbstractGUI inventory);
+    void openInventory(IInventory inventory);
     Object getHandle();
 }

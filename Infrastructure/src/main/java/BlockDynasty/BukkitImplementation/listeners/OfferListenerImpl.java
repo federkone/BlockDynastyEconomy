@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation.listeners;
 
-import BlockDynasty.BukkitImplementation.GUI.RegisterGuiModule;
 import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -52,8 +51,8 @@ public class OfferListenerImpl implements OfferListener {
 
     @Override
     public void onOfferCanceled(Offer offer) {
-        RegisterGuiModule.getGuiService().refresh(offer.getComprador());
-        RegisterGuiModule.getGuiService().refresh(offer.getVendedor());
+        GUIFactory.getGuiService().refresh(offer.getComprador());
+        GUIFactory.getGuiService().refresh(offer.getVendedor());
 
         Player sender = Bukkit.getPlayer(offer.getVendedor());
         Player receiver = Bukkit.getPlayer(offer.getComprador());

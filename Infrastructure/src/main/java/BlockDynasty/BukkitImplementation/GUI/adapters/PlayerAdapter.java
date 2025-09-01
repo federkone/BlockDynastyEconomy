@@ -1,5 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.adapters;
 
+import lib.components.IGUI;
+import lib.components.IInventory;
 import lib.components.IPlayer;
 import lib.templates.abstractions.AbstractGUI;
 import org.bukkit.entity.Player;
@@ -34,9 +36,9 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
-    public void openInventory(AbstractGUI gui) {
-        Inventory inventory= (Inventory) gui.getInventory().getHandle();
-        player.openInventory(inventory);
+    public void openInventory(IInventory inventory) {
+        Inventory inventoryBukkit= (Inventory) inventory.getHandle();
+        player.openInventory(inventoryBukkit);
     }
 
     @Override

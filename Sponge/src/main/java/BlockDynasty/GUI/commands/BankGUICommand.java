@@ -1,6 +1,6 @@
 package BlockDynasty.GUI.commands;
 
-import BlockDynasty.GUI.adapters.SpongePlayer;
+import BlockDynasty.GUI.adapters.PlayerAdapter;
 import lib.GUIFactory;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.command.CommandExecutor;
@@ -16,7 +16,7 @@ public class BankGUICommand implements CommandExecutor {
         ServerPlayer player = context.cause().first(ServerPlayer.class)
                 .orElseThrow(() -> new CommandException(Component.text("Este comando solo puede ser usado por un jugador")));
 
-        GUIFactory.bankPanel(new SpongePlayer(player)).open();
+        GUIFactory.bankPanel(new PlayerAdapter(player)).open();
         //player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
 
         return CommandResult.success();

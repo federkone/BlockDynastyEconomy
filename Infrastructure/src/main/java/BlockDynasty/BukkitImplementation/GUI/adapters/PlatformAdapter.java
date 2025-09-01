@@ -10,28 +10,21 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class BukkitAdapter implements AbstractGUI.PlatformAdapter{
+public class PlatformAdapter implements AbstractGUI.PlatformAdapter{
     @Override
-    public IItemStack createItemStack(Materials material, String name, String... lore) {
-        Material materialBukkit = MaterialAdapter.toBukkitMaterial(material);
-        ItemStack itemStack = new ItemStack(materialBukkit);
-        ItemStackAdapter adapter = new ItemStackAdapter(itemStack);
-
-        adapter.setDisplayName(name);
-        adapter.setLore(Arrays.asList(lore));
-
-        return adapter;
+    public IItemStack createItemStack(Materials material) {
+        ItemStack itemStack = MaterialAdapter.toBukkitItemStack(material);
+        return new ItemStackAdapter(itemStack);
     }
 
     @Override
-    public IInventory createInventory(AbstractGUI gui) {
-        Inventory inventory = Bukkit.createInventory(null, gui.getRows()*9, gui.getTitle());
+    public IInventory createInventory(String title, int rows) {
+        Inventory inventory = Bukkit.createInventory(null, rows * 9, title);
         return new InventoryAdapter(inventory);
     }
 

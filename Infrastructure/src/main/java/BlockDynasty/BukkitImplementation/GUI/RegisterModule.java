@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.GUI;
 
-import BlockDynasty.BukkitImplementation.GUI.adapters.BukkitAdapter;
+import BlockDynasty.BukkitImplementation.GUI.adapters.PlatformAdapter;
 import BlockDynasty.BukkitImplementation.GUI.adapters.TextInput;
 import BlockDynasty.BukkitImplementation.GUI.commands.AdminGUICommand;
 import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
@@ -23,7 +23,7 @@ public class RegisterModule {
             MessageService messageService
     ) {
 
-        GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,offerUseCase,new TextInput(),new BukkitAdapter());
+        GUIFactory.init(currencyUseCase, accountsUseCase, transactionsUseCase,offerUseCase,new TextInput(),new PlatformAdapter());
 
         Console.log("GUI registered successfully.");
     }

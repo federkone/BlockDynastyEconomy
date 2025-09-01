@@ -11,7 +11,6 @@ import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
 import BlockDynasty.BukkitImplementation.listeners.TransactionsListener;
 
-import BlockDynasty.BukkitImplementation.GUI.RegisterGuiModule;
 import BlockDynasty.BukkitImplementation.logs.VaultLogger;
 import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
 import BlockDynasty.BukkitImplementation.services.MessageService;
