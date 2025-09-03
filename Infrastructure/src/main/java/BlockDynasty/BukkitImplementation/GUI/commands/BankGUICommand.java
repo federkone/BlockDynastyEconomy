@@ -21,7 +21,7 @@ public class BankGUICommand implements CommandExecutor {
         }
 
         GUIFactory.bankPanel(new PlayerAdapter(player)).open();
-        player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
+        //player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
         return true;
     }
 }

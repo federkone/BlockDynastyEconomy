@@ -4,13 +4,16 @@ import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.components.Materials;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings( "deprecation")
 public class MaterialAdapter {
     private static final Map<Materials, Material> MATERIAL_MAP = new HashMap<>();
     private static final Material FALLBACK = Material.STONE;
@@ -79,7 +82,30 @@ public class MaterialAdapter {
         return new ItemStack(toBukkitMaterial(materials));
     }
 
-    public static boolean isPlayerHead(Material material) {
+    public static void applyItemMeta(ItemStack item, String displayName, List<String> lore) {
+        ItemMeta meta;
+
+        if (isPlayerHead(item.getType())) {
+            SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+            skullMeta.setOwner(displayName);
+            meta = skullMeta;
+        } else {
+            meta = item.getItemMeta();
+        }
+
+        if (displayName != null) {
+            meta.setDisplayName(displayName);
+        }
+
+        if (lore != null) {
+            meta.setLore(lore);
+        }
+
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        item.setItemMeta(meta);
+    }
+
+    private static boolean isPlayerHead(Material material) {
         if (Version.isLegacy()) {
             return material == Material.valueOf("SKULL_ITEM");
         } else {

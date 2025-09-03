@@ -44,6 +44,31 @@ public class AbstractGUI implements IGUI {
         this.inventory.setTitle(title);
         items.forEach((key, value) -> inventory.set(key, value));
     }
+    protected IItemStack createItem(Materials material, String name, String... lore) {
+        IItemStack item =platformAdapter.createItemStack(material);
+        item.setDisplayName(name);
+        item.setLore(Arrays.asList(lore));
+        return item;
+    }
+    protected void setItem(int slot, IItemStack item, Consumer<IPlayer> leftClickAction) {
+        items.put(slot, item);
+        inventory.set(slot, item);
+        if (item == null || leftClickAction == null) {
+            leftClickActions.remove(slot);
+        } else {
+            leftClickActions.put(slot, leftClickAction);
+        }
+    }
+    protected void setItem(int slot, IItemStack item, Consumer<IPlayer> leftClickAction, Consumer<IPlayer> rightClickAction) {
+        setItem(slot, item, leftClickAction);
+
+        if (item == null || rightClickAction == null) {
+            rightClickActions.remove(slot);
+        } else {
+            rightClickActions.put(slot, rightClickAction);
+        }
+    }
+
 
     @Override
     public void close() {
@@ -82,7 +107,8 @@ public class AbstractGUI implements IGUI {
         Consumer<IPlayer> action = rightClickActions.get(slot);
         if (action != null) {
             action.accept(player);
-        }
+            player.playSuccessSound();
+        }else {player.playFailureSound();}
     }
 
     @Override
@@ -90,7 +116,8 @@ public class AbstractGUI implements IGUI {
         Consumer<IPlayer> action = leftClickActions.get(slot);
         if (action != null) {
             action.accept(player);
-        }
+            player.playSuccessSound();
+        }else{player.playFailureSound();}
     }
 
     @Override
@@ -122,10 +149,6 @@ public class AbstractGUI implements IGUI {
 
     }
 
-    public void setInventory(IInventory inventory) {
-        this.inventory = inventory;
-    }
-
     public IInventory getInventory() {
         return this.inventory;
     }
@@ -133,31 +156,4 @@ public class AbstractGUI implements IGUI {
     @Override
     public void refresh() {
     }
-
-    protected void setItem(int slot, IItemStack item, Consumer<IPlayer> leftClickAction) {
-        items.put(slot, item);
-        inventory.set(slot, item);
-        if (item == null || leftClickAction == null) {
-            leftClickActions.remove(slot);
-        } else {
-            leftClickActions.put(slot, leftClickAction);
-        }
-    }
-    protected void setItem(int slot, IItemStack item, Consumer<IPlayer> leftClickAction, Consumer<IPlayer> rightClickAction) {
-        setItem(slot, item, leftClickAction);
-
-        if (item == null || rightClickAction == null) {
-            rightClickActions.remove(slot);
-        } else {
-            rightClickActions.put(slot, rightClickAction);
-        }
-    }
-    protected IItemStack createItem(Materials material, String name, String... lore) {
-        IItemStack item =platformAdapter.createItemStack(material);
-        item.setDisplayName(name);
-        item.setLore(Arrays.asList(lore));
-        return item;
-    }
-
-
 }

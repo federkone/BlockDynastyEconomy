@@ -6,6 +6,8 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
+import BlockDynasty.BukkitImplementation.commands.BukkitAdapter;
+import BlockDynasty.BukkitImplementation.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
 import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
@@ -14,7 +16,6 @@ import BlockDynasty.BukkitImplementation.listeners.TransactionsListener;
 import BlockDynasty.BukkitImplementation.logs.VaultLogger;
 import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
 import BlockDynasty.BukkitImplementation.services.MessageService;
-import BlockDynasty.BukkitImplementation.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.logs.EconomyLogger;
 import BlockDynasty.BukkitImplementation.utils.Console;
 
@@ -26,6 +27,7 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import BlockDynasty.repository.InitDatabase;
 
+import lib.commands.commands.CommandsFactory;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -88,7 +90,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
         this.messageService = new MessageService(core.getServicesManager().getCurrencyService());
     }
     private void registerCommands(){
-        CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
+        //CommandRegister.registerCommands(this, core.getAccountsUseCase(),core.getCurrencyUseCase(),core.getTransactionsUseCase(),core.getOfferUseCase());
+        CommandsFactory.init(core.getTransactionsUseCase(),core.getOfferUseCase(),core.getCurrencyUseCase(),core.getAccountsUseCase(),new BukkitAdapter());
+        CommandRegister.registerAll();
     }
     private void registerGUI(){
         RegisterModule.register(

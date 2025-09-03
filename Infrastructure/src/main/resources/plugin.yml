@@ -36,3 +36,5 @@ commands:
     description: Opens the bank GUI.
     usage: /bank
     aliases: [bank, banco]
+  admin:
+    usage: /admin

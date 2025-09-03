@@ -22,20 +22,13 @@ public class ItemStackAdapter implements IItemStack {
 
     @Override
     public IItemStack setDisplayName(String name) {
-        if(this.itemStack.type().equals( ItemTypes.PLAYER_HEAD.get())){
-            Optional<ServerPlayer> optional= Sponge.server().player(name);
-            optional.ifPresent(serverPlayer -> this.itemStack.offer(Keys.GAME_PROFILE, serverPlayer.profile()));
-        }
-        this.itemStack.offer(Keys.CUSTOM_NAME, Component.text(name));
+        MaterialAdapter.applyItemMeta(itemStack, name, null);
         return this;
     }
 
     @Override
     public IItemStack setLore(List<String> lore) {
-        List<Component> loreComponents = lore.stream()
-                .map(Component::text)
-                .collect(Collectors.toList());
-        this.itemStack.offer(Keys.LORE, loreComponents);
+        MaterialAdapter.applyItemMeta(itemStack, null, lore);
         return this;
     }
 

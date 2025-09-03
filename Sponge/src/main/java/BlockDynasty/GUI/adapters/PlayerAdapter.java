@@ -4,6 +4,7 @@ import BlockDynasty.GUI.listener.ClickListener;
 import BlockDynasty.GUI.listener.CloseListener;
 import lib.components.IInventory;
 import lib.components.IPlayer;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.menu.InventoryMenu;
@@ -52,6 +53,28 @@ public class PlayerAdapter implements IPlayer {
         } else {
             throw new IllegalArgumentException("Invalid inventory type provided");
         }
+    }
+
+    @Override
+    public void playSuccessSound() {
+        Sound sound = Sound.sound(
+                org.spongepowered.api.ResourceKey.resolve("minecraft:ui.button.click"),
+                Sound.Source.PLAYER,
+                0.3f,
+                1.0f
+        );
+        player.playSound(sound);
+    }
+
+    @Override
+    public void playFailureSound() {
+        Sound sound = Sound.sound(
+                org.spongepowered.api.ResourceKey.resolve("minecraft:block.note_block.pling"),
+                Sound.Source.PLAYER,
+                0.3f,
+                0.5f
+        );
+        player.playSound(sound);
     }
 
     @Override

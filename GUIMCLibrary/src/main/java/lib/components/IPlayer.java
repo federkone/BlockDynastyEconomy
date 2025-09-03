@@ -10,5 +10,7 @@ public interface IPlayer {
     void sendMessage(String message);
     void closeInventory();
     void openInventory(IInventory inventory);
+    void playSuccessSound();
+    void playFailureSound();
     Object getHandle();
 }

@@ -6,15 +6,8 @@ package lib.components;
 public enum Materials {
     // Basic materials
     GLASS_PANE,
-    BLACK_GLASS_PANE,
-    WHITE_GLASS_PANE,
-    BLUE_GLASS_PANE,
     BLUE_STAINED_GLASS_PANE,
-    RED_GLASS_PANE,
-    GREEN_GLASS_PANE,
-    GRAY_GLASS_PANE,
     RED_CONCRETE,
-    GREEN_CONCRETE,
     LIME_CONCRETE,
     EMERALD_BLOCK,
     GOLD_NUGGET,
@@ -32,20 +25,15 @@ public enum Materials {
 
     // Navigation
     ARROW,
-    COMPASS,
-    MAP,
 
     // Action items
     EMERALD,
     DIAMOND,
     GOLD_INGOT,
-    IRON_INGOT,
     REDSTONE,
-
 
     // Head items
     PLAYER_HEAD,
-    SKELETON_SKULL,
 
     //WOOLS
     WHITE_WOOL,

@@ -18,27 +18,13 @@ public class ItemStackAdapter implements IItemStack {
 
     @Override
     public IItemStack setDisplayName(String name) {
-        if(MaterialAdapter.isPlayerHead(this.itemStack.getType())) {
-            SkullMeta skullmeta = (SkullMeta) itemStack.getItemMeta();
-            skullmeta.setOwner(name);
-            skullmeta.setDisplayName(name);
-            this.itemStack.setItemMeta(skullmeta);
-        }else{
-            ItemMeta meta = itemStack.getItemMeta();
-            meta.setDisplayName(name);
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemStack.setItemMeta(meta);
-        }
-
+        MaterialAdapter.applyItemMeta(itemStack, name, null);
         return this;
     }
 
     @Override
     public IItemStack setLore(List<String> lore) {
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setLore(lore);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemStack.setItemMeta(meta);
+        MaterialAdapter.applyItemMeta(itemStack, null, lore);
         return this;
     }
 

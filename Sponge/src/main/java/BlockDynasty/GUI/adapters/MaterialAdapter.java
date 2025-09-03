@@ -1,12 +1,20 @@
 package BlockDynasty.GUI.adapters;
 
 import lib.components.Materials;
+import net.kyori.adventure.text.Component;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.Keys;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MaterialAdapter {
     private static final Map<Materials, ItemType> MATERIAL_MAP = new HashMap<>();
@@ -22,10 +30,29 @@ public class MaterialAdapter {
                 ItemType itemType = (ItemType) supplier.getClass().getMethod("get").invoke(supplier);
                 MATERIAL_MAP.put(material, itemType);
             } catch (Exception e) {
-                System.out.println("No mapping found for " + material.name() + ": " + e.getMessage());
+                //System.out.println("No mapping found for " + material.name() + ": " + e.getMessage());
                 MATERIAL_MAP.put(material, FALLBACK);
             }
         }
+    }
+
+    public static void applyItemMeta(ItemStack item, String displayName, List<String> lore){
+
+        if(displayName != null){
+            if(item.type().equals( ItemTypes.PLAYER_HEAD.get())){
+                Optional<ServerPlayer> optional= Sponge.server().player(displayName);
+                optional.ifPresent(serverPlayer -> item.offer(Keys.GAME_PROFILE, serverPlayer.profile()));
+            }
+            item.offer(Keys.CUSTOM_NAME, Component.text(displayName));
+
+        }
+        if(lore != null){
+            List<Component> loreComponents = lore.stream()
+                    .map(Component::text)
+                    .collect(Collectors.toList());
+            item.offer(Keys.LORE, loreComponents);
+        }
+
     }
 
     public static ItemType toItemType(Materials material) {

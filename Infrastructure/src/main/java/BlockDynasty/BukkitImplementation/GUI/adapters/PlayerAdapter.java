@@ -42,6 +42,16 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
+    public void playSuccessSound() {
+        player.playSound(player.getLocation(),  MaterialAdapter.getClickSound(), 0.3f, 1.0f);
+    }
+
+    @Override
+    public void playFailureSound() {
+        player.playSound(player.getLocation(), "block.note_block.pling", 0.3f, 0.5f);
+    }
+
+    @Override
     public Object getHandle() {
         return player;
     }

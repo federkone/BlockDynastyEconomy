@@ -46,49 +46,49 @@ public class GUIFactory {
         return new AdminPanelGUI(sender);
     }
     //account admin panel
-    public static IGUI accountPanel(IPlayer sender, IGUI parent){
-        return new AccountPanelGUI(sender,accountsUseCase.getGetAccountsUseCase(),parent,textInput);
-    }
-    //submenus for accountPanel
-    public static IGUI editAccountPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
-        return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), accountsUseCase.getEditAccountUseCase(),accountsUseCase.getGetAccountsUseCase(),sender, target, parent,textInput);
-    }
-    //submenus for editAccountPanel
-    public static IGUI balancePanel(IPlayer sender, UUID target, IGUI parent) {
-        return new BalanceGUI(sender, target, accountsUseCase.getGetBalanceUseCase(), parent);
-    }
-    public static IGUI depositPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-        return new CurrencyListToDeposit( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getDepositUseCase(),parent,textInput);
-    }
-    public static IGUI setPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-        return  new CurrencyListToSet( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getSetBalanceUseCase(),parent,textInput);
-    }
-    public static IGUI withdrawPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-        return new CurrencyListToWithdraw( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getWithdrawUseCase(),parent,textInput);
-    }
+        public static IGUI accountPanel(IPlayer sender, IGUI parent){
+            return new AccountPanelGUI(sender,accountsUseCase.getGetAccountsUseCase(),parent,textInput);
+        }
+        //submenus for accountPanel
+            public static IGUI editAccountPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
+                return new EditAccountGUI(accountsUseCase.getDeleteAccountUseCase(), accountsUseCase.getEditAccountUseCase(),accountsUseCase.getGetAccountsUseCase(),sender, target, parent,textInput);
+            }
+            //submenus for editAccountPanel
+                public static IGUI balancePanel(IPlayer sender, UUID target, IGUI parent) {
+                    return new BalanceGUI(sender, target, accountsUseCase.getGetBalanceUseCase(), parent);
+                }
+                public static IGUI depositPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
+                    return new CurrencyListToDeposit( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getDepositUseCase(),parent,textInput);
+                }
+                public static IGUI setPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
+                    return  new CurrencyListToSet( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getSetBalanceUseCase(),parent,textInput);
+                }
+                public static IGUI withdrawPanel(IPlayer sender,BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
+                    return new CurrencyListToWithdraw( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getWithdrawUseCase(),parent,textInput);
+                }
 
-    //currency admin panel
-    public static IGUI currencyPanel(IPlayer player, IGUI parent) {
-        return new CurrencyPanelGUI(player, parent);
-    }
-    //submenus for currencyPanel
-    public static void createCurrencyPanel(IPlayer sender,IGUI parent) {
-        new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getGetCurrencyUseCase(),parent,textInput);
-    }
-    public static IGUI currencyListToDeletePanel(IPlayer player, IGUI parent) {
-        return new CurrencyListDelete(player, currencyUseCase.getGetCurrencyUseCase(), currencyUseCase.getDeleteCurrencyUseCase(), parent,textInput);
-    }
-    public static IGUI currencyListToEditPanel(IPlayer player, IGUI parent) {
-        return new CurrencyListEdit(player, currencyUseCase.getGetCurrencyUseCase(), parent,textInput);
-    }
-    //submenus for currencyListToEditPanel
-    public static IGUI editCurrencyPanel(IPlayer sender, Currency currency, IGUI parent) {
-        return new EditCurrencyGUI(sender, currency, currencyUseCase.getEditCurrencyUseCase(), parent,textInput);
-    }
-    //submenus for editCurrencyPanel
-    public static IGUI colorSelectorPanel(IPlayer sender,Currency currency, EditCurrencyGUI parent) {
-        return new ColorSelectionGUI( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent);
-    }
+        //currency admin panel
+        public static IGUI currencyPanel(IPlayer player, IGUI parent) {
+            return new CurrencyPanelGUI(player, parent);
+        }
+        //submenus for currencyPanel
+            public static void createCurrencyPanel(IPlayer sender,IGUI parent) {
+                new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getGetCurrencyUseCase(),parent,textInput);
+            }
+            public static IGUI currencyListToDeletePanel(IPlayer player, IGUI parent) {
+                return new CurrencyListDelete(player, currencyUseCase.getGetCurrencyUseCase(), currencyUseCase.getDeleteCurrencyUseCase(), parent,textInput);
+            }
+            public static IGUI currencyListToEditPanel(IPlayer player, IGUI parent) {
+                return new CurrencyListEdit(player, currencyUseCase.getGetCurrencyUseCase(), parent,textInput);
+            }
+            //submenus for currencyListToEditPanel
+                public static IGUI editCurrencyPanel(IPlayer sender, Currency currency, IGUI parent) {
+                    return new EditCurrencyGUI(sender, currency, currencyUseCase.getEditCurrencyUseCase(), parent,textInput);
+                }
+                //submenus for editCurrencyPanel
+                    public static IGUI colorSelectorPanel(IPlayer sender,Currency currency, EditCurrencyGUI parent) {
+                        return new ColorSelectionGUI( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent);
+                    }
     //_-------------------------------------------------------------------------------
     //main bank user panel
     public static IGUI bankPanel(IPlayer sender) {
