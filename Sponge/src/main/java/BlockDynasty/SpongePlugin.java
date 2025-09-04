@@ -1,9 +1,7 @@
 package BlockDynasty;
 
-import BlockDynasty.GUI.commands.AdminGUICommand;
-import BlockDynasty.GUI.RegisterGuiModule;
-import BlockDynasty.GUI.commands.BankGUICommand;
-import BlockDynasty.commands.CommandAdapter;
+import BlockDynasty.GUI.adapters.PlatformAdapter;
+import BlockDynasty.GUI.adapters.TextInput;
 import BlockDynasty.commands.CommandRegistry;
 import BlockDynasty.commands.SpongeAdapter;
 import BlockDynasty.listeners.Courier;
@@ -11,8 +9,9 @@ import BlockDynasty.listeners.OfferListener;
 import BlockDynasty.logs.AbstractLog;
 import BlockDynasty.utils.Console;
 import com.google.inject.Inject;
-import lib.commands.commands.CommandsFactory;
+import lib.commands.CommandsFactory;
 
+import lib.gui.GUIFactory;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.command.Command;
@@ -44,7 +43,7 @@ public class SpongePlugin {
         // Perform any one-time setup
         Core core=new Core(new RepositorySql(),5,new OfferListener(),new Courier(),new AbstractLog());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),new SpongeAdapter());
-        RegisterGuiModule.register( core.getTransactionsUseCase(), core.getAccountsUseCase(), core.getCurrencyUseCase(), core.getOfferUseCase());
+        GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),new TextInput(), new PlatformAdapter());
         Console.log("Plugin constructed...");
     }
 
@@ -66,18 +65,6 @@ public class SpongePlugin {
 
     @Listener
     public void onRegisterCommands(final RegisterCommandEvent<Command.Parameterized> event) {
-        event.register(container,
-                Command.builder()
-                        .executor(new BankGUICommand())
-                        .build(),
-                "bank");
-
-        event.register(container,
-                Command.builder()
-                        .executor(new AdminGUICommand())
-                        .build(),
-                "admin");
-
 
         CommandRegistry.registerCommands(event, container, CommandsFactory.Commands.getMainCommands());
 

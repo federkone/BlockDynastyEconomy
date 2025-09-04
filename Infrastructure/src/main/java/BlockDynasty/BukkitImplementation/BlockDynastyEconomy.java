@@ -1,6 +1,9 @@
 package BlockDynasty.BukkitImplementation;
 
-import BlockDynasty.BukkitImplementation.GUI.RegisterModule;
+import BlockDynasty.BukkitImplementation.GUI.adapters.PlatformAdapter;
+import BlockDynasty.BukkitImplementation.GUI.adapters.TextInput;
+import BlockDynasty.BukkitImplementation.GUI.listener.ClickListener;
+import BlockDynasty.BukkitImplementation.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
@@ -27,7 +30,8 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import BlockDynasty.repository.InitDatabase;
 
-import lib.commands.commands.CommandsFactory;
+import lib.commands.CommandsFactory;
+import lib.gui.GUIFactory;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -95,12 +99,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
         CommandRegister.registerAll();
     }
     private void registerGUI(){
-        RegisterModule.register(
-                core.getTransactionsUseCase(),
-                core.getAccountsUseCase(),
-                core.getCurrencyUseCase(),
-                core.getOfferUseCase(),
-                messageService);
+        GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),new TextInput(),new PlatformAdapter());
+
     }
     private void registerEvents() {
         Listener economyListener;
@@ -113,7 +113,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
 
         getServer().getPluginManager().registerEvents(economyListener, this);
-        getServer().getPluginManager().registerEvents(RegisterModule.guiListener(),this);
+        getServer().getPluginManager().registerEvents(new ClickListener(),this);
+        getServer().getPluginManager().registerEvents(new CloseListener(),this);
         TransactionsListener.register(core.getServicesManager().getEventManager(), messageService);
     }
     private void setupIntegrations() {

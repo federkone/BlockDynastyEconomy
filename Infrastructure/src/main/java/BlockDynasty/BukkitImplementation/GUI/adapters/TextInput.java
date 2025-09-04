@@ -1,9 +1,9 @@
 package BlockDynasty.BukkitImplementation.GUI.adapters;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import lib.components.IGUI;
-import lib.components.IPlayer;
-import lib.components.ITextInput;
+import lib.gui.abstractions.IGUI;
+import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.ITextInput;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

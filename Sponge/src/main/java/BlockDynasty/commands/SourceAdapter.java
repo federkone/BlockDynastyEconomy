@@ -1,6 +1,8 @@
 package BlockDynasty.commands;
 
+import BlockDynasty.GUI.adapters.PlayerAdapter;
 import lib.commands.abstractions.Source;
+import lib.gui.abstractions.IPlayer;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
@@ -40,5 +42,15 @@ public class SourceAdapter implements Source {
     @Override
     public void kickPlayer(String message) {
         player.kick(Component.text(message));
+    }
+
+    @Override
+    public Object getHandle() {
+        return player;
+    }
+
+    @Override
+    public IPlayer asIPlayer() {
+        return new PlayerAdapter(player);
     }
 }

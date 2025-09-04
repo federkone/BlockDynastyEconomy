@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.commands;
 
 import lib.commands.abstractions.Source;
+import lib.gui.abstractions.IPlayer;
 import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.UUID;
@@ -39,5 +40,14 @@ public class CommandSourceAdapter implements Source {
     @Override
     public void kickPlayer(String message) {
 
+    }
+    @Override
+    public Object getHandle() {
+        return commandSender;
+    }
+
+    @Override
+    public IPlayer asIPlayer() {
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 package BlockDynasty.GUI.adapters;
 
-import lib.components.IInventory;
-import lib.components.IItemStack;
+import lib.gui.abstractions.IInventory;
+import lib.gui.abstractions.IItemStack;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 

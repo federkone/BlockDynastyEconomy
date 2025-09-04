@@ -2,8 +2,8 @@ package BlockDynasty.GUI.adapters;
 
 import BlockDynasty.GUI.listener.ClickListener;
 import BlockDynasty.GUI.listener.CloseListener;
-import lib.components.IInventory;
-import lib.components.IPlayer;
+import lib.gui.abstractions.IInventory;
+import lib.gui.abstractions.IPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;

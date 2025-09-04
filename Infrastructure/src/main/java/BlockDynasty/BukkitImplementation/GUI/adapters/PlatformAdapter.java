@@ -1,12 +1,11 @@
 package BlockDynasty.BukkitImplementation.GUI.adapters;
 
-import lib.components.IInventory;
-import lib.components.IItemStack;
-import lib.components.IPlayer;
-import lib.components.Materials;
-import lib.templates.abstractions.AbstractGUI;
+import lib.gui.abstractions.IInventory;
+import lib.gui.abstractions.IItemStack;
+import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.Materials;
+import lib.gui.templates.abstractions.AbstractGUI;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

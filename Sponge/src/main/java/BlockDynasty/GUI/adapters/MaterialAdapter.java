@@ -1,6 +1,6 @@
 package BlockDynasty.GUI.adapters;
 
-import lib.components.Materials;
+import lib.gui.abstractions.Materials;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;

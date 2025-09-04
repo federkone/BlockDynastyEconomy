@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.GUI.adapters;
 
 import BlockDynasty.BukkitImplementation.utils.Version;
-import lib.components.Materials;
+import lib.gui.abstractions.Materials;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemFlag;

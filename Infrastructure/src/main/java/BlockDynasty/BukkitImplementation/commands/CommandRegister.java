@@ -1,10 +1,8 @@
 package BlockDynasty.BukkitImplementation.commands;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.GUI.commands.AdminGUICommand;
-import BlockDynasty.BukkitImplementation.GUI.commands.BankGUICommand;
 import lib.commands.abstractions.Command;
-import lib.commands.commands.CommandsFactory;
+import lib.commands.CommandsFactory;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,9 +25,5 @@ public class CommandRegister {
                 pluginCommand.setPermission(command.getPermission());
             }
         }
-
-
-        plugin.getCommand("bank").setExecutor(new BankGUICommand());
-        plugin.getCommand("admin").setExecutor(new AdminGUICommand());
     }
 }

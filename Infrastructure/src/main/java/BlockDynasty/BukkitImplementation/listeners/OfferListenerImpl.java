@@ -4,7 +4,7 @@ import BlockDynasty.BukkitImplementation.config.file.Message;
 import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
-import lib.GUIFactory;
+import lib.gui.GUIFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

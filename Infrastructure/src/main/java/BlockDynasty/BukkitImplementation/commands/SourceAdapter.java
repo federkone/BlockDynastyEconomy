@@ -1,6 +1,8 @@
 package BlockDynasty.BukkitImplementation.commands;
 
+import BlockDynasty.BukkitImplementation.GUI.adapters.PlayerAdapter;
 import lib.commands.abstractions.Source;
+import lib.gui.abstractions.IPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -40,5 +42,15 @@ public class SourceAdapter implements Source {
     @Override
     public void kickPlayer(String message) {
         player.kickPlayer(message);
+    }
+
+    @Override
+    public Object getHandle() {
+        return player;
+    }
+
+    @Override
+    public IPlayer asIPlayer() {
+        return new PlayerAdapter(player);
     }
 }

@@ -1,7 +1,7 @@
 package BlockDynasty.GUI.listener;
 
 import BlockDynasty.GUI.adapters.PlayerAdapter;
-import lib.GUIFactory;
+import lib.gui.GUIFactory;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.item.inventory.Container;

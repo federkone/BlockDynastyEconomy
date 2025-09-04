@@ -1,6 +1,7 @@
 package BlockDynasty.commands;
 
 import lib.commands.abstractions.Source;
+import lib.gui.abstractions.IPlayer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
@@ -41,6 +42,16 @@ public class SourceConsoleAdapter implements Source {
 
     @Override
     public void kickPlayer(String message) {
+    }
+
+    @Override
+    public Object getHandle() {
+        return console;
+    }
+
+    @Override
+    public IPlayer asIPlayer() {
+        return null;
     }
 
 }

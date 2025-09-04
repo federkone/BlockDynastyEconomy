@@ -1,16 +1,9 @@
 package BlockDynasty.GUI.adapters;
 
-import lib.components.IItemStack;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemTypes;
+import lib.gui.abstractions.IItemStack;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 public class ItemStackAdapter implements IItemStack {
