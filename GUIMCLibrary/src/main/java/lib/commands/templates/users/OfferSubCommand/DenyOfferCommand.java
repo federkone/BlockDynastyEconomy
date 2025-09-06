@@ -12,14 +12,13 @@ public class DenyOfferCommand extends AbstractCommand {
     private final CancelOfferUseCase cancelOfferUseCase;
 
     public DenyOfferCommand(CancelOfferUseCase cancelOfferUseCase) {
-        super("deny","", List.of(""));
+        super("deny","", List.of("player"));
         this.cancelOfferUseCase = cancelOfferUseCase;
     }
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (args.length != 1) {
-            sender.sendMessage("usage: /offer deny <player>");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -32,10 +31,8 @@ public class DenyOfferCommand extends AbstractCommand {
 
         Result<Void> result =cancelOfferUseCase.execute(playerFrom.getUniqueId());
         if (result.isSuccess()) {
-            //playerFrom.sendMessage("La oferta de "+sender.getName()+" ha sido rechazada");
-            playerFrom.sendMessage("");
-            //sender.sendMessage("La oferta para "+playerFrom.getName()+" ha sido rechazada");
-            sender.sendMessage("");
+            playerFrom.sendMessage("La oferta de "+sender.getName()+" ha sido rechazada");
+            sender.sendMessage("La oferta para "+playerFrom.getName()+" ha sido rechazada");
         }else{
             switch (result.getErrorCode()){
                 case OFFER_NOT_FOUND:
@@ -47,7 +44,6 @@ public class DenyOfferCommand extends AbstractCommand {
                     break;
             }
         }
-
         return true;
     }
 }

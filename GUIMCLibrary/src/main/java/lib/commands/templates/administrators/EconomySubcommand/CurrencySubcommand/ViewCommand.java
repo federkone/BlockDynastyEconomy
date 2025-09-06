@@ -5,6 +5,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
+import lib.gui.templates.abstractions.ChatColor;
 
 import java.util.List;
 
@@ -18,33 +19,39 @@ public class ViewCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-        if (args.length < 1) {
-            sender.sendMessage(" usage: /eco currency view <currency>");
+        if(!super.execute( sender, args)){
             return false;
         }
 
         Result<Currency> resultCurrency = searchCurrencyUseCase.getCurrency(args[0]);
         if (!resultCurrency.isSuccess()) {
-            sender.sendMessage(" Unknown currency.");
-                return false;
+            sender.sendMessage(resultCurrency.getErrorMessage()+ " "+resultCurrency.getErrorCode());
+            return false;
         }
 
         Currency currency = resultCurrency.getValue();
-        sender.sendMessage("§7ID: §c" + currency.getUuid().toString());
-        sender.sendMessage("§7Singular: "+ currency.getSingular() + "§7, Plural: " + currency.getPlural());
-        sender.sendMessage("§7Color: " + currency.getColor());
-        sender.sendMessage("§7Symbol: "+ currency.getSymbol());
-        sender.sendMessage("§7Start Balance: "  + currency.format(currency.getDefaultBalance()) + "§7.");
-        sender.sendMessage("§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"));
-        sender.sendMessage("§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"));
-        sender.sendMessage("§7Payable: " + (currency.isTransferable() ? "§aYes" : "§cNo"));
-        sender.sendMessage("§7Rate: "+ currency.getExchangeRate());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("§a--- Currency Info ---")
+                .append("\n")
+                     .append("§7ID: §c" + currency.getUuid().toString())
+                .append("\n")
+                     .append("§7Singular: "+ currency.getSingular() + "§7, Plural: " + currency.getPlural())
+                .append("\n")
+                     .append("§7Color: " + ChatColor.stringValueOf(currency.getColor()) +currency.getColor())
+                .append("\n")
+                     .append("§7Symbol: "+ currency.getSymbol())
+                .append("\n")
+                     .append("§7Start Balance: "  + currency.format(currency.getDefaultBalance()) + "§7.")
+                .append("\n")
+                     .append("§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"))
+                .append("\n")
+                     .append("§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"))
+                .append("\n")
+                     .append("§7Payable: " + (currency.isTransferable() ? "§aYes" : "§cNo"))
+                .append("\n")
+                     .append("§7Rate: "+ currency.getExchangeRate());
 
+        sender.sendMessage(stringBuilder.toString());
         return true;
     }
 }

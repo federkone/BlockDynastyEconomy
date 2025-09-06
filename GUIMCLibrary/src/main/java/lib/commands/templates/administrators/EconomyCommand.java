@@ -9,19 +9,22 @@ import java.util.List;
 public class EconomyCommand extends AbstractCommand {
 
     public EconomyCommand() {
-        super("eco","BlockDynastyEconomy.command.economy",List.of("set","take","give"));
+        super("eco","BlockDynastyEconomy.command.economy");
     }
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
+        if(!super.execute( sender, args)){
             return false;
         }
 
         if (args.length == 0) {
-            //Message.getManageHelp(sender); // Mensaje de ayuda
-            sender.sendMessage(" Usa /eco [set,take,give]");
+            List<Command> subCommands = getSubCommands();
+            StringBuilder helpMessage = new StringBuilder("&2&l>>"+this.getName()+" Subcommands:\n");
+            for (Command cmd : subCommands) {
+                helpMessage.append("- ").append(cmd.getName()).append("\n");
+            }
+            sender.sendMessage(helpMessage.toString());
             return false;
         }
 
@@ -29,13 +32,18 @@ public class EconomyCommand extends AbstractCommand {
                 .filter(cmd -> cmd.getName().equalsIgnoreCase(args[0]))
                 .findFirst()
                 .orElse(null);
+
         if (subCommand == null) {
-            //sender.sendMessage(Message.getUnknownSubCommand());
-            sender.sendMessage(" Subcomando desconocido. Usa /eco [set,take,give]");
+            List<Command> subCommands = getSubCommands();
+            StringBuilder helpMessage = new StringBuilder("&2&l>>"+this.getName()+" Subcommands:\n");
+            for (Command cmd : subCommands) {
+                helpMessage.append("- ").append(cmd.getName()).append("\n");
+            }
+            sender.sendMessage(helpMessage.toString());
             return false;
         }
 
-        // Extrae los argumentos restantes para pasarlos al subcomando
+
         String[] subCommandArgs = new String[args.length - 1];
         System.arraycopy(args, 1, subCommandArgs, 0, args.length - 1);
 

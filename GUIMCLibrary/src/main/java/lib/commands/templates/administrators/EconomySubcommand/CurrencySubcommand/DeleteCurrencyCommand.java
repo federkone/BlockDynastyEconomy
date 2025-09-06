@@ -19,13 +19,8 @@ public class DeleteCurrencyCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
+        if(!super.execute( sender, args)){
             return false;
-        }
-        if (args.length < 1) {
-            sender.sendMessage( "§cUsage: /economy currency delete <currency_name>");
-            return true;
         }
 
         String currencyName = args[0];
@@ -34,7 +29,7 @@ public class DeleteCurrencyCommand extends AbstractCommand {
             deleteCurrencyUseCase.deleteCurrency(currencyName);
             sender.sendMessage( "§7Deleted currency: §a" + currencyName);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage("§7"+ e.getMessage()+" asegurate de tener otra moneda por defecto antes de eliminarla");
+            sender.sendMessage("§7"+ e.getMessage()+" ensure you has another currency setted as default.");
         } catch (TransactionException e) {
             sender.sendMessage( "§cError while deleting currency: §4" + e.getMessage());
         }

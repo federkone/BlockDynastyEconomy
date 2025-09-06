@@ -18,12 +18,7 @@ public class EditDecimalsCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if (args.length <1) {
-            sender.sendMessage("§cUsage: /economy currency decimal <currencyName>");
+        if(!super.execute( sender, args)){
             return false;
         }
 

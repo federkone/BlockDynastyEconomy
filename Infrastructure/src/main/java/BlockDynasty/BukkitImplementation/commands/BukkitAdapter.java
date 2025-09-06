@@ -1,5 +1,7 @@
 package BlockDynasty.BukkitImplementation.commands;
 
+import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
+import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import lib.commands.abstractions.PlatformAdapter;
 import lib.commands.abstractions.Source;
 import org.bukkit.Bukkit;
@@ -16,6 +18,6 @@ public class BukkitAdapter implements PlatformAdapter {
 
     @Override
     public void dispatchCommand(String command) {
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+        Scheduler.run(ContextualTask.build(()-> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command)));
     }
 }

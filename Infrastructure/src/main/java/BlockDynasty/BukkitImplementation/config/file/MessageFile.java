@@ -63,6 +63,7 @@ public class MessageFile {
         messageConfig.addDefault(path + "paid", "&7You were paid {currencycolor}{amount} &7from &a{player}&7.");
         messageConfig.addDefault(path + "payer", "&7You paid {currencycolor}{amount} &7to &a{player}&7.");
         messageConfig.addDefault(path + "payNoPermission", "&7You don't have permission to pay {currencycolor}{currency}&7.");
+
         messageConfig.addDefault(path + "currencyNotPayable", "{currencycolor}{currency} &7is not payable.");
         messageConfig.addDefault(path + "add", "&7You gave &a{player}&7: {currencycolor}{amount}. ");
         messageConfig.addDefault(path + "take", "&7You took {currencycolor}{amount} &7from &a{player}&7.");

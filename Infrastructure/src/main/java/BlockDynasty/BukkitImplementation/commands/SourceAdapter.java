@@ -1,8 +1,11 @@
 package BlockDynasty.BukkitImplementation.commands;
 
 import BlockDynasty.BukkitImplementation.GUI.adapters.PlayerAdapter;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IPlayer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -31,7 +34,12 @@ public class SourceAdapter implements Source {
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(message);
+        //player.sendMessage(message);
+        player.sendMessage(translateColorCodes(message));
+    }
+
+    private String translateColorCodes(String message) {
+        return message.replaceAll("&([0-9a-fk-or])", "§$1");
     }
 
     @Override

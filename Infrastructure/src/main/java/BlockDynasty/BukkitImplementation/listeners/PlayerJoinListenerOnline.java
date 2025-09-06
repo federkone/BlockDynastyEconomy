@@ -20,13 +20,13 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class EconomyListenerOnline implements Listener {
+public class PlayerJoinListenerOnline implements Listener {
     protected final ICurrencyService currencyService;
     protected final CreateAccountUseCase createAccountUseCase;
     protected final SearchAccountUseCase searchAccountUseCase;
     protected final IAccountService accountService;
 
-    public EconomyListenerOnline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
+    public PlayerJoinListenerOnline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
         this.currencyService = currencyService;
         this.createAccountUseCase = createAccountUseCase;
         this.searchAccountUseCase = searchAccountUseCase;

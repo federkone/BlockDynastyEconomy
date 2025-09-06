@@ -1,4 +1,3 @@
-
 package BlockDynasty.BukkitImplementation.config.file;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;

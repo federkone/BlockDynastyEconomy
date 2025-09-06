@@ -4,6 +4,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.gui.GUIFactory;
 import lib.gui.abstractions.IPlayer;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
@@ -35,10 +36,11 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
                 amount
         );
 
-        if (!result.isSuccess()){
-            sender.sendMessage("§cError: " + result.getErrorMessage()+ "."+result.getErrorCode());
+        if (result.isSuccess()){
+            GUIFactory.seeMyOffersPanel(sender).open();
+
         }else{
-            //GUIFactory.seeMyOffersPanel(sender).open();
+            sender.sendMessage("§cError: " + result.getErrorMessage()+ "."+result.getErrorCode());
         }
 
         return null;

@@ -18,12 +18,7 @@ public class EditSymbolCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if(args.length<2){
-            sender.sendMessage("Usage: /eco currency symbol <currencyName> <newSymbol>");
+        if(!super.execute( sender, args)){
             return false;
         }
 

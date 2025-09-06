@@ -18,12 +18,7 @@ public class EditRateCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if(args.length < 2){
-            sender.sendMessage("Usage: /eco currency rate <currencyName> <newRate>");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -37,7 +32,7 @@ public class EditRateCommand extends AbstractCommand {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException ex) {
-            sender.sendMessage("invalid amount");
+            sender.sendMessage("Invalid amount");
             return false;
         }
 
@@ -47,7 +42,7 @@ public class EditRateCommand extends AbstractCommand {
             editCurrencyUseCase.setCurrencyRate(currencyName, finalAmount);
             sender.sendMessage("Rate currency updated for " + currencyName + " to " + rate);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage(" Unknown currency");
+            sender.sendMessage("Unknown currency");
         } catch (TransactionException e) {
             sender.sendMessage("error while updating the rate");
         }

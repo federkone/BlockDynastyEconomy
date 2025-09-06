@@ -15,6 +15,9 @@ import lib.commands.templates.users.OfferSubCommand.AcceptOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.CancelOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.CreateOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.DenyOfferCommand;
+import lib.messages.DefaultProvider;
+import lib.messages.MessageProvider;
+import lib.messages.MessageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ public class CommandsFactory {
     private static TransactionsUseCase transactionsUseCase;
     private static CurrencyUseCase currencyUseCase;
     private static AccountsUseCase accountsUseCase;
+    private static MessageService messageService=new MessageService();
     private static OfferUseCase offerUseCase;
 
     public static void init(TransactionsUseCase transactionsUseCase, OfferUseCase offerUseCase, CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase,PlatformAdapter platformAdapter) {
@@ -35,9 +39,17 @@ public class CommandsFactory {
         CommandsFactory.platformAdapter = platformAdapter;
         Commands.init();
     }
+    public static void init(TransactionsUseCase transactionsUseCase, OfferUseCase offerUseCase, CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase,PlatformAdapter platformAdapter, MessageProvider messageProvider) {
+        MessageService.setProvider( messageProvider);
+        init(transactionsUseCase, offerUseCase, currencyUseCase, accountsUseCase, platformAdapter);
+    }
 
     public static PlatformAdapter getPlatformAdapter() {
         return platformAdapter;
+    }
+
+    public static MessageService getMessageProvider() {
+        return messageService;
     }
 
     public static class Commands{
@@ -53,7 +65,7 @@ public class CommandsFactory {
 
             CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(currencyUseCase.getCreateCurrencyUseCase());
             DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(currencyUseCase.getDeleteCurrencyUseCase());
-            EditColorCommand editColorCoommand = new EditColorCommand(currencyUseCase.getEditCurrencyUseCase());
+            EditColorCommand editColorCommand = new EditColorCommand(currencyUseCase.getEditCurrencyUseCase());
             EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(currencyUseCase.getEditCurrencyUseCase());
             EditPayableCommand editPayableCommand = new EditPayableCommand(currencyUseCase.getEditCurrencyUseCase());
             EditRateCommand editRateCommand = new EditRateCommand(currencyUseCase.getEditCurrencyUseCase());
@@ -89,7 +101,7 @@ public class CommandsFactory {
             currencyCommand.registerSubCommand( createCurrencyCommand);
             currencyCommand.registerSubCommand( deleteCurrencyCommand);
             currencyCommand.registerSubCommand( ViewCommand);
-            currencyCommand.registerSubCommand( editColorCoommand);
+            currencyCommand.registerSubCommand( editColorCommand);
             currencyCommand.registerSubCommand(editDecimalsCommand);
             currencyCommand.registerSubCommand( editPayableCommand);
             currencyCommand.registerSubCommand( editRateCommand);

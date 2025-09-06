@@ -5,6 +5,7 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
+import lib.messages.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,20 +20,7 @@ public class WithdrawCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-
-        if (args.length == 0) {
-            //Message.getManageHelp(sender); //todo el mensaje de eco help
-            sender.sendMessage(" Usa /eco take [player] [amount] [currency]");
-            return false;
-        }
-
-        if (args.length < 3) {
-            sender.sendMessage(" Usa /eco take [player] [amount] [currency]");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -44,27 +32,17 @@ public class WithdrawCommand extends AbstractCommand {
         try {
             amount = Double.parseDouble(montoString);
         } catch (NumberFormatException e) {
-            //sender.sendMessage(Message.getUnvalidAmount());
+            sender.sendMessage(MessageService.getMessage("Messages.invalidamount"));
             return false;
         }
 
         double finalMount = amount;
 
+        Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
 
-            Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
-
-            if(result.isSuccess()){
-                //sender.sendMessage(messageService.getWithdrawMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
-                sender.sendMessage("withdraw ejecutado");
-                Source targetPlayer = CommandsFactory.getPlatformAdapter().getPlayer(target);
-                if (targetPlayer != null) {
-                    // targetPlayer.sendMessage("§a Se ha descontado " + finalMount + " " + currencyName);
-                     //targetPlayer.sendMessage(messageService.getWithdrawSuccess( currencyName, BigDecimal.valueOf(finalMount)));
-                }
-                }else{
-                    sender.sendMessage("withdraw fallido"+ result.getErrorCode()+ result.getErrorMessage());
-                    //messageService.sendErrorMessage(result.getErrorCode(),sender,currencyName);
-            }
+        if(!result.isSuccess()){
+            sender.sendMessage("Withdraw failed: "+ result.getErrorCode()+" "+ result.getErrorMessage());
+        }
         return true;
     }
 

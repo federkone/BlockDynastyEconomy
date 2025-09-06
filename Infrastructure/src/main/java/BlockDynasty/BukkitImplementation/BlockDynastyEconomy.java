@@ -11,8 +11,8 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
 import BlockDynasty.BukkitImplementation.commands.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.commands.CommandRegister;
-import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOffline;
-import BlockDynasty.BukkitImplementation.listeners.EconomyListenerOnline;
+import BlockDynasty.BukkitImplementation.listeners.PlayerJoinListenerOffline;
+import BlockDynasty.BukkitImplementation.listeners.PlayerJoinListenerOnline;
 import BlockDynasty.BukkitImplementation.listeners.OfferListenerImpl;
 import BlockDynasty.BukkitImplementation.listeners.TransactionsListener;
 
@@ -105,10 +105,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void registerEvents() {
         Listener economyListener;
         if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
-            economyListener = new EconomyListenerOnline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
+            economyListener = new PlayerJoinListenerOnline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
             Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
-            economyListener = new EconomyListenerOffline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
+            economyListener = new PlayerJoinListenerOffline( core.getAccountsUseCase().getCreateAccountUseCase(), core.getAccountsUseCase().getGetAccountsUseCase(), core.getServicesManager().getAccountService(), core.getServicesManager().getCurrencyService());
             Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
 

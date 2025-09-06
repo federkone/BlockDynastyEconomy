@@ -18,22 +18,16 @@ public class DeleteAccountCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
+        if(!super.execute( sender, args)){
             return false;
         }
 
-        if (args.length < 1) {
-            sender.sendMessage("Usage: /deleteaccount <playerName>");
-            return false;
-        }
         String playerName = args[0];
         Source player = CommandsFactory.getPlatformAdapter().getPlayer(playerName);
         Result<Void> result =deleteAccountUseCase.execute(playerName);
         if (result.isSuccess()) {
-            sender.kickPlayer("se ah eliminado tu cuenta de economía");
+            sender.kickPlayer("Your account has been deleted by an administrator.");
         }
-        //kick player
         return true;
     }
 }

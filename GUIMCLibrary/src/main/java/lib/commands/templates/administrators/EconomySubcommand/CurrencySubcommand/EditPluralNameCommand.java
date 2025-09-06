@@ -18,12 +18,7 @@ public class EditPluralNameCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if(args.length < 2){
-            sender.sendMessage("§cUsage: /currency plural <currency> <neuPlural>");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -35,7 +30,7 @@ public class EditPluralNameCommand extends AbstractCommand {
         }catch (CurrencyNotFoundException e) {
                 sender.sendMessage( "Unknown currency" );
         } catch (TransactionException e) {
-            sender.sendMessage("error while updating the plural name");
+            sender.sendMessage("Error while updating the plural name");
         }
         return false;
     }

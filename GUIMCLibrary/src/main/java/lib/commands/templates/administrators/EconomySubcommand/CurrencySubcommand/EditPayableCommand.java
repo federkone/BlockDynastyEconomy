@@ -18,12 +18,7 @@ public class EditPayableCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if (args.length < 1) {
-            sender.sendMessage( " Usage: /eco currency payable <currencyName>");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -33,7 +28,7 @@ public class EditPayableCommand extends AbstractCommand {
             toggleFeaturesUseCase.togglePayable(currencyName);
             sender.sendMessage( "§7Toggled payability for §f" + currencyName);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage(" Unknown currency.");
+            sender.sendMessage("Unknown currency.");
         } catch (TransactionException e) {
             sender.sendMessage("§cAn error occurred while toggling payability for §f" + currencyName);
         }

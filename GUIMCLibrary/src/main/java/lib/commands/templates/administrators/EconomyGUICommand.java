@@ -13,9 +13,8 @@ public class EconomyGUICommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage( "no tienes permisos"); //no tiene permisos para ejecutar comando pagar
-            return true;
+        if(!super.execute( sender, args)){
+            return false;
         }
 
         IPlayer player = sender.asIPlayer();

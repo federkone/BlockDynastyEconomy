@@ -18,13 +18,7 @@ public class CreateCurrencyCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-        if (args.length < 2) {
-            sender.sendMessage( "§cUsage: /eco currency create <singular> <plural>");
+        if(!super.execute( sender, args)){
             return false;
         }
 

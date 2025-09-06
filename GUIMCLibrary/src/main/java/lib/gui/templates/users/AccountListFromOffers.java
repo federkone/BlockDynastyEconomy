@@ -35,8 +35,9 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
 
     @Override
     public void refresh(){
-        List<Offer> offers = searchOfferUseCase.getOffersBuyer(player.getUniqueId());
-        showItemsPage(offers);
+        //List<Offer> offers = searchOfferUseCase.getOffersBuyer(player.getUniqueId());
+        //showItemsPage(offers);
+        GUIFactory.seeMyOffersPanel(player).open();
     }
 
 

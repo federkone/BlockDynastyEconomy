@@ -2,8 +2,10 @@ package lib.commands.templates.administrators.EconomySubcommand;
 
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.CommandsFactory;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
+import lib.messages.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,22 +20,7 @@ public class DepositCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-        if (args.length == 0) {
-            //Message.getManageHelp(sender);
-            sender.sendMessage(" Usa /eco give [player] [amount] [currency]");
-            return false;
-        }
-
-
-        if (args.length < 3) {
-            //sender.sendMessage(Message.getGiveUsage());
-            sender.sendMessage(" args detectados: " + args.length);
-            sender.sendMessage(" Usa /eco give [player] [amount] [currency]");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -45,7 +32,7 @@ public class DepositCommand extends AbstractCommand {
         try {
             amount = Double.parseDouble(montoString);
         } catch (NumberFormatException e) {
-            //sender.sendMessage(Message.getUnvalidAmount());
+            sender.sendMessage(MessageService.getMessage("Messages.invalidamount"));
             return false;
         }
 
@@ -53,10 +40,9 @@ public class DepositCommand extends AbstractCommand {
 
         Result<Void> result =deposit.execute(target, currencyName, BigDecimal.valueOf(finalMount));
 
-        if (result.isSuccess()) {
-            //sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
-            //System.out.println("deposit successful");
-        }//else {System.out.println("deposit failed "+  result.getErrorMessage()+ result.getErrorCode());};
+        if (!result.isSuccess()) {
+            sender.sendMessage("Deposit failed "+  result.getErrorMessage()+" "+ result.getErrorCode());
+        }
 
         return true;
     }

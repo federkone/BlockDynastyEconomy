@@ -5,6 +5,7 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
+import lib.messages.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,20 +20,7 @@ public class SetCommand extends AbstractCommand {
     }
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-        if (args.length == 0) {
-            //Message.getManageHelp(sender);  //todo el mensaje de eco help
-            sender.sendMessage(" Usa /eco set [player] [amount] [currency]");
-            return false;
-        }
-
-        if (args.length < 3) {
-            //sender.sendMessage(Message.getSetUsage());
-            sender.sendMessage(" Usa /eco set [player] [amount] [currency]");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -44,30 +32,17 @@ public class SetCommand extends AbstractCommand {
         try {
             amount = Double.parseDouble(montoString);
         } catch (NumberFormatException e) {
-            //sender.sendMessage(Message.getUnvalidAmount());
+            sender.sendMessage(MessageService.getMessage("Messages.invalidamount"));
             return false;
         }
 
         double finalMount = amount;
 
+        Result<Void> result = setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
 
-            Result<Void> result = setbalance.execute(target, currencyName, BigDecimal.valueOf(finalMount));
-
-
-                if(result.isSuccess()){
-                    //sender.sendMessage(messageService.getDepositMessage(target, currencyName, BigDecimal.valueOf(finalMount)));
-                    Source targetPlayer = CommandsFactory.getPlatformAdapter().getPlayer(target);
-                    if (targetPlayer != null) {
-                        //targetPlayer.sendMessage("§7Se ha seteado tu balance a " + finalMount + " de " + currencyName);
-                        //targetPlayer.sendMessage(messageService.getSetSuccess( currencyName, BigDecimal.valueOf(finalMount)));
-                    }
-                }else{
-                    //messageService.sendErrorMessage(result.getErrorCode(),sender,currencyName);
-                }
-
-
-
-
+        if(!result.isSuccess()){
+            sender.sendMessage("Error on Set Balance: " + result.getErrorMessage()+" "+result.getErrorMessage());
+        }
 
         return true;
     }

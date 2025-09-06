@@ -13,27 +13,23 @@ public class CreateOfferCommand extends AbstractCommand {
     private final CreateOfferUseCase createOfferUseCase;
 
     public CreateOfferCommand(CreateOfferUseCase createOfferUseCase ) {
-        super("create","", List.of(""));
+        super("create","", List.of("amount","currencyAmount","price","currencyPrice","player"));
         this.createOfferUseCase = createOfferUseCase;
     }
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        //SI TIENE PERMISO
-
-        //SI LOS ARGUMENTOS SON MENOR A 5
-        if (args.length != 5) {
-            sender.sendMessage(""); //subcomando de eco
+        if(!super.execute( sender, args)){
             return false;
         }
-        //INTENTAR PARSEAR LOS MONTOS SINO INFORMAR ERROR
+
         double cantidad;
         double monto;
         try {
             cantidad= Double.parseDouble(args[0]);
             monto =Double.parseDouble(args[2]);
         } catch (NumberFormatException e) {
-            sender.sendMessage("");
+            sender.sendMessage("Invalid amount");
             return false;
         }
 
@@ -48,8 +44,7 @@ public class CreateOfferCommand extends AbstractCommand {
             return false;
         }
 
-        Source player = sender;
-
+        //si entre el target y el vendedor no hay una distancia de 5 bloques informar error
         //if(Message.getEnableDistanceLimitOffer()){
         //    double distance = Message.getDistanceLimitOffer();
          //   if(player.getLocation().distance(target.getLocation())>distance){
@@ -58,15 +53,12 @@ public class CreateOfferCommand extends AbstractCommand {
           //  }
         //}
 
-        if(player.getName().equals(target.getName())){        // SI SE ESTA INTENTANDO OFRECER A SI MISMO
+        if(sender.getName().equals(target.getName())){        // SI SE ESTA INTENTANDO OFRECER A SI MISMO
             sender.sendMessage("");
             return false;
         }
 
-        //si entre el target y el vendedor no hay una distancia de 5 bloques informar error
-
-        //INTENTA CREAR LA OFERTA
-        Result<Void> result =createOfferUseCase.execute(player.getUniqueId(), target.getUniqueId(),tipoCantidad, BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto));
+        Result<Void> result =createOfferUseCase.execute(sender.getUniqueId(), target.getUniqueId(),tipoCantidad, BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto));
         if(result.isSuccess()){
             //player.sendMessage(messageService.getOfferSendMessage(target.getName(),tipoCantidad,BigDecimal.valueOf(cantidad),tipoMonto,BigDecimal.valueOf(monto)));
             //player.sendMessage("has ofertado a "+target.getName() +" "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
@@ -74,7 +66,7 @@ public class CreateOfferCommand extends AbstractCommand {
             //target.sendMessage("Has recibido una oferta de "+player.getName()+" por "+cantidad+" "+tipoCantidad+" por "+monto+" "+tipoMonto);
             //target.sendMessage("§7Para aceptarla usa §a/offer accept §b"+player.getName()+ " o §a/offer deny §b"+player.getName());
         }else{
-            //messageService.sendErrorMessage(result.getErrorCode(),player,tipoCantidad);
+            sender.sendMessage( result.getErrorMessage()+" " +result.getErrorCode());
         }
         return true;
 

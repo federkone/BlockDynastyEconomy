@@ -5,6 +5,7 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
+import lib.messages.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,13 +20,7 @@ public class BuyCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-
-        if (args.length < 3) {
-            //sender.sendMessage(Message.getBuyCommandUsage());
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -39,7 +34,7 @@ public class BuyCommand extends AbstractCommand {
         try {
             cantidadDemoneda = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            //player.sendMessage(Message.getUnvalidAmount());
+            player.sendMessage(MessageService.getMessage("Messages.invalidamount"));
             return false;
         }
 
@@ -56,10 +51,9 @@ public class BuyCommand extends AbstractCommand {
 
         if(result.isSuccess()){
             CommandsFactory.getPlatformAdapter().dispatchCommand(cmd);
-                    //player.sendMessage(Message.getBuyCommandSuccess());
-            player.sendMessage("buy command success");
+            player.sendMessage(MessageService.getMessage("Messages.buy_success"));
         }else{
-                    //messageService.sendErrorMessage(result.getErrorCode(),player,tipoDemoneda);
+            sender.sendMessage( "Error: " + result.getErrorMessage());
         }
 
         return true;

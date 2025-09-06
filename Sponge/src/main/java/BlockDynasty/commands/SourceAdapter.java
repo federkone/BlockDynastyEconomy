@@ -4,6 +4,7 @@ import BlockDynasty.GUI.adapters.PlayerAdapter;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IPlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.util.UUID;
@@ -31,7 +32,10 @@ public class SourceAdapter implements Source {
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(Component.text(message));
+        Component component = Component.text()
+                .append(LegacyComponentSerializer.legacyAmpersand().deserialize(message))
+                .build();
+        player.sendMessage(component);
     }
 
     @Override

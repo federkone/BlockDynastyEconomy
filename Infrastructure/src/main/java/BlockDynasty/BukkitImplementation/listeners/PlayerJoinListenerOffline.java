@@ -9,9 +9,9 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 //import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-public class EconomyListenerOffline extends  EconomyListenerOnline {
+public class PlayerJoinListenerOffline extends PlayerJoinListenerOnline {
 
-    public EconomyListenerOffline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
+    public PlayerJoinListenerOffline(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService, ICurrencyService currencyService) {
         super(createAccountUseCase, searchAccountUseCase, accountService, currencyService);
     }
 

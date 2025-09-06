@@ -21,7 +21,7 @@ public class CommandAdapter implements CommandExecutor {
         if (sender instanceof Player){
             source= new SourceAdapter((Player) sender);
         }else if (sender instanceof ConsoleCommandSender){
-            source= new CommandSourceAdapter((ConsoleCommandSender)sender);
+            source= new SourceConsoleAdapter((ConsoleCommandSender)sender);
         }
         if (source != null){
             return commandLib.execute(source, args);

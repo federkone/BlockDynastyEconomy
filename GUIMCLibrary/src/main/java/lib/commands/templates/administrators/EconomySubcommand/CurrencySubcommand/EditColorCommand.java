@@ -6,11 +6,13 @@ import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFound
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
 
+import java.util.List;
+
 public class EditColorCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditColorCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("color","BlockDynastyEconomy.command.currency");
+        super("color","BlockDynastyEconomy.command.currency", List.of("currency", "color"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
@@ -20,6 +22,7 @@ public class EditColorCommand extends AbstractCommand {
             sender.sendMessage("no permission");
             return false;
         }
+
         if (args.length < 2) {
             sender.sendMessage("§0§lBLACK §7= black");
             sender.sendMessage("§1§lDARK BLUE §7= dark_blue");
@@ -37,9 +40,7 @@ public class EditColorCommand extends AbstractCommand {
             sender.sendMessage("§d§lLIGHT PURPLE §7= light_purple");
             sender.sendMessage("§e§lYELLOW §7= yellow");
             sender.sendMessage("§f§lWHITE §7= white|reset");
-
-            //sender.sendMessage(Message.getCurrencyUsage_Color());
-            return true;
+            return false;
         }
 
 

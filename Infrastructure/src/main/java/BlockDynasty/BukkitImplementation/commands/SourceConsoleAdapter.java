@@ -7,9 +7,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.UUID;
 
 //Adapter para CommandSender que no son jugadores (Consola, Bloque de comandos, etc)
-public class CommandSourceAdapter implements Source {
+public class SourceConsoleAdapter implements Source {
     private final ConsoleCommandSender commandSender;
-    public CommandSourceAdapter(ConsoleCommandSender commandSender) {
+    public SourceConsoleAdapter(ConsoleCommandSender commandSender) {
         this.commandSender = commandSender;
     }
     @Override

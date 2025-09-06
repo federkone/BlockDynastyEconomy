@@ -4,10 +4,14 @@ import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.CommandsFactory;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
+import lib.messages.ChatColor;
+import lib.messages.MessageService;
 
 import java.util.List;
+import java.util.Map;
 
 public class BalanceCommand extends AbstractCommand {
     private final GetBalanceUseCase balance;
@@ -19,35 +23,19 @@ public class BalanceCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(" No tienes permiso para usar este comando.");
-            return true;
+        if(!super.execute( sender, args)){
+            return false;
         }
 
-        //if (args.length == 0) {
-        //    F.getManageHelp(sender); //todo el mensaje de eco help
-        //    return true;
-        //}
-
-        final String target;
-        if (args.length > 0) {
-            target = args[0];
-        }else {
-            target = sender.getName();
-        }
-
-
-            Result<List<Money>> resultBalances = balance.getBalances(target);
-            if (!resultBalances.isSuccess()) {
-                //messageService.sendErrorMessage(resultBalances.getErrorCode(),sender,target);
-            }else{
-                //sender.sendMessage(Message.getBalanceMultiple().replace("{player}", target));
-                for (Money entry : resultBalances.getValue()) {
-                    Currency currency = entry.getCurrency();
-                    //sender.sendMessage(Message.getBalanceList().replace("{currencycolor}", ChatColor.valueOf(currency.getColor()) + "").replace("{format}", entry.format()));
-                }
+        Result<List<Money>> resultBalances = balance.getBalances(sender.getName());
+        if (!resultBalances.isSuccess()) {
+            sender.sendMessage(resultBalances.getErrorMessage()+ " "+resultBalances.getErrorCode());
+        }else{
+            for (Money entry : resultBalances.getValue()) {
+                Currency currency = entry.getCurrency();
+                sender.sendMessage(MessageService.getMessage("Messages.balance.list", Map.of("currencycolor", ChatColor.stringValueOf(currency.getColor()),"format",entry.format()) ));
             }
-
+        }
         return true;
     }
 }

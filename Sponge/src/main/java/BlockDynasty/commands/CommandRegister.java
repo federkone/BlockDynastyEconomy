@@ -6,7 +6,7 @@ import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
 import org.spongepowered.plugin.PluginContainer;
 import java.util.List;
 
-public class CommandRegistry {
+public class CommandRegister {
     private static void registrarComando(RegisterCommandEvent<org.spongepowered.api.command.Command.Parameterized> event,
                                                  PluginContainer container,
                                                  Command command){

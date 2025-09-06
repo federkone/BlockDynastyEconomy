@@ -1,5 +1,7 @@
 package lib.commands.abstractions;
 
+import lib.messages.MessageService;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,4 +50,24 @@ public abstract class AbstractCommand implements Command {
         return permission;
     }
 
+    private boolean hasArgs() {
+        return !args.isEmpty();
+    }
+
+    @Override
+    public boolean execute(Source sender, String[] args) {
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage(MessageService.getMessage("nopermission"));
+            return false;
+        }
+
+        if (hasArgs()) {
+            if (args.length < getArgs().size()) {
+                String stringArgs = String.join(" ", getArgs());
+                sender.sendMessage("§2§l>>"+getName()+ " "+stringArgs);
+                return false;
+            }
+        }
+        return true;
+    }
 }

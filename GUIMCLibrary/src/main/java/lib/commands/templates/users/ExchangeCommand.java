@@ -5,6 +5,7 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
+import lib.messages.MessageService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,14 +14,13 @@ public class ExchangeCommand extends AbstractCommand {
     private ExchangeUseCase exchange;
 
     public ExchangeCommand(ExchangeUseCase exchange) {
-        super("exchange","BlockDynastyEconomy.command.exchange", List.of(""));
+        super("exchange","BlockDynastyEconomy.command.exchange", List.of("fromCurrency","toCurrency","toAmount" ));
         this.exchange = exchange;
     }
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(" No tienes permiso para usar este comando.");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -52,23 +52,16 @@ public class ExchangeCommand extends AbstractCommand {
         double finalToExchangeAmount = toExchangeAmount;
         double finalToReceiveAmount = toReceiveAmount;
         */
-        if (args.length < 3) {
-            //Message.getExchangeHelp(sender);
-            return false;
-        }
-        String player;
-        if (args.length > 3) {
-            player = args[3];
-        }else {
-            player =  sender.getName();
-        }
+
+        //si hay un argumento demas es para otro jugador
+
 
         double toReceiveAmount = 0;
 
         try {
             toReceiveAmount = Double.parseDouble(args[2]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(" Monto inválido.");
+            sender.sendMessage(MessageService.getMessage("invalidamount"));
             return true;
         }
 
@@ -76,11 +69,10 @@ public class ExchangeCommand extends AbstractCommand {
         String toReceive = args[1];
 
         double finalToReceiveAmount = toReceiveAmount;
-        Source targetPlayer = CommandsFactory.getPlatformAdapter().getPlayer(player);
 
-        Result<BigDecimal> result = exchange.execute(player, toExchange, toReceive, null, BigDecimal.valueOf(finalToReceiveAmount));
+        Result<BigDecimal> result = exchange.execute(sender.getName(), toExchange, toReceive, null, BigDecimal.valueOf(finalToReceiveAmount));
         if (!result.isSuccess()) {
-                //messageService.sendErrorMessage(result.getErrorCode(),targetPlayer,toReceive);
+            sender.sendMessage(result.getErrorMessage()+" " +result.getErrorCode());
         }
 
         return true;

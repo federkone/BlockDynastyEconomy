@@ -18,10 +18,10 @@ public class CancelOfferCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (args.length != 1) {
-            sender.sendMessage(" ");
+        if(!super.execute( sender, args)){
             return false;
         }
+
         String playerNme = args[0];
         Source playerFrom = CommandsFactory.getPlatformAdapter().getPlayer(playerNme);
         if (playerFrom == null || !playerFrom.isOnline()) {

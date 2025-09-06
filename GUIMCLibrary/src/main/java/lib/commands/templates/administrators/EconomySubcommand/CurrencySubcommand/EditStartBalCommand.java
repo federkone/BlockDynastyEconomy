@@ -19,19 +19,14 @@ public class EditStartBalCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if (args.length < 2) {
-            sender.sendMessage("Usage: /eco currency startBal <currency> <amount>");
+        if(!super.execute( sender, args)){
             return false;
         }
         double amount;
         try {
             amount = Double.parseDouble(args[1]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage("invalid amount");
+            sender.sendMessage("Invalid amount");
             return false;
         }
 
@@ -46,7 +41,7 @@ public class EditStartBalCommand extends AbstractCommand {
         } catch (TransactionException e) {
             sender.sendMessage( "§cError: §7" + e.getMessage());
         } catch (DecimalNotSupportedException e) {
-            sender.sendMessage("no decimal support for " + currencyName);
+            sender.sendMessage("No decimal support for " + currencyName);
         }
 
         return true;

@@ -18,12 +18,7 @@ public class SetDefaultCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
-            return false;
-        }
-        if (args.length < 1) {
-            sender.sendMessage("§cUsage: /eco currency default <currency_name>");
+        if(!super.execute( sender, args)){
             return false;
         }
 

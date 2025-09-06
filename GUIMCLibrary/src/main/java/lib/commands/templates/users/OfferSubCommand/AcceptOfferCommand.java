@@ -18,13 +18,7 @@ public class AcceptOfferCommand extends AbstractCommand {
 
     @Override
     public boolean execute(Source sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("No tienes permiso para usar este comando.");
-            return false;
-        }
-
-        if (args.length != 1) {
-            sender.sendMessage(" ");
+        if(!super.execute( sender, args)){
             return false;
         }
 
@@ -49,37 +43,27 @@ public class AcceptOfferCommand extends AbstractCommand {
 
         if (result.isSuccess()) {
             // Mensaje para playerFrom (jugador que hizo la oferta)
-
             playerFrom.sendMessage(" ");
-
-
-
             //player.sendMessage("");
-
-
-                } else {
-                    switch (result.getErrorCode()) {
-                        case OFFER_NOT_FOUND:
-                            sender.sendMessage("");
-                            break;
-
-                        case INSUFFICIENT_FUNDS:
-                            sender.sendMessage("No tienes suficientes fondos para esta oferta");
-                            playerFrom.sendMessage("El jugador no tiene suficiente dinero para la oferta");
-
-                            break;
-
-                        case DATA_BASE_ERROR:
-                            sender.sendMessage("");
-                            playerFrom.sendMessage("");
-                            break;
-
-                        default:
-                            sender.sendMessage("unexpected error");
-                            break;
-                    }
-                }
-
+        } else {
+            switch (result.getErrorCode()) {
+                case OFFER_NOT_FOUND:
+                    sender.sendMessage("");
+                    break;
+                case INSUFFICIENT_FUNDS:
+                    sender.sendMessage("No tienes suficientes fondos para esta oferta");
+                    playerFrom.sendMessage("El jugador no tiene suficiente dinero para la oferta");
+                    break;
+                case DATA_BASE_ERROR:
+                    sender.sendMessage("");
+                    playerFrom.sendMessage("");
+                    break;
+                default:
+                    sender.sendMessage("unexpected error");
+                    break;
+            }
+           return false;
+        }
         return true;
     }
 }
