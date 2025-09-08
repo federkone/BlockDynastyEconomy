@@ -1,26 +1,26 @@
 package BlockDynasty.utils;
 
 import BlockDynasty.SpongePlugin;
+import Main.IConsole;
 import org.apache.logging.log4j.Logger;
 
 public class Console {
-    private static final Logger console= SpongePlugin.getLogger();
-    private static boolean debugEnabled = false;
-    private static final String Debug_Prefix = "[BlockDynastyEconomy-Debug] ";
-    private static final String Console_Prefix = "[BlockDynastyEconomy] ";
-    private static final String Error_Prefix = "[BlockDynastyEconomy-Error] ";
+    private static IConsole console;
 
+    public static void setConsole(IConsole consoleInstance) {
+        console = consoleInstance;
+    }
 
     public static void debug(String message) {
-        if(debugEnabled) console.info(Debug_Prefix + message);
+        console.debug(message);
     }
 
     public static void log(String message){
-        console.info(Console_Prefix + message);
+        console.log(message);
     }
 
     public static void logError(String message){
-        console.info(Error_Prefix + message);
+        console.logError(message);
     }
 
 }

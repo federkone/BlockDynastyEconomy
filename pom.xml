@@ -11,9 +11,10 @@
 
     <modules>
         <module>core</module>
-        <module>Infrastructure</module>
+        <module>Spigot</module>
         <module>Sponge</module>
-        <module>GUIMCLibrary</module>
+        <module>EconomyGUILibrary</module>
+        <module>EconomyEngine</module>
     </modules>
 
     <properties>
