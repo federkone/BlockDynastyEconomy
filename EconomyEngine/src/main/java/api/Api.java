@@ -201,6 +201,11 @@ public class Api implements IApi {
         return handleResult(this.transferFundsUseCase.execute(userFrom,userTo,currency,amount));
     }
 
+    @Override
+    public EconomyResponse transfer(String userFrom, String userTo, String currency, BigDecimal amount) {
+        return handleResult(this.transferFundsUseCase.execute(userFrom,userTo,currency,amount));
+    }
+
     public EconomyResponse trade(UUID userFrom, UUID userTo, String currencyFrom, String currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
         return handleResult(this.tradeCurrenciesUseCase.execute(userFrom,userTo,currencyFrom,currencyTo,amountFrom,amountTo));
     }

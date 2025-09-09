@@ -87,6 +87,7 @@ public interface IApi {
      * @param amount - double mount amount.
      */
     EconomyResponse transfer(UUID userFrom, UUID userTo, String currency, BigDecimal amount);
+    EconomyResponse transfer(String userFrom, String userTo, String currency, BigDecimal amount);
 
     /**
      *

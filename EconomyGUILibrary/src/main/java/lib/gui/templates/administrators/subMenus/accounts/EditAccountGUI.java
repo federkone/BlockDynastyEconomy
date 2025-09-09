@@ -35,7 +35,7 @@ public class EditAccountGUI extends AbstractGUI {
     }
 
     private void buttons(IPlayer sender, Player target) {
-        setItem(15,createItem(Materials.REDSTONE,"Delete account","The player's account is deleted,before a confirmation"),
+        setItem(15,createItem(Materials.REDSTONE,"§6Delete account","§7The player's account is deleted,before a confirmation"),
                 f -> {
                     textInput.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
                         if(s.equals("yes")){
@@ -58,32 +58,32 @@ public class EditAccountGUI extends AbstractGUI {
                     });
                 });
 
-        setItem(40,createItem(Materials.BARRIER, "Back","go back"),f->{
+        setItem(40,createItem(Materials.BARRIER, "§cBack","§7Click to go back"),f->{
             GUIFactory.accountPanel(sender,this.getParent().getParent()).open();});
 
-        setItem(29,createItem(Materials.PAPER,"Deposit Currency","Deposit currency into the player's account"),
+        setItem(29,createItem(Materials.PAPER,"§6Deposit Currency","§7Deposit currency into the player's account"),
                 f -> {
                     GUIFactory.depositPanel(sender , target, this).open();
                 });
 
-        setItem(31,createItem(Materials.PAPER,"Set balance currency","Set the balance of a currency in the player's account"),
+        setItem(31,createItem(Materials.PAPER,"§6Set balance currency","§7Set the balance of a currency in the player's account"),
                 f -> {
                     GUIFactory.setPanel(sender , target, this).open();
                 });
 
-        setItem(33,createItem(Materials.PAPER,"Withdraw Currency","Withdraw currency from the player's account"),
+        setItem(33,createItem(Materials.PAPER,"§6Withdraw Currency","§7Withdraw currency from the player's account"),
                 f -> {
                     GUIFactory.withdrawPanel(sender , target, this).open();
                 });
 
-        setItem(11,createItem(Materials.BOOK, "See Balance","See the balance of the player's account"),
+        setItem(11,createItem(Materials.BOOK, "§6See Balance","§7See the balance of the player's account"),
                 f -> {
                     GUIFactory.balancePanel( sender, UUID.fromString(target.getUuid()), this).open();
                 });
 
         boolean isBlocked = searchAccountUseCase.getAccount(UUID.fromString(target.getUuid())).getValue().isBlocked();
         if (isBlocked) {
-            setItem(13, createItem(Materials.RED_CONCRETE, "Account is blocked", "Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
+            setItem(13, createItem(Materials.RED_CONCRETE, "§cAccount is blocked", "Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
                         Result<Void>result= editAccountUseCase.unblockAccount(UUID.fromString(target.getUuid()));
                         if (result.isSuccess()){
@@ -94,7 +94,7 @@ public class EditAccountGUI extends AbstractGUI {
                         }
                     });
         } else {
-            setItem(13, createItem(Materials.LIME_CONCRETE, "Account is enabled", "Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
+            setItem(13, createItem(Materials.LIME_CONCRETE, "§aAccount is enabled", "Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
                         Result<Void>result= editAccountUseCase.blockAccount(UUID.fromString(target.getUuid()));
                         if (result.isSuccess()){

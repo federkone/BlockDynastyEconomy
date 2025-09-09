@@ -36,7 +36,7 @@ public class Economy {
         playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
         GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
-        TransactionsListener.register( core.getServicesManager().getEventManager());
+        TransactionsListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
     public void initv2(){

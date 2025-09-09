@@ -28,8 +28,8 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
 
     @Override
     protected void addCustomButtons() {
-        setItem(39, createItem(Materials.NAME_TAG, "§aSearch Player",
-                        "§7Click to search for a player by name, CaseSensitive"),
+        setItem(39, createItem(Materials.NAME_TAG, "§6Search Player",
+                        "§7Click to search a player by name","§7CaseSensitive"),
                 unused -> openAnvilSearch(unused));
     }
 
@@ -42,7 +42,7 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
                 this.open();
                 showPlayers(List.of(foundPlayer));
             } else {
-                sender.sendMessage("Player not found!");
+                sender.sendMessage("§cPlayer not found!");
                 this.open();
             }
             return null;
