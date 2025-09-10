@@ -23,8 +23,8 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
         Source sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
 
         if (receiver != null && sender != null) {
-            receiver.sendMessage("");
-            sender.sendMessage("");
+            receiver.sendMessage(" Your offer from " + sender.getName() + " has expired.");
+            sender.sendMessage(" The offer to " + receiver.getName() + " has expired.");
         }
         GUIFactory.getGuiService().refresh(offer.getComprador());
     }
@@ -58,5 +58,12 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
     public void onOfferCanceled(Offer offer) {
         GUIFactory.getGuiService().refresh(offer.getComprador());
         GUIFactory.getGuiService().refresh(offer.getVendedor());
+
+        Source receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
+        Source sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
+        if (receiver != null && sender != null) {
+            receiver.sendMessage(" Your offer from " + sender.getName() + " has been canceled.");
+            sender.sendMessage(" The offer to " + receiver.getName() + " has been canceled.");
+        }
     }
 }

@@ -29,9 +29,9 @@ public class CurrencyListToPay extends CurrenciesList {
         Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (!result.isSuccess()) {
             //messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());
-            return null;
+            return result.getErrorMessage();
         }else{
-            return "Successful!";
+            return "Transaction Successful!";
         }
     }
 

@@ -9,6 +9,7 @@ import lib.commands.CommandsFactory;
 import lib.commands.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
+import lib.placeholder.PlaceHolder;
 import listeners.*;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
@@ -19,6 +20,7 @@ public class Economy {
     private IRepository repository;
     private PlayerJoinListener playerJoinListener;
     private IApi api;
+    private PlaceHolder placeHolder;
 
     //inyectar consola, log, ITextInput, PlatformAdapter
     //inyectar consola, log, ITextInput, PlatformAdapter,Courier
@@ -33,14 +35,11 @@ public class Economy {
 
         core=new Core(repository,60,new OfferListener(platformAdapter),courier,log);
         api = new Api(core);
+        this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
         playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
         GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
         TransactionsListener.register(core.getServicesManager().getEventManager(),platformAdapter);
-    }
-
-    public void initv2(){
-
     }
 
     public void shutdown(){
@@ -49,9 +48,6 @@ public class Economy {
         }
         repository.close();
     }
-    public Core getCore(){
-        return core;
-    }
 
     public IPlayerJoin getPlayerJoinListener(){
         return playerJoinListener;
@@ -59,6 +55,9 @@ public class Economy {
 
     public IApi getApi(){
         return api;
+    }
+    public PlaceHolder getPlaceHolder(){
+        return placeHolder;
     }
 
     public IApi getApiWithLog(Log log){

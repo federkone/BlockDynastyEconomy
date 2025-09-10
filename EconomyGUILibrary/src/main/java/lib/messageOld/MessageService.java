@@ -1,18 +1,11 @@
-package BlockDynasty.BukkitImplementation.services;
-import BlockDynasty.BukkitImplementation.config.file.Message;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.balance.Money;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.Economy.domain.result.ErrorCode;
-import BlockDynasty.Economy.domain.services.ICurrencyService;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+package lib.messageOld;
+
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class MessageService {
-    private final ICurrencyService currencyService;
+    /*private final ICurrencyService currencyService;
 
     public MessageService(ICurrencyService currencyService) {
         this.currencyService = currencyService;
@@ -264,5 +257,5 @@ public class MessageService {
         Currency currency = currencyService.getCurrency(currencyName);
         return Message.getSetSuccess()
                 .replace("{amount}", currency.format(amount));
-    }
+    }*/
 }

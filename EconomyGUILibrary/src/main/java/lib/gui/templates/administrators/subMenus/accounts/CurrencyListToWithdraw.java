@@ -4,9 +4,11 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IPlayer;
 import lib.gui.abstractions.ITextInput;
+import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.CurrenciesList;
 
 import java.math.BigDecimal;
@@ -29,11 +31,11 @@ public class CurrencyListToWithdraw extends CurrenciesList {
     public String execute(IPlayer sender, Currency currency, BigDecimal amount) {
         Result<Void> result = withdrawUseCase.execute(UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (result.isSuccess()) {
-            //Player p = Bukkit.getPlayer(this.targetPlayer.getNickname());
-            //if (p != null) {
-             //   p.sendMessage(messageService.getWithdrawSuccess(currency.getSingular(), amount));
-            //}
-            //sender.sendMessage(messageService.getWithdrawMessage(sender.getName(), currency.getSingular(), amount));
+            Source p = platformAdapter.getPlayer(this.targetPlayer.getNickname());
+            if (p != null) {
+                p.sendMessage("&7You have withdrawn " + ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 from your account.");
+            }
+            sender.sendMessage("&7Success withdraw " +ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 from " + targetPlayer.getNickname() + "'s account.");
             this.openParent();
             return null;
         } else {

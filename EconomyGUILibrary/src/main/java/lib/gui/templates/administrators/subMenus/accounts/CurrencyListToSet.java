@@ -4,9 +4,11 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IPlayer;
 import lib.gui.abstractions.ITextInput;
+import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.CurrenciesList;
 
 import java.math.BigDecimal;
@@ -29,11 +31,11 @@ public class CurrencyListToSet extends CurrenciesList {
     public String execute(IPlayer sender, Currency currency, BigDecimal amount) {
         Result<Void> result = setBalanceUseCase.execute(UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (result.isSuccess()) {
-           // Player p =  Bukkit.getPlayer(targetPlayer.getNickname());
-           // if (p != null) {
-           //     p.sendMessage(messageService.getSetSuccess(currency.getSingular(), amount));
-            //}
-            sender.sendMessage("success");
+            Source p = platformAdapter.getPlayer(targetPlayer.getNickname());
+            if (p != null) {
+               p.sendMessage("&7Your account balance has been set to " + ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7.");
+            }
+            sender.sendMessage("Set success");
             this.openParent();
             return null;
         } else {

@@ -84,7 +84,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
     private void setupIntegrations() {
         Vault.init(economy.getApiWithLog(VaultLogger.build(this)));
-        PlaceHolder.register(economy.getApi());
+        PlaceHolder.register(economy.getPlaceHolder());
         Bungee.init(this,economy.getApi());
     }
 

@@ -5,6 +5,7 @@ import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.abstractions.Source;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IPlayer;
@@ -41,11 +42,11 @@ public class EditAccountGUI extends AbstractGUI {
                         if(s.equals("yes")){
                             Result<Void> result = deleteAccountUseCase.execute(target.getNickname());
                             if(result.isSuccess()){
-                                //sender.sendMessage("The player has been eliminated "+ target.getNickname());
-                                //org.bukkit.entity.Player p = Bukkit.getPlayer(target.getNickname());
-                                //if(p != null){
-                                //    p.kickPlayer("Your economy account has been deleted.");
-                                //}
+                                sender.sendMessage("The player has been eliminated "+ target.getNickname());
+                                Source p = platformAdapter.getPlayer(target.getNickname());
+                                if(p != null){
+                                    p.kickPlayer("Your economy account has been deleted.");
+                                }
                                 return null;
                             }else{
                                 sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());

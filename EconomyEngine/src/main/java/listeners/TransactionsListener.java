@@ -4,13 +4,12 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import lib.commands.abstractions.PlatformAdapter;
 import lib.commands.abstractions.Source;
+import lib.gui.templates.abstractions.ChatColor;
 
 public class TransactionsListener {
-    private static PlatformAdapter platformAdapter;
 
     //ejemplos:
     public static void register(EventManager eventManager, PlatformAdapter platformAdapter) {
-        TransactionsListener.platformAdapter = platformAdapter;
 
         eventManager.subscribe(PayEvent.class, event -> {
             Main.Console.debug("Event PayEvent emitted: " +event);
@@ -24,8 +23,8 @@ public class TransactionsListener {
             }
 
             //player.sendMessage(messageService.getSuccessMessage(player.getName(), target.getName(), event.getCurrency().getSingular(), event.getAmount()));
-            player.sendMessage("You have paid " + event.getAmount() + " " + event.getCurrency().getSingular() + " to " + target.getName());
-            target.sendMessage("You have received " + event.getAmount() + " " + event.getCurrency().getSingular() + " from " + player.getName());
+            player.sendMessage("&7You paid " + ChatColor.stringValueOf(event.getCurrency().getColor())+event.getCurrency().format(event.getAmount()) + "&7 to " + target.getName());
+            target.sendMessage("&7You received " + ChatColor.stringValueOf(event.getCurrency().getColor())+event.getCurrency().format(event.getAmount()) + "&7 from " + player.getName());
         });
 
         eventManager.subscribe(ExchangeEvent.class, event -> {

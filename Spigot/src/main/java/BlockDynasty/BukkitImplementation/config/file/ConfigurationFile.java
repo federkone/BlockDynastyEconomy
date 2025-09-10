@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.config.file;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import lib.messageOld.MessageFile;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -12,7 +13,7 @@ public class ConfigurationFile {
     public static void init(BlockDynastyEconomy plugin) {
         ConfigurationFile.plugin = plugin;
         loadDefaultConfig();
-        MessageFile.init(plugin);
+        //MessageFile.init(plugin); se inicializaria el archivo de mensajes
     }
 
     private static void loadDefaultConfig() {

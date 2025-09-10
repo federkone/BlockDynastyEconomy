@@ -1,26 +1,22 @@
 
-package BlockDynasty.BukkitImplementation.config.file;
+package lib.messageOld;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 public class Message {
-    private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
-    private static FileConfiguration cfg = MessageFile.getMessageConfig();
-
+    //private static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
+    //private static FileConfiguration cfg = MessageFile.getMessageConfig();
+/*
     private static String get(String path){
         return colorize(cfg.getString(path));
     }
 
     private static List<String> getList(String path){
         List<String> str = new ArrayList<>();
-        for(String s : cfg.getStringList(path)){
-            str.add(colorize(s));
-        }
+        //for(String s : cfg.getStringList(path)){
+        //    str.add(colorize(s));
+        //}
         return str;
     }
 
@@ -273,7 +269,7 @@ public class Message {
 
     public static String getExchangeNoPermPreset(){
         return getPrefix() + colorize(cfg.getString("Messages.exchange_command.no_perms.preset"));
-    }
+    }*/
 //-----------------------
 
 }

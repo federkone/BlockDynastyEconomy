@@ -1,27 +1,21 @@
-package BlockDynasty.BukkitImplementation.config.file;
-
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+package lib.messageOld;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class MessageFile {
-    private static BlockDynastyEconomy plugin;
     private static File configFile;
-    private static FileConfiguration messageConfig;
 
-    public static void init(BlockDynastyEconomy plugin) {
-        MessageFile.plugin = plugin;
+    public static void init() {
+        //MessageFile.plugin = plugin;
         createMessageFile();
         loadMessages();
     }
 
     private static void createMessageFile() {
         // Create a messages subdirectory in plugin folder
-        File messagesDir = new File(plugin.getDataFolder(), "messages");
+        /*File messagesDir = new File(plugin.getDataFolder(), "messages");
         if (!messagesDir.exists()) {
             messagesDir.mkdirs();
         }
@@ -39,11 +33,11 @@ public class MessageFile {
             }
         } else {
             messageConfig = YamlConfiguration.loadConfiguration(configFile);
-        }
+        }*/
     }
 
     private static void loadMessages(){
-        String path = "Messages.";
+        /*String path = "Messages.";
 
         messageConfig.addDefault(path + "prefix", "&2&lBlockDynasty> ");
         messageConfig.addDefault(path + "nopermission", "&7You don't have permission to do this.");
@@ -184,21 +178,19 @@ public class MessageFile {
         messageConfig.addDefault(path+"buy_no_player","&cEl jugador no está en línea.");
 
         messageConfig.options().copyDefaults(true);
-        saveMessageConfig();
-    }
-    public static FileConfiguration getMessageConfig() {
-        return messageConfig;
+        saveMessageConfig();*/
     }
 
+
     public static void saveMessageConfig() {
-        try {
+        /*try {
             messageConfig.save(configFile);
         } catch (IOException e) {
             plugin.getLogger().severe("Could not save messages.yml file: " + e.getMessage());
-        }
+        }*/
     }
 
     public static void reloadMessageConfig() {
-        messageConfig = YamlConfiguration.loadConfiguration(configFile);
+        //messageConfig = YamlConfiguration.loadConfiguration(configFile);
     }
 }
