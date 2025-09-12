@@ -50,8 +50,13 @@ public class BuyCommand extends AbstractCommand {
         Result<Void> result =withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
 
         if(result.isSuccess()){
-            CommandsFactory.getPlatformAdapter().dispatchCommand(cmd);
-            player.sendMessage(MessageService.getMessage("buy_success"));
+            try{
+                CommandsFactory.getPlatformAdapter().dispatchCommand(cmd);
+                player.sendMessage(MessageService.getMessage("buy_success"));
+            }catch (Exception e){
+                sender.sendMessage("Error dispatch command: " + e.getMessage());
+            }
+
         }else{
             sender.sendMessage( "Error: " + result.getErrorMessage());
         }

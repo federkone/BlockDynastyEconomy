@@ -36,7 +36,8 @@ public class BukkitAdapter implements PlatformAdapter {
 
     @Override
     public void dispatchCommand(String command) {
-        Scheduler.run(ContextualTask.build(()-> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command)));
+        //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+        Scheduler.run(ContextualTask.build(()->Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)));
     }
 
     @Override

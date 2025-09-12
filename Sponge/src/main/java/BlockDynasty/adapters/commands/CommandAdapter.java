@@ -13,28 +13,14 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CommandAdapter implements CommandExecutor {
     private final Command command;
     public static Parameter.Value<String> ARGS = Parameter.remainingJoinedStrings().key("args").optional().build();
-    public List<Parameter> args = new ArrayList<>();
 
     public CommandAdapter(Command command) {
         this.command = command;
-
-        if (command.getArgs() != null && !command.getArgs().isEmpty()) {
-            // Process specific argument types
-            for (String argName : command.getArgs()) {
-                if ("player".equalsIgnoreCase(argName)) {
-                    args.add(Parameter.player().key("player").build());
-                } else {
-                    args.add(Parameter.string().key(argName).optional().build());
-                }
-            }
-        } else {
-            // If no specific args, use the generic ARGS parameter
-            args.add(ARGS);
-        }
     }
 
     @Override
@@ -49,16 +35,9 @@ public class CommandAdapter implements CommandExecutor {
         // Extract arguments based on defined parameters
         if (command.getArgs() != null && !command.getArgs().isEmpty()) {
             for (String argName : command.getArgs()) {
-                if ("player".equalsIgnoreCase(argName)) {
-                    context.one(Parameter.player().key("player").build())
-                            .ifPresent(player -> argList.add(player.name()));
-                } else {
-                    context.one(Parameter.string().key(argName).build())
-                            .ifPresent(argList::add);
-                }
+                context.one(Parameter.string().key(argName).build()).ifPresent(argList::add);
             }
-        } else {
-            // Use the catch-all ARGS for commands without specific args
+
             String rawArgs = context.one(ARGS).orElse("");
             if (!rawArgs.isEmpty()) {
                 String[] parts = rawArgs.split(" ");
@@ -67,6 +46,7 @@ public class CommandAdapter implements CommandExecutor {
                 }
             }
         }
+
 
         try {
             command.execute(sender, argList.toArray(new String[0])); //se puede esperar un objeto resultado

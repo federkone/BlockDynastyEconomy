@@ -43,6 +43,8 @@ public class SetCommand extends AbstractCommand {
 
         if(!result.isSuccess()){
             sender.sendMessage("Error on Set Balance: " + result.getErrorMessage()+" "+result.getErrorMessage());
+        }else{
+            sender.sendMessage("&aSet Balance successful");
         }
 
         return true;

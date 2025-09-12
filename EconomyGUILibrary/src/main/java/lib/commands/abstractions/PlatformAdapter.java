@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface PlatformAdapter {
     Source getPlayer(String name);
-    void dispatchCommand(String command);
+    void dispatchCommand(String command) throws Exception;
 
     IItemStack createItemStack(Materials material);
     IInventory createInventory(String title, int rows);

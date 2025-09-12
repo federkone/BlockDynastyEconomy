@@ -42,7 +42,9 @@ public class WithdrawCommand extends AbstractCommand {
         Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount), Context.COMMAND);
 
         if(!result.isSuccess()){
-            sender.sendMessage("Withdraw failed: "+ result.getErrorCode()+" "+ result.getErrorMessage());
+            sender.sendMessage("&cWithdraw failed: "+ result.getErrorCode()+" "+ result.getErrorMessage());
+        }else{
+            sender.sendMessage("&aWithdraw successful");
         }
         return true;
     }

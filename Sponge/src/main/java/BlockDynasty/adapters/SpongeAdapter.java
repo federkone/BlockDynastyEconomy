@@ -6,6 +6,7 @@ import BlockDynasty.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.adapters.GUI.adapters.PlayerAdapter;
 import BlockDynasty.SpongePlugin;
 import BlockDynasty.adapters.commands.SourceAdapter;
+import BlockDynasty.utils.Console;
 import lib.commands.abstractions.PlatformAdapter;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IInventory;
@@ -34,13 +35,8 @@ public class SpongeAdapter implements PlatformAdapter {
     }
 
     @Override
-    public void dispatchCommand(String command) {
-        try{
-            Sponge.server().commandManager().process(command);
-        }catch (CommandException e){
-            e.printStackTrace();
-        }
-
+    public void dispatchCommand(String command) throws Exception {
+        Sponge.server().commandManager().process(command);
     }
 
     @Override
