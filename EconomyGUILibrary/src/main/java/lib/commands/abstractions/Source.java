@@ -7,6 +7,7 @@ public interface Source {
     boolean isOnline();
     java.util.UUID getUniqueId();
     void sendMessage(String message);
+    void soundNotification();
     boolean hasPermission(String permission);
     void kickPlayer(String message);
     Object getHandle();

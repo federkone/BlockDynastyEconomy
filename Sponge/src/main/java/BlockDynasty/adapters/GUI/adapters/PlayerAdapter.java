@@ -6,6 +6,7 @@ import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IPlayer;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.menu.InventoryMenu;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
@@ -31,7 +32,10 @@ public class PlayerAdapter implements IPlayer {
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(Component.text(message));
+        Component component = Component.text()
+                .append(LegacyComponentSerializer.legacyAmpersand().deserialize(message))
+                .build();
+        player.sendMessage(component);
     }
 
     @Override

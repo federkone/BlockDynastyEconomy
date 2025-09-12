@@ -3,6 +3,7 @@ package lib.gui.templates.administrators.subMenus.accounts;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IGUI;
@@ -29,13 +30,9 @@ public class CurrencyListToDeposit extends CurrenciesList {
 
     @Override
     public String execute(IPlayer sender, Currency currency, BigDecimal amount){
-        Result<Void> result = depositUseCase.execute(UUID.fromString(targetPlayer.getUuid()),currency.getSingular(), amount);
+        Result<Void> result = depositUseCase.execute(UUID.fromString(targetPlayer.getUuid()),currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
-            Source player = platformAdapter.getPlayer(targetPlayer.getNickname());
-            if (player != null) {
-                player.sendMessage("&7You have received a deposit of " + ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7.");
-            }
-            sender.sendMessage("&7Deposited "+ ChatColor.stringValueOf(currency.getSingular()) + currency.format(amount) + "&7 to " + targetPlayer.getNickname() + "'s account.");
+            sender.sendMessage("&7Deposited "+ ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 to " + targetPlayer.getNickname() + "'s account.");
             this.openParent();
             return null;
         } else {

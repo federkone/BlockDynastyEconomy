@@ -1,6 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
@@ -42,15 +43,25 @@ public class SetBalanceUseCase {
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetUUID);
-        return execute(accountResult, currencyName, amount);
+        return execute(accountResult, currencyName, amount,Context.SYSTEM);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetName);
-        return execute(accountResult,currencyName,amount);
+        return execute(accountResult,currencyName,amount,Context.SYSTEM);
     }
 
-    private Result<Void> execute(Result<Account> accountResult,String currencyName, BigDecimal amount){
+    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount, Context context) {
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetUUID);
+        return execute(accountResult, currencyName, amount,context);
+    }
+
+    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount,Context context) {
+        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(targetName);
+        return execute(accountResult,currencyName,amount,context);
+    }
+
+    private Result<Void> execute(Result<Account> accountResult,String currencyName, BigDecimal amount,Context context) {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -59,10 +70,10 @@ public class SetBalanceUseCase {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
 
-        return performSet(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performSet(accountResult.getValue(), currencyResult.getValue(), amount,context);
     }
 
-    private Result<Void> performSet(Account account, Currency currency, BigDecimal amount) {
+    private Result<Void> performSet(Account account, Currency currency, BigDecimal amount,Context context) {
         if(amount.compareTo(BigDecimal.ZERO) < 0){
             return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
         }
@@ -80,7 +91,7 @@ public class SetBalanceUseCase {
         this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
-        this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount));
+        this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount,context));
 
         return Result.success(null);
     }

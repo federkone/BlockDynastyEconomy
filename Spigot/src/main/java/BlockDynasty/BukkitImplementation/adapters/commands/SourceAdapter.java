@@ -1,8 +1,10 @@
 package BlockDynasty.BukkitImplementation.adapters.commands;
 
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.PlayerAdapter;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IPlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -31,8 +33,12 @@ public class SourceAdapter implements Source {
 
     @Override
     public void sendMessage(String message) {
-        //player.sendMessage(message);
         player.sendMessage(translateColorCodes(message));
+    }
+
+    @Override
+    public void soundNotification() {
+        player.playSound(player.getLocation(), MaterialAdapter.getPickupSound(), 1.0f, 1.0f);
     }
 
     private String translateColorCodes(String message) {

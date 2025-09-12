@@ -3,32 +3,31 @@ package BlockDynasty.BukkitImplementation.adapters;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import Main.IConfiguration;
 
-
 //podemos traer la configuracion desde un archivo externo, cache refresh timer, database pool, etc
 public class ConfigurationAdapter implements IConfiguration {
     @Override
     public String getHost() {
-        return "localhost";
+        return BlockDynastyEconomy.getInstance().getConfig().getString("mysql.host");
     }
 
     @Override
     public int getPort() {
-        return 3306;
+        return BlockDynastyEconomy.getInstance().getConfig().getInt("mysql.port");
     }
 
     @Override
     public String getDatabase() {
-        return "minecraft";
+        return BlockDynastyEconomy.getInstance().getConfig().getString("mysql.database");
     }
 
     @Override
     public String getUsername() {
-        return "root";
+        return BlockDynastyEconomy.getInstance().getConfig().getString("mysql.username");
     }
 
     @Override
     public String getPassword() {
-        return "password";
+        return BlockDynastyEconomy.getInstance().getConfig().getString("mysql.password");
     }
 
     @Override
@@ -38,11 +37,11 @@ public class ConfigurationAdapter implements IConfiguration {
 
     @Override
     public boolean enableServerConsole() {
-        return true;
+        return BlockDynastyEconomy.getInstance().getConfig().getBoolean("EnableWebEditorSqlServer");
     }
 
     @Override
     public String getType() {
-        return "h2";
+        return BlockDynastyEconomy.getInstance().getConfig().getString("storage");
     }
 }

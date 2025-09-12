@@ -1,6 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
@@ -46,15 +47,25 @@ public class DepositUseCase {
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
-        return execute(accountResult, currencyName, amount);
+        return execute(accountResult, currencyName, amount,Context.OTHER);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
-        return execute(accountResult, currencyName, amount);
+        return execute(accountResult, currencyName, amount,Context.OTHER);
     }
 
-    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount) {
+    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount,Context context) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
+        return execute(accountResult, currencyName, amount,context);
+    }
+
+    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount,Context context) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
+        return execute(accountResult, currencyName, amount,context);
+    }
+
+    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount,Context context) {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -63,10 +74,10 @@ public class DepositUseCase {
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
-        return performDeposit(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performDeposit(accountResult.getValue(), currencyResult.getValue(), amount,context);
     }
 
-    private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount) {
+    private Result<Void> performDeposit(Account account, Currency currency, BigDecimal amount,Context context) {
         if (!account.canReceiveCurrency()) {
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
@@ -92,8 +103,10 @@ public class DepositUseCase {
         this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
-        this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount));
+        this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount,context));
 
         return Result.success(null);
     }
+
+
 }

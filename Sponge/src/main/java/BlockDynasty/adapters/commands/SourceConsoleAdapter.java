@@ -20,6 +20,11 @@ public class SourceConsoleAdapter implements Source {
     }
 
     @Override
+    public void soundNotification() {
+
+    }
+
+    @Override
     public String getName() {
         return "BlockDynasty";
     }

@@ -16,7 +16,6 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
         this.platformAdapter=platformAdapter;
     }
 
-
     @Override
     public void onOfferExpired(Offer offer) {
         Source receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
@@ -48,8 +47,8 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
             receiver.sendMessage("You have received an offer from " + sender.getName() +
                     " offering " + amountOffered + " " + currencyOffered.getSingular() +
                     " in exchange for " + amountValue + " " + currencyValue.getSingular());
-            //testing
-            //receiver.playSound(receiver.getLocation(), "block.note_block.pling" , 1.0f, 1.0f);
+
+            receiver.soundNotification();
         }
         GUIFactory.getGuiService().refresh(offer.getComprador());
     }

@@ -1,6 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
@@ -46,15 +47,25 @@ public class WithdrawUseCase {
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
-        return this.execute(accountResult, currencyName, amount);
+        return this.execute(accountResult, currencyName, amount,Context.SYSTEM);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
-        return this.execute(accountResult, currencyName, amount);
+        return this.execute(accountResult, currencyName, amount,Context.SYSTEM);
     }
 
-    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount) {
+    public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount, Context context) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
+        return this.execute(accountResult, currencyName, amount,context);
+    }
+
+    public Result<Void> execute(String targetName, String currencyName, BigDecimal amount,Context context) {
+        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
+        return this.execute(accountResult, currencyName, amount,context);
+    }
+
+    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount,Context context) {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -63,10 +74,10 @@ public class WithdrawUseCase {
         if (!currencyResult.isSuccess()) {
             return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
         }
-        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount);
+        return performWithdraw(accountResult.getValue(), currencyResult.getValue(), amount,context);
     }
 
-    private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount) {
+    private Result<Void> performWithdraw(Account account, Currency currency, BigDecimal amount,Context context) {
         if (account.isBlocked()){
             return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }
@@ -88,7 +99,7 @@ public class WithdrawUseCase {
         this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
-        this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount));
+        this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount,context));
 
         return Result.success(null);
     }

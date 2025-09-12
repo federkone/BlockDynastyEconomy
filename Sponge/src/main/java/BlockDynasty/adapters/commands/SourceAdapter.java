@@ -3,8 +3,10 @@ package BlockDynasty.adapters.commands;
 import BlockDynasty.adapters.GUI.adapters.PlayerAdapter;
 import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IPlayer;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.util.UUID;
@@ -36,6 +38,17 @@ public class SourceAdapter implements Source {
                 .append(LegacyComponentSerializer.legacyAmpersand().deserialize(message))
                 .build();
         player.sendMessage(component);
+    }
+
+    @Override
+    public void soundNotification() {
+        Sound sound = Sound.sound(
+                org.spongepowered.api.ResourceKey.resolve("minecraft:block.note_block.pling"),
+                Sound.Source.PLAYER,
+                1.0f,
+                1.5f
+        );
+        player.playSound(sound);
     }
 
     @Override

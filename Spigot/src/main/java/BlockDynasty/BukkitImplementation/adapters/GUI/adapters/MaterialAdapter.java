@@ -122,6 +122,14 @@ public class MaterialAdapter {
         }
     }
 
+    public static Sound getPickupSound() {
+        if (Version.match("1.8", "1.9", "1.10","1.11")) {
+            return Sound.valueOf("ORB_PICKUP");
+        } else {
+            return Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+        }
+    }
+
     /**
      * Obtiene el valor de data (durabilidad) para wool en versiones legacy.
      */

@@ -54,7 +54,7 @@ public class BalanceTopCommand extends AbstractCommand {
                 Money money = account.getMoney(nameCurrency);
                 Currency currency = money.getCurrency();
                 BigDecimal balanceValue = money.getAmount();
-                String message = MessageService.getMessage("Messages.balance_top.balance",
+                String message = MessageService.getMessage("balance_top.balance",
                         Map.of(
                                 "number", String.valueOf(i+1),
                                 "currencycolor",ChatColor.stringValueOf(currency.getColor()),

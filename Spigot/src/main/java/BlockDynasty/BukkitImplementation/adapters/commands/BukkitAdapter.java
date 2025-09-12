@@ -28,6 +28,9 @@ public class BukkitAdapter implements PlatformAdapter {
     @Override
     public Source getPlayer(String name) {
         Player player = Bukkit.getPlayer(name);
+        if (player == null) {
+            return null;
+        }
         return new SourceAdapter(player);
     }
 
@@ -50,7 +53,11 @@ public class BukkitAdapter implements PlatformAdapter {
 
     @Override
     public Source getPlayerByUUID(UUID uuid) {
-        return new SourceAdapter(Bukkit.getPlayer(uuid));
+        Player player = Bukkit.getPlayer(uuid);
+        if (player == null) {
+            return null;
+        }
+        return new SourceAdapter(player);
     }
 
     @Override

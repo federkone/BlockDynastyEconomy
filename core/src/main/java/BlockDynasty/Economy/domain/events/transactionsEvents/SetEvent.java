@@ -2,11 +2,13 @@ package BlockDynasty.Economy.domain.events.transactionsEvents;
 
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.Event;
 
 import java.math.BigDecimal;
 
 public class SetEvent extends Event {
+    private final Context context;
     private final Currency currency;
     private final Player player;
     private final BigDecimal amount;
@@ -15,6 +17,17 @@ public class SetEvent extends Event {
         this.currency = new Currency( currency );
         this.player = new Player(player);
         this.amount = amount;
+        this.context = Context.OTHER;
+    }
+    public SetEvent(Player player, Currency currency, BigDecimal amount,Context context) {
+        this.currency = new Currency( currency );
+        this.player = new Player(player);
+        this.amount = amount;
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
     public Currency getCurrency() {
         return currency;

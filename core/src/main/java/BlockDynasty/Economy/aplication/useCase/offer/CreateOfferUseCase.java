@@ -38,6 +38,14 @@ public class CreateOfferUseCase {
             return Result.failure(accountReciberResult.getErrorMessage(), accountReciberResult.getErrorCode());
         }
 
+        if(accountSenderResult.getValue().isBlocked()){
+            return Result.failure("Sender account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+
+        if(accountReciberResult.getValue().isBlocked()){
+            return Result.failure("Receiver account is blocked", ErrorCode.ACCOUNT_BLOCKED);
+        }
+
         Result<Currency> currencyValueResult = this.searchCurrencyUseCase.getCurrency(currencyNameValue);
         if (!currencyValueResult.isSuccess()) {
             return Result.failure(currencyValueResult.getErrorMessage(), currencyValueResult.getErrorCode());

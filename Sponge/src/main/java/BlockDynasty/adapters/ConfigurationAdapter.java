@@ -49,6 +49,6 @@ public class ConfigurationAdapter implements IConfiguration {
 
     @Override
     public String getType() {
-        return "h2";
+        return "sqlite";
     }
 }

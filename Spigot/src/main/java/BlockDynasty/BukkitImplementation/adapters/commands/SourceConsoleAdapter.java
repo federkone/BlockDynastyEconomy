@@ -33,6 +33,11 @@ public class SourceConsoleAdapter implements Source {
     }
 
     @Override
+    public void soundNotification() {
+
+    }
+
+    @Override
     public boolean hasPermission(String permission) {
         return true;
     }

@@ -11,8 +11,10 @@ import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
 import lib.placeholder.PlaceHolder;
 import listeners.*;
+import repository.ConnectionHandler.Hibernate.Connection;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
+import repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
 import repository.Repository;
 
 public class Economy {
@@ -22,16 +24,13 @@ public class Economy {
     private IApi api;
     private PlaceHolder placeHolder;
 
-    //inyectar consola, log, ITextInput, PlatformAdapter
-    //inyectar consola, log, ITextInput, PlatformAdapter,Courier
-    //algun archivo/clase de configuracion que traiga informacion util para bildear el plugin como por ejemplo la conexion a la base de datos
+
     public void init(ITextInput textInput, IConsole console, Log log, PlatformAdapter platformAdapter,
                       IConfiguration configuration, BlockDynasty.Economy.domain.services.courier.Courier courier){
 
         Console.setConsole(console);
 
-        //IRepository repositoryMysql = new Repository( new ConnectionHibernateMysql( configuration.getHost(), configuration.getPort(), configuration.getDatabase(), configuration.getUsername(), configuration.getPassword() ));
-        repository = new Repository(new ConnectionHibernateH2(configuration.getDbFilePath(),configuration.enableServerConsole()));
+        repository = new Repository(getConnection(configuration));
 
         core=new Core(repository,60,new OfferListener(platformAdapter),courier,log);
         api = new Api(core);
@@ -42,11 +41,22 @@ public class Economy {
         TransactionsListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
-    public void shutdown(){
-        if (repository == null) {
-            throw new IllegalStateException("Repository is not initialized yet.");
+    private Connection getConnection(IConfiguration configuration){
+        switch (configuration.getType()){
+            case "mysql":
+                return new ConnectionHibernateMysql(configuration.getHost(), configuration.getPort(), configuration.getDatabase(), configuration.getUsername(), configuration.getPassword());
+            case "h2":
+                return new ConnectionHibernateH2(configuration.getDbFilePath(),configuration.enableServerConsole());
+            case "sqlite":
+                return new ConnectionHibernateSQLite(configuration.getDbFilePath(),configuration.enableServerConsole());
+            default:
+                throw new IllegalArgumentException("Unsupported database type: " + configuration.getType());
         }
-        repository.close();
+    }
+    public void shutdown(){
+        if (repository != null) {
+            repository.close();
+        }
     }
 
     public IPlayerJoin getPlayerJoinListener(){

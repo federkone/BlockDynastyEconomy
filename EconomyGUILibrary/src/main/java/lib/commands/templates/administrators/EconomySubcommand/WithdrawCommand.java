@@ -1,6 +1,7 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.Source;
 import lib.commands.abstractions.AbstractCommand;
@@ -32,13 +33,13 @@ public class WithdrawCommand extends AbstractCommand {
         try {
             amount = Double.parseDouble(montoString);
         } catch (NumberFormatException e) {
-            sender.sendMessage(MessageService.getMessage("Messages.invalidamount"));
+            sender.sendMessage(MessageService.getMessage("invalidamount"));
             return false;
         }
 
         double finalMount = amount;
 
-        Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount));
+        Result<Void> result = withdraw.execute(target, currencyName, BigDecimal.valueOf(finalMount), Context.COMMAND);
 
         if(!result.isSuccess()){
             sender.sendMessage("Withdraw failed: "+ result.getErrorCode()+" "+ result.getErrorMessage());

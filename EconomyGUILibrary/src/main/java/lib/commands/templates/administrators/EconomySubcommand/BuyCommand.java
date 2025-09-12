@@ -34,7 +34,7 @@ public class BuyCommand extends AbstractCommand {
         try {
             cantidadDemoneda = Double.parseDouble(args[1]);
         } catch (NumberFormatException e) {
-            player.sendMessage(MessageService.getMessage("Messages.invalidamount"));
+            player.sendMessage(MessageService.getMessage("invalidamount"));
             return false;
         }
 
@@ -51,7 +51,7 @@ public class BuyCommand extends AbstractCommand {
 
         if(result.isSuccess()){
             CommandsFactory.getPlatformAdapter().dispatchCommand(cmd);
-            player.sendMessage(MessageService.getMessage("Messages.buy_success"));
+            player.sendMessage(MessageService.getMessage("buy_success"));
         }else{
             sender.sendMessage( "Error: " + result.getErrorMessage());
         }

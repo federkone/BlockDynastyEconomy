@@ -25,7 +25,11 @@ public class PlayerAdapter implements IPlayer {
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(message);
+        player.sendMessage(translateColorCodes(message));
+    }
+
+    private String translateColorCodes(String message) {
+        return message.replaceAll("&([0-9a-fk-or])", "§$1");
     }
 
     @Override
