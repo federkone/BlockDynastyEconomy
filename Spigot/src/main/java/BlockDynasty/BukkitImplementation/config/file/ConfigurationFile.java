@@ -1,11 +1,8 @@
 package BlockDynasty.BukkitImplementation.config.file;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import lib.messageOld.MessageFile;
-import org.bukkit.Material;
+import files.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.util.Arrays;
 
 public class ConfigurationFile {
     private static BlockDynastyEconomy plugin;
@@ -18,53 +15,13 @@ public class ConfigurationFile {
 
     private static void loadDefaultConfig() {
         FileConfiguration config = plugin.getConfig();
+        Configuration configuration = new Configuration();
 
-        config.options().header(plugin.getDescription().getName()
-                + "\n"
-                + "Version: " + plugin.getDescription().getVersion()
-                + "\nMain Configuration file."
-                + "\n"
-                + "Developer(s): " + plugin.getDescription().getAuthors()
-                + "\n\n"
-                + "You have three valid storage methods, mysql or sqlite/h2. If you choose mysql or mongodb you would have to enter the database credentials down below."
-                + "\n"
-                + "enableDistanceLimitOffer true,maxDistanceOffer is the maximum distance in blocks that a player can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc."
-                + "\n"
-                + "expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire. example: 5 minutes, 10 minutes, etc."
-                + "\n"
-                + "EnableWebEditorSqlServer is to enable the web sql server for h2 database in http://localhost:8082, if you want to use the web console of h2 database, you have to set this to true. with this you can manage the h2 database from a web browser."
-                + "\n"
-                +"'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique and are the source of truth, with support for name change detection from Mojang. With online=false, only the player's name will be taken as the source of truth in Case Sensitivity mode. "
-                );
+        config.options().header(configuration.getHeader());
 
-
-        config.addDefault("online", true);
-        config.addDefault("storage", "h2");
-        config.addDefault("EnableWebEditorSqlServer", false);
-        config.addDefault("debug", false);
-        config.addDefault("vault", true);
-        config.addDefault("transaction_log", true);
-        config.addDefault("transaction_log_vault",false);
-
-        config.addDefault("mysql.database", "minecraft");
-        //config.addDefault("mysql.tableprefix", "BlockDynastyEconomy");
-        config.addDefault("mysql.host", "localhost");
-        config.addDefault("mysql.port", 3306);
-        config.addDefault("mysql.username", "root");
-        config.addDefault("mysql.password", "password");
-
-        //config.addDefault("mongoUri", "mongodb://localhost:27017");
-      //  config.addDefault("sqlite.file", "database.sqlite");
-
-        config.addDefault("enableDistanceLimitOffer", true);
-        config.addDefault("maxDistanceOffer", 5.0);
-        config.addDefault("expireCacheTopMinutes",5);
-        //config.addDefault("cheque.material", Material.PAPER.toString());
-        //config.addDefault("cheque.name", "&aBank Note");
-        //config.addDefault("cheque.lore", Arrays.asList("&7Worth: {value}.", "&7&oWritten by {player}"));
-        //config.addDefault("cheque.console_name", "Console");
-        //config.addDefault("cheque.enabled", false);
-
+        for (String key : configuration.getParameters().keySet()) {
+            config.addDefault(key, configuration.getParameters().get(key));
+        }
 
         config.options().copyDefaults(true);
         plugin.saveConfig();

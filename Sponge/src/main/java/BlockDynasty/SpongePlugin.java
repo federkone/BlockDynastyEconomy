@@ -6,6 +6,7 @@ import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.SpongeAdapter;
 import BlockDynasty.adapters.commands.SourceAdapter;
+import BlockDynasty.adapters.config.ConfigurationFile;
 import BlockDynasty.adapters.listeners.Courier;
 import BlockDynasty.adapters.logs.AbstractLog;
 import BlockDynasty.adapters.spongeEconomyApi.EconomyServiceAdapter;
@@ -45,11 +46,13 @@ public class SpongePlugin {
     private static Logger logger;
     private static final Economy economy= new Economy();
     public static String databasePath;
+    public static Path configPath;
 
     @Inject
     SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir) {
         SpongePlugin.container = container;
         SpongePlugin.logger = logger;
+        SpongePlugin.configPath = configDir;
         SpongePlugin.databasePath = setupDatabaseDirectory(configDir);
     }
 
@@ -67,6 +70,7 @@ public class SpongePlugin {
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
         // Perform any one-time setup
+        ConfigurationFile.init( this);
         Console.setConsole(new ConsoleAdapter());
         economy.init(new TextInput(),new ConsoleAdapter(),new AbstractLog(), new SpongeAdapter(),new ConfigurationAdapter(),new Courier() );
         Console.log("Plugin constructed...");
