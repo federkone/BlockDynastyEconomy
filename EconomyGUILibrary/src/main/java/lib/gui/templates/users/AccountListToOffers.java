@@ -9,22 +9,21 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AccountListToOffers extends PaginatedGUI<Offer> {
     private final AcceptOfferUseCase acceptOfferUseCase;
     private final CancelOfferUseCase cancelOfferUseCase;
     private final SearchOfferUseCase searchOfferUseCase;
-    private final IPlayer sender;
+    private final IEntityGUI sender;
     public AccountListToOffers(SearchOfferUseCase searchOfferUseCase, AcceptOfferUseCase acceptOfferUseCase,
                                CancelOfferUseCase cancelOfferUseCase,
-                               IPlayer sender, IGUI parent) {
+                               IEntityGUI sender, IGUI parent) {
         super("Received Offers", 5, sender, parent, 21);
         this.acceptOfferUseCase = acceptOfferUseCase;
         this.cancelOfferUseCase = cancelOfferUseCase;
@@ -44,8 +43,7 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
 
     @Override
     protected IItemStack createItemFor(Offer offer) {
-        Optional<IPlayer> optionalPlayer = platformAdapter.getPlayerOnlineByUUID(offer.getVendedor());
-        IPlayer vendedor = optionalPlayer.orElse(null);
+        IEntityGUI vendedor = platformAdapter.getPlayerByUUID(offer.getVendedor());
 
         Currency tipoCantidad = offer.getTipoCantidad();
         Currency tipoMonto = offer.getTipoMonto();

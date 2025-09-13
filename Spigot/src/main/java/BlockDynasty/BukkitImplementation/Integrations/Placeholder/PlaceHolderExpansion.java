@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
 
-import BlockDynasty.BukkitImplementation.adapters.commands.SourceAdapter;
+import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
 import lib.placeholder.PlaceHolder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
@@ -51,7 +51,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String s) {
-        return placeHolder.onRequest(new SourceAdapter(player.getPlayer()), s);
+        return placeHolder.onRequest(EntityPlayerAdapter.of(player.getPlayer()), s);
     }
 
 }

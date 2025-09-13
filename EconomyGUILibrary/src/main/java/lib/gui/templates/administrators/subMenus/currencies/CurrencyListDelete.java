@@ -6,16 +6,16 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.templates.abstractions.CurrenciesList;
 
 public class CurrencyListDelete extends CurrenciesList {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final ITextInput textInput;
 
-    public CurrencyListDelete(IPlayer player, SearchCurrencyUseCase searchCurrencyUseCase,
+    public CurrencyListDelete(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase,
                               DeleteCurrencyUseCase deleteCurrencyUseCase, IGUI parent, ITextInput textInput)  {
         super( player, searchCurrencyUseCase,parent,textInput);
         this.deleteCurrencyUseCase =deleteCurrencyUseCase;

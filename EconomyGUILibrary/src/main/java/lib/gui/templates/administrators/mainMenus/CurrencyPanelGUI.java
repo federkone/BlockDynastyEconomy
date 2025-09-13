@@ -2,14 +2,14 @@ package lib.gui.templates.administrators.mainMenus;
 
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
 
 public class CurrencyPanelGUI extends AbstractGUI {
-    private final IPlayer player;
+    private final IEntityGUI player;
 
-    public CurrencyPanelGUI( IPlayer player, IGUI parent) {
+    public CurrencyPanelGUI(IEntityGUI player, IGUI parent) {
         super("Currency Manager", 3,player,parent);
         this.player = player;
         setupGUI();

@@ -3,7 +3,7 @@ package lib.commands.templates.administrators.EconomySubcommand.CurrencySubcomma
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public class DeleteCurrencyCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }

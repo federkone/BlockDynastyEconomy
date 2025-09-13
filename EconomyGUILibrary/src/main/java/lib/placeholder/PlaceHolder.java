@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.messages.ChatColor;
 import lib.messages.MessageService;
 
@@ -22,7 +22,7 @@ public class PlaceHolder {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 
-    public String onRequest(Source player, String s) {
+    public String onRequest(IEntityCommands player, String s) {
         if (player == null || s == null) {
             return "";
         }

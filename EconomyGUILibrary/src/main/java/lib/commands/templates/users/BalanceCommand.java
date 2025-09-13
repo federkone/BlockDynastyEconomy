@@ -4,8 +4,7 @@ import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.CommandsFactory;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 import lib.messages.ChatColor;
 import lib.messages.MessageService;
@@ -22,7 +21,7 @@ public class BalanceCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }

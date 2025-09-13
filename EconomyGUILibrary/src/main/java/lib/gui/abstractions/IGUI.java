@@ -4,8 +4,8 @@ public interface IGUI {
     void open();
     void close();
     void refresh();
-    void handleLeftClick(int slot, IPlayer player);
-    void handleRightClick(int slot, IPlayer player);
+    void handleLeftClick(int slot, IEntityGUI player);
+    void handleRightClick(int slot, IEntityGUI player);
     int getRows();
     String getTitle();
     IInventory getInventory();

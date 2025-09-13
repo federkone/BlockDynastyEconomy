@@ -2,6 +2,7 @@ package lib.gui.templates.abstractions;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.*;
 
 import java.math.BigDecimal;
@@ -10,10 +11,10 @@ import java.util.stream.Collectors;
 
 public abstract class CurrenciesList extends PaginatedGUI<Currency> {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final ITextInput textInput;
 
-    public CurrenciesList(IPlayer player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
+    public CurrenciesList(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
         super("Currency List", 5,player,parentGUI,21);
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.player = player;
@@ -21,7 +22,7 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
         showCurrencies();
     }
 
-    public CurrenciesList(IPlayer player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI,Currency exceptCurrency, ITextInput textInput) {
+    public CurrenciesList(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI, Currency exceptCurrency, ITextInput textInput) {
         this(player, searchCurrencyUseCase, parentGUI, textInput);
         showCurrenciesExcluding(exceptCurrency);
     }
@@ -74,5 +75,5 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
         });
     }
 
-    protected String execute(IPlayer sender,Currency currency, BigDecimal amount){return "execute not implement";};
+    protected String execute(IEntityGUI sender, Currency currency, BigDecimal amount){return "execute not implement";};
 }

@@ -5,17 +5,17 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 
 public class CreateCurrencyGUI {
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     //private final SearchCurrencyUseCase searchCurrencyUseCase;
     private String singularName;
     private final IGUI parent;
     private final ITextInput textInput;
-    public CreateCurrencyGUI(IPlayer player, CreateCurrencyUseCase createCurrencyUseCase, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parent, ITextInput textInput) {
+    public CreateCurrencyGUI(IEntityGUI player, CreateCurrencyUseCase createCurrencyUseCase, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parent, ITextInput textInput) {
         this.parent = parent;
         this.player = player;
         this.textInput = textInput;

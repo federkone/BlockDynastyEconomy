@@ -1,6 +1,6 @@
 package BlockDynasty.BukkitImplementation.adapters.listeners;
 
-import BlockDynasty.BukkitImplementation.adapters.commands.SourceAdapter;
+import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
 import listeners.IPlayerJoin;
 import org.bukkit.entity.Player;
 
@@ -15,6 +15,6 @@ public class PlayerJoinListenerOffline extends PlayerJoinListenerOnline {
     //si se comienza a trabajar en offline se van a buscar las cuentas por nombre y se va a preguntar si cambio el uuid para actualizar en sistema.
     @Override
     protected void loadPlayerAccount(Player player){
-       this.playerJoin.loadOfflinePlayerAccount(new SourceAdapter(player));
+       this.playerJoin.loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
     }
 }

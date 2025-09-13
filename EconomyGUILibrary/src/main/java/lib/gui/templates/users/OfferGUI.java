@@ -2,14 +2,14 @@ package lib.gui.templates.users;
 
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 
 public class OfferGUI extends PayGUI{
-    private final IPlayer sender;
+    private final IEntityGUI sender;
 
-    public OfferGUI(IPlayer sender, IGUI parent, ITextInput textInput) {
+    public OfferGUI(IEntityGUI sender, IGUI parent, ITextInput textInput) {
         super(sender,parent ,textInput);
         this.sender = sender;
     }

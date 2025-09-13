@@ -2,12 +2,11 @@ package listeners;
 
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
-import lib.commands.abstractions.PlatformAdapter;
-import lib.commands.abstractions.Source;
+import lib.abstractions.PlatformAdapter;
+import lib.commands.abstractions.IEntityCommands;
 import lib.gui.GUIFactory;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 public class OfferListener implements BlockDynasty.Economy.aplication.listeners.OfferListener {
     PlatformAdapter platformAdapter;
@@ -18,8 +17,8 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
 
     @Override
     public void onOfferExpired(Offer offer) {
-        Source receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
-        Source sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
+        IEntityCommands receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
+        IEntityCommands sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
 
         if (receiver != null && sender != null) {
             receiver.sendMessage(" Your offer from " + sender.getName() + " has expired.");
@@ -30,8 +29,8 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
 
     @Override
     public void onOfferCreated(Offer offer) {
-        Source receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
-        Source sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
+        IEntityCommands receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
+        IEntityCommands sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
         Currency currencyOffered = offer.getTipoCantidad();
         BigDecimal amountOffered = offer.getCantidad();
         Currency currencyValue = offer.getTipoMonto();
@@ -48,7 +47,7 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
                     " offering " + amountOffered + " " + currencyOffered.getSingular() +
                     " in exchange for " + amountValue + " " + currencyValue.getSingular());
 
-            receiver.soundNotification();
+            receiver.playNotificationSound();
         }
         GUIFactory.getGuiService().refresh(offer.getComprador());
     }
@@ -58,8 +57,8 @@ public class OfferListener implements BlockDynasty.Economy.aplication.listeners.
         GUIFactory.getGuiService().refresh(offer.getComprador());
         GUIFactory.getGuiService().refresh(offer.getVendedor());
 
-        Source receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
-        Source sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
+        IEntityCommands receiver = platformAdapter.getPlayerByUUID(offer.getComprador());
+        IEntityCommands sender = platformAdapter.getPlayerByUUID(offer.getVendedor());
         if (receiver != null && sender != null) {
             receiver.sendMessage(" Your offer from " + sender.getName() + " has been canceled.");
             sender.sendMessage(" The offer to " + receiver.getName() + " has been canceled.");

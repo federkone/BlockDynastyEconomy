@@ -5,7 +5,7 @@ import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.CurrenciesList;
@@ -17,7 +17,7 @@ public class CurrencyListToPay extends CurrenciesList {
     private final PayUseCase payUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
-    public CurrencyListToPay(IPlayer player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
+    public CurrencyListToPay(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
                              SearchCurrencyUseCase searchCurrencyUseCase, PayUseCase payUseCase, IGUI parentGUI, ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,textInput);
         this.payUseCase = payUseCase;
@@ -25,7 +25,7 @@ public class CurrencyListToPay extends CurrenciesList {
     }
 
     @Override
-    public String execute(IPlayer sender, Currency currency, BigDecimal amount){
+    public String execute(IEntityGUI sender, Currency currency, BigDecimal amount){
         Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
         if (!result.isSuccess()) {
             //messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());

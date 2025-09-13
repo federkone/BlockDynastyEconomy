@@ -2,7 +2,7 @@ package BlockDynasty.adapters.GUI.adapters;
 
 import BlockDynasty.SpongePlugin;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import net.kyori.adventure.text.TextComponent;
 import org.spongepowered.api.Sponge;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class TextInput implements ITextInput {
     @Override
-    public void open(IPlayer owner, String title, String initialText, Function<String, String> function) {
+    public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
         owner.sendMessage("§6[" + title + "] §f" + initialText);
         owner.sendMessage("§7Type your response in chat. Type 'cancel' to cancel.");
         owner.closeInventory();
@@ -28,7 +28,7 @@ public class TextInput implements ITextInput {
     }
 
     @Override
-    public void open(IGUI parent, IPlayer owner, String title, String initialText, Function<String, String> function) {
+    public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
 
         owner.sendMessage("§6[" + title + "] §f" + initialText);
         owner.sendMessage("§7Type your response in chat. Type 'cancel' to cancel. Type 'back' to go back.");
@@ -42,11 +42,11 @@ public class TextInput implements ITextInput {
 
     public static class ChatInputListener {
         private final IGUI parent;
-        private final IPlayer owner;
+        private final IEntityGUI owner;
         private final String title;
         private final Function<String, String> function;
 
-        public ChatInputListener(IGUI parent, IPlayer owner, String title, Function<String, String> function) {
+        public ChatInputListener(IGUI parent, IEntityGUI owner, String title, Function<String, String> function) {
             this.owner = owner;
             this.title = title;
             this.function = function;

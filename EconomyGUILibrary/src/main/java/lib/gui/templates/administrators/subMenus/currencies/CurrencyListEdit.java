@@ -4,13 +4,13 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.templates.abstractions.CurrenciesList;
 
 public class CurrencyListEdit extends CurrenciesList {
-    private final IPlayer player;
-    public CurrencyListEdit(IPlayer player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI abstractGUI, ITextInput textInput) {
+    private final IEntityGUI player;
+    public CurrencyListEdit(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI abstractGUI, ITextInput textInput) {
         super( player, searchCurrencyUseCase,abstractGUI,textInput);
         this.player = player;
     }

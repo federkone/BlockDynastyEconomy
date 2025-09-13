@@ -1,14 +1,14 @@
 package lib.gui.templates.administrators.mainMenus;
 
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
 
 public class AdminPanelGUI extends AbstractGUI {
-    private final IPlayer sender;
+    private final IEntityGUI sender;
 
-    public AdminPanelGUI(IPlayer sender)
+    public AdminPanelGUI(IEntityGUI sender)
     {
         super("Economy Admin Panel", 5,sender);
         this.sender = sender;

@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AccountsList;
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TransferFoundsGUI extends AccountsList {
-    private IPlayer sender;
+    private IEntityGUI sender;
     private final SearchAccountUseCase searchAccountUseCase;
-    public TransferFoundsGUI(IPlayer sender, IGUI parent, SearchAccountUseCase searchAccountUseCase , ITextInput textInput) {
+    public TransferFoundsGUI(IEntityGUI sender, IGUI parent, SearchAccountUseCase searchAccountUseCase , ITextInput textInput) {
         super("Select Player", 5, sender, parent, textInput);
         this.sender = sender;
         this.searchAccountUseCase = searchAccountUseCase;

@@ -1,11 +1,12 @@
 package BlockDynasty;
 
-import BlockDynasty.adapters.ConfigurationAdapter;
+import BlockDynasty.adapters.abstractions.EntityConsoleAdapter;
+import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
+import BlockDynasty.adapters.config.ConfigurationAdapter;
 import BlockDynasty.adapters.ConsoleAdapter;
 import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
-import BlockDynasty.adapters.SpongeAdapter;
-import BlockDynasty.adapters.commands.SourceAdapter;
+import BlockDynasty.adapters.abstractions.SpongeAdapter;
 import BlockDynasty.adapters.config.ConfigurationFile;
 import BlockDynasty.adapters.listeners.Courier;
 import BlockDynasty.adapters.logs.AbstractLog;
@@ -30,7 +31,6 @@ import org.spongepowered.api.event.EventContext;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.*;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
-import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 
@@ -163,9 +163,9 @@ public class SpongePlugin {
         ServerPlayer player = event.player();
 
         if(Sponge.server().isOnlineModeEnabled()){
-            economy.getPlayerJoinListener().loadOnlinePlayerAccount(new SourceAdapter(player));
+            economy.getPlayerJoinListener().loadOnlinePlayerAccount(EntityPlayerAdapter.of(player));
         }else{
-            economy.getPlayerJoinListener().loadOfflinePlayerAccount(new SourceAdapter(player));
+            economy.getPlayerJoinListener().loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
         }
     }
 

@@ -5,8 +5,7 @@ import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
-import BlockDynasty.Economy.domain.services.ICurrencyService;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 
 public class PlayerJoinListener implements IPlayerJoin {
     protected final CreateAccountUseCase createAccountUseCase;
@@ -20,7 +19,7 @@ public class PlayerJoinListener implements IPlayerJoin {
         this.accountService = accountService;
     }
 
-    public void loadOnlinePlayerAccount(Source player) {
+    public void loadOnlinePlayerAccount(IEntityCommands player) {
         Result<Account> result = searchAccountUseCase.getAccount(player.getUniqueId());
         if (result.isSuccess()) {
             Result<Void> resultChangeName = accountService.checkNameChange(result.getValue(), player.getName());
@@ -41,7 +40,7 @@ public class PlayerJoinListener implements IPlayerJoin {
     }
 
     @Override
-    public void loadOfflinePlayerAccount(Source player) {
+    public void loadOfflinePlayerAccount(IEntityCommands player) {
         Result<Account> result = searchAccountUseCase.getAccount(player.getName());
         if (result.isSuccess()) {
             Result<Void> resultChangeUuid = accountService.checkUuidChange(result.getValue(), player.getUniqueId());
@@ -61,7 +60,7 @@ public class PlayerJoinListener implements IPlayerJoin {
         }
     }
 
-    public void offLoadPlayerAccount(Source player) {
+    public void offLoadPlayerAccount(IEntityCommands player) {
         accountService.removeAccountOnline(player.getUniqueId());
     }
 }

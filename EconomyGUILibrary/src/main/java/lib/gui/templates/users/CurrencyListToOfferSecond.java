@@ -5,7 +5,7 @@ import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.CurrenciesList;
@@ -17,7 +17,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
     private final BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase createOfferUseCase;
     private final CurrencyListToOfferFirst parentGUI;
 
-    public CurrencyListToOfferSecond(IPlayer player, BlockDynasty.Economy.domain.entities.account.Player target, SearchCurrencyUseCase searchCurrencyUseCase,
+    public CurrencyListToOfferSecond(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player target, SearchCurrencyUseCase searchCurrencyUseCase,
                                      CreateOfferUseCase createOfferUseCase, CurrencyListToOfferFirst parentGUI, ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,parentGUI.getCurrency(), textInput);
         this.createOfferUseCase = createOfferUseCase;
@@ -26,7 +26,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
     }
 
     @Override
-    protected String  execute(IPlayer sender, Currency currency, java.math.BigDecimal amount){
+    protected String  execute(IEntityGUI sender, Currency currency, java.math.BigDecimal amount){
         Result<Void> result= createOfferUseCase.execute(
                 sender.getUniqueId(),
                 UUID.fromString(target.getUuid()),

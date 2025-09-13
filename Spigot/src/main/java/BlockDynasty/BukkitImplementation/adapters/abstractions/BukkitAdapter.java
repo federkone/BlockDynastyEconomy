@@ -1,16 +1,14 @@
-package BlockDynasty.BukkitImplementation.adapters.commands;
+package BlockDynasty.BukkitImplementation.adapters.abstractions;
 
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.PlayerAdapter;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import lib.commands.abstractions.PlatformAdapter;
-import lib.commands.abstractions.Source;
+import lib.abstractions.IPlayer;
+import lib.abstractions.PlatformAdapter;
 import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
 import lib.gui.abstractions.Materials;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,20 +16,20 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 
 //permite explicarle a la libreria como obtener un jugador y como ejecutar un comando
 public class BukkitAdapter implements PlatformAdapter {
+
     @Override
-    public Source getPlayer(String name) {
+    public IPlayer getPlayer(String name) {
         Player player = Bukkit.getPlayer(name);
         if (player == null) {
             return null;
         }
-        return new SourceAdapter(player);
+        return EntityPlayerAdapter.of(player);
     }
 
     @Override
@@ -53,21 +51,16 @@ public class BukkitAdapter implements PlatformAdapter {
     }
 
     @Override
-    public Source getPlayerByUUID(UUID uuid) {
+    public IPlayer getPlayerByUUID(UUID uuid) {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) {
             return null;
         }
-        return new SourceAdapter(player);
-    }
-
-    @Override
-    public Optional<IPlayer> getPlayerOnlineByUUID(UUID uuid) {
-        return Optional.ofNullable(Bukkit.getPlayer(uuid)).map(PlayerAdapter::new);
+        return EntityPlayerAdapter.of(player);
     }
 
     @Override
     public List<IPlayer> getOnlinePlayers() {
-        return Bukkit.getOnlinePlayers().stream().map(PlayerAdapter::new).collect(Collectors.toList());
+        return Bukkit.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
     }
 }

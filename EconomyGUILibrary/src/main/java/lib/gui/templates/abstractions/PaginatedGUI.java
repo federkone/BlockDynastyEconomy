@@ -2,7 +2,7 @@ package lib.gui.templates.abstractions;
 
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
     protected final int itemsPerPage;
     protected final int rows;
 
-    public PaginatedGUI(String title, int rows, IPlayer player, IGUI parent, int itemsPerPage) {
+    public PaginatedGUI(String title, int rows, IEntityGUI player, IGUI parent, int itemsPerPage) {
         super(title, Math.max(3, rows), player, parent);
         this.rows = Math.max(3, rows);
 

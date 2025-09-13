@@ -1,6 +1,8 @@
 package BlockDynasty.BukkitImplementation.adapters.commands;
 
-import lib.commands.abstractions.Source;
+import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
+import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityConsoleAdapter;
+import lib.commands.abstractions.IEntityCommands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,11 +19,11 @@ public class CommandAdapter implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Source source= null;
+        IEntityCommands source= null;
         if (sender instanceof Player){
-            source= new SourceAdapter((Player) sender);
+            source= EntityPlayerAdapter.of((Player) sender);
         }else if (sender instanceof ConsoleCommandSender){
-            source= new SourceConsoleAdapter((ConsoleCommandSender)sender);
+            source= EntityConsoleAdapter.of((ConsoleCommandSender)sender);
         }
         if (source != null){
             return commandLib.execute(source, args);

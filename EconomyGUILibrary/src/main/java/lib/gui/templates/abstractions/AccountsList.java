@@ -1,13 +1,14 @@
 package lib.gui.templates.abstractions;
 
 import BlockDynasty.Economy.domain.entities.account.Player;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.*;
 
 import java.util.List;
 
 public abstract class AccountsList extends PaginatedGUI<Player>{
     private final ITextInput textInput;
-    public AccountsList(String title, int rows, IPlayer sender, IGUI parent, ITextInput textInput) {
+    public AccountsList(String title, int rows, IEntityGUI sender, IGUI parent, ITextInput textInput) {
         super(title, rows, sender, parent, 21); // 21 players per page
         this.textInput = textInput;
     }
@@ -33,7 +34,7 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
                 unused -> openAnvilSearch(unused));
     }
 
-    protected void openAnvilSearch(IPlayer sender) {
+    protected void openAnvilSearch(IEntityGUI sender) {
         textInput.open(this, sender, "Search Player", "Name..", s -> {
             Player foundPlayer = findPlayerByName(s);
 

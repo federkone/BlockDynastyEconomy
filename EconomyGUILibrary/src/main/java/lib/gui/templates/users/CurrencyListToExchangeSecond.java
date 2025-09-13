@@ -4,7 +4,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.CurrenciesList;
@@ -15,7 +15,7 @@ public class CurrencyListToExchangeSecond extends CurrenciesList {
     private final Currency currencyFrom;
     private final ExchangeUseCase exchangeUseCase;
 
-    public CurrencyListToExchangeSecond(IPlayer player, SearchCurrencyUseCase searchCurrencyUseCase, ExchangeUseCase exchangeUseCase,
+    public CurrencyListToExchangeSecond(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, ExchangeUseCase exchangeUseCase,
                                         Currency currencyFrom, CurrencyListToExchangeFirst parentGUI, ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,currencyFrom, textInput);
         this.currencyFrom = currencyFrom;
@@ -23,7 +23,7 @@ public class CurrencyListToExchangeSecond extends CurrenciesList {
     }
 
     @Override
-    protected String execute(IPlayer sender,Currency currencyTo, BigDecimal amountTo){
+    protected String execute(IEntityGUI sender, Currency currencyTo, BigDecimal amountTo){
         Result<BigDecimal> result= exchangeUseCase.execute(sender.getUniqueId(),currencyFrom.getSingular(),currencyTo.getSingular(),null, amountTo);
         if(result.isSuccess()){
             return "success";

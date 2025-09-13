@@ -55,7 +55,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if (!sender.hasPermission(getPermission())) {
             sender.sendMessage(MessageService.getMessage("nopermission"));
             return false;

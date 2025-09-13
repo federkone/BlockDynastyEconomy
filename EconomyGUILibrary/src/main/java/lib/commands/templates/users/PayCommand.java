@@ -3,12 +3,10 @@ package lib.commands.templates.users;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.CommandsFactory;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PayCommand extends AbstractCommand {
@@ -20,14 +18,14 @@ public class PayCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }
 
         String targetName = args[0]; //nombre del jugador
 
-        Source target = CommandsFactory.getPlatformAdapter().getPlayer(targetName);
+        IEntityCommands target = CommandsFactory.getPlatformAdapter().getPlayer(targetName);
         if(target==null){
             sender.sendMessage("The player is not online");
             return false;

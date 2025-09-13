@@ -3,7 +3,7 @@ package lib.commands.templates.administrators.EconomySubcommand.CurrencySubcomma
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnformat;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class EditColorCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if (!sender.hasPermission(getPermission())){
             sender.sendMessage("no permission");
             return false;

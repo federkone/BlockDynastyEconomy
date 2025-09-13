@@ -2,7 +2,7 @@ package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class TextInput implements ITextInput {
 
     @Override
-    public void open(IPlayer owner, String title, String initialText, Function<String, String> function) {
+    public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
         Player player = (Player) owner.getHandle();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
@@ -44,7 +44,7 @@ public class TextInput implements ITextInput {
     }
 
     @Override
-    public void open(IGUI parent, IPlayer owner, String title, String initialText, Function<String, String> function) {
+    public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
         Player player = (Player) owner.getHandle();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {

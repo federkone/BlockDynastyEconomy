@@ -15,6 +15,7 @@
         <module>Sponge</module>
         <module>EconomyGUILibrary</module>
         <module>EconomyEngine</module>
+        <module>Velocity</module>
     </modules>
 
     <properties>

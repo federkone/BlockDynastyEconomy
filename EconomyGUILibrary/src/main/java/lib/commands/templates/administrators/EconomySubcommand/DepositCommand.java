@@ -3,8 +3,7 @@ package lib.commands.templates.administrators.EconomySubcommand;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.CommandsFactory;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 import lib.messages.MessageService;
 
@@ -20,7 +19,7 @@ public class DepositCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }

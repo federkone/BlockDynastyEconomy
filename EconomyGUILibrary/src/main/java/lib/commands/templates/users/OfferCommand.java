@@ -1,7 +1,7 @@
 package lib.commands.templates.users;
 
 import lib.commands.abstractions.Command;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class OfferCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }

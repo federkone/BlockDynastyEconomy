@@ -1,8 +1,10 @@
 package BlockDynasty.adapters.commands;
 
 
+import BlockDynasty.adapters.abstractions.EntityConsoleAdapter;
+import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
 import lib.commands.abstractions.Command;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.command.CommandExecutor;
 import org.spongepowered.api.command.CommandResult;
@@ -13,7 +15,6 @@ import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CommandAdapter implements CommandExecutor {
     private final Command command;
@@ -25,11 +26,11 @@ public class CommandAdapter implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandContext context) throws CommandException {
-        Source sender;
+        IEntityCommands sender;
         if (context.cause().root() instanceof ServerPlayer) {
-            sender = new SourceAdapter((ServerPlayer) context.cause().root());
+            sender = EntityPlayerAdapter.of((ServerPlayer) context.cause().root());
         } else {
-            sender = new SourceConsoleAdapter(context.cause().audience());
+            sender = EntityConsoleAdapter.of(context.cause().audience());
         }
         List<String> argList = new ArrayList<>();
         // Extract arguments based on defined parameters

@@ -4,8 +4,8 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.*;
-import lib.commands.abstractions.PlatformAdapter;
-import lib.commands.abstractions.Source;
+import lib.abstractions.PlatformAdapter;
+import lib.commands.abstractions.IEntityCommands;
 import lib.gui.templates.abstractions.ChatColor;
 
 public class TransactionsListener {
@@ -14,8 +14,8 @@ public class TransactionsListener {
 
         eventManager.subscribe(PayEvent.class, event -> {
             //Main.Console.debug("Event PayEvent emitted: " +event);
-            Source player = platformAdapter.getPlayer(event.getPayer().getNickname());
-            Source target = platformAdapter.getPlayer(event.getReceived().getNickname());
+            IEntityCommands player = platformAdapter.getPlayer(event.getPayer().getNickname());
+            IEntityCommands target = platformAdapter.getPlayer(event.getReceived().getNickname());
 
             Currency currency = event.getCurrency();
             String format = currency.format(event.getAmount());
@@ -25,18 +25,18 @@ public class TransactionsListener {
 
             if (player != null){
                 player.sendMessage("&7You paid " + colorCode+format + "&7 to " + receiverName);
-                player.soundNotification();
+                player.playNotificationSound();
             }
             if (target != null){
                 target.sendMessage("&7You received " + colorCode+format + "&7 from " +senderName);
-                target.soundNotification();
+                target.playNotificationSound();
             }
         });
 
         eventManager.subscribe(TransferEvent.class, event -> {
             //Main.Console.debug("Event TransferEvent emitted: "+event);
-            Source player = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
-            Source target = platformAdapter.getPlayer(event.getToPlayer().getNickname());
+            IEntityCommands player = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
+            IEntityCommands target = platformAdapter.getPlayer(event.getToPlayer().getNickname());
 
             Currency currency = event.getCurrency();
             String format = currency.format(event.getAmount());
@@ -46,17 +46,17 @@ public class TransactionsListener {
 
             if (player != null) {
                 player.sendMessage("&7You transferred " + colorCode+format + "&7 to " + receiverName);
-                player.soundNotification();
+                player.playNotificationSound();
             }
             if (target != null) {
                 target.sendMessage("&7You received " + colorCode+format + "&7 from " + senderName);
-                target.soundNotification();
+                target.playNotificationSound();
             }
         });
 
         eventManager.subscribe(ExchangeEvent.class, event -> {
             //Main.Console.debug("Event ExchangeEvent emitted: "+event);
-            Source player = platformAdapter.getPlayer(event.getPlayer().getNickname());
+            IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
 
             Currency fromCurrency = event.getFromCurrency();
             String fromFormat = fromCurrency.format(event.getAmount());
@@ -69,14 +69,14 @@ public class TransactionsListener {
 
             if (player != null) {
                 player.sendMessage("&7You exchanged " + fromColorCode + fromFormat + "&7 to " + toColorCode + toFormat+"&7.");
-                player.soundNotification();
+                player.playNotificationSound();
             }
         });
 
         eventManager.subscribe(TradeEvent.class, event -> {
             //Main.Console.debug("Event Trade emitted: "+event);
-            Source sender = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
-            Source receiver = platformAdapter.getPlayer(event.getToPlayer().getNickname());
+            IEntityCommands sender = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
+            IEntityCommands receiver = platformAdapter.getPlayer(event.getToPlayer().getNickname());
 
             Currency fromCurrency = event.getCurrencyFrom();
             String fromFormat = fromCurrency.format(event.getAmountFrom());
@@ -89,11 +89,11 @@ public class TransactionsListener {
 
             if (sender != null ) {
                 sender.sendMessage("You trade " +fromColorCode+fromFormat + " to " + event.getToPlayer().getNickname() + " for " + toColorCode + toFormat);
-                sender.soundNotification();
+                sender.playNotificationSound();
             }
             if (receiver != null){
                 receiver.sendMessage("You received " + fromColorCode+fromFormat + " from " + event.getFromPlayer().getNickname()+ " for " + toColorCode + toFormat);
-                receiver.soundNotification();
+                receiver.playNotificationSound();
             }
 
         });
@@ -102,10 +102,10 @@ public class TransactionsListener {
          //   Main.Console.debug("Event DepositEvent emitted: " + event);
 
             if (event.getContext() == Context.COMMAND){
-                Source player = platformAdapter.getPlayer(event.getPlayer().getNickname());
+                IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
                     player.sendMessage( "&7Has received a deposit " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
-                    player.soundNotification();
+                    player.playNotificationSound();
                 }
             }
 
@@ -115,10 +115,10 @@ public class TransactionsListener {
         eventManager.subscribe(WithdrawEvent.class, event -> {
             //Main.Console.debug("Event WithdrawEvent emitted: "+event);
             if (event.getContext() == Context.COMMAND){
-                Source player = platformAdapter.getPlayer(event.getPlayer().getNickname());
+                IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
                     player.sendMessage( "&7Has extracted " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
-                    player.soundNotification();
+                    player.playNotificationSound();
                 }
             }
         });
@@ -127,10 +127,10 @@ public class TransactionsListener {
         eventManager.subscribe(SetEvent.class, event -> {
             //Main.Console.debug("Event SetEvent emitted: "+event);
             if (event.getContext() == Context.COMMAND){
-                Source player = platformAdapter.getPlayer(event.getPlayer().getNickname());
+                IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
                     player.sendMessage( "&7your balance has been established  " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
-                    player.soundNotification();
+                    player.playNotificationSound();
                 }
             }
         });

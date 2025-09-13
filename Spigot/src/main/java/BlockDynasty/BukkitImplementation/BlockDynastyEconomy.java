@@ -10,7 +10,7 @@ import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
-import BlockDynasty.BukkitImplementation.adapters.commands.BukkitAdapter;
+import BlockDynasty.BukkitImplementation.adapters.abstractions.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOffline;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOnline;

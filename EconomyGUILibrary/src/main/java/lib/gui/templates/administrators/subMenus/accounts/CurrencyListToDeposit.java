@@ -5,9 +5,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.CurrenciesList;
@@ -20,7 +19,7 @@ public class CurrencyListToDeposit extends CurrenciesList {
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
 
-    public CurrencyListToDeposit(IPlayer player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
+    public CurrencyListToDeposit(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
                                  SearchCurrencyUseCase searchCurrencyUseCase, DepositUseCase depositUseCase, IGUI parentGUI, ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,textInput);
         this.targetPlayer = targetPlayer;
@@ -29,7 +28,7 @@ public class CurrencyListToDeposit extends CurrenciesList {
     }
 
     @Override
-    public String execute(IPlayer sender, Currency currency, BigDecimal amount){
+    public String execute(IEntityGUI sender, Currency currency, BigDecimal amount){
         Result<Void> result = depositUseCase.execute(UUID.fromString(targetPlayer.getUuid()),currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
             sender.sendMessage("&7Deposited "+ ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 to " + targetPlayer.getNickname() + "'s account.");

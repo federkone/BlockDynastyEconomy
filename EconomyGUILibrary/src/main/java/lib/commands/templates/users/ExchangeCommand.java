@@ -2,9 +2,8 @@ package lib.commands.templates.users;
 
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
-import lib.commands.CommandsFactory;
 import lib.messages.MessageService;
 
 import java.math.BigDecimal;
@@ -19,7 +18,7 @@ public class ExchangeCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }

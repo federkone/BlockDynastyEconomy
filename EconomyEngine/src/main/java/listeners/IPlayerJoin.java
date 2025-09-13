@@ -1,10 +1,10 @@
 package listeners;
 
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 
 public interface IPlayerJoin {
 
-    void loadOnlinePlayerAccount(Source player);
-    void loadOfflinePlayerAccount(Source player);
-    void offLoadPlayerAccount(Source player);
+    void loadOnlinePlayerAccount(IEntityCommands player);
+    void loadOfflinePlayerAccount(IEntityCommands player);
+    void offLoadPlayerAccount(IEntityCommands player);
 }

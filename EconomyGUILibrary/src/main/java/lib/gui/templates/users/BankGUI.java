@@ -4,18 +4,18 @@ import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
 
 
 public class BankGUI extends AbstractGUI {
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final SearchAccountUseCase searchAccountUseCase;
     private final ITextInput textInput;
 
-    public BankGUI(IPlayer player , SearchAccountUseCase SearchAccountUseCase, ITextInput textInput) {
+    public BankGUI(IEntityGUI player , SearchAccountUseCase SearchAccountUseCase, ITextInput textInput) {
         super("Bank "+"["+player.getName()+"]", 4, player);
         this.player = player;
         this.searchAccountUseCase = SearchAccountUseCase;

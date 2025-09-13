@@ -2,7 +2,7 @@ package lib.commands.templates.administrators.EconomySubcommand;
 
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
 import lib.messages.MessageService;
@@ -19,12 +19,12 @@ public class BuyCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }
 
-        Source player = CommandsFactory.getPlatformAdapter().getPlayer(args[0]);
+        IEntityCommands player = CommandsFactory.getPlatformAdapter().getPlayer(args[0]);
 
         if(player==null) {
             sender.sendMessage("player is offline");

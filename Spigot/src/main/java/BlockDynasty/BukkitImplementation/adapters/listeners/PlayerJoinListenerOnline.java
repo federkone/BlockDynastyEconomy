@@ -1,7 +1,6 @@
 package BlockDynasty.BukkitImplementation.adapters.listeners;
 
-import BlockDynasty.BukkitImplementation.adapters.commands.SourceAdapter;
-
+import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
 import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import listeners.IPlayerJoin;
@@ -44,12 +43,12 @@ public class PlayerJoinListenerOnline implements Listener {
     }
 
     private void removePlayerCache(Player player) {
-        playerJoin.offLoadPlayerAccount( new SourceAdapter(player));
+        playerJoin.offLoadPlayerAccount(  EntityPlayerAdapter.of(player));
     }
 
     //si se comienza a trabajar en online se van a buscar las cuentas por uuid y se va a preguntar si cambio el nombre para actualizar en sistema.
     protected void loadPlayerAccount(Player player) {
-        playerJoin.loadOnlinePlayerAccount( new SourceAdapter(player));
+        playerJoin.loadOnlinePlayerAccount( EntityPlayerAdapter.of(player));
     }
 }
 

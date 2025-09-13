@@ -5,17 +5,17 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
 import lib.gui.templates.abstractions.ChatColor;
 
 public class ColorSelectionGUI extends AbstractGUI {
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
 
-    public ColorSelectionGUI(IPlayer player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parent) {
+    public ColorSelectionGUI(IEntityGUI player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parent) {
         super("Select color", 4,player,parent);
         this.player = player;
         this.currency = currency;

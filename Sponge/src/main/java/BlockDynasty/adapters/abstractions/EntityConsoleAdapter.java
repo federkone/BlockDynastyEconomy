@@ -1,26 +1,34 @@
-package BlockDynasty.adapters.commands;
+package BlockDynasty.adapters.abstractions;
 
-import lib.commands.abstractions.Source;
-import lib.gui.abstractions.IPlayer;
+import lib.commands.abstractions.IEntityCommands;
+import lib.gui.abstractions.IEntityGUI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 
-public class SourceConsoleAdapter implements Source {
+public class EntityConsoleAdapter implements IEntityCommands {
     private final Audience console;
 
-    public SourceConsoleAdapter(Audience console) {
+    private EntityConsoleAdapter(Audience console) {
         this.console = console;
+    }
+
+    public static EntityConsoleAdapter of(Audience console) {
+        return new EntityConsoleAdapter(console);
     }
 
     @Override
     public void sendMessage(String message) {
-        console.sendMessage(Component.text(message));
+        console.sendMessage(Component.text(translateColorCodes(message)));
+    }
+
+    private String translateColorCodes(String message) {
+        return message.replaceAll("&([0-9a-fk-or])", "");
     }
 
     @Override
-    public void soundNotification() {
+    public void playNotificationSound() {
 
     }
 
@@ -50,13 +58,13 @@ public class SourceConsoleAdapter implements Source {
     }
 
     @Override
-    public Object getHandle() {
-        return console;
+    public IEntityGUI asEntityGUI() {
+        return null;
     }
 
     @Override
-    public IPlayer asIPlayer() {
-        return null;
+    public Object getHandle() {
+        return console;
     }
 
 }

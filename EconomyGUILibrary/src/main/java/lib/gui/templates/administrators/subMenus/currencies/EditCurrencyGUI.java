@@ -4,19 +4,19 @@ import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
 import lib.gui.templates.abstractions.ChatColor;
 
 public class EditCurrencyGUI extends AbstractGUI {
-    private final IPlayer player;
+    private final IEntityGUI player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
     private final ITextInput textInput;
 
-    public EditCurrencyGUI(IPlayer player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
+    public EditCurrencyGUI(IEntityGUI player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
         super("Edit Currency: " + currency.getSingular(), 5,player, parentGUI);
         this.player = player;
         this.currency = currency;

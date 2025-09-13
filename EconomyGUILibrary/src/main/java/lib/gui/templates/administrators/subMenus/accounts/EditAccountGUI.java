@@ -5,10 +5,10 @@ import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AbstractGUI;
@@ -25,7 +25,7 @@ public class EditAccountGUI extends AbstractGUI {
             DeleteAccountUseCase deleteAccountUseCase,
             EditAccountUseCase editAccountUseCase,
             SearchAccountUseCase searchAccountUseCase,
-            IPlayer sender, Player target, IGUI parent, ITextInput textInput) {
+            IEntityGUI sender, Player target, IGUI parent, ITextInput textInput) {
         super("Edit Account: "+target.getNickname(), 5,sender,parent);
         this.deleteAccountUseCase = deleteAccountUseCase;
         this.editAccountUseCase = editAccountUseCase;
@@ -35,7 +35,7 @@ public class EditAccountGUI extends AbstractGUI {
         buttons(sender,target);
     }
 
-    private void buttons(IPlayer sender, Player target) {
+    private void buttons(IEntityGUI sender, Player target) {
         setItem(15,createItem(Materials.REDSTONE,"§6Delete account","§7The player's account is deleted,before a confirmation"),
                 f -> {
                     textInput.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
@@ -43,7 +43,7 @@ public class EditAccountGUI extends AbstractGUI {
                             Result<Void> result = deleteAccountUseCase.execute(target.getNickname());
                             if(result.isSuccess()){
                                 sender.sendMessage("The player has been eliminated "+ target.getNickname());
-                                Source p = platformAdapter.getPlayer(target.getNickname());
+                                IEntityCommands p = platformAdapter.getPlayer(target.getNickname());
                                 if(p != null){
                                     p.kickPlayer("Your economy account has been deleted.");
                                 }

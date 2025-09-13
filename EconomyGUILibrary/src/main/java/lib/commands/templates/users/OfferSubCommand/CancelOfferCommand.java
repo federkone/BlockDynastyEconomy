@@ -2,7 +2,7 @@ package lib.commands.templates.users.OfferSubCommand;
 
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.Source;
+import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.CommandsFactory;
 
@@ -17,13 +17,13 @@ public class CancelOfferCommand extends AbstractCommand {
     }
 
     @Override
-    public boolean execute(Source sender, String[] args) {
+    public boolean execute(IEntityCommands sender, String[] args) {
         if(!super.execute( sender, args)){
             return false;
         }
 
         String playerNme = args[0];
-        Source playerFrom = CommandsFactory.getPlatformAdapter().getPlayer(playerNme);
+        IEntityCommands playerFrom = CommandsFactory.getPlatformAdapter().getPlayer(playerNme);
         if (playerFrom == null || !playerFrom.isOnline()) {
             sender.sendMessage("");
             return false;

@@ -5,7 +5,7 @@ import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import lib.commands.abstractions.Command;
-import lib.commands.abstractions.PlatformAdapter;
+import lib.abstractions.PlatformAdapter;
 import lib.commands.templates.administrators.EconomyGUICommand;
 import lib.commands.templates.administrators.EconomySubcommand.*;
 import lib.commands.templates.administrators.EconomySubcommand.CurrencySubcommand.*;
@@ -15,7 +15,6 @@ import lib.commands.templates.users.OfferSubCommand.AcceptOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.CancelOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.CreateOfferCommand;
 import lib.commands.templates.users.OfferSubCommand.DenyOfferCommand;
-import lib.messages.DefaultProvider;
 import lib.messages.MessageProvider;
 import lib.messages.MessageService;
 

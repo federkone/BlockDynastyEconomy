@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
 import lib.commands.CommandsFactory;
-import lib.commands.abstractions.PlatformAdapter;
+import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
 import lib.placeholder.PlaceHolder;

@@ -1,20 +1,15 @@
-package BlockDynasty.adapters;
+package BlockDynasty.adapters.abstractions;
 
 import BlockDynasty.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.adapters.GUI.adapters.MaterialAdapter;
-import BlockDynasty.adapters.GUI.adapters.PlayerAdapter;
 import BlockDynasty.SpongePlugin;
-import BlockDynasty.adapters.commands.SourceAdapter;
-import BlockDynasty.utils.Console;
-import lib.commands.abstractions.PlatformAdapter;
-import lib.commands.abstractions.Source;
+import lib.abstractions.IPlayer;
+import lib.abstractions.PlatformAdapter;
 import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
 import lib.gui.abstractions.Materials;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.item.inventory.ContainerType;
 import org.spongepowered.api.item.inventory.ContainerTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -22,7 +17,6 @@ import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.plugin.PluginContainer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,8 +24,19 @@ public class SpongeAdapter implements PlatformAdapter {
     PluginContainer pluginContainer = SpongePlugin.getPlugin();
 
     @Override
-    public Source getPlayer(String name) {
-        return Sponge.server().player(name).map(SourceAdapter::new).orElse(null);
+    public IPlayer getPlayer(String name) {
+        return Sponge.server().player(name).map(EntityPlayerAdapter::of).orElse(null);
+    }
+    @Override
+    public IPlayer getPlayerByUUID(UUID uuid) {
+        return Sponge.server().player(uuid).map(EntityPlayerAdapter::of).orElse(null);
+    }
+
+    @Override
+    public List<IPlayer> getOnlinePlayers() {
+        return Sponge.server().onlinePlayers().stream()
+                .map(EntityPlayerAdapter::of)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -54,24 +59,6 @@ public class SpongeAdapter implements PlatformAdapter {
                 .build();
 
         return new InventoryAdapter(viewableInventory);
-    }
-
-    @Override
-    public Source getPlayerByUUID(UUID uuid) {
-        return Sponge.server().player(uuid).map(SourceAdapter::new).orElse(null);
-    }
-
-    @Override
-    public Optional<IPlayer> getPlayerOnlineByUUID(UUID uuid) {
-        return Sponge.server().player(uuid)
-                .map(PlayerAdapter::new);
-    }
-
-    @Override
-    public List<IPlayer> getOnlinePlayers() {
-        return Sponge.server().onlinePlayers().stream()
-                .map(PlayerAdapter::new)
-                .collect(Collectors.toList());
     }
 
     private ContainerType getTypeFromRows(int rows) {

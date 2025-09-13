@@ -1,6 +1,6 @@
 package BlockDynasty.adapters.GUI.listener;
 
-import BlockDynasty.adapters.GUI.adapters.PlayerAdapter;
+import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
 import lib.gui.GUIFactory;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Cause;
@@ -16,9 +16,9 @@ public class ClickListener implements SlotClickHandler {
     public boolean handle(Cause cause, Container container, Slot slot, int slotIndex, ClickType<?> clickType) {
         cause.first(ServerPlayer.class).ifPresent(player -> {
             if (ClickTypes.CLICK_LEFT.get().equals(clickType)){
-                GUIFactory.getGuiService().handleClick(new PlayerAdapter(player), lib.gui.abstractions.ClickType.LEFT, slotIndex);
+                GUIFactory.getGuiService().handleClick(EntityPlayerAdapter.of(player), lib.gui.abstractions.ClickType.LEFT, slotIndex);
             } else if (ClickTypes.CLICK_RIGHT.get().equals(clickType)) {
-                GUIFactory.getGuiService().handleClick(new PlayerAdapter(player), lib.gui.abstractions.ClickType.RIGHT, slotIndex);
+                GUIFactory.getGuiService().handleClick(EntityPlayerAdapter.of(player), lib.gui.abstractions.ClickType.RIGHT, slotIndex);
             }
         });
         return true; // true = cancelar acción

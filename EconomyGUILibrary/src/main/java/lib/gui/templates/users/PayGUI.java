@@ -3,7 +3,7 @@ package lib.gui.templates.users;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AccountsList;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PayGUI extends AccountsList {
-    private final IPlayer sender;
+    private final IEntityGUI sender;
 
-    public PayGUI(IPlayer sender, IGUI parent , ITextInput textInput ) {
+    public PayGUI(IEntityGUI sender, IGUI parent , ITextInput textInput ) {
         super("Select Player", 5,sender,parent, textInput );
         this.sender = sender;
 
@@ -28,8 +28,8 @@ public class PayGUI extends AccountsList {
 
     @Override
     public Player findPlayerByName(String playerName) {
-        IPlayer player;
-        IPlayer target = platformAdapter.getOnlinePlayers().stream()
+        IEntityGUI player;
+        IEntityGUI target = platformAdapter.getOnlinePlayers().stream()
                 .filter(p -> p.getName().equalsIgnoreCase(playerName))
                 .findFirst().orElse(null); //online players only
         if (target != null) {

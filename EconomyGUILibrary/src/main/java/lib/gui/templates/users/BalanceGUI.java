@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IPlayer;
+import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
@@ -19,7 +19,7 @@ public class BalanceGUI extends PaginatedGUI<Money> {
     private final GetBalanceUseCase getBalanceUseCase;
     private final UUID targetUUID;
 
-    public BalanceGUI(IPlayer player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
+    public BalanceGUI(IEntityGUI player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
         super("Account balance", 3, player, parent, 7); // 7 currencies per page
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = player.getUniqueId();
@@ -27,7 +27,7 @@ public class BalanceGUI extends PaginatedGUI<Money> {
         loadBalances();
     }
 
-    public BalanceGUI(IPlayer sender, UUID target, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
+    public BalanceGUI(IEntityGUI sender, UUID target, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
         super("Account balance", 3, sender, parent, 7);
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = target;

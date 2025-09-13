@@ -3,9 +3,9 @@ package lib.gui.abstractions;
 import java.util.UUID;
 
 public interface IGUIService {
-    void registerGUI(IPlayer player, IGUI gui);
-    void unregisterGUI(IPlayer player);
-    boolean hasOpenedGUI(IPlayer player);
-    void handleClick(IPlayer player, ClickType clickType, int indexSlot);
+    void registerGUI(IEntityGUI player, IGUI gui);
+    void unregisterGUI(IEntityGUI player);
+    boolean hasOpenedGUI(IEntityGUI player);
+    void handleClick(IEntityGUI player, ClickType clickType, int indexSlot);
     void refresh(UUID playerId);
 }

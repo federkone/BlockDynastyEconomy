@@ -1,7 +1,6 @@
-package BlockDynasty.adapters;
+package BlockDynasty.adapters.config;
 
 import BlockDynasty.SpongePlugin;
-import BlockDynasty.adapters.config.ConfigurationFile;
 import Main.IConfiguration;
 import org.spongepowered.configurate.ConfigurationNode;
 
