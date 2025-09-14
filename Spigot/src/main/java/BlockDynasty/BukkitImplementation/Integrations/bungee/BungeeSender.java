@@ -10,14 +10,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import org.bukkit.plugin.Plugin;
 
-public class CourierImpl implements Courier {
+public class BungeeSender implements Courier {
     private final String channelName = "BlockDynastyEconomy Data Channel";
     private final Plugin plugin;
 
-    public CourierImpl(Plugin plugin) {
+    public BungeeSender(Plugin plugin) {
         this.plugin = plugin;
     }
     public void sendUpdateMessage(String type, String name) {
+        //todo : testear, si el jugador esta online no es necesario enviar el mensaje de sincronizacion
         if (Bukkit.getOnlinePlayers().isEmpty()) {
             Console.debug(channelName + " - Player is Null. Cancelled.");
             return;
@@ -43,6 +44,7 @@ public class CourierImpl implements Courier {
 
             // Enviar mensaje
             player.sendPluginMessage(plugin, "BungeeCord", outBytes.toByteArray());
+            //Bukkit.getServer().sendPluginMessage(plugin, "BungeeCord", outBytes.toByteArray());
 
         } catch (IOException e) {
             //plugin.getLogger().severe("Failed to send plugin message: " + e.getMessage());

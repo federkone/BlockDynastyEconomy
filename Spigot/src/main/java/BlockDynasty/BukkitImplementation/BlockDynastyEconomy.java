@@ -1,5 +1,7 @@
 package BlockDynasty.BukkitImplementation;
 
+import BlockDynasty.BukkitImplementation.Integrations.velocity.Velocity;
+import BlockDynasty.BukkitImplementation.Integrations.velocity.VelocitySender;
 import BlockDynasty.BukkitImplementation.adapters.ConfigurationAdapter;
 import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInput;
@@ -8,7 +10,6 @@ import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.Integrations.bungee.Bungee;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
-import BlockDynasty.BukkitImplementation.Integrations.bungee.CourierImpl;
 
 import BlockDynasty.BukkitImplementation.adapters.abstractions.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
@@ -60,7 +61,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void initCoreServices() {
         int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(),EconomyLogger.build(this),new BukkitAdapter(),new ConfigurationAdapter(),new CourierImpl(this));
+        economy.init(new TextInput(),new ConsoleAdapter(),EconomyLogger.build(this),new BukkitAdapter(),new ConfigurationAdapter(),new VelocitySender(this));
 
     }
     private void registerCommands(){
@@ -85,7 +86,8 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void setupIntegrations() {
         Vault.init(economy.getApiWithLog(VaultLogger.build(this)));
         PlaceHolder.register(economy.getPlaceHolder());
-        Bungee.init(this,economy.getApi());
+        Velocity.init(this,economy.getApi());
+        //Bungee.init(this,economy.getApi());
     }
 
     public static BlockDynastyEconomy getInstance() {
