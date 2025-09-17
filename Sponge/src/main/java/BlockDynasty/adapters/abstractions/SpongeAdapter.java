@@ -10,12 +10,16 @@ import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.Materials;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.ContainerType;
 import org.spongepowered.api.item.inventory.ContainerTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
+import org.spongepowered.api.network.channel.ChannelBuf;
+import org.spongepowered.api.network.channel.raw.play.RawPlayDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,6 +46,24 @@ public class SpongeAdapter implements PlatformAdapter {
     @Override
     public void dispatchCommand(String command) throws Exception {
         Sponge.server().commandManager().process(command);
+    }
+
+    @Override
+    public void sendPluginMessage(String channel, byte[] message) {
+        Collection<ServerPlayer> players = Sponge.server().onlinePlayers();
+        ServerPlayer player = players.stream().findFirst().orElse(null);
+
+        if (player != null) {
+            RawPlayDataChannel playChannel = SpongePlugin.getChannel().play();
+            playChannel.sendTo(player, (ChannelBuf buf) -> {
+                buf.writeBytes(message);
+            });
+        }
+    }
+
+    @Override
+    public void executeAsync(Runnable task) {
+        task.run();
     }
 
     @Override

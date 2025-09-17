@@ -7,6 +7,7 @@ import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.services.courier.Courier;
 
 public class AccountsUseCase {
      private final SearchAccountUseCase searchAccountUseCase;
@@ -15,11 +16,11 @@ public class AccountsUseCase {
      private final DeleteAccountUseCase deleteAccountUseCase;
      private final EditAccountUseCase editAccountUseCase;
 
-     public AccountsUseCase(ServicesManager servicesManager, IRepository repository) {
+     public AccountsUseCase(ServicesManager servicesManager, IRepository repository, Courier courier) {
           this.searchAccountUseCase = new SearchAccountUseCase(servicesManager.getAccountService(), repository);
           this.createAccountUseCase = new CreateAccountUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), this.searchAccountUseCase, repository);
           this.getBalanceUseCase = new GetBalanceUseCase( this.searchAccountUseCase);
-          this.editAccountUseCase = new EditAccountUseCase(this.searchAccountUseCase, repository);
+          this.editAccountUseCase = new EditAccountUseCase(this.searchAccountUseCase, repository, courier);
           this.deleteAccountUseCase = new DeleteAccountUseCase(repository, servicesManager.getAccountService(), this.searchAccountUseCase);
      }
 

@@ -1,6 +1,7 @@
 package api;
 
 import BlockDynasty.Economy.Core;
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
@@ -44,6 +45,7 @@ public class Api implements IApi {
     private final SearchAccountUseCase getAccountsUseCase;
 
     private final IAccountService accountService;
+    private final EventManager eventManager;
 
     public Api(Core core) {
         accountService = core.getServicesManager().getAccountService();
@@ -63,6 +65,8 @@ public class Api implements IApi {
         tradeCurrenciesUseCase = core.getTransactionsUseCase().getTradeCurrenciesUseCase();
         transferFundsUseCase = core.getTransactionsUseCase().getTransferFundsUseCase();
         exchangeUseCase = core.getTransactionsUseCase().getExchangeUseCase();
+
+        this.eventManager= core.getServicesManager().getEventManager();
     }
 
     public Api(Core core, Log log){
@@ -83,6 +87,12 @@ public class Api implements IApi {
         tradeCurrenciesUseCase = core.getTransactionsUseCase(log).getTradeCurrenciesUseCase();
         transferFundsUseCase = core.getTransactionsUseCase(log).getTransferFundsUseCase();
         exchangeUseCase = core.getTransactionsUseCase(log).getExchangeUseCase();
+
+        this.eventManager= core.getServicesManager().getEventManager();
+    }
+
+    public EventManager getEventManager(){
+        return eventManager;
     }
 
     private EconomyResponse handleResult(Result<Void> result){

@@ -1,6 +1,5 @@
 package BlockDynasty;
 
-import BlockDynasty.adapters.abstractions.EntityConsoleAdapter;
 import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
 import BlockDynasty.adapters.config.ConfigurationAdapter;
 import BlockDynasty.adapters.ConsoleAdapter;
@@ -8,7 +7,9 @@ import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.abstractions.SpongeAdapter;
 import BlockDynasty.adapters.config.ConfigurationFile;
-import BlockDynasty.adapters.listeners.Courier;
+import BlockDynasty.adapters.proxy.bungeecord.BungeeData;
+import BlockDynasty.adapters.proxy.bungeecord.BungeeReceiver;
+import BlockDynasty.adapters.proxy.velocity.VelocityData;
 import BlockDynasty.adapters.logs.AbstractLog;
 import BlockDynasty.adapters.spongeEconomyApi.EconomyServiceAdapter;
 import BlockDynasty.adapters.spongeEconomyApi.MultiCurrencyService;
@@ -20,6 +21,7 @@ import lib.commands.CommandsFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
@@ -31,8 +33,10 @@ import org.spongepowered.api.event.EventContext;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.*;
 import org.spongepowered.api.event.network.ServerSideConnectionEvent;
+import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
+import proxy.ProxyData;
 
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -47,6 +51,8 @@ public class SpongePlugin {
     private static final Economy economy= new Economy();
     public static String databasePath;
     public static Path configPath;
+    //private static RawDataChannel velocityChannel;
+    private static RawDataChannel bungeeChannel;
 
     @Inject
     SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir) {
@@ -54,6 +60,23 @@ public class SpongePlugin {
         SpongePlugin.logger = logger;
         SpongePlugin.configPath = configDir;
         SpongePlugin.databasePath = setupDatabaseDirectory(configDir);
+    }
+
+    @Listener
+    public void onRegisterChannel(final RegisterChannelEvent event) {
+        // Registramos el canal como espera Velocity
+
+        //ProxyData velocityData = new VelocityData();
+        ProxyData bungeeData= new BungeeData();
+
+        //velocityChannel = event.register(ResourceKey.resolve(velocityData.getChannelName()),RawDataChannel.class);
+        //VelocityReceiver r= new VelocityReceiver();
+        //r.register();
+
+        bungeeChannel = event.register(ResourceKey.resolve(bungeeData.getChannelName()),RawDataChannel.class);
+        BungeeReceiver r2= new BungeeReceiver();
+        r2.register();
+
     }
 
     private String setupDatabaseDirectory(final Path configDir) {
@@ -72,7 +95,7 @@ public class SpongePlugin {
         // Perform any one-time setup
         ConfigurationFile.init( this);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(),new AbstractLog(), new SpongeAdapter(),new ConfigurationAdapter(),new Courier() );
+        economy.init(new TextInput(),new ConsoleAdapter(),new AbstractLog(), new SpongeAdapter(),new ConfigurationAdapter(),new VelocityData() );
         Console.log("Plugin constructed...");
     }
 
@@ -84,6 +107,7 @@ public class SpongePlugin {
 
     @Listener
     public void onServerStarting(final StartingEngineEvent<Server> event) {
+
         Console.log("Server is starting...");
     }
 
@@ -175,6 +199,9 @@ public class SpongePlugin {
 
     public static PluginContainer getPlugin() {
         return container;
+    }
+    public static RawDataChannel getChannel() {
+        return bungeeChannel; //channel;
     }
 }
 

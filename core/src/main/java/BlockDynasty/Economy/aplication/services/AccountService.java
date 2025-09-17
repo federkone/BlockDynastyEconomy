@@ -113,6 +113,8 @@ public class AccountService implements IAccountService {
             if (result.isSuccess()){
                 syncWalletWithSystemCurrencies(result.getValue());
                 accountCache.setBalances(result.getValue().getBalances());
+                accountCache.setBlocked(result.getValue().isBlocked());
+                accountCache.setCanReceiveCurrency(result.getValue().canReceiveCurrency());
             }
         }
 

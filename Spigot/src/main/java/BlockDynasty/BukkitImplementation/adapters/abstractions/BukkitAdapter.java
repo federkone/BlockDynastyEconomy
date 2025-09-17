@@ -1,5 +1,7 @@
 package BlockDynasty.BukkitImplementation.adapters.abstractions;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.Integrations.bungee.BungeeReceiver;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
@@ -37,6 +39,17 @@ public class BukkitAdapter implements PlatformAdapter {
         //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         Scheduler.run(ContextualTask.build(()->Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)));
     }
+
+    @Override
+    public void sendPluginMessage(String channel, byte[] message) {
+        Bukkit.getServer().sendPluginMessage(BlockDynastyEconomy.getInstance(), channel, message);
+    }
+
+    @Override
+    public void executeAsync(Runnable task) {
+        Scheduler.runAsync(ContextualTask.build(task));
+    }
+
 
     @Override
     public IItemStack createItemStack(Materials material) {

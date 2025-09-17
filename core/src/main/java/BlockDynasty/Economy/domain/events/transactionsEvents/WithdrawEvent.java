@@ -4,10 +4,11 @@ import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.Event;
+import BlockDynasty.Economy.domain.events.SerializableEvent;
 
 import java.math.BigDecimal;
 
-public class WithdrawEvent extends Event {
+public class WithdrawEvent extends Event implements SerializableEvent {
     private final Context context;
     private final Currency currency;
     private final Player player;
@@ -48,5 +49,14 @@ public class WithdrawEvent extends Event {
                 ", player=" + player.getNickname() +
                 ", amount=" + amount.toString() +
                 '}';
+    }
+
+    @Override
+    public String getEventType() {
+        return "WithdrawEvent";
+    }
+
+    public static WithdrawEvent fromJson(String jsonString) {
+        return SerializableEvent.fromJson(jsonString, WithdrawEvent.class);
     }
 }

@@ -101,8 +101,9 @@ public class TransferFundsUseCase {
     private void updateCacheAndEmitEvents(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result) {
         this.accountService.syncOnlineAccount(result.getValue().getTo());
         this.accountService.syncOnlineAccount(result.getValue().getFrom());
-        this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-        this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        //this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
+        //this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        this.updateForwarder.sendUpdateMessage("event",new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount).toJson(), accountTo.getUuid().toString());
         logSuccess(accountFrom, accountTo, currency, amount);
         emitEvent(accountFrom, accountTo, currency, amount);
     }

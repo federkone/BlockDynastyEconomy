@@ -155,6 +155,9 @@ public class Account implements IAccount {
     public boolean isBlocked() {
         return blocked;
     }
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
     public void block(){
         this.blocked = true;
     }

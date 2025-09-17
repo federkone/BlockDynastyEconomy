@@ -1,5 +1,7 @@
 package com.blockdynasty.velocity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -9,10 +11,13 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import com.velocitypowered.api.proxy.server.RegisteredServer;
+
 import org.slf4j.Logger;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,20 +40,39 @@ public class Velocity {
 
     @Subscribe
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getIdentifier().getId().equals("velocity:economy")) {
-            String message = new String(event.getData(), StandardCharsets.UTF_8);
-            String[] parts = message.split(",");
+        logger.info("Received plugin message on channel: " + event.getIdentifier().getId());
+        if (!event.getIdentifier().getId().equals("velocity:economy")) {
+            return;
+        }
+        event.setResult(PluginMessageEvent.ForwardResult.handled());
+        try {
+            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(event.getData()));
+            String jsonMessage = dataInputStream.readUTF();
+            Gson gson = new Gson();
+            Map<String, String> messageData = gson.fromJson(jsonMessage, new TypeToken<Map<String, String>>(){}.getType());
 
-            String uuidPart = parts[2];
-            UUID uuid = UUID.fromString(uuidPart);
+            String type = messageData.get("type");
+            if (type.equals("event")|| type.equals("account")) {
+                String target = messageData.get("target");
+                UUID uuid = UUID.fromString(target);
+                logger.info("Processing message for UUID: " + uuid.toString() + " of type: " + type);
 
-            Optional<Player> optional = server.getPlayer(uuid);
-            optional.ifPresent(player -> {
-                player.getCurrentServer().ifPresent(targetServer -> {
-                    targetServer.sendPluginMessage(MinecraftChannelIdentifier.from("velocity:economy"), event.getData());
+                Optional<Player> optional = server.getPlayer(uuid);
+                optional.ifPresent(player -> {
+                    player.getCurrentServer().ifPresent(targetServer -> {
+                        targetServer.sendPluginMessage(MinecraftChannelIdentifier.from("velocity:economy"), event.getData());
+                    });
                 });
-            });
-            event.setResult(PluginMessageEvent.ForwardResult.handled());
+            }else if (type.equals("currency")) {
+                if (event.getSource() instanceof ServerConnection backend) {
+                   String serverSourceName = backend.getServerInfo().getName();
+                   server.getAllServers().stream()
+                           .filter(s -> !s.getServerInfo().getName().equals(serverSourceName))
+                           .forEach(s -> s.sendPluginMessage(MinecraftChannelIdentifier.from("velocity:economy"), event.getData()));
+                }
+            }
+        }catch (Exception e) {
+            logger.info("->> Error reading message: " + e.getMessage());
         }
     }
 }

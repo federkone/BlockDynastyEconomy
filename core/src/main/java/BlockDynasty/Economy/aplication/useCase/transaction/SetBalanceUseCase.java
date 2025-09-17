@@ -89,7 +89,8 @@ public class SetBalanceUseCase {
         }
 
         this.accountService.syncOnlineAccount(result.getValue());
-        this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        //this.updateForwarder.sendUpdateMessage("account", account.getUuid().toString());
+        this.updateForwarder.sendUpdateMessage("event",new SetEvent(account.getPlayer(), currency, amount,context).toJson(), account.getUuid().toString());
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
         this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount,context));
 

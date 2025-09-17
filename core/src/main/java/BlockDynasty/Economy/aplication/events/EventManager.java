@@ -32,4 +32,14 @@ public class EventManager {
             }
         }
     }
+
+    public void processNetworkEvent(String jsonEvent) {
+        try {
+            Event event = EventRegistry.deserializeEvent(jsonEvent);
+            emit(event);
+        } catch (Exception e) {
+            System.err.println("Error procesando evento de red: " + e.getMessage());
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package api;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -21,6 +22,7 @@ public interface IApi {
 
     Currency getDefaultCurrency();
 
+    EventManager getEventManager();
 
     /**
      *

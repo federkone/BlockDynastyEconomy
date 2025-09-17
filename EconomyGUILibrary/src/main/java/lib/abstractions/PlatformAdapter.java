@@ -15,4 +15,8 @@ public interface PlatformAdapter {
     IItemStack createItemStack(Materials material);
     IInventory createInventory(String title, int rows);
     void dispatchCommand(String command) throws Exception;
+
+    void sendPluginMessage(String channel, byte[] message);
+    void executeAsync(Runnable task);
+
 }

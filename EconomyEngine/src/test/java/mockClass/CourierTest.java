@@ -8,5 +8,10 @@ public class CourierTest implements Courier {
         System.out.println("[BUNGEE CHANNEL SEND] " + type + " " + name);
     }
 
+    @Override
+    public void sendUpdateMessage(String type, String data, String target) {
+
+    }
+
 
 }

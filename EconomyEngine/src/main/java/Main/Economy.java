@@ -11,6 +11,9 @@ import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
 import lib.placeholder.PlaceHolder;
 import listeners.*;
+import proxy.ProxyData;
+import proxy.ProxyReceiver;
+import proxy.ProxySender;
 import repository.ConnectionHandler.Hibernate.Connection;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
@@ -26,19 +29,20 @@ public class Economy {
 
 
     public void init(ITextInput textInput, IConsole console, Log log, PlatformAdapter platformAdapter,
-                      IConfiguration configuration, BlockDynasty.Economy.domain.services.courier.Courier courier){
+                      IConfiguration configuration, ProxyData proxyData){
 
         Console.setConsole(console);
 
         repository = new Repository(getConnection(configuration));
 
-        core=new Core(repository,60,new OfferListener(platformAdapter),courier,log);
+        core=new Core(repository,60,new OfferListener(platformAdapter),new ProxySender(proxyData,platformAdapter ),log);
         api = new Api(core);
         this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
         playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
         GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
         TransactionsListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+        ProxyReceiver.init(proxyData, core.getServicesManager().getAccountService(),core.getServicesManager().getEventManager(), platformAdapter);
     }
 
     private Connection getConnection(IConfiguration configuration){
