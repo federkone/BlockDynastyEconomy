@@ -46,13 +46,13 @@ public abstract class ProxyReceiver {
             UUID uuid = UUID.fromString(target);
 
             if (type.equals("event")) {
+                String eventJson = messageData.get("data");
+                offerService.processNetworkEvent(eventJson);
+
                 if(shouldSkipProcessing(target)){
                     return;
                 }
                 platformAdapter.getScheduler().runAsync(ContextualTask.build(() -> accountService.syncOnlineAccount(uuid)));
-
-                String eventJson = messageData.get("data");
-                offerService.processNetworkEvent(eventJson);
                 eventManager.processNetworkEvent(eventJson);
                 return;
             }

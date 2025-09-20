@@ -1,0 +1,3 @@
+name: EconomyPorxy
+version: '1.0-SNAPSHOT'
+main: com.blockdynasty.economyProxy.EconomyProxy

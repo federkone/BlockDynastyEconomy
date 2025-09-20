@@ -40,8 +40,8 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
 
             if (foundPlayer != null) {
                 //openNextSection(foundPlayer);
-                this.open();
                 showPlayers(List.of(foundPlayer));
+                this.open();
             } else {
                 sender.sendMessage("§cPlayer not found!");
                 this.open();
