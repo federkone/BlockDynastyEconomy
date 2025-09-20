@@ -16,4 +16,5 @@ public interface ICurrencyService {
     boolean currencyExist(String name);
     void updateDefaultCurrency();
     boolean existsDefaultCurrency();
+    void syncCurrency(UUID uuid);
 }

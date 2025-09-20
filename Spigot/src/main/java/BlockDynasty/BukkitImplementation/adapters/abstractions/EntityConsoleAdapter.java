@@ -61,7 +61,7 @@ public class EntityConsoleAdapter implements IEntityCommands {
     }
 
     @Override
-    public Object getHandle() {
+    public Object getRoot() {
         return commandSender;
     }
 

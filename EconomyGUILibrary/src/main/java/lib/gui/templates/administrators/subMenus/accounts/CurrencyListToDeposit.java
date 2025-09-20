@@ -29,7 +29,7 @@ public class CurrencyListToDeposit extends CurrenciesList {
 
     @Override
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount){
-        Result<Void> result = depositUseCase.execute(UUID.fromString(targetPlayer.getUuid()),currency.getSingular(), amount, Context.COMMAND);
+        Result<Void> result = depositUseCase.execute(targetPlayer.getUuid(),currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
             sender.sendMessage("&7Deposited "+ ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 to " + targetPlayer.getNickname() + "'s account.");
             this.openParent();

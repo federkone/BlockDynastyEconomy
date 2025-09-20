@@ -8,9 +8,10 @@ import lib.gui.abstractions.IEntityGUI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GUIService implements IGUIService {
-    private final Map<UUID, IGUI> openGUIs = new HashMap<>();
+    private final Map<UUID, IGUI> openGUIs = new ConcurrentHashMap<>();
 
     public void registerGUI(IEntityGUI player, IGUI gui) {
         openGUIs.put(player.getUniqueId(), gui);
@@ -21,7 +22,7 @@ public class GUIService implements IGUIService {
     }
 
     public boolean hasOpenedGUI(IEntityGUI player) {
-        return  openGUIs.containsKey(player.getUniqueId());
+        return openGUIs.containsKey(player.getUniqueId());
     }
 
     public void handleClick(IEntityGUI player, ClickType clickType, int indexSlot){

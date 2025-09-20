@@ -16,6 +16,7 @@
         <module>EconomyGUILibrary</module>
         <module>EconomyEngine</module>
         <module>Velocity</module>
+        <module>BungeeCord</module>
     </modules>
 
     <properties>

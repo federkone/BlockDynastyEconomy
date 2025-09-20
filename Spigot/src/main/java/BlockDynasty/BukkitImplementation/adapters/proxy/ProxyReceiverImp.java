@@ -1,12 +1,8 @@
-package BlockDynasty.BukkitImplementation.Integrations.bungee;
-
-import java.io.DataInputStream;
+package BlockDynasty.BukkitImplementation.adapters.proxy;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import proxy.ProxyReceiver;
-
-import java.io.IOException;
 
 
 /**
@@ -17,14 +13,7 @@ import java.io.IOException;
  * and currencies on all of the servers.
  */
 
-public class BungeeReceiver extends ProxyReceiver implements PluginMessageListener {
-    private final BungeeData data = new BungeeData();
-
-    @Override
-    public boolean isValidChannel(DataInputStream in) throws IOException {
-        String subchannel = in.readUTF();
-        return subchannel.equals(data.getSubChannelName());
-    }
+public class ProxyReceiverImp extends ProxyReceiver implements PluginMessageListener {
 
     @Override
     public void onPluginMessageReceived(String channel, Player notInUse, byte[] message) {

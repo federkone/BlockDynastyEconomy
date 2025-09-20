@@ -8,7 +8,6 @@ import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import mockClass.MockListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ public class SetMoneyUseCaseTest {
 
         repository = FactoryRepo.getDb();
 
-        this.core = new Core(repository, 5, new MockListener(), new CourierTest(),new LoggerTest());
+        this.core = new Core(repository, 5, new CourierTest(),new LoggerTest());
 
 
         setBalanceUseCase = core.getTransactionsUseCase().getSetBalanceUseCase();

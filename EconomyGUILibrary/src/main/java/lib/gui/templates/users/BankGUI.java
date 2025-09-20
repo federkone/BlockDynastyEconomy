@@ -38,9 +38,13 @@ public class BankGUI extends AbstractGUI {
                 unused -> {
                     GUIFactory.exchangePanel(player,this).open();
                 });
-        setItem(24, createItem(Materials.WRITABLE_BOOK,"§6Create Offer","§7Click to create an offer for trade currencies","§7with other players Online"),
+        setItem(24, createItem(Materials.WRITABLE_BOOK,"§6Create Offer to Player online","§7Click to create an offer for trade currencies","§7with other players Online"),
                 f -> {
                     new OfferGUI(player,this,textInput).open();
+                });
+        setItem(25, createItem(Materials.WRITABLE_BOOK,"§6Create Offer To Network Player","§7Click to create an offer for trade currencies","§7with other players from the network"),
+                f -> {
+                    new OfferOfflineGUI(player,this,searchAccountUseCase,textInput).open();
                 });
         setItem(22,createItem(Materials.ENDER_CHEST,"§6My Active Offers","§7These are the offers you have created","§7and are currently active."),
                 f -> {

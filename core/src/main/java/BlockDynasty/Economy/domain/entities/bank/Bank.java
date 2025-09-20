@@ -32,7 +32,7 @@ public class Bank {
 
     public Bank(String name,UUID ouwnerUUID, String owner) {
         this.name = name;
-        this.owner = new Player(owner, ouwnerUUID.toString());
+        this.owner = new Player(ouwnerUUID, ouwnerUUID.toString());
         this.vault = new ArrayList<>();
     }
 
@@ -52,7 +52,7 @@ public class Bank {
         return owner.getNickname();
     }
 
-    public String getOwnerUUID() {
+    public UUID getOwnerUUID() {
         return owner.getUuid();
     }
 

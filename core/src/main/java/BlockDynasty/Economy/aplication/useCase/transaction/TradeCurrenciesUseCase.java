@@ -118,10 +118,12 @@ public class TradeCurrenciesUseCase {
         this.accountService.syncOnlineAccount(result.getValue().getTo());
         this.accountService.syncOnlineAccount(result.getValue().getFrom());
 
-        this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-        this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
+        //this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
+        //this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.economyLogger.log("[TRADE] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo));
         this.eventManager.emit(new TradeEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo));
+        this.updateForwarder.sendUpdateMessage("event", new TradeEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo).toJson(), accountTo.getUuid().toString());
+        this.updateForwarder.sendUpdateMessage("event", new TradeEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo).toJson(), accountFrom.getUuid().toString());
 
         return Result.success(null);
     }

@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.scheduler;
+package lib.scheduler;
 
 public interface IScheduler {
     void runLater(long delay, ContextualTask contextualTask);

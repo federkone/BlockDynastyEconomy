@@ -2,6 +2,7 @@ package BlockDynasty.Economy.aplication.services;
 
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.util.ArrayList;
@@ -10,9 +11,11 @@ import java.util.UUID;
 
 public class CurrencyService implements ICurrencyService {
     private List<Currency> currencies ;
+    private IRepository repository;
     public Currency defaultCurrency;
 
     public CurrencyService(IRepository repository) {
+        this.repository = repository;
         this.currencies = new ArrayList<>();
         this.currencies = repository.loadCurrencies();
 
@@ -25,6 +28,16 @@ public class CurrencyService implements ICurrencyService {
 
         updateDefaultCurrency();
 
+    }
+
+    public void syncCurrency(UUID uuid){
+        Result<Currency> result = repository.loadCurrencyByUuid(uuid.toString());
+        if(!result.isSuccess()){
+            return;
+        }
+        currencies.removeIf(currency -> currency.getUuid().equals(uuid));
+        currencies.add(result.getValue());
+        //updateDefaultCurrency();
     }
 
     public void add(Currency currency) {

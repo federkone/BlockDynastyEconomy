@@ -1,17 +1,18 @@
 package BlockDynasty.BukkitImplementation.adapters.abstractions;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.Integrations.bungee.BungeeReceiver;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
-import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
+import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.Materials;
+import lib.scheduler.ContextualTask;
+import lib.scheduler.IScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -46,8 +47,8 @@ public class BukkitAdapter implements PlatformAdapter {
     }
 
     @Override
-    public void executeAsync(Runnable task) {
-        Scheduler.runAsync(ContextualTask.build(task));
+    public IScheduler getScheduler() {
+        return SchedulerFactory.getScheduler();
     }
 
 

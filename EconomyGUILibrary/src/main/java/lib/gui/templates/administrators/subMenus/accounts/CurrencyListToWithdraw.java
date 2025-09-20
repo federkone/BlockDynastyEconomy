@@ -29,7 +29,7 @@ public class CurrencyListToWithdraw extends CurrenciesList {
 
     @Override
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount) {
-        Result<Void> result = withdrawUseCase.execute(UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount, Context.COMMAND);
+        Result<Void> result = withdrawUseCase.execute(targetPlayer.getUuid(), currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
             sender.sendMessage("&7Success withdraw " +ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 from " + targetPlayer.getNickname() + "'s account.");
             this.openParent();

@@ -3,6 +3,8 @@ package BlockDynasty.BukkitImplementation.scheduler;
 import BlockDynasty.BukkitImplementation.utils.JavaUtil;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.FoliaImplementation.scheduler.SchedulerFolia;
+import lib.scheduler.ContextualTask;
+import lib.scheduler.IScheduler;
 
 public class SchedulerFactory {
     public static final boolean isFolia = JavaUtil.classExists("io.papermc.paper.threadedregions.RegionizedServer");

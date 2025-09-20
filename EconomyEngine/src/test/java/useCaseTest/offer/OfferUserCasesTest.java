@@ -18,7 +18,6 @@ import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
-import mockClass.MockListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import mockClass.LoggerTest;
@@ -77,8 +76,9 @@ public class OfferUserCasesTest {
 
         searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore,new CourierTest(),new LoggerTest(),new EventManager());
-        offerService = new OfferService(new MockListener(),1);
+        EventManager eventManager = new EventManager();
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore,new CourierTest(),new LoggerTest(),eventManager);
+        offerService = new OfferService(new CourierTest(),eventManager,1);
 
         createOfferUseCase = new CreateOfferUseCase( offerService, searchCurrencyUseCase, searchAccountUseCase);
         acceptOfferUseCase = new AcceptOfferUseCase( offerService, tradeCurrenciesUseCase);
@@ -113,7 +113,7 @@ public class OfferUserCasesTest {
         createOfferUseCase.execute( nullplague.getUuid(), cris.getUuid(), dollar.getSingular(), BigDecimal.valueOf(100), coin.getSingular(), BigDecimal.valueOf(200));
         assertEquals(true, offerService.hasOfferTo(cris.getUuid()), "Offer should exist before cancellation");
 
-        Result<Void> result = cancelOfferUseCase.execute(cris.getUuid());
+        Result<Void> result = cancelOfferUseCase.execute(cris.getPlayer());
 
         assertEquals(true, result.isSuccess(), result.getErrorMessage()+ " " + result.getErrorCode());
         assertEquals(false, offerService.hasOfferTo(cris.getUuid()), "Offer should be removed after cancellation");

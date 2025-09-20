@@ -12,7 +12,6 @@ import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import mockClass.MockListener;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,7 @@ public class WithdrawUseCaseTest {
 
         repository = FactoryRepo.getDb();
 
-       this.core = new Core(repository, 5, new MockListener(), new CourierTest(),new LoggerTest());
+       this.core = new Core(repository, 5, new CourierTest(),new LoggerTest());
        currencyService = core.getServicesManager().getCurrencyService();
 
         core.getCurrencyUseCase().getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());

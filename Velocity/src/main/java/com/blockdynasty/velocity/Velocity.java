@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,52 +27,57 @@ import java.util.UUID;
     version = "1.0-SNAPSHOT"
 )
 public class Velocity {
-    @Inject private ProxyServer server;
-
+    private static final String CHANNEL_NAME = "proxy:blockdynastyeconomy";
+    @Inject private ProxyServer proxyServer;
     @Inject private Logger logger;
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        // Registrar canal
-        server.getChannelRegistrar().register(MinecraftChannelIdentifier.from("velocity:economy"));
-        logger.info("Velocity Economy Channel Registered....");
+        proxyServer.getChannelRegistrar().register(MinecraftChannelIdentifier.from(CHANNEL_NAME));
+        logger.info("Velocity BlockDynastyEconomy Channel Registered....");
+    }
+
+    @Subscribe
+    public void onShutdown(ProxyShutdownEvent event) {
+        proxyServer.getChannelRegistrar().unregister(MinecraftChannelIdentifier.from(CHANNEL_NAME));
+        logger.info("Velocity BlockDynastyEconomy Channel Unregistered....");
     }
 
     @Subscribe
     public void onPluginMessage(PluginMessageEvent event) {
-        logger.info("Received plugin message on channel: " + event.getIdentifier().getId());
-        if (!event.getIdentifier().getId().equals("velocity:economy")) {
+        if (!event.getIdentifier().getId().equals(CHANNEL_NAME)) {
             return;
         }
-        event.setResult(PluginMessageEvent.ForwardResult.handled());
-        try {
-            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(event.getData()));
-            String jsonMessage = dataInputStream.readUTF();
-            Gson gson = new Gson();
-            Map<String, String> messageData = gson.fromJson(jsonMessage, new TypeToken<Map<String, String>>(){}.getType());
+        if(event.getSource() instanceof  ServerConnection backend){
+            String serverSourceName = backend.getServerInfo().getName();
+            event.setResult(PluginMessageEvent.ForwardResult.handled());
+            try {
+                DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(event.getData()));
+                String jsonMessage = dataInputStream.readUTF();
+                Gson gson = new Gson();
+                Map<String, String> messageData = gson.fromJson(jsonMessage, new TypeToken<Map<String, String>>(){}.getType());
 
-            String type = messageData.get("type");
-            if (type.equals("event")|| type.equals("account")) {
-                String target = messageData.get("target");
-                UUID uuid = UUID.fromString(target);
-                logger.info("Processing message for UUID: " + uuid.toString() + " of type: " + type);
+                String type = messageData.get("type");
+                if (type.equals("event")|| type.equals("account")) {
+                    String target = messageData.get("target");
+                    UUID uuid = UUID.fromString(target);
 
-                Optional<Player> optional = server.getPlayer(uuid);
-                optional.ifPresent(player -> {
-                    player.getCurrentServer().ifPresent(targetServer -> {
-                        targetServer.sendPluginMessage(MinecraftChannelIdentifier.from("velocity:economy"), event.getData());
+                    // Get the player's current server
+                    Optional<Player> optional = proxyServer.getPlayer(uuid);
+                    optional.flatMap(Player::getCurrentServer).ifPresent(targetServer -> {
+                        if (!targetServer.getServerInfo().getName().equals(serverSourceName)) {
+                            targetServer.sendPluginMessage(MinecraftChannelIdentifier.from(CHANNEL_NAME), event.getData());
+                        }
                     });
-                });
-            }else if (type.equals("currency")) {
-                if (event.getSource() instanceof ServerConnection backend) {
-                   String serverSourceName = backend.getServerInfo().getName();
-                   server.getAllServers().stream()
-                           .filter(s -> !s.getServerInfo().getName().equals(serverSourceName))
-                           .forEach(s -> s.sendPluginMessage(MinecraftChannelIdentifier.from("velocity:economy"), event.getData()));
+                }else if (type.equals("currency")) {
+                    //broadcast to all servers
+                    proxyServer.getAllServers().stream()
+                            .filter(targetServer -> !targetServer.getServerInfo().getName().equals(serverSourceName))
+                            .forEach(targetServer -> targetServer.sendPluginMessage(MinecraftChannelIdentifier.from(CHANNEL_NAME), event.getData()));
                 }
+            }catch (Exception e) {
+                logger.warn("->> Error reading message: {}", e.getMessage());
             }
-        }catch (Exception e) {
-            logger.info("->> Error reading message: " + e.getMessage());
         }
     }
 }

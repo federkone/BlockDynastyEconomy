@@ -2,6 +2,7 @@ package lib.gui.templates.users;
 
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.SearchOfferUseCase;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.result.Result;
@@ -35,41 +36,38 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
     @Override
     public void refresh(){
         //List<Offer> offers = searchOfferUseCase.getOffersBuyer(player.getUniqueId());
+        //System.out.println("Offers found for: "+player.getName()+" " + offers.size());
         //showItemsPage(offers);
         GUIFactory.seeMyOffersPanel(player).open();
     }
 
+    @Override
+    public void openParent() {
+        GUIFactory.bankPanel(player).open();
+    }
 
     @Override
     protected IItemStack createItemFor(Offer offer) {
-        IEntityGUI comprador = platformAdapter.getPlayerByUUID(offer.getComprador());
+        Player comprador = offer.getComprador();
 
         Currency tipoCantidad = offer.getTipoCantidad();
         Currency tipoMonto = offer.getTipoMonto();
 
-        if (comprador != null) {
-            return createItem(
-                    Materials.PLAYER_HEAD,
-                    "§a" + comprador.getName(),
-                    "",
-                    "§fAmount: §" + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                    "§fPrice: §" + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
-                    "",
-                    "§cLeft Click to Cancel"
+        return createItem(
+                Materials.PLAYER_HEAD,
+                "§a" + comprador.getNickname(),
+                "",
+                "§fAmount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                "§fPrice: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                "",
+                "§cLeft Click to Cancel"
             );
-        } else {
-            return createItem(
-                    Materials.BARRIER,
-                    "§cPlayer not found",
-                    "§7This player is not online or does not exist"
-            );
-        }
     }
     @Override
     protected void functionLeftItemClick(Offer offer) {
         Result<Void> result =cancelOfferUseCase.execute(offer.getVendedor());
         if (result.isSuccess()) {
-            GUIFactory.seeOffersPanel(player,getParent()).open();
+            GUIFactory.seeMyOffersPanel(player).open();
             player.sendMessage("§aOffer cancelled");
         } else {
             this.close();
@@ -80,7 +78,9 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
     @Override
     protected void addCustomButtons() {
         setItem(4, createItem(Materials.PAPER, "§7Offer List",
-                        ""),
-                null);
+                        "Click to refresh"),
+                unused -> {
+                    refresh();
+                });
     }
 }

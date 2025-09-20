@@ -1,12 +1,12 @@
 package BlockDynasty.BukkitImplementation.logs;
 
-import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import com.google.common.collect.Sets;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.UtilTime;
 import BlockDynasty.Economy.domain.services.log.Log;
+import lib.scheduler.ContextualTask;
 
 import java.io.*;
 import java.util.Set;

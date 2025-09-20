@@ -28,7 +28,7 @@ public class CurrencyListToSet extends CurrenciesList {
 
     @Override
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount) {
-        Result<Void> result = setBalanceUseCase.execute(UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount, Context.COMMAND);
+        Result<Void> result = setBalanceUseCase.execute(targetPlayer.getUuid(), currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
             sender.sendMessage("Set success");
             this.openParent();

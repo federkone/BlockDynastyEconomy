@@ -11,7 +11,6 @@ import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
 import lib.placeholder.PlaceHolder;
 import listeners.*;
-import proxy.ProxyData;
 import proxy.ProxyReceiver;
 import proxy.ProxySender;
 import repository.ConnectionHandler.Hibernate.Connection;
@@ -29,20 +28,20 @@ public class Economy {
 
 
     public void init(ITextInput textInput, IConsole console, Log log, PlatformAdapter platformAdapter,
-                      IConfiguration configuration, ProxyData proxyData){
+                      IConfiguration configuration){
 
         Console.setConsole(console);
 
         repository = new Repository(getConnection(configuration));
 
-        core=new Core(repository,60,new OfferListener(platformAdapter),new ProxySender(proxyData,platformAdapter ),log);
+        core=new Core(repository,60,new ProxySender(platformAdapter),log);
         api = new Api(core);
         this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
         playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
         GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
-        TransactionsListener.register(core.getServicesManager().getEventManager(),platformAdapter);
-        ProxyReceiver.init(proxyData, core.getServicesManager().getAccountService(),core.getServicesManager().getEventManager(), platformAdapter);
+        EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+        ProxyReceiver.init(core.getServicesManager().getAccountService(),core.getServicesManager().getCurrencyService(),core.getServicesManager().getEventManager(), core.getServicesManager().getOfferService(),platformAdapter);
     }
 
     private Connection getConnection(IConfiguration configuration){

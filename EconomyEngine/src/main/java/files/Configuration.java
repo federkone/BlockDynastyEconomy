@@ -25,7 +25,6 @@ public class Configuration {
                 + "\n"
                 +"'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique and are the source of truth, with support for name change detection from Mojang. With online=false, only the player's name will be taken as the source of truth in Case Sensitivity mode.";
 
-        parameters.put("proxy (Velocity/BungeeCord)","BungeeCord");
         parameters.put("online", true);
         parameters.put("storage", "h2");
         parameters.put("EnableWebEditorSqlServer", false);

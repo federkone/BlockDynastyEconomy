@@ -1,10 +1,11 @@
 package BlockDynasty.Economy.aplication.events;
 
 import BlockDynasty.Economy.domain.events.Event;
-import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
-import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
-import BlockDynasty.Economy.domain.events.transactionsEvents.TransferEvent;
-import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferExpired;
+import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -46,5 +47,10 @@ public class EventRegistry {
         registerEventType("WithdrawEvent", WithdrawEvent::fromJson);
         registerEventType("TransferEvent", TransferEvent::fromJson);
         registerEventType("SetEvent", SetEvent::fromJson);
+        registerEventType("TradeEvent", TradeEvent::fromJson);
+        registerEventType("OfferCreated", OfferCreated::fromJson);
+        registerEventType("OfferCanceled", OfferCanceled::fromJson);
+        registerEventType("OfferExpired", OfferExpired::fromJson);
+        registerEventType("OfferAccepted", OfferAccepted::fromJson);
     }
 }

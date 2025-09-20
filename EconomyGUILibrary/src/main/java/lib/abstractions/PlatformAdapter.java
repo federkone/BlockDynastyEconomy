@@ -3,6 +3,8 @@ package lib.abstractions;
 import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.Materials;
+import lib.scheduler.ContextualTask;
+import lib.scheduler.IScheduler;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +19,6 @@ public interface PlatformAdapter {
     void dispatchCommand(String command) throws Exception;
 
     void sendPluginMessage(String channel, byte[] message);
-    void executeAsync(Runnable task);
+    IScheduler getScheduler();
 
 }

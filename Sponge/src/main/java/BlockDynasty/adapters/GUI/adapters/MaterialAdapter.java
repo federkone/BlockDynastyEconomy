@@ -2,6 +2,7 @@ package BlockDynasty.adapters.GUI.adapters;
 
 import lib.gui.abstractions.Materials;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -43,12 +44,12 @@ public class MaterialAdapter {
                 Optional<ServerPlayer> optional= Sponge.server().player(displayName);
                 optional.ifPresent(serverPlayer -> item.offer(Keys.GAME_PROFILE, serverPlayer.profile()));
             }
-            item.offer(Keys.CUSTOM_NAME, Component.text(displayName));
+            item.offer(Keys.CUSTOM_NAME,  Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName)).build());
 
         }
         if(lore != null){
             List<Component> loreComponents = lore.stream()
-                    .map(Component::text)
+                    .map(m -> Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(m)).build())
                     .collect(Collectors.toList());
             item.offer(Keys.LORE, loreComponents);
         }

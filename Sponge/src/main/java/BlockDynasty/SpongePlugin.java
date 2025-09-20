@@ -7,9 +7,7 @@ import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.abstractions.SpongeAdapter;
 import BlockDynasty.adapters.config.ConfigurationFile;
-import BlockDynasty.adapters.proxy.bungeecord.BungeeData;
-import BlockDynasty.adapters.proxy.bungeecord.BungeeReceiver;
-import BlockDynasty.adapters.proxy.velocity.VelocityData;
+import BlockDynasty.adapters.proxy.ProxyReceiverImp;
 import BlockDynasty.adapters.logs.AbstractLog;
 import BlockDynasty.adapters.spongeEconomyApi.EconomyServiceAdapter;
 import BlockDynasty.adapters.spongeEconomyApi.MultiCurrencyService;
@@ -51,8 +49,7 @@ public class SpongePlugin {
     private static final Economy economy= new Economy();
     public static String databasePath;
     public static Path configPath;
-    //private static RawDataChannel velocityChannel;
-    private static RawDataChannel bungeeChannel;
+    private static RawDataChannel channel;
 
     @Inject
     SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir) {
@@ -64,19 +61,8 @@ public class SpongePlugin {
 
     @Listener
     public void onRegisterChannel(final RegisterChannelEvent event) {
-        // Registramos el canal como espera Velocity
-
-        //ProxyData velocityData = new VelocityData();
-        ProxyData bungeeData= new BungeeData();
-
-        //velocityChannel = event.register(ResourceKey.resolve(velocityData.getChannelName()),RawDataChannel.class);
-        //VelocityReceiver r= new VelocityReceiver();
-        //r.register();
-
-        bungeeChannel = event.register(ResourceKey.resolve(bungeeData.getChannelName()),RawDataChannel.class);
-        BungeeReceiver r2= new BungeeReceiver();
-        r2.register();
-
+        channel = event.register(ResourceKey.resolve(ProxyData.getChannelName()),RawDataChannel.class);
+        ProxyReceiverImp.register().addHandler(channel);
     }
 
     private String setupDatabaseDirectory(final Path configDir) {
@@ -95,7 +81,7 @@ public class SpongePlugin {
         // Perform any one-time setup
         ConfigurationFile.init( this);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(),new AbstractLog(), new SpongeAdapter(),new ConfigurationAdapter(),new VelocityData() );
+        economy.init(new TextInput(),new ConsoleAdapter(),new AbstractLog(), new SpongeAdapter(),new ConfigurationAdapter());
         Console.log("Plugin constructed...");
     }
 
@@ -119,66 +105,6 @@ public class SpongePlugin {
     @Listener
     public void onRegisterCommands(final RegisterCommandEvent<Command.Parameterized> event) {
         CommandRegister.registerCommands(event, container, CommandsFactory.Commands.getMainCommands());
-
-        // Register a test command for economy
-        Command.Parameterized ecoTestCommand = Command.builder()
-                .permission("blockdynasty.ecotester")
-                .executor(context -> {
-                    if (context.cause().root() instanceof ServerPlayer) {
-                        ServerPlayer player = (ServerPlayer) context.cause().root();
-                        // Get the economy service
-                        Sponge.server().serviceProvider().economyService().ifPresent(economyService -> {
-                            // Test account existence
-                            var account = economyService.findOrCreateAccount(player.uniqueId());
-                            if (account.isPresent()) {
-                                player.sendMessage(Component.text("---------------------------------").color(NamedTextColor.GOLD));
-                                player.sendMessage(Component.text("Account found: " + account.get().balance(economyService.defaultCurrency())));
-
-                                // Test deposit
-                                var result = account.get().deposit(
-                                        economyService.defaultCurrency(),
-                                        BigDecimal.valueOf(100),
-                                        Cause.of(EventContext.empty(), container)
-                                );
-                                player.sendMessage(Component.text("Deposit result: " + result.result().name()));
-
-                                // Show new balance
-                                player.sendMessage(Component.text("New balance: " + account.get().balance(economyService.defaultCurrency())));
-
-                                var resultWithdraw = account.get().withdraw(
-                                        economyService.defaultCurrency(),
-                                        BigDecimal.valueOf(50),
-                                        Cause.of(EventContext.empty(), container)
-                                );
-                                player.sendMessage(Component.text("Withdraw result: " + resultWithdraw.result().name()));
-                                player.sendMessage(Component.text("New balance: " + account.get().balance(economyService.defaultCurrency())));
-
-                                var accountCris = economyService.findOrCreateAccount("Cris");
-
-                                var resultTransfer = account.get().transfer(
-                                        accountCris.get(),
-                                        economyService.defaultCurrency(),
-                                        BigDecimal.valueOf(1),
-                                        Cause.of(EventContext.empty(), container)
-                                );
-
-                                player.sendMessage(Component.text("Transfer result: " + resultTransfer.result().name()));
-                                player.sendMessage(Component.text("Your new balance: " + account.get().balance(economyService.defaultCurrency())));
-                                player.sendMessage(Component.text("Cris's new balance: " + accountCris.get().balance(economyService.defaultCurrency())));
-                                player.sendMessage(Component.text("---------------------------------").color(NamedTextColor.GOLD));
-
-                            } else {
-                                player.sendMessage(Component.text("Failed to find or create account!").color(NamedTextColor.RED));
-                            }
-                        });
-                        return CommandResult.success();
-                    }
-                    return CommandResult.error(Component.text("Only players can use this command"));
-                })
-                .build();
-
-        event.register(container, ecoTestCommand, "ecotest");
-
         Console.log("Registered commands...");
     }
 
@@ -201,7 +127,7 @@ public class SpongePlugin {
         return container;
     }
     public static RawDataChannel getChannel() {
-        return bungeeChannel; //channel;
+        return channel;
     }
 }
 

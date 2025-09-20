@@ -123,7 +123,7 @@ public class EntityPlayerAdapter implements IPlayer {
     }
 
     @Override
-    public Object getHandle() {
+    public Object getRoot() {
         return player;
     }
 }

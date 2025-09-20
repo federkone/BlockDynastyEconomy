@@ -19,7 +19,7 @@ public class TextInput implements ITextInput {
 
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
-        Player player = (Player) owner.getHandle();
+        Player player = (Player) owner.getRoot();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
                     player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);
@@ -45,7 +45,7 @@ public class TextInput implements ITextInput {
 
     @Override
     public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
-        Player player = (Player) owner.getHandle();
+        Player player = (Player) owner.getRoot();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
                     player.playSound(player.getLocation(), MaterialAdapter.getClickSound(), 0.3f, 1.0f);

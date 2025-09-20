@@ -5,6 +5,8 @@ import BlockDynasty.Economy.domain.entities.wallet.Wallet;
 import repository.Models.AccountDb;
 import repository.Models.WalletDb;
 
+import java.util.UUID;
+
 public class AccountMapper {
     public static AccountDb toEntity(Account domain) {
         if (domain == null) {
@@ -28,6 +30,6 @@ public class AccountMapper {
             return null;
         }
         Wallet wallet = WalletMapper.toDomain(entity.getWallet());
-        return new Account(entity.getUuid(), entity.getNickname(), wallet, entity.isCanReceiveCurrency(),entity.isBlocked());
+        return new Account(UUID.fromString(entity.getUuid()), entity.getNickname(), wallet, entity.isCanReceiveCurrency(),entity.isBlocked());
     }
 }

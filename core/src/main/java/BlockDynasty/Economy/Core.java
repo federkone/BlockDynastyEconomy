@@ -1,6 +1,5 @@
 package BlockDynasty.Economy;
 
-import BlockDynasty.Economy.aplication.listeners.OfferListener;
 import BlockDynasty.Economy.aplication.services.ServicesManager;
 import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
@@ -20,11 +19,11 @@ public class Core {
     private final TransactionsUseCase transactionsUseCase;
     private final OfferUseCase offerUseCase;
 
-    public Core(IRepository repository, int cacheTopMinutes, OfferListener offerListener, Courier courier, Log log) {
+    public Core(IRepository repository, int cacheTopMinutes, Courier courier, Log log) {
         this.repository = repository;
         this.courier = courier;
 
-        this.services = new ServicesManager( repository, cacheTopMinutes, offerListener);
+        this.services = new ServicesManager( repository, cacheTopMinutes, courier);
         this.accountsUseCase = new AccountsUseCase(services, repository,courier);
         this.currencyUseCase = new CurrencyUseCase(services, repository, accountsUseCase, courier);
         this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, services.getAccountService(), repository, courier, log, services.getEventManager());

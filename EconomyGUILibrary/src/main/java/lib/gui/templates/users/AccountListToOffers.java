@@ -3,6 +3,7 @@ package lib.gui.templates.users;
 import BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.SearchOfferUseCase;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.result.Result;
@@ -15,6 +16,7 @@ import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
 
 import java.util.List;
+import java.util.UUID;
 
 public class AccountListToOffers extends PaginatedGUI<Offer> {
     private final AcceptOfferUseCase acceptOfferUseCase;
@@ -38,39 +40,32 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
     public void refresh(){
         //List<Offer> offers = searchOfferUseCase.getOffersBuyer(sender.getUniqueId());
         //showItemsPage(offers);
-        GUIFactory.seeOffersPanel(sender,this.parent).open();
+        GUIFactory.seeOffersPanel(sender,getParent()).open();
     }
 
     @Override
     protected IItemStack createItemFor(Offer offer) {
-        IEntityGUI vendedor = platformAdapter.getPlayerByUUID(offer.getVendedor());
+        Player vendedor = offer.getVendedor();
 
         Currency tipoCantidad = offer.getTipoCantidad();
         Currency tipoMonto = offer.getTipoMonto();
 
-        if (vendedor != null) {
-            return createItem(
-                    Materials.PLAYER_HEAD,
-                    "§a" + vendedor.getName(),
-                    "",
-                    "§fAmount: §" + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                    "§fPrice: §" + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
-                    "",
-                    "§aLeft Click to Accept",
-                    "§cRight Click to Cancel"
+        return createItem(
+                Materials.PLAYER_HEAD,
+                "§a" + vendedor.getNickname(),
+                "",
+                "§fAmount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                "§fPrice: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                "",
+                "§aLeft Click to Accept",
+                "§cRight Click to Cancel"
             );
-        } else {
-            return createItem(
-                    Materials.BARRIER,
-                    "§cPlayer not found",
-                    "§7This player is not online or does not exist"
-            );
-        }
+
     }
 
     @Override
     protected void functionLeftItemClick(Offer offer) {
-        Result<Void> result =acceptOfferUseCase.execute(offer.getComprador(),offer.getVendedor());
+        Result<Void> result =acceptOfferUseCase.execute(offer.getComprador().getUuid(),offer.getVendedor().getUuid());
         if (result.isSuccess()) {
             GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer accepted successfully!");

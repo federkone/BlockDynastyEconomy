@@ -26,7 +26,7 @@ public class CurrencyListToPay extends CurrenciesList {
 
     @Override
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount){
-        Result<Void> result = payUseCase.execute(sender.getUniqueId(), UUID.fromString(targetPlayer.getUuid()), currency.getSingular(), amount);
+        Result<Void> result = payUseCase.execute(sender.getUniqueId(), targetPlayer.getUuid(), currency.getSingular(), amount);
         if (!result.isSuccess()) {
             //messageService.sendErrorMessage(result.getErrorCode(),sender,currency.getSingular());
             return result.getErrorMessage();

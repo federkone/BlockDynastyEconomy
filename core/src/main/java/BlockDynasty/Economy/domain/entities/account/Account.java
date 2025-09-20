@@ -16,20 +16,20 @@ public class Account implements IAccount {
     private boolean blocked;
 
     public Account(UUID uuid, String nickname) {
-        this.player = new Player(uuid.toString(), nickname);
+        this.player = new Player(uuid, nickname);
         this.wallet = new Wallet();
         this.blocked = false;
         this.canReceiveCurrency = true;
     }
 
     public Account(UUID uuid, String nickname, List<Money> moneyList, boolean canReceiveCurrency,boolean blocked) {
-        this.player = new Player(uuid.toString(), nickname);
+        this.player = new Player(uuid, nickname);
         this.wallet = new Wallet(moneyList);
         this.canReceiveCurrency = canReceiveCurrency;
         this.blocked = blocked;
     }
 
-    public Account(String uuid, String nickname, Wallet wallet, boolean canReceiveCurrency, boolean blocked) {
+    public Account(UUID uuid, String nickname, Wallet wallet, boolean canReceiveCurrency, boolean blocked) {
         this.player = new Player(uuid, nickname);
         this.wallet = wallet;
         this.canReceiveCurrency = canReceiveCurrency;
@@ -133,7 +133,7 @@ public class Account implements IAccount {
     }
 
     public void setUuid(UUID uuid) {
-        this.player.setUuid(uuid.toString());
+        this.player.setUuid(uuid);
     }
     public void setNickname(String nickname) {
         this.player.setNickname(nickname);
@@ -143,7 +143,7 @@ public class Account implements IAccount {
         return player.getNickname();
     }
     public UUID getUuid() {
-        return UUID.fromString(player.getUuid());
+        return player.getUuid();
     }
 
     public void setCanReceiveCurrency(boolean canReceiveCurrency) {

@@ -1,9 +1,11 @@
 package BlockDynasty.FoliaImplementation.scheduler;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.scheduler.ContextualTask;
-import BlockDynasty.BukkitImplementation.scheduler.IScheduler;
+import lib.scheduler.IScheduler;
+import lib.scheduler.ContextualTask;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 public class SchedulerFolia implements IScheduler {
     public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
@@ -18,13 +20,15 @@ public class SchedulerFolia implements IScheduler {
 
     public void run(ContextualTask contextualTask){
         if (contextualTask.hasEntityContext()) {
-            contextualTask.getEntityContext().getScheduler().execute(plugin, contextualTask.getRunnable(), null, 1);
+            Entity entity = (Entity) contextualTask.getEntityContext().getRoot();
+            entity.getScheduler().execute(plugin, contextualTask.getRunnable(), null, 1);
             //Bukkit.getRegionScheduler().execute(plugin, contextualTask.getEntityContext().getLocation(), contextualTask.getRunnable());
             return;
         }
 
         if(contextualTask.hasLocationContext()) {
-            Bukkit.getRegionScheduler().execute(plugin, contextualTask.getLocationContext(), contextualTask.getRunnable());
+            Location location = (Location) contextualTask.getLocationContext().getRoot();
+            Bukkit.getRegionScheduler().execute(plugin, location, contextualTask.getRunnable());
             return;
         }
 

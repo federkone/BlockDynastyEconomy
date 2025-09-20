@@ -3,11 +3,12 @@ package BlockDynasty.Economy.domain.events.transactionsEvents;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Event;
+import BlockDynasty.Economy.domain.events.SerializableEvent;
 
 import java.math.BigDecimal;
 
 //accountFrom, accountTo., currencyFrom, currencyTo, amountFrom, amountTo
-public class TradeEvent extends Event {
+public class TradeEvent extends Event implements SerializableEvent {
     private final Player fromPlayer;
     private final Player toPlayer;
     private final Currency currencyFrom;
@@ -43,6 +44,14 @@ public class TradeEvent extends Event {
         return amountTo;
     }
 
+    @Override
+    public String getEventType() {
+        return "TradeEvent";
+    }
+
+    public static TradeEvent fromJson(String jsonString) {
+        return SerializableEvent.fromJson(jsonString, TradeEvent.class);
+    }
 
     @Override
     public String toString() {

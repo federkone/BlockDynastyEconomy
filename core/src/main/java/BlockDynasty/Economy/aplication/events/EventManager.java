@@ -1,7 +1,9 @@
 package BlockDynasty.Economy.aplication.events;
 
+import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.events.Event;
 import BlockDynasty.Economy.domain.events.EventHandler;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

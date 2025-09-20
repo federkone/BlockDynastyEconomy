@@ -29,7 +29,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
     protected String  execute(IEntityGUI sender, Currency currency, java.math.BigDecimal amount){
         Result<Void> result= createOfferUseCase.execute(
                 sender.getUniqueId(),
-                UUID.fromString(target.getUuid()),
+                target.getUuid(),
                 parentGUI.getCurrency().getPlural(),
                 parentGUI.getAmount(),
                 currency.getSingular(),

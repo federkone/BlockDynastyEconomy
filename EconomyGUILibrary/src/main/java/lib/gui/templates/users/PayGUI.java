@@ -19,7 +19,7 @@ public class PayGUI extends AccountsList {
         this.sender = sender;
 
         List<Player> players = platformAdapter.getOnlinePlayers().stream()
-                .map(p -> new Player(p.getUniqueId().toString(), p.getName()))
+                .map(p -> new Player(p.getUniqueId(), p.getName()))
                 .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
                 .collect(Collectors.toList());
 
@@ -33,7 +33,7 @@ public class PayGUI extends AccountsList {
                 .filter(p -> p.getName().equalsIgnoreCase(playerName))
                 .findFirst().orElse(null); //online players only
         if (target != null) {
-            return new Player(target.getUniqueId().toString(), target.getName());
+            return new Player(target.getUniqueId(), target.getName());
         } else {
             return null;
         }

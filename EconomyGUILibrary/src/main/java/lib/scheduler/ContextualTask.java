@@ -1,17 +1,14 @@
-package BlockDynasty.BukkitImplementation.scheduler;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+package lib.scheduler;
 
 public class ContextualTask {
     private final Runnable runnable;
-    private final Entity entity;
-    private final Location locationContext;
+    private final IEntity entity;
+    private final ILocation locationContext;
 
     //future use cases could include for folia total compatibility
     //private final World worldContext;  // Contextual world, if needed
 
-    private ContextualTask(Runnable runnable, Entity entity, Location locationContext) {
+    private ContextualTask(Runnable runnable, IEntity entity, ILocation locationContext) {
         this.runnable = runnable;
         this.entity = entity;
         this.locationContext = locationContext;
@@ -22,15 +19,15 @@ public class ContextualTask {
         return new ContextualTask(runnable, null, null );
     }
 
-    public static ContextualTask build(Runnable runnable, Entity entity) {
+    public static ContextualTask build(Runnable runnable, IEntity entity) {
         return new ContextualTask(runnable, entity, null);
     }
 
-    public static ContextualTask build(Runnable runnable, Location locationContext) {
+    public static ContextualTask build(Runnable runnable, ILocation locationContext) {
         return new ContextualTask(runnable, null, locationContext);
     }
 
-    public static ContextualTask build(Runnable runnable, Entity entity, Location locationContext) {
+    public static ContextualTask build(Runnable runnable, IEntity entity, ILocation locationContext) {
         return new ContextualTask(runnable, entity, locationContext);
     }
 
@@ -38,11 +35,11 @@ public class ContextualTask {
         return runnable;
     }
 
-    public Entity getEntityContext() {
+    public IEntity getEntityContext() {
         return entity;
     }
 
-    public Location getLocationContext() {
+    public ILocation getLocationContext() {
         return locationContext;
     }
 

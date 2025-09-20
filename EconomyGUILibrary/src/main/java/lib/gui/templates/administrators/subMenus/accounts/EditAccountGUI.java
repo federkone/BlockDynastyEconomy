@@ -79,14 +79,14 @@ public class EditAccountGUI extends AbstractGUI {
 
         setItem(11,createItem(Materials.BOOK, "§6See Balance","§7See the balance of the player's account"),
                 f -> {
-                    GUIFactory.balancePanel( sender, UUID.fromString(target.getUuid()), this).open();
+                    GUIFactory.balancePanel( sender, target.getUuid(), this).open();
                 });
 
-        boolean isBlocked = searchAccountUseCase.getAccount(UUID.fromString(target.getUuid())).getValue().isBlocked();
+        boolean isBlocked = searchAccountUseCase.getAccount(target.getUuid()).getValue().isBlocked();
         if (isBlocked) {
             setItem(13, createItem(Materials.RED_CONCRETE, "§cAccount is blocked", "Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
-                        Result<Void>result= editAccountUseCase.unblockAccount(UUID.fromString(target.getUuid()));
+                        Result<Void>result= editAccountUseCase.unblockAccount(target.getUuid());
                         if (result.isSuccess()){
                             GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
                         }
@@ -97,7 +97,7 @@ public class EditAccountGUI extends AbstractGUI {
         } else {
             setItem(13, createItem(Materials.LIME_CONCRETE, "§aAccount is enabled", "Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
-                        Result<Void>result= editAccountUseCase.blockAccount(UUID.fromString(target.getUuid()));
+                        Result<Void>result= editAccountUseCase.blockAccount(target.getUuid());
                         if (result.isSuccess()){
                             GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
                         }

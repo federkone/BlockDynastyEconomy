@@ -8,7 +8,7 @@ public interface IEntityGUI {
     UUID getUniqueId();
     String getName();
     void sendMessage(String message);
-    Object getHandle();
+    Object getRoot();
 
     void playSuccessSound();
     void playFailureSound();

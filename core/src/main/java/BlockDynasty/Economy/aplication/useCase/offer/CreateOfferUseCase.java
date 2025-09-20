@@ -82,7 +82,7 @@ public class CreateOfferUseCase {
             return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
         }
 
-        offerService.addOffer(playerSender, playerReciber, amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
+        offerService.createOffer(accountSenderResult.getValue().getPlayer(), accountReciberResult.getValue().getPlayer(), amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
         return Result.success(null);
     }
 }

@@ -1,6 +1,7 @@
 package lib.commands.templates.users.OfferSubCommand;
 
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
@@ -29,7 +30,9 @@ public class DenyOfferCommand extends AbstractCommand {
             return false;
         }
 
-        Result<Void> result =cancelOfferUseCase.execute(playerFrom.getUniqueId());
+        Player player = new Player(playerFrom.getUniqueId(), playerFrom.getName());
+
+        Result<Void> result =cancelOfferUseCase.execute(player);
         if (result.isSuccess()) {
             playerFrom.sendMessage("La oferta de "+sender.getName()+" ha sido rechazada");
             sender.sendMessage("La oferta para "+playerFrom.getName()+" ha sido rechazada");

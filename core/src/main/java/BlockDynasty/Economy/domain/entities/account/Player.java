@@ -1,10 +1,12 @@
 package BlockDynasty.Economy.domain.entities.account;
 
+import java.util.UUID;
+
 public class Player {
-    private String uuid;
+    private UUID uuid;
     private String nickname;
 
-    public Player(String uuid, String nickname) {
+    public Player(UUID uuid, String nickname) {
         this.uuid = uuid;
         this.nickname = nickname;
     }
@@ -12,13 +14,13 @@ public class Player {
         this.uuid = player.uuid;
         this.nickname = player.nickname;
     }
-    public String getUuid() {
+    public UUID getUuid() {
         return uuid;
     }
     public String getNickname() {
         return nickname;
     }
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
     public void setNickname(String nickname) {

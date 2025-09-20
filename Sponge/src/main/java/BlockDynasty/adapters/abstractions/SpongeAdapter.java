@@ -4,11 +4,13 @@ import BlockDynasty.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.SpongePlugin;
+import BlockDynasty.adapters.scheduler.Scheduler;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.abstractions.IInventory;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.Materials;
+import lib.scheduler.IScheduler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.ContainerType;
@@ -16,6 +18,7 @@ import org.spongepowered.api.item.inventory.ContainerTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import org.spongepowered.api.network.channel.ChannelBuf;
+import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.api.network.channel.raw.play.RawPlayDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 
 public class SpongeAdapter implements PlatformAdapter {
     PluginContainer pluginContainer = SpongePlugin.getPlugin();
+    RawDataChannel channel = SpongePlugin.getChannel();
 
     @Override
     public IPlayer getPlayer(String name) {
@@ -62,8 +66,8 @@ public class SpongeAdapter implements PlatformAdapter {
     }
 
     @Override
-    public void executeAsync(Runnable task) {
-        task.run();
+    public IScheduler getScheduler() {
+        return new Scheduler();
     }
 
     @Override

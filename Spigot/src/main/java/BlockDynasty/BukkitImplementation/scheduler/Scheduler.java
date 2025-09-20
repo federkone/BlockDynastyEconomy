@@ -1,5 +1,7 @@
 package BlockDynasty.BukkitImplementation.scheduler;
 
+import lib.scheduler.ContextualTask;
+
 public class Scheduler {
 
     /**

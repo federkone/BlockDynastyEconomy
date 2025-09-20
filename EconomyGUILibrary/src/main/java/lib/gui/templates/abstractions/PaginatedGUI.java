@@ -29,12 +29,7 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
      * Display items with pagination
      */
     protected void showItemsPage(List<T> items) {
-        // Calculate pagination
-        int startIndex = currentPage * itemsPerPage;
-        int endIndex = Math.min(startIndex + itemsPerPage, items.size());
-
         fill();
-
         if (items.isEmpty()) {
             setItem(getEmptyMessageSlot(), createEmptyMessage(), null);
             setItem(getBackButtonSlot(), createBackButton(), unused -> this.openParent());
@@ -42,6 +37,9 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
             return;
         }
 
+        // Calculate pagination
+        int startIndex = currentPage * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, items.size());
         // Add items to GUI
         int slot = getStartingSlot();
         for (int i = startIndex; i < endIndex; i++) {

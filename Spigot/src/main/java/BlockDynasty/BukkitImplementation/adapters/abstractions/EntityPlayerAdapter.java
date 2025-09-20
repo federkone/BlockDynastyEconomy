@@ -63,6 +63,7 @@ public class EntityPlayerAdapter implements IPlayer {
     @Override
     public void openInventory(IInventory inventory) {
         Inventory inventoryBukkit= (Inventory) inventory.getHandle();
+        //Scheduler.run(ContextualTask.build(()->{player.openInventory(inventoryBukkit);},player));
         player.openInventory(inventoryBukkit);
     }
 
@@ -82,7 +83,7 @@ public class EntityPlayerAdapter implements IPlayer {
     }
 
     @Override
-    public Object getHandle() {
+    public Object getRoot() {
         return player;
     }
 
