@@ -1,14 +1,10 @@
 package Main;
 
+import files.Configuration;
+
 public interface IConfiguration {
 
-    String getHost();
-    int getPort();
-    String getDatabase();
-    String getUsername();
-    String getPassword();
+    Configuration getConfig();
     String getDbFilePath();
-    boolean enableServerConsole();
-    String getType();
 
 }

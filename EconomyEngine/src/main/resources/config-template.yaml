@@ -1,0 +1,54 @@
+# Main Configuration file.
+# BlockDynastyEconomy Plugin
+# Version: 1.0
+
+# Developer(s): Nullplague.
+# GitHub:
+
+# 'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique
+# and are the source of truth, with support for name change detection from Mojang.
+# With online=false, only the player's name will be taken as the source of truth in Case Sensitivity mode.
+# WARNING: This mode of operation cannot be switched from offline to online, as the official UUID references are lost.
+online: true
+debug: false
+
+
+#Enable or Disable Vault integration.
+vault: true
+# Enable or Disable the transaction log vault integration. This will log all transactions operations to vault.
+# Note: This option enabled cause a lot of logs because every transaction will be logged to vault integrations.
+transaction_log_vault: false
+
+# Enable or Disable the transaction log. The transaction log is a log of all transactions that
+transaction_log: true
+
+sql:
+  # You have three valid storage methods, mysql/sqlite/h2. You would have to enter the database credentials below.
+  type: h2
+  # you would have to enter the database credentials down below.
+  database: minecraft
+  host: localhost
+  port: 3306
+  username: root
+  password: password
+  # EnableWebEditorSqlServer is to enable the web sql server for h2/sqlite database in http://localhost:8082,
+  # if you want to use the web console of h2/sqlite database, you have to set this to true.
+  # With this you can manage the h2/sqlite database from a web browser.
+  EnableWebEditorSqlServer: false
+
+# Redis configuration, this replaces module messaging with Proxy:Velocity, BungeeCord, for sync cache balances between servers etc.
+redis:
+  enabled: false
+  host: localhost
+  port: 6379
+  password: ""
+  user: default
+
+
+# enableDistanceLimitOffer true, maxDistanceOffer is the maximum distance in blocks that a player
+# can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc.
+# expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire.
+# example: 5 minutes, 10 minutes, etc.
+enableDistanceLimitOffer: true
+maxDistanceOffer: 5.0
+expireCacheTopMinutes: 5

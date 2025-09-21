@@ -1,104 +1,133 @@
 package files;
 
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Configuration {
-    private String header;
-    private final Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> config;
+    private final String templatePath = "config-template.yaml";
+    private final File configFile;
 
-    public Configuration(){
-        header = "Economy Plugin"
-                + "\n"
-                + "Version: " + 1.0
-                + "\nMain Configuration file."
-                + "\n"
-                + "Developer(s): " + "Nullplague"
-                + "\n\n"
-                + "You have three valid storage methods, mysql or sqlite/h2. If you choose mysql or mongodb you would have to enter the database credentials down below."
-                + "\n"
-                + "enableDistanceLimitOffer true,maxDistanceOffer is the maximum distance in blocks that a player can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc."
-                + "\n"
-                + "expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire. example: 5 minutes, 10 minutes, etc."
-                + "\n"
-                + "EnableWebEditorSqlServer is to enable the web sql server for h2 database in http://localhost:8082, if you want to use the web console of h2 database, you have to set this to true. with this you can manage the h2 database from a web browser."
-                + "\n"
-                +"'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique and are the source of truth, with support for name change detection from Mojang. With online=false, only the player's name will be taken as the source of truth in Case Sensitivity mode.";
-
-        parameters.put("online", true);
-        parameters.put("storage", "h2");
-        parameters.put("EnableWebEditorSqlServer", false);
-        parameters.put("debug", false);
-        parameters.put("vault", true);
-        parameters.put("transaction_log", true);
-        parameters.put("transaction_log_vault",false);
-
-        parameters.put("mysql.database", "minecraft");
-        //config.addDefault("mysql.tableprefix", "BlockDynastyEconomy");
-        parameters.put("mysql.host", "localhost");
-        parameters.put("mysql.port", 3306);
-        parameters.put("mysql.username", "root");
-        parameters.put("mysql.password", "password");
-
-        //config.addDefault("mongoUri", "mongodb://localhost:27017");
-        //  config.addDefault("sqlite.file", "database.sqlite");
-
-        parameters.put("enableDistanceLimitOffer", true);
-        parameters.put("maxDistanceOffer", 5.0);
-        parameters.put("expireCacheTopMinutes",5);
+    public Configuration(File configFile) {
+        this.configFile = configFile;
+        if (!configFile.exists()) {
+            createNewConfigFile();
+        } else {
+            loadConfig();
+        }
     }
 
-    public String getHeader() {
-        return header;
+    private void createNewConfigFile() {
+        try {
+            if (!configFile.getParentFile().exists()) {
+                configFile.getParentFile().mkdirs();
+            }
+
+            // Directly copy the template file to preserve comments
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templatePath)) {
+                if (inputStream == null) {
+                    throw new IOException("Template resource not found: " + templatePath);
+                }
+                Files.copy(inputStream, configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            // Load the config after creating it
+            loadConfig();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create config file", e);
+        }
     }
-    public Map<String, Object> getParameters() {
-        return parameters;
+
+    private void loadConfig() {
+        try {
+            Yaml yaml = new Yaml();
+            config = yaml.load(Files.newInputStream(configFile.toPath()));
+
+            if (config == null) {
+                config = new HashMap<>();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load config", e);
+        }
     }
 
-    /*        config.options().header(plugin.getDescription().getName()
-                + "\n"
-                + "Version: " + plugin.getDescription().getVersion()
-                + "\nMain Configuration file."
-                + "\n"
-                + "Developer(s): " + plugin.getDescription().getAuthors()
-                + "\n\n"
-                + "You have three valid storage methods, mysql or sqlite/h2. If you choose mysql or mongodb you would have to enter the database credentials down below."
-                + "\n"
-                + "enableDistanceLimitOffer true,maxDistanceOffer is the maximum distance in blocks that a player can be to make/accept an offer/trade currencies. example: 5 blocks, 10 blocks, etc."
-                + "\n"
-                + "expireCacheTopMinutes is the time in minutes that the cache of the top balances will expire. example: 5 minutes, 10 minutes, etc."
-                + "\n"
-                + "EnableWebEditorSqlServer is to enable the web sql server for h2 database in http://localhost:8082, if you want to use the web console of h2 database, you have to set this to true. with this you can manage the h2 database from a web browser."
-                + "\n"
-                +"'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique and are the source of truth, with support for name change detection from Mojang. With online=false, only the player's name will be taken as the source of truth in Case Sensitivity mode. "
-                );
+    public void saveConfig() {
+        try {
+            // Create a temporary copy of the current file to preserve comments
+            File tempFile = new File(configFile.getParentFile(), "temp-config.yaml");
+            if (configFile.exists()) {
+                Files.copy(configFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
 
+            // Update values
+            DumperOptions options = new DumperOptions();
+            options.setPrettyFlow(true);
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            options.setIndent(2);
 
-        config.addDefault("online", true);
-        config.addDefault("storage", "h2");
-        config.addDefault("EnableWebEditorSqlServer", false);
-        config.addDefault("debug", false);
-        config.addDefault("vault", true);
-        config.addDefault("transaction_log", true);
-        config.addDefault("transaction_log_vault",false);
+            Yaml yaml = new Yaml(options);
+            String content = yaml.dump(config);
 
-        config.addDefault("mysql.database", "minecraft");
-        //config.addDefault("mysql.tableprefix", "BlockDynastyEconomy");
-        config.addDefault("mysql.host", "localhost");
-        config.addDefault("mysql.port", 3306);
-        config.addDefault("mysql.username", "root");
-        config.addDefault("mysql.password", "password");
+            Files.write(configFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
 
-        //config.addDefault("mongoUri", "mongodb://localhost:27017");
-      //  config.addDefault("sqlite.file", "database.sqlite");
+            // Cleanup
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save config", e);
+        }
+    }
 
-        config.addDefault("enableDistanceLimitOffer", true);
-        config.addDefault("maxDistanceOffer", 5.0);
-        config.addDefault("expireCacheTopMinutes",5);
-        //config.addDefault("cheque.material", Material.PAPER.toString());
-        //config.addDefault("cheque.name", "&aBank Note");
-        //config.addDefault("cheque.lore", Arrays.asList("&7Worth: {value}.", "&7&oWritten by {player}"));
-        //config.addDefault("cheque.console_name", "Console");
-        //config.addDefault("cheque.enabled", false);
-*/
+    public Map<String, Object> getConfig() {
+        return config;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String path, Class<T> type) {
+        String[] parts = path.split("\\.");
+        Map<String, Object> current = config;
+
+        for (int i = 0; i < parts.length - 1; i++) {
+            if (!current.containsKey(parts[i])) return null;
+            current = (Map<String, Object>) current.get(parts[i]);
+        }
+
+        String lastPart = parts[parts.length - 1];
+        if (!current.containsKey(lastPart)) return null;
+
+        Object value = current.get(lastPart);
+        if (type.isInstance(value)) {
+            return type.cast(value);
+        }
+        return null;
+    }
+
+    public boolean getBoolean(String path) {
+        Boolean value = get(path, Boolean.class);
+        return value != null && value;
+    }
+
+    public String getString(String path) {
+        return get(path, String.class);
+    }
+
+    public int getInt(String path) {
+        Integer value = get(path, Integer.class);
+        return value != null ? value : 0;
+    }
+
+    public double getDouble(String path) {
+        Double value = get(path, Double.class);
+        return value != null ? value : 0.0;
+    }
 }

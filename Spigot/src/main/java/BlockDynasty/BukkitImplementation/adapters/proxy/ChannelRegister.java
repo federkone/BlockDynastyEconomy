@@ -10,7 +10,7 @@ public class ChannelRegister {
     public static void init(BlockDynastyEconomy plugin, IApi api) {
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, ProxyData.getChannelName());  //outgoing channel
         plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin,ProxyData.getChannelName(), new ProxyReceiverImp());  //incoming channel
-        Console.log("Proxy channel has been initialized. chanel Name: BungeeCord");
+        Console.log("Proxy Message channel has been initialized.");
     }
 
     public static void unhook(BlockDynastyEconomy plugin) {
