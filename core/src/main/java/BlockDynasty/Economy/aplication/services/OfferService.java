@@ -62,7 +62,24 @@ public class OfferService implements IOfferService {
             this.ofertasPendientes.remove(offer);
             this.eventManager.emit(new OfferExpired(offer));
             courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
-            courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
+            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
+        }, this.delay, TimeUnit.SECONDS);
+
+        ofertasPendientes.put(offer, expirationTask);
+    }
+
+    public void addOfferFromEvent(Offer offer){
+        ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
+        if (oldTask != null) {
+            oldTask.cancel(false);
+            this.ofertasPendientes.remove(offer);
+        }
+
+        ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
+            this.ofertasPendientes.remove(offer);
+            this.eventManager.emit(new OfferExpired(offer));
+            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
+            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
         }, this.delay, TimeUnit.SECONDS);
 
         ofertasPendientes.put(offer, expirationTask);

@@ -1,14 +1,14 @@
-package BlockDynasty.BukkitImplementation.logs;
+package files.logs;
 
-import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
-import BlockDynasty.BukkitImplementation.utils.Console;
-import com.google.common.collect.Sets;
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.utils.UtilTime;
 import BlockDynasty.Economy.domain.services.log.Log;
+import files.Configuration;
 import lib.scheduler.ContextualTask;
+import Main.Console;
+import lib.scheduler.IScheduler;
+import utils.UtilTime;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -20,15 +20,13 @@ public abstract class AbstractLogger implements Log {
     private final File latest;
     private final Set<String> toAdd;
     private volatile boolean zipping;
+    private final IScheduler scheduler;
 
-    /**
-     * Constructor for AbstractLogger.
-     *
-     * @param plugin The BlockDynastyEconomy plugin instance.
-     */
-    public AbstractLogger(BlockDynastyEconomy plugin) {
+
+    public AbstractLogger(Configuration config, IScheduler scheduler) {
         //this.plugin = plugin;
-        this.folder = new File(plugin.getDataFolder() + File.separator + "logs");
+        this.scheduler = scheduler;
+        this.folder = new File(config.getLogsPath());
         this.latest = new File(folder, "LATEST.log");
         if (!folder.exists()) {
             folder.mkdirs();
@@ -40,7 +38,7 @@ public abstract class AbstractLogger implements Log {
                 Console.logError(ex.getMessage());
             }
         }
-        this.toAdd = Sets.newHashSet();
+        this.toAdd = new HashSet<>();
         this.zipping = false;
 
         if (!firstInstanceCreated) {
@@ -69,7 +67,7 @@ public abstract class AbstractLogger implements Log {
     private void zipAndReplace() {
         zipping = true;
 
-        Scheduler.runAsync( ContextualTask.build(() -> {
+        scheduler.runAsync( ContextualTask.build(() -> {
             try {
                 String date = UtilTime.date();
                 date = date.replace("/", "-");
@@ -101,7 +99,7 @@ public abstract class AbstractLogger implements Log {
 
                 zipping = false;
             } catch (Exception e) {
-               Console.logError(e.getMessage());
+                Console.logError(e.getMessage());
             }
         }));
     }
@@ -123,40 +121,4 @@ public abstract class AbstractLogger implements Log {
     private String getDateAndTime() {
         return UtilTime.now();
     }
-
-    /*private File getLatest() {
-        return latest;
-    }
-
-    private File getFolder() {
-        return folder;
-    }
-
-    private void warn(String message) {
-        try {
-            StringBuilder builder = new StringBuilder();
-            appendDate(builder);
-            builder.append('[').append("WARNING").append(']').append(' ');
-            builder.append(message);
-            writeToFile(builder.toString());
-        } catch (IOException ex) {
-            UtilServer.consoleLogError( ex.getMessage());
-        }
-    }
-
-    private void error(String message, Exception ex) {
-        try {
-            StringBuilder builder = new StringBuilder();
-            appendDate(builder);
-            StackTraceElement element = ex.getStackTrace()[0];
-            builder.append('[').append(ex.toString()).append(']').append(' ');
-            builder.append('[').append("ERROR - ").append(ex.getMessage()).append(" -- ").append(element.getFileName())
-                    .append(" where ").append(element.getMethodName()).append(" at ").append(element.getLineNumber())
-                    .append(']').append(' ');
-            builder.append(message);
-            writeToFile(builder.toString());
-        } catch (IOException e) {
-            UtilServer.consoleLogError( ex.getMessage());
-        }
-    }*/
 }

@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -51,6 +52,11 @@ public class BukkitAdapter implements PlatformAdapter {
         return SchedulerFactory.getScheduler();
     }
 
+    @Override
+    public File getDataFolder() {
+        return BlockDynastyEconomy.getInstance().getDataFolder();
+    }
+
 
     @Override
     public IItemStack createItemStack(Materials material) {
@@ -77,4 +83,6 @@ public class BukkitAdapter implements PlatformAdapter {
     public List<IPlayer> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
     }
+
+
 }

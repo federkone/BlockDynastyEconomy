@@ -2,11 +2,9 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.Integrations.vaultUnloked.VaultUnlockedHandler;
-import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
 import BlockDynasty.BukkitImplementation.utils.JavaUtil;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import api.IApi;
-import files.Configuration;
 import org.bukkit.Bukkit;
 
 public class Vault {
@@ -14,7 +12,7 @@ public class Vault {
     private static IVaultHandler vaultHandler;
 
     public static void init(IApi api) {
-        if (!ConfigurationFile.getConfiguration().getBoolean("vault")) {
+        if (!BlockDynastyEconomy.getConfiguration().getBoolean("vault")) {
             Console.log("Vault integration is disabled.");
             return;
         }

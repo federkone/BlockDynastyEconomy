@@ -6,6 +6,7 @@ import lib.gui.abstractions.Materials;
 import lib.scheduler.ContextualTask;
 import lib.scheduler.IScheduler;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,5 +21,5 @@ public interface PlatformAdapter {
 
     void sendPluginMessage(String channel, byte[] message);
     IScheduler getScheduler();
-
+    File getDataFolder();
 }

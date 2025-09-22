@@ -1,6 +1,5 @@
 package BlockDynasty.BukkitImplementation;
 
-import BlockDynasty.BukkitImplementation.adapters.ConfigurationAdapter;
 import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInput;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
@@ -14,23 +13,22 @@ import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOffline;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOnline;
 
-import BlockDynasty.BukkitImplementation.logs.VaultLogger;
-import BlockDynasty.BukkitImplementation.config.file.ConfigurationFile;
-import BlockDynasty.BukkitImplementation.logs.EconomyLogger;
 import BlockDynasty.BukkitImplementation.utils.Console;
 
 
 import Main.Economy;
+import files.Configuration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
     private final Economy economy = new Economy();
+    private static Configuration configuration;
 
     @Override
     public void onLoad() {
-        ConfigurationFile.init(this);
+
     }
 
     @Override
@@ -57,9 +55,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void initCoreServices() {
-        int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
+        //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(),EconomyLogger.build(this),new BukkitAdapter(),new ConfigurationAdapter());
+        economy.init(new TextInput(),new ConsoleAdapter(),new BukkitAdapter());
+        configuration = economy.getConfiguration();
     }
     private void registerCommands(){
         CommandRegister.registerAll();
@@ -81,12 +80,17 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     }
     private void setupIntegrations() {
-        Vault.init(economy.getApiWithLog(VaultLogger.build(this)));
+        Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
+        //vault.init(economy.getVaultLogger());
         PlaceHolder.register(economy.getPlaceHolder());
         ChannelRegister.init(this,economy.getApi());
     }
 
     public static BlockDynastyEconomy getInstance() {
         return instance;
+    }
+
+    public static Configuration getConfiguration() {
+        return configuration;
     }
 }

@@ -6,6 +6,9 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
+import files.Configuration;
+import files.logs.EconomyLogger;
+import files.logs.VaultLogger;
 import lib.commands.CommandsFactory;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
@@ -17,7 +20,6 @@ import proxy.ProxySender;
 import redis.Publisher;
 import redis.RedisData;
 import redis.Subscriber;
-import redis.clients.jedis.Jedis;
 import repository.ConnectionHandler.Hibernate.Connection;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
@@ -30,16 +32,18 @@ public class Economy {
     private PlayerJoinListener playerJoinListener;
     private IApi api;
     private PlaceHolder placeHolder;
-    Subscriber subscriber;
+    private Subscriber subscriber;
+    private Configuration configuration;
+    private PlatformAdapter platformAdapter;
 
-    public void init(ITextInput textInput, IConsole console, Log log, PlatformAdapter platformAdapter,
-                      IConfiguration configuration){
-
+    public void init(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
         Console.setConsole(console);
+        this.platformAdapter=platformAdapter;
+        configuration= new Configuration(platformAdapter.getDataFolder());
 
         repository = new Repository(getConnection(configuration));
 
-        core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),log);
+        core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
         createListener(configuration,platformAdapter);
         api = new Api(core);
         this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
@@ -49,28 +53,28 @@ public class Economy {
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
-    private Connection getConnection(IConfiguration configuration){
-        switch (configuration.getConfig().getString("sql.type")){
+    private Connection getConnection(Configuration configuration){
+        switch (configuration.getString("sql.type")){
             case "mysql":
-                return new ConnectionHibernateMysql(configuration.getConfig().getString("sql.host"), configuration.getConfig().getInt("sql.port"), configuration.getConfig().getString("sql.database"), configuration.getConfig().getString("sql.username"), configuration.getConfig().getString("sql.password"));
+                return new ConnectionHibernateMysql(configuration.getString("sql.host"), configuration.getInt("sql.port"), configuration.getString("sql.database"), configuration.getString("sql.username"), configuration.getString("sql.password"));
             case "h2":
-                return new ConnectionHibernateH2(configuration.getDbFilePath(),configuration.getConfig().getBoolean("EnableWebEditorSqlServer"));
+                return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("EnableWebEditorSqlServer"));
             case "sqlite":
-                return new ConnectionHibernateSQLite(configuration.getDbFilePath(),configuration.getConfig().getBoolean("EnableWebEditorSqlServer"));
+                return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("EnableWebEditorSqlServer"));
             default:
-                throw new IllegalArgumentException("Unsupported database type: " + configuration.getConfig().getString("sql.type"));
+                throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
         }
     }
 
-    private Courier createCourierImpl(IConfiguration configuration, PlatformAdapter platformAdapter){
-        if(configuration.getConfig().getBoolean("redis.enabled")){
+    private Courier createCourierImpl(Configuration configuration, PlatformAdapter platformAdapter){
+        if(configuration.getBoolean("redis.enabled")){
             return new Publisher( new RedisData(configuration),platformAdapter);
         }else{
             return new ProxySender(platformAdapter);
         }
     }
-    private void createListener(IConfiguration configuration, PlatformAdapter platformAdapter){
-        if(configuration.getConfig().getBoolean("redis.enabled")){
+    private void createListener(Configuration configuration, PlatformAdapter platformAdapter){
+        if(configuration.getBoolean("redis.enabled")){
             subscriber = new Subscriber(new RedisData(configuration),platformAdapter,core.getServicesManager().getOfferService(),core.getServicesManager().getCurrencyService(),core.getServicesManager().getAccountService(),core.getServicesManager().getEventManager());
             subscriber.startListening();
         }else{
@@ -100,5 +104,13 @@ public class Economy {
 
     public IApi getApiWithLog(Log log){
         return new Api( core, log);
+    }
+
+    public Configuration getConfiguration(){
+        return configuration;
+    }
+
+    public Log getVaultLogger(){
+        return VaultLogger.build(configuration,platformAdapter.getScheduler());
     }
 }

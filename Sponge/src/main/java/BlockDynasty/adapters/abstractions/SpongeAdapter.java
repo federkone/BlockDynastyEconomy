@@ -23,6 +23,7 @@ import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.api.network.channel.raw.play.RawPlayDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -69,6 +70,11 @@ public class SpongeAdapter implements PlatformAdapter {
     @Override
     public IScheduler getScheduler() {
         return new Scheduler();
+    }
+
+    @Override
+    public File getDataFolder() {
+        return SpongePlugin.configPath.toFile();
     }
 
     @Override

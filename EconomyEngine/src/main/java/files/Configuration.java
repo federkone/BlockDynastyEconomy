@@ -15,11 +15,21 @@ import java.util.Map;
 public class Configuration {
     private Map<String, Object> config;
     private final String templatePath = "config-template.yaml";
+    private final String databasePath = "/database";
+    private final String configName = "config.yaml";
+    private final String logsPath = "/logs";
     private final File configFile;
+    private final File rootDirectory;
 
-    public Configuration(File configFile) {
-        this.configFile = configFile;
-        if (!configFile.exists()) {
+    public Configuration(File rootDirectory) {
+        this.rootDirectory = rootDirectory;
+        this.configFile = new File(rootDirectory, configName);
+        //preguntar por la existencia de /database directorio y crearlo si no existe
+        File databaseDir = new File(rootDirectory, databasePath);
+        if (!databaseDir.exists()) {
+            databaseDir.mkdirs();
+        }
+        if (!this.configFile.exists()) {
             createNewConfigFile();
         } else {
             loadConfig();
@@ -56,7 +66,8 @@ public class Configuration {
                 config = new HashMap<>();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load config", e);
+            e.printStackTrace();
+            throw new RuntimeException("Failed to load config "+ e.getMessage());
         }
     }
 
@@ -129,5 +140,13 @@ public class Configuration {
     public double getDouble(String path) {
         Double value = get(path, Double.class);
         return value != null ? value : 0.0;
+    }
+
+    public String getDatabasePath() {
+        return rootDirectory.getAbsolutePath()+ databasePath;
+    }
+
+    public String getLogsPath() {
+        return  rootDirectory.getAbsolutePath()+ logsPath;
     }
 }

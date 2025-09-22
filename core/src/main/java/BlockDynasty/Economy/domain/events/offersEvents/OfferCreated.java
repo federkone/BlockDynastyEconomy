@@ -27,6 +27,6 @@ public class OfferCreated extends Event implements SerializableEvent,OfferEvent 
 
     @Override
     public void handle(OfferService offerService) {
-        offerService.addOffer(offer);
+        offerService.addOfferFromEvent(offer);
     }
 }

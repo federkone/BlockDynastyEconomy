@@ -1,6 +1,6 @@
 package redis;
 
-import Main.IConfiguration;
+import files.Configuration;
 
 public class RedisData {
     private String host= "localhost";
@@ -8,11 +8,11 @@ public class RedisData {
     private String password= "";
     private String username= "";
 
-    public RedisData(IConfiguration configuration){
-        this.host = configuration.getConfig().getString("redis.host");
-        this.port = configuration.getConfig().getInt("redis.port");
-        this.password = configuration.getConfig().getString("redis.password");
-        this.username = configuration.getConfig().getString("redis.username");
+    public RedisData(Configuration configuration){
+        this.host = configuration.getString("redis.host");
+        this.port = configuration.getInt("redis.port");
+        this.password = configuration.getString("redis.password");
+        this.username = configuration.getString("redis.username");
     }
     public String getChannelName() {
         return "proxy:blockdynastyeconomy";
