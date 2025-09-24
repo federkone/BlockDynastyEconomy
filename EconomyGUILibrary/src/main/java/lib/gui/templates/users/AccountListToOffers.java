@@ -67,24 +67,22 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
     protected void functionLeftItemClick(Offer offer) {
         Result<Void> result =acceptOfferUseCase.execute(offer.getComprador().getUuid(),offer.getVendedor().getUuid());
         if (result.isSuccess()) {
-            GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer accepted successfully!");
         } else {
-            this.close();
             sender.sendMessage("§cFailed to accept offer: " + result.getErrorMessage());
         }
+        GUIFactory.seeOffersPanel(sender,getParent()).open();
     }
 
     @Override
     protected void functionRightItemClick(Offer offer) {
         Result<Void> result =cancelOfferUseCase.execute(offer.getVendedor());
         if (result.isSuccess()) {
-            GUIFactory.seeOffersPanel(sender,getParent()).open();
             sender.sendMessage("§aOffer cancelled");
         } else {
-            this.close();
             sender.sendMessage("§cFailed to cancel offer: " + result.getErrorMessage());
         }
+        GUIFactory.seeOffersPanel(sender,getParent()).open();
     }
 
     @Override

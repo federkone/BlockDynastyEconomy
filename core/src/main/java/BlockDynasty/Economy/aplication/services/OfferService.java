@@ -39,14 +39,7 @@ public class OfferService implements IOfferService {
 
     public void createOffer(Player playerSender, Player playerReceiver, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer) {
         Offer offer = new Offer(playerSender, playerReceiver, amountCurrencyValue, amountCurrencyOffer, currencyValue, currencyOffer);
-        createOffer(offer);
-    }
-
-    public void createOffer(Offer offer){
-        //prevent multiple offers from the same sender to the same receiver
         addOffer(offer);
-        eventManager.emit( new OfferCreated(offer));
-        courier.sendUpdateMessage("event",new OfferCreated(offer).toJson(), offer.getComprador().getUuid().toString());
     }
 
     public void addOffer(Offer offer){
@@ -57,39 +50,58 @@ public class OfferService implements IOfferService {
         }
 
         ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
-            this.ofertasPendientes.remove(offer);
-            this.eventManager.emit(new OfferExpired(offer));
-            courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
-            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
+            expireOffer(offer);
         }, this.delay, TimeUnit.SECONDS);
 
         ofertasPendientes.put(offer, expirationTask);
     }
 
-    public void addOfferFromEvent(Offer offer){
+    public void expireOffer(Offer offer){
+        this.ofertasPendientes.remove(offer);
+        this.eventManager.emit(new OfferExpired(offer));
+        courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
+        courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
+    }
+
+    public void expireOfferFromEvent(Offer offer){
         ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
         if (oldTask != null) {
             oldTask.cancel(false);
-            this.ofertasPendientes.remove(offer);
-        }
-
-        ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
-            this.ofertasPendientes.remove(offer);
-            this.eventManager.emit(new OfferExpired(offer));
-            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
-            //courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
-        }, this.delay, TimeUnit.SECONDS);
-
-        ofertasPendientes.put(offer, expirationTask);
-    }
-
-    public void removeOffer(Offer offer){
-        ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
-        if (oldTask != null) {
-            oldTask.cancel(false);
-            this.ofertasPendientes.remove(offer);
+            expireOffer(offer);
         }
     }
+
+    //can be canceled by either the buyer or the seller
+    public boolean cancelOffer(UUID initiator) {
+        Map.Entry<Offer, ScheduledFuture<?>> entryToRemove = this.ofertasPendientes.entrySet().stream()
+                .filter(entry -> {
+                    Offer offer = entry.getKey();
+                    return offer.getVendedor().getUuid().equals(initiator) || offer.getComprador().getUuid().equals(initiator);
+                }).findFirst().orElse(null);
+        if (entryToRemove != null) {
+            Offer offer = entryToRemove.getKey();
+            entryToRemove.getValue().cancel(false);
+            this.ofertasPendientes.remove(offer);
+            return true;
+        }
+        return false;
+    }
+
+    //can be accepted only by the buyer
+    public boolean acceptOffer(UUID playerReceiver, UUID playerSender) {
+        Offer offerToAccept = getOffer(playerSender, playerReceiver);
+
+        if (offerToAccept != null) {
+            ScheduledFuture<?> task = this.ofertasPendientes.get(offerToAccept);
+            if (task != null) {
+                task.cancel(false);
+                this.ofertasPendientes.remove(offerToAccept);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public boolean hasOfferTo(UUID player) {
         for (Offer offer : this.ofertasPendientes.keySet()) {
@@ -105,55 +117,32 @@ public class OfferService implements IOfferService {
         OfferEvent offerEvent=EventRegistry.deserializeOfferEvent(jsonEvent);
         if (offerEvent != null){
             offerEvent.syncOffer(this);
+            eventManager.emit(offerEvent);
         }
     }
 
-    //como no lo encuentra de manera local no emite evento?
-    public boolean cancelOffer(UUID initiator) {
-        // Buscar la oferta que coincida con el vendedor o comprador
-        Map.Entry<Offer, ScheduledFuture<?>> entryToRemove = this.ofertasPendientes.entrySet().stream()
-                .filter(entry -> {
-                    Offer offer = entry.getKey();
-                    return offer.getVendedor().getUuid().equals(initiator) || offer.getComprador().getUuid().equals(initiator);
-                }).findFirst().orElse(null);
-        if (entryToRemove != null) {
-            Offer offer = entryToRemove.getKey();
-            entryToRemove.getValue().cancel(false);
-            this.ofertasPendientes.remove(offer);
-
-            eventManager.emit(new OfferCanceled(offer));
-            courier.sendUpdateMessage("event", new OfferCanceled(offer).toJson(), offer.getComprador().getUuid().toString());
-            courier.sendUpdateMessage("event", new OfferCanceled(offer).toJson(), offer.getVendedor().getUuid().toString());
-            return true;
-        }
-        return false;
-    }
-
-    public boolean acceptOffer(UUID initiator) {
-        Map.Entry<Offer, ScheduledFuture<?>> entryToRemove = this.ofertasPendientes.entrySet().stream()
-                .filter(entry -> {
-                    Offer offer = entry.getKey();
-                    return offer.getVendedor().getUuid().equals(initiator) || offer.getComprador().getUuid().equals(initiator);
-                }).findFirst().orElse(null);
-        if (entryToRemove != null) {
-            Offer offer = entryToRemove.getKey();
-            entryToRemove.getValue().cancel(false);
-            this.ofertasPendientes.remove(offer);
-
-            //eventManager.emit(new OfferAccepted(offer));
-            courier.sendUpdateMessage("event", new OfferAccepted(offer).toJson(), offer.getComprador().getUuid().toString());
-            courier.sendUpdateMessage("event", new OfferAccepted(offer).toJson(), offer.getVendedor().getUuid().toString());
-            return true;
-        }
-        return false;
-    }
-
-    public Offer getOffer(UUID playerId) {
+    public Offer getOfferSeller(UUID playerId) {
         return this.ofertasPendientes.keySet().stream()
                 .filter(offer ->offer.getVendedor().getUuid().equals(playerId))
                 .findFirst()
                 .orElse(null);
     }
+
+    public Offer getOfferBuyer(UUID playerId) {
+        return this.ofertasPendientes.keySet().stream()
+                .filter(offer -> offer.getComprador().getUuid().equals(playerId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Offer getOffer(UUID player1Id, UUID player2Id) {
+        return this.ofertasPendientes.keySet().stream()
+                .filter(offer -> (offer.getVendedor().getUuid().equals(player1Id) && offer.getComprador().getUuid().equals(player2Id)) ||
+                        (offer.getVendedor().getUuid().equals(player2Id) && offer.getComprador().getUuid().equals(player1Id)))
+                .findFirst()
+                .orElse(null);
+    }
+
 
     public List<Offer> getOffersSeller(UUID playerId) {
         return this.ofertasPendientes.keySet().stream()

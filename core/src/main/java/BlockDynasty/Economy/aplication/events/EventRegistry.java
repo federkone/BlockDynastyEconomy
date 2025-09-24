@@ -68,10 +68,6 @@ public class EventRegistry {
         registerEventTypeTransaction(TransferEvent.class);
         registerEventTypeTransaction(SetEvent.class);
         registerEventTypeTransaction(TradeEvent.class);
-        registerEventTypeTransaction(OfferCreated.class);
-        registerEventTypeTransaction(OfferCanceled.class);
-        registerEventTypeTransaction(OfferExpired.class);
-        registerEventTypeTransaction(OfferAccepted.class);
 
         //for recreate Specific events to handle another operations like methods
         registerEventTypeOffers(OfferCreated.class);

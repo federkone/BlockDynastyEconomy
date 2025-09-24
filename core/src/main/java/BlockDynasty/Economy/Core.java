@@ -27,7 +27,7 @@ public class Core {
         this.accountsUseCase = new AccountsUseCase(services, repository,courier);
         this.currencyUseCase = new CurrencyUseCase(services, repository, accountsUseCase, courier);
         this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, services.getAccountService(), repository, courier, log, services.getEventManager());
-        this.offerUseCase = new OfferUseCase(services.getOfferService(), this.currencyUseCase.getGetCurrencyUseCase(),this.accountsUseCase.getGetAccountsUseCase(),this.transactionsUseCase.getTradeCurrenciesUseCase());
+        this.offerUseCase = new OfferUseCase(services.getOfferService(),courier, services.getEventManager(), this.currencyUseCase.getGetCurrencyUseCase(),this.accountsUseCase.getGetAccountsUseCase(),this.transactionsUseCase.getTradeCurrenciesUseCase());
     }
 
     public ServicesManager getServicesManager() {

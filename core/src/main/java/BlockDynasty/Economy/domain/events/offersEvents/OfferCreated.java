@@ -16,6 +16,6 @@ public class OfferCreated extends OfferEvent {
 
     @Override
     public void syncOffer(OfferService offerService) {
-        offerService.addOfferFromEvent(offer);
+        offerService.addOffer(offer);
     }
 }

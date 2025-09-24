@@ -80,9 +80,9 @@ public class OfferUserCasesTest {
         tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore,new CourierTest(),new LoggerTest(),eventManager);
         offerService = new OfferService(new CourierTest(),eventManager,1);
 
-        createOfferUseCase = new CreateOfferUseCase( offerService, searchCurrencyUseCase, searchAccountUseCase);
-        acceptOfferUseCase = new AcceptOfferUseCase( offerService, tradeCurrenciesUseCase);
-        cancelOfferUseCase = new CancelOfferUseCase( offerService);
+        createOfferUseCase = new CreateOfferUseCase( offerService,new CourierTest(),eventManager, searchCurrencyUseCase, searchAccountUseCase);
+        acceptOfferUseCase = new AcceptOfferUseCase( offerService,new CourierTest(),eventManager, tradeCurrenciesUseCase);
+        cancelOfferUseCase = new CancelOfferUseCase( offerService,new CourierTest(),eventManager);
     }
 
     @Test
@@ -134,8 +134,8 @@ public class OfferUserCasesTest {
 
 
         assertEquals(false, offerService.hasOfferTo(cris.getUuid()), "Offer should be removed after expiration");
-        assertEquals(null, offerService.getOffer(cris.getUuid()), "Offer should exist before expiration");
-        assertEquals(null, offerService.getOffer(nullplague.getUuid()), "Offer should exist before expiration");
+        assertEquals(null, offerService.getOfferBuyer(cris.getUuid()), "Offer should exist before expiration");
+        assertEquals(null, offerService.getOfferSeller(nullplague.getUuid()), "Offer should exist before expiration");
     }
 
 }

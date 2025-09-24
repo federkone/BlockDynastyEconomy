@@ -1,5 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.offer;
 
+import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
@@ -7,6 +9,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.services.IOfferService;
+import BlockDynasty.Economy.domain.services.courier.Courier;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -15,12 +18,16 @@ public class CreateOfferUseCase {
     private final IOfferService offerService;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final SearchAccountUseCase searchAccountUseCase;
+    private final Courier courier;
+    private final EventManager eventManager;
 
     //todo: crear oferta si, solo si no existe una pendiente entre enviador y receptor. primero tengo que obtener ambos jugadores con GetplayerUseCase y asegurarse que existan, ,GetCurrencyUseCase y asegurarse que la moneda existente exista, y luego crear la oferta guardandola en el OfferManager
-    public CreateOfferUseCase(IOfferService offerService, SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase) {
+    public CreateOfferUseCase(IOfferService offerService, Courier courier, EventManager eventManager,SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase) {
         this.offerService = offerService;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.searchAccountUseCase = searchAccountUseCase;
+        this.courier = courier;
+        this.eventManager = eventManager;
     }
 
     public Result<Void> execute (UUID playerSender, UUID playerReciber, String currencyNameValue, BigDecimal amountCurrencyValue, String currencyNameOffer, BigDecimal amountCurrencyOffer) {
@@ -83,6 +90,8 @@ public class CreateOfferUseCase {
         }
 
         offerService.createOffer(accountSenderResult.getValue().getPlayer(), accountReciberResult.getValue().getPlayer(), amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
+        eventManager.emit(new OfferCreated(offerService.getOfferSeller(playerSender)));
+        courier.sendUpdateMessage("event",new OfferCreated(offerService.getOfferSeller(playerSender)).toJson(),playerReciber.toString());
         return Result.success(null);
     }
 }

@@ -17,6 +17,6 @@ public class OfferAccepted extends OfferEvent{
 
     @Override
     public void syncOffer(OfferService offerService) {
-        offerService.removeOffer(offer);
+        offerService.acceptOffer(offer.getComprador().getUuid(),offer.getVendedor().getUuid());
     }
 }

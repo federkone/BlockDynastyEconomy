@@ -17,6 +17,6 @@ public class OfferCanceled extends OfferEvent {
 
     @Override
     public void syncOffer(OfferService offerService) {
-        offerService.removeOffer(offer);
+        offerService.cancelOffer(offer.getComprador().getUuid());
     }
 }

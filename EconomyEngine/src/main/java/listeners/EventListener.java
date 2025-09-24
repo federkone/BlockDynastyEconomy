@@ -111,10 +111,21 @@ public class EventListener {
             if (sender != null ) {
                 sender.sendMessage("&7You trade " +fromColorCode+fromFormat + " &7to " + event.getToPlayer().getNickname() + " &7for " + toColorCode + toFormat+"&7.");
                 sender.playNotificationSound();
+
+                Runnable task=()->{
+                    GUIFactory.getGuiService().refresh(sender.getUniqueId());
+                };
+                platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
+
             }
             if (receiver != null){
                 receiver.sendMessage("&7You received " + fromColorCode+fromFormat + " &7from " + event.getFromPlayer().getNickname()+ " &7for " + toColorCode + toFormat+"&7.");
                 receiver.playNotificationSound();
+
+                Runnable task=()->{
+                    GUIFactory.getGuiService().refresh(receiver.getUniqueId());
+                };
+                platformAdapter.getScheduler().run(ContextualTask.build(task , receiver));
             }
 
         });

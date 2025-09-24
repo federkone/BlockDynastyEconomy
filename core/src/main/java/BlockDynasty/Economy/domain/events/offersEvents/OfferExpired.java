@@ -16,6 +16,6 @@ public class OfferExpired extends OfferEvent {
 
     @Override
     public void syncOffer(OfferService offerService) {
-        offerService.removeOffer(offer);
+        offerService.expireOfferFromEvent(offer);
     }
 }
