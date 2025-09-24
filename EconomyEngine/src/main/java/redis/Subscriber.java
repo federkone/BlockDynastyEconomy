@@ -75,8 +75,7 @@ public class Subscriber {
                                 if (shouldSkipProcessing(target)) {
                                     return;
                                 }
-                                platformAdapter.getScheduler().runAsync(ContextualTask.build(() ->
-                                        accountService.syncOnlineAccount(uuid)));
+                                platformAdapter.getScheduler().runAsync(ContextualTask.build(() -> accountService.syncOnlineAccount(uuid)));
                                 eventManager.processNetworkEvent(eventJson);
                                 return;
                             }
@@ -84,8 +83,7 @@ public class Subscriber {
                                 if (shouldSkipProcessing(target)) {
                                     return;
                                 }
-                                platformAdapter.getScheduler().runAsync(ContextualTask.build(() ->
-                                        accountService.syncOnlineAccount(uuid)));
+                                platformAdapter.getScheduler().runAsync(ContextualTask.build(() -> accountService.syncOnlineAccount(uuid)));
                                 return;
                             }
                             if (type.equals("currency")) {

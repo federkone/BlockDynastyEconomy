@@ -2,10 +2,8 @@ package BlockDynasty.Economy.domain.events.offersEvents;
 
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
-import BlockDynasty.Economy.domain.events.Event;
-import BlockDynasty.Economy.domain.events.SerializableEvent;
 
-public class OfferCreated extends Event implements SerializableEvent,OfferEvent {
+public class OfferCreated extends OfferEvent {
     private final Offer offer;
 
     public OfferCreated(Offer offer) {
@@ -17,16 +15,7 @@ public class OfferCreated extends Event implements SerializableEvent,OfferEvent 
     }
 
     @Override
-    public String getEventType() {
-        return "OfferCreated";
-    }
-
-    public static OfferCreated fromJson(String jsonString) {
-        return SerializableEvent.fromJson(jsonString, OfferCreated.class);
-    }
-
-    @Override
-    public void handle(OfferService offerService) {
+    public void syncOffer(OfferService offerService) {
         offerService.addOfferFromEvent(offer);
     }
 }

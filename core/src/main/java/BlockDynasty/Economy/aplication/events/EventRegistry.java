@@ -1,10 +1,7 @@
 package BlockDynasty.Economy.aplication.events;
 
-import BlockDynasty.Economy.domain.events.Event;
-import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
-import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
-import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
-import BlockDynasty.Economy.domain.events.offersEvents.OfferExpired;
+import BlockDynasty.Economy.domain.events.SerializableEvent;
+import BlockDynasty.Economy.domain.events.offersEvents.*;
 import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,44 +10,73 @@ import com.google.gson.JsonParser;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class EventRegistry {
-    private static final Map<String, Function<String, Event>> deserializers = new HashMap<>();
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Map<String, Class<? extends SerializableEvent>> deserializerEvent = new HashMap<>();
+    private static final Map<String, Class<? extends OfferEvent>> deserializersOffersEvent = new HashMap<>();
 
-    // Registrar un tipo de evento
-    public static void registerEventType(String eventType, Function<String, Event> deserializer) {
-        deserializers.put(eventType, deserializer);
+    private static void registerEventTypeTransaction(Class<? extends SerializableEvent> eventClass) {
+        deserializerEvent.put(eventClass.getSimpleName(), eventClass);
     }
 
-    // Deserializar cualquier evento
-    public static Event deserializeEvent(String jsonString) {
+    private static void registerEventTypeOffers(Class<? extends OfferEvent> eventClass) {
+        deserializersOffersEvent.put(eventClass.getSimpleName(), eventClass);
+    }
+
+    public static SerializableEvent deserializeEvent(String jsonString) {
         try {
             JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
             String eventType = jsonObject.get("eventType").getAsString();
 
-            Function<String, Event> deserializer = deserializers.get(eventType);
-            if (deserializer == null) {
-                throw new IllegalArgumentException("Tipo de evento no registrado: " + eventType);
+            Class<? extends SerializableEvent> eventClass = deserializerEvent.get(eventType);
+            if (eventClass == null) {
+                return null;
             }
 
-            return deserializer.apply(jsonString);
+            JsonObject data = jsonObject.get("data").getAsJsonObject();
+            Gson gson = new GsonBuilder().create();
+
+            return gson.fromJson(data, eventClass);
         } catch (Exception e) {
-            throw new RuntimeException("Error deserializando evento: " + e.getMessage(), e);
+            throw new RuntimeException("Error deserializing event: " + e.getMessage(), e);
         }
     }
 
-    // Inicializar el registro
+    public static OfferEvent deserializeOfferEvent(String jsonString) {
+        try {
+            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
+            String eventType = jsonObject.get("eventType").getAsString();
+
+            Class<? extends OfferEvent> eventClass = deserializersOffersEvent.get(eventType);
+            if (eventClass == null) {
+                return null;
+            }
+
+            JsonObject data = jsonObject.get("data").getAsJsonObject();
+            Gson gson = new GsonBuilder().create();
+
+            return gson.fromJson(data, eventClass);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deserializing event: " + e.getMessage(), e);
+        }
+    }
+
     static {
-        registerEventType("DepositEvent", DepositEvent::fromJson);
-        registerEventType("WithdrawEvent", WithdrawEvent::fromJson);
-        registerEventType("TransferEvent", TransferEvent::fromJson);
-        registerEventType("SetEvent", SetEvent::fromJson);
-        registerEventType("TradeEvent", TradeEvent::fromJson);
-        registerEventType("OfferCreated", OfferCreated::fromJson);
-        registerEventType("OfferCanceled", OfferCanceled::fromJson);
-        registerEventType("OfferExpired", OfferExpired::fromJson);
-        registerEventType("OfferAccepted", OfferAccepted::fromJson);
+        //for recreate and emit Events locally
+        registerEventTypeTransaction(DepositEvent.class);
+        registerEventTypeTransaction(WithdrawEvent.class);
+        registerEventTypeTransaction(TransferEvent.class);
+        registerEventTypeTransaction(SetEvent.class);
+        registerEventTypeTransaction(TradeEvent.class);
+        registerEventTypeTransaction(OfferCreated.class);
+        registerEventTypeTransaction(OfferCanceled.class);
+        registerEventTypeTransaction(OfferExpired.class);
+        registerEventTypeTransaction(OfferAccepted.class);
+
+        //for recreate Specific events to handle another operations like methods
+        registerEventTypeOffers(OfferCreated.class);
+        registerEventTypeOffers(OfferCanceled.class);
+        registerEventTypeOffers(OfferExpired.class);
+        registerEventTypeOffers(OfferAccepted.class);
     }
 }

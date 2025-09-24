@@ -3,6 +3,7 @@ package BlockDynasty.Economy.domain.services;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferEvent;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,5 +17,5 @@ public interface IOfferService {
     boolean cancelOffer(UUID player);
     boolean acceptOffer(UUID player);
     boolean hasOfferTo(UUID player);
-    void processNetworkEvent(String data);
+    void processNetworkEvent(String jsonEvent);
 }

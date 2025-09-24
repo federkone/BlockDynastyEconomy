@@ -5,8 +5,6 @@ import BlockDynasty.Economy.aplication.events.EventRegistry;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
-import BlockDynasty.Economy.domain.events.Event;
-import BlockDynasty.Economy.domain.events.SerializableEvent;
 import BlockDynasty.Economy.domain.events.offersEvents.*;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
@@ -103,10 +101,10 @@ public class OfferService implements IOfferService {
     }
 
     @Override
-    public void processNetworkEvent(String data) {
-        Event event = EventRegistry.deserializeEvent(data);
-        if (event instanceof OfferEvent){
-            ((OfferEvent) event).handle(this);
+    public void processNetworkEvent(String jsonEvent) {
+        OfferEvent offerEvent=EventRegistry.deserializeOfferEvent(jsonEvent);
+        if (offerEvent != null){
+            offerEvent.syncOffer(this);
         }
     }
 

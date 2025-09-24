@@ -4,6 +4,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.events.Context;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferExpired;
@@ -110,20 +111,10 @@ public class EventListener {
             if (sender != null ) {
                 sender.sendMessage("&7You trade " +fromColorCode+fromFormat + " &7to " + event.getToPlayer().getNickname() + " &7for " + toColorCode + toFormat+"&7.");
                 sender.playNotificationSound();
-
-                Runnable task=()->{
-                    GUIFactory.getGuiService().refresh(sender.getUniqueId());
-                };
-                platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
             }
             if (receiver != null){
                 receiver.sendMessage("&7You received " + fromColorCode+fromFormat + " &7from " + event.getFromPlayer().getNickname()+ " &7for " + toColorCode + toFormat+"&7.");
                 receiver.playNotificationSound();
-
-                Runnable task=()->{
-                    GUIFactory.getGuiService().refresh(receiver.getUniqueId());
-                };
-                platformAdapter.getScheduler().run(ContextualTask.build(task , receiver));
             }
 
         });
@@ -246,7 +237,26 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
             }
+        });
 
+        eventManager.subscribe(OfferAccepted.class, event -> {
+            Offer offer = event.getOffer();
+            IEntityCommands receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
+            IEntityCommands sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
+
+            if (receiver != null ) {
+                Runnable task=()->{
+                    GUIFactory.getGuiService().refresh(receiver.getUniqueId());
+                };
+                platformAdapter.getScheduler().run(ContextualTask.build(task , receiver));
+            }
+
+            if (sender != null){
+                Runnable task=()->{
+                    GUIFactory.getGuiService().refresh(sender.getUniqueId());
+                };
+                platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
+            }
         });
     }
 }

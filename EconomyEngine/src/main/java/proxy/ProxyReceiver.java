@@ -1,6 +1,9 @@
 package proxy;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.events.EventRegistry;
+import BlockDynasty.Economy.domain.events.Event;
+import BlockDynasty.Economy.domain.events.offersEvents.OfferEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;

@@ -1,9 +1,8 @@
 package BlockDynasty.Economy.domain.events.offersEvents;
 
 import BlockDynasty.Economy.aplication.services.OfferService;
+import BlockDynasty.Economy.domain.events.SerializableEvent;
 
-public interface OfferEvent {
-
-    void handle(OfferService offerService);
-
+public abstract class OfferEvent extends SerializableEvent {
+    public abstract void syncOffer(OfferService offerService);
 }

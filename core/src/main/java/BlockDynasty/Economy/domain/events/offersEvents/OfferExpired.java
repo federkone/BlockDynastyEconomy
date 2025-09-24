@@ -2,10 +2,8 @@ package BlockDynasty.Economy.domain.events.offersEvents;
 
 import BlockDynasty.Economy.aplication.services.OfferService;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
-import BlockDynasty.Economy.domain.events.Event;
-import BlockDynasty.Economy.domain.events.SerializableEvent;
 
-public class OfferExpired extends Event implements SerializableEvent, OfferEvent {
+public class OfferExpired extends OfferEvent {
     private final Offer offer;
 
     public OfferExpired(Offer offer) {
@@ -17,16 +15,7 @@ public class OfferExpired extends Event implements SerializableEvent, OfferEvent
     }
 
     @Override
-    public String getEventType() {
-        return "OfferExpired";
-    }
-
-    public static OfferExpired fromJson(String jsonString) {
-        return SerializableEvent.fromJson(jsonString, OfferExpired.class);
-    }
-
-    @Override
-    public void handle(OfferService offerService) {
+    public void syncOffer(OfferService offerService) {
         offerService.removeOffer(offer);
     }
 }

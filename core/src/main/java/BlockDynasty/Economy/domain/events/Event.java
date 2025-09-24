@@ -1,6 +1,6 @@
 package BlockDynasty.Economy.domain.events;
 
-public abstract class Event {
+public abstract class Event implements CancelableEvent {
     private boolean cancelled = false;
 
     public void setCancelled(boolean cancelled) {
