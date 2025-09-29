@@ -51,7 +51,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
     @Override
     public void addCustomButtons() {
         setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Currency to Receive",
-                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to receive", "And before that, the amount"
+                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to receive",ChatColor.stringValueOf(Colors.WHITE)+ "And before that, the amount"
                 ),
                 null);
 

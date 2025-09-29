@@ -20,7 +20,7 @@ public class CurrencyService implements ICurrencyService {
         this.currencies = repository.loadCurrencies();
 
         if(currencies.isEmpty()){
-            Currency defaultCurrency = new Currency(UUID.randomUUID(), "Default", "Default");
+            Currency defaultCurrency = new Currency(UUID.randomUUID(), "Money", "Money");
             defaultCurrency.setDefaultCurrency(true);
             repository.saveCurrency(defaultCurrency);
             currencies.add(defaultCurrency);

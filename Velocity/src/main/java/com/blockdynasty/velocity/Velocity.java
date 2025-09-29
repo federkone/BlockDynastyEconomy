@@ -27,7 +27,7 @@ import java.util.UUID;
     version = "1.0-SNAPSHOT"
 )
 public class Velocity {
-    private static final String CHANNEL_NAME = "proxy:blockdynastyeconomy";
+    private static final String CHANNEL_NAME = "proxy:blockdynasty";
     @Inject private ProxyServer proxyServer;
     @Inject private Logger logger;
 

@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 public final class EconomyProxy extends Plugin implements Listener {
-    private static final String CHANNEL_NAME = "proxy:blockdynastyeconomy";
+    private static final String CHANNEL_NAME = "proxy:blockdynasty";
     private static ProxyServer proxyServer;
     private static Logger logger;
 

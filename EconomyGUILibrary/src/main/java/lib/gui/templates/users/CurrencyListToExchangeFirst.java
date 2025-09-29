@@ -25,10 +25,8 @@ public class CurrencyListToExchangeFirst extends CurrenciesList {
         this.exchangeUseCase = exchangeUseCase;
     }
 
-    //en este punto ya selecciono la primer moneda a dar.
     @Override
     protected void functionLeftItemClick(Currency currency) {
-        //manejaremos la logica abriendo otro menu de seleccion de moneda, y ahi si, el valor, sobrescribiendo execute() con el caso de uso exchange()
         new CurrencyListToExchangeSecond(player, searchCurrencyUseCase, exchangeUseCase, currency, this,textInput).open();
     }
 

@@ -175,10 +175,8 @@ public class PlaceHolder {
         Currency currency = result.getValue();
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
-            // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
             return ChatColor.formatColorToPlaceholder(currency.getColor()) + currency.format(account.getMoney(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
-            //return currency.format(account.getBalance(currency).getBalance());
             return String.valueOf(account.getMoney(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
         }
     }

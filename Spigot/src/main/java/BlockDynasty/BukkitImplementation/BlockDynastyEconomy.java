@@ -66,7 +66,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     private void registerEvents() {
         Listener economyListener;
-        if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
+        if(getServer().getOnlineMode()){ //configuration.getBoolean("online")
             economyListener = new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
             Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
@@ -83,7 +83,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
         //vault.init(economy.getVaultLogger());
         PlaceHolder.register(economy.getPlaceHolder());
-        ChannelRegister.init(this,economy.getApi());
+        ChannelRegister.init(this);
     }
 
     public static BlockDynastyEconomy getInstance() {
