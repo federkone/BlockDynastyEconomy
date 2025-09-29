@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Class-Path: angus-activation-2.0.0.jar jakarta.persistence-api-3.1.0.jar
+  classmate-1.5.1.jar antlr4-runtime-4.13.0.jar jaxb-core-4.0.2.jar jaka
+ rta.inject-api-2.0.1.jar slf4j-api-1.7.25.jar jaxb-runtime-4.0.2.jar jb
+ oss-logging-3.5.0.Final.jar jakarta.activation-api-2.1.0.jar jakarta.xm
+ l.bind-api-4.0.0.jar jandex-3.2.0.jar byte-buddy-1.14.18.jar mysql-conn
+ ector-java-8.0.21.jar hibernate-core-6.6.2.Final.jar jakarta.transactio
+ n-api-2.0.1.jar hibernate-commons-annotations-7.0.3.Final.jar persisten
+ ce-api-1.0.jar istack-commons-runtime-4.1.1.jar HikariCP-3.4.5.jar txw2
+ -4.0.2.jar protobuf-java-3.11.4.jar
+

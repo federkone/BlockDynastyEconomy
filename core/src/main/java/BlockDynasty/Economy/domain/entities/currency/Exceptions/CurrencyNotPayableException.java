@@ -1,0 +1,10 @@
+package BlockDynasty.Economy.domain.entities.currency.Exceptions;
+
+public class CurrencyNotPayableException extends CurrencyException {
+    public CurrencyNotPayableException(String message) {
+        super(message);
+    }
+    public CurrencyNotPayableException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

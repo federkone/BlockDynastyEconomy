@@ -1,0 +1,67 @@
+package lib.commands.templates.administrators.EconomySubcommand;
+
+import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
+import BlockDynasty.Economy.domain.result.Result;
+import lib.commands.abstractions.IEntityCommands;
+import lib.commands.abstractions.AbstractCommand;
+import lib.commands.CommandsFactory;
+import lib.messages.MessageService;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public class BuyCommand extends AbstractCommand {
+    private final WithdrawUseCase withdraw;
+
+    public BuyCommand(WithdrawUseCase withdraw) {
+        super("buy","BlockDynastyEconomy.command.buycommand",List.of("player", "amount", "currency", "command..."));
+        this.withdraw = withdraw;
+    }
+
+    @Override
+    public boolean execute(IEntityCommands sender, String[] args) {
+        if(!super.execute( sender, args)){
+            return false;
+        }
+
+        IEntityCommands player = CommandsFactory.getPlatformAdapter().getPlayer(args[0]);
+
+        if(player==null) {
+            sender.sendMessage("player is offline");
+            return false;
+        }
+        double cantidadDemoneda;
+        try {
+            cantidadDemoneda = Double.parseDouble(args[1]);
+        } catch (NumberFormatException e) {
+            player.sendMessage(MessageService.getMessage("invalidamount"));
+            return false;
+        }
+
+        String tipoDemoneda = args[2];
+
+        //constructor de comando a entregar a partir del argumento 3
+        StringBuilder cmdBuilder = new StringBuilder();
+        for (int i = 3; i < args.length; i++) {
+            cmdBuilder.append(args[i]).append(" ");
+        }
+        String cmd = cmdBuilder.toString().trim();
+
+        Result<Void> result =withdraw.execute(player.getName(),tipoDemoneda, BigDecimal.valueOf(cantidadDemoneda));
+
+        if(result.isSuccess()){
+            try{
+                CommandsFactory.getPlatformAdapter().dispatchCommand(cmd);
+                player.sendMessage(MessageService.getMessage("buy_success"));
+            }catch (Exception e){
+                sender.sendMessage("Error dispatch command: " + e.getMessage());
+            }
+
+        }else{
+            sender.sendMessage( "Error: " + result.getErrorMessage());
+        }
+
+        return true;
+    }
+
+}

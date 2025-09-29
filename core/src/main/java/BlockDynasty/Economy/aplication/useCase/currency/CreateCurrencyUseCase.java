@@ -1,0 +1,49 @@
+package BlockDynasty.Economy.aplication.useCase.currency;
+
+
+import BlockDynasty.Economy.domain.services.IAccountService;
+import BlockDynasty.Economy.domain.services.courier.Courier;
+import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
+import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
+import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
+
+import java.util.UUID;
+
+//TODO :CREATE CURRENCY, NOTA IMPORTANTE, VALIDAR QUE SI YA EXISTE UNA CURRENCY POR DEFAULT NO SE PUEDA CREAR, Y EN EL CASO DE QUERER SETEAR UNA POR DEFECTO DEBEMOS DESASER LA ANTERIOR DEFAULT
+public class CreateCurrencyUseCase {
+    private final ICurrencyService currencyService;
+    private final IRepository dataStore;
+    private final Courier updateForwarder;
+    private final IAccountService accountService;
+
+    public CreateCurrencyUseCase(ICurrencyService currencyService, IAccountService accountService, Courier updateForwarder, IRepository dataStore) {
+        this.currencyService = currencyService;
+        this.accountService = accountService;
+        this.dataStore = dataStore;
+        this.updateForwarder = updateForwarder;
+    }
+
+    public void createCurrency(String singular,String plural){
+        if (currencyService.currencyExist(singular) || currencyService.currencyExist(plural)){
+            throw new CurrencyAlreadyExist("Currency already exist");
+        }
+        Currency currency = new Currency(UUID.randomUUID(), singular, plural);
+        currency.setExchangeRate(1.0);
+        if(currencyService.getCurrencies().isEmpty()) {  //setear por defecto si es la unica moneda en el sistema
+            currency.setDefaultCurrency(true);
+        }
+        try {
+            dataStore.saveCurrency(currency);
+            currencyService.add(currency);//cache
+            accountService.syncDbWithOnlineAccounts();
+            if (updateForwarder != null){
+                updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+            }
+        }catch (TransactionException e){
+            throw new TransactionException("Error creating currency");
+        }
+    }
+}
