@@ -1,6 +1,7 @@
 package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
@@ -89,9 +90,9 @@ public class CreateOfferUseCase {
             return Result.failure("Insufficient funds", ErrorCode.INSUFFICIENT_FUNDS);
         }
 
-        offerService.createOffer(accountSenderResult.getValue().getPlayer(), accountReciberResult.getValue().getPlayer(), amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
-        eventManager.emit(new OfferCreated(offerService.getOfferSeller(playerSender)));
-        courier.sendUpdateMessage("event",new OfferCreated(offerService.getOfferSeller(playerSender)).toJson(),playerReciber.toString());
-        return Result.success(null);
+        Offer offer =offerService.createOffer(accountSenderResult.getValue().getPlayer(), accountReciberResult.getValue().getPlayer(), amountCurrencyValue, amountCurrencyOffer, currencyValueResult.getValue(), currencyOfferResult.getValue());
+        eventManager.emit(new OfferCreated(offer));
+        courier.sendUpdateMessage("event",new OfferCreated(offer).toJson(),playerReciber.toString());
+        return Result.success();
     }
 }

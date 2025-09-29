@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IOfferService {
-    void createOffer(Player playerSender, Player playerReciber, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer );
+    Offer createOffer(Player playerSender, Player playerReciber, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer );
     Offer getOfferBuyer(UUID playerId);
     Offer getOfferSeller(UUID playerId);
     Offer getOffer(UUID player1Id, UUID player2Id);

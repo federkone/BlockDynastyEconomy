@@ -91,7 +91,7 @@ public class GUIFactory {
                 }
                 //submenus for editCurrencyPanel
                     public static IGUI colorSelectorPanel(IEntityGUI sender, Currency currency, EditCurrencyGUI parent) {
-                        return new ColorSelectionGUI( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent);
+                        return new ColorSelectionGUI( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent,textInput);
                     }
     //_-------------------------------------------------------------------------------
     //main bank user panel

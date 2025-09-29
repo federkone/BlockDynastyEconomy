@@ -4,6 +4,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.*;
+import lib.util.colors.ChatColor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -56,10 +57,10 @@ public abstract class CurrenciesList extends PaginatedGUI<Currency> {
         String color = ChatColor.stringValueOf(currency.getColor());
         return createItem(Materials.GOLD_INGOT,
                 color + currency.getSingular(),
-                "§7Singular: " + color + currency.getSingular(),
-                "§7Plural: " + color + currency.getPlural(),
-                "§7Transferable: " + (currency.isTransferable() ? "§aYes" : "§cNo"),
-                "§7Exchange Rate: "+ color+ currency.getExchangeRate()
+                "Singular: " + color + currency.getSingular(),
+                "Plural: " + color + currency.getPlural(),
+                "Transferable: " + (currency.isTransferable() ? "Yes" : "No"),
+                "Exchange Rate: "+ color+ currency.getExchangeRate()
         );
     }
 

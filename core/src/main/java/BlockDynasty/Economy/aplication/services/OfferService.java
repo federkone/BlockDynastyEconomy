@@ -37,12 +37,13 @@ public class OfferService implements IOfferService {
         this.eventManager = eventManager;
     }
 
-    public void createOffer(Player playerSender, Player playerReceiver, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer) {
+    public Offer createOffer(Player playerSender, Player playerReceiver, BigDecimal amountCurrencyValue, BigDecimal amountCurrencyOffer, Currency currencyValue, Currency currencyOffer) {
         Offer offer = new Offer(playerSender, playerReceiver, amountCurrencyValue, amountCurrencyOffer, currencyValue, currencyOffer);
         addOffer(offer);
+        return offer;
     }
 
-    public void addOffer(Offer offer){
+    public void addOffer(Offer offer) {
         ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
         if (oldTask != null) {
             oldTask.cancel(false);
@@ -50,24 +51,36 @@ public class OfferService implements IOfferService {
         }
 
         ScheduledFuture<?> expirationTask = scheduler.schedule(() -> {
-            expireOffer(offer);
+            expireOfferLocally(offer, true); // Added parameter to indicate local expiration
         }, this.delay, TimeUnit.SECONDS);
 
         ofertasPendientes.put(offer, expirationTask);
     }
 
-    public void expireOffer(Offer offer){
+    // New method for local expirations with network broadcast
+    public void expireOfferLocally(Offer offer, boolean broadcastNetwork) {
         this.ofertasPendientes.remove(offer);
-        this.eventManager.emit(new OfferExpired(offer));
-        courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getComprador().getUuid().toString());
-        courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(), offer.getVendedor().getUuid().toString());
+
+        if (broadcastNetwork) {
+            this.eventManager.emit(new OfferExpired(offer));//test
+            courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(),
+                    offer.getComprador().getUuid().toString());
+            courier.sendUpdateMessage("event", new OfferExpired(offer).toJson(),
+                    offer.getVendedor().getUuid().toString());
+        }
     }
 
-    public void expireOfferFromEvent(Offer offer){
+    // Update the original method to use the new one
+    public void expireOffer(Offer offer) {
+        expireOfferLocally(offer, true);
+    }
+
+    // Update the event-based expiration to not broadcast again
+    public void expireOfferFromEvent(Offer offer) {
         ScheduledFuture<?> oldTask = this.ofertasPendientes.get(offer);
         if (oldTask != null) {
             oldTask.cancel(false);
-            expireOffer(offer);
+            expireOfferLocally(offer, false); // Don't broadcast network events
         }
     }
 
@@ -87,7 +100,6 @@ public class OfferService implements IOfferService {
         return false;
     }
 
-    //can be accepted only by the buyer
     public boolean acceptOffer(UUID playerReceiver, UUID playerSender) {
         Offer offerToAccept = getOffer(playerSender, playerReceiver);
 
@@ -101,7 +113,6 @@ public class OfferService implements IOfferService {
         }
         return false;
     }
-
 
     public boolean hasOfferTo(UUID player) {
         for (Offer offer : this.ofertasPendientes.keySet()) {
@@ -117,7 +128,7 @@ public class OfferService implements IOfferService {
         OfferEvent offerEvent=EventRegistry.deserializeOfferEvent(jsonEvent);
         if (offerEvent != null){
             offerEvent.syncOffer(this);
-            eventManager.emit(offerEvent);
+            //eventManager.emit(offerEvent);
         }
     }
 
@@ -142,7 +153,6 @@ public class OfferService implements IOfferService {
                 .findFirst()
                 .orElse(null);
     }
-
 
     public List<Offer> getOffersSeller(UUID playerId) {
         return this.ofertasPendientes.keySet().stream()

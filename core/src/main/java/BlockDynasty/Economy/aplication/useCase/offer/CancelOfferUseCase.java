@@ -32,6 +32,6 @@ public class CancelOfferUseCase {
         eventManager.emit(new OfferCanceled(offer));
         courier.sendUpdateMessage("event", new OfferCanceled( offer).toJson(),offer.getVendedor().getUuid().toString());
         courier.sendUpdateMessage("event", new OfferCanceled( offer).toJson(),offer.getComprador().getUuid().toString());
-        return Result.success(null);
+        return Result.success();
     }
 }

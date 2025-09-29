@@ -3,58 +3,78 @@ package lib.gui.templates.administrators.subMenus.currencies;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.IEntityGUI;
-import lib.gui.abstractions.Materials;
+import lib.gui.abstractions.*;
 import lib.gui.templates.abstractions.AbstractGUI;
-import lib.gui.templates.abstractions.ChatColor;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 public class ColorSelectionGUI extends AbstractGUI {
     private final IEntityGUI player;
     private final Currency currency;
     private final EditCurrencyUseCase editCurrencyUseCase;
+    private final ITextInput textInput;
 
-    public ColorSelectionGUI(IEntityGUI player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parent) {
-        super("Select color", 4,player,parent);
+    public ColorSelectionGUI(IEntityGUI player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parent, ITextInput textInput) {
+        super("Select color", 5,player,parent);
         this.player = player;
         this.currency = currency;
         this.editCurrencyUseCase = editCurrencyUseCase;
+        this.textInput = textInput;
         setupColorGUI();
     }
 
     private void setupColorGUI() {
+        setItem(4, createItem(Materials.PAPER,"List Vanilla Colors","These colors ensure maximum compatibility between versions","Additionally you can enter Hexadecimal color for modern versions"), null);
         setItem(10, createColorItem(Materials.WHITE_WOOL, ChatColor.stringValueOf("WHITE"), "WHITE"),
-                unused -> handleColorSelection( "WHITE"));
+                unused -> handleColorSelection("WHITE"));
         setItem(11, createColorItem(Materials.YELLOW_WOOL, ChatColor.stringValueOf("YELLOW"), "YELLOW"),
-                unused -> handleColorSelection( "YELLOW"));
+                unused -> handleColorSelection("YELLOW"));
         setItem(12, createColorItem(Materials.RED_WOOL, ChatColor.stringValueOf("RED"), "RED"),
-                unused -> handleColorSelection( "RED"));
+                unused -> handleColorSelection("RED"));
         setItem(13, createColorItem(Materials.PINK_WOOL, ChatColor.stringValueOf("LIGHT_PURPLE"), "LIGHT_PURPLE"),
-                unused -> handleColorSelection( "LIGHT_PURPLE"));
+                unused -> handleColorSelection("LIGHT_PURPLE"));
         setItem(14, createColorItem(Materials.PURPLE_WOOL, ChatColor.stringValueOf("DARK_PURPLE"), "DARK_PURPLE"),
-                unused -> handleColorSelection( "DARK_PURPLE"));
+                unused -> handleColorSelection("DARK_PURPLE"));
         setItem(15, createColorItem(Materials.ORANGE_WOOL, ChatColor.stringValueOf("GOLD"), "GOLD"),
-                unused -> handleColorSelection( "GOLD"));
+                unused -> handleColorSelection("GOLD"));
         setItem(16, createColorItem(Materials.LIME_WOOL, ChatColor.stringValueOf("GREEN"), "GREEN"),
-                unused -> handleColorSelection( "GREEN"));
+                unused -> handleColorSelection("GREEN"));
         setItem(19, createColorItem(Materials.GRAY_WOOL, ChatColor.stringValueOf("GRAY"), "GRAY"),
-                unused -> handleColorSelection( "GRAY"));
+                unused -> handleColorSelection("GRAY"));
         setItem(20, createColorItem(Materials.LIGHT_GRAY_WOOL, ChatColor.stringValueOf("DARK_GRAY"), "DARK_GRAY"),
-                unused -> handleColorSelection( "DARK_GRAY"));
+                unused -> handleColorSelection("DARK_GRAY"));
         setItem(21, createColorItem(Materials.CYAN_WOOL, ChatColor.stringValueOf("AQUA"), "AQUA"),
                 unused -> handleColorSelection("AQUA"));
         setItem(22, createColorItem(Materials.LIGHT_BLUE_WOOL, ChatColor.stringValueOf("BLUE"), "BLUE"),
                 unused -> handleColorSelection("BLUE"));
         setItem(23, createColorItem(Materials.BLUE_WOOL, ChatColor.stringValueOf("DARK_BLUE"), "DARK_BLUE"),
-                unused -> handleColorSelection( "DARK_BLUE"));
+                unused -> handleColorSelection("DARK_BLUE"));
         setItem(24, createColorItem(Materials.BROWN_WOOL, ChatColor.stringValueOf("DARK_RED"), "DARK_RED"),
-                unused -> handleColorSelection( "DARK_RED"));
+                unused -> handleColorSelection("DARK_RED"));
         setItem(25, createColorItem(Materials.GREEN_WOOL, ChatColor.stringValueOf("DARK_GREEN"), "DARK_GREEN"),
-                unused -> handleColorSelection( "DARK_GREEN"));
+                unused -> handleColorSelection("DARK_GREEN"));
 
-        setItem(31, createItem(Materials.BARRIER, "§cBack",
-                "§7Click to go back"), unused -> {
+        setItem(32, createColorItem(Materials.GRAY_WOOL, ChatColor.stringValueOf("BLACK"), "BLACK"),
+                unused -> handleColorSelection("BLACK"));
+
+        setItem(30, createColorItem(Materials.CYAN_WOOL, ChatColor.stringValueOf("DARK_AQUA"), "DARK_AQUA"),
+                unused -> handleColorSelection("DARK_AQUA"));
+
+        setItem(39, createItem(Materials.NAME_TAG, "Input color Hex (#..)"), unused -> {
+            textInput.open(this, player, "Hexadecimal Color", "#", s -> {
+                try {
+                    editCurrencyUseCase.editColor(currency.getSingular(), s);
+                    player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank] " + ChatColor.stringValueOf(Colors.GRAY) + "Color updated successfully to " + s + ".");
+                    GUIFactory.editCurrencyPanel(player, currency, getParent().getParent()).open();
+                } catch (Exception e) {
+                    player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank]" + ChatColor.stringValueOf(Colors.RED) + " Error: " + ChatColor.stringValueOf(Colors.YELLOW) + e.getMessage());
+                    this.openParent();
+                }
+                return null;
+            });
+        });
+
+        setItem(40, createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED) + "Back", ChatColor.stringValueOf(Colors.GRAY) + "Click to go back"), unused -> {
             this.openParent();
         });
     }
@@ -62,17 +82,17 @@ public class ColorSelectionGUI extends AbstractGUI {
     private void handleColorSelection(String colorName) {
         try {
             editCurrencyUseCase.editColor(currency.getSingular(), colorName);
-            player.sendMessage("§a[Banco] §7Color updated successfully to " + colorName + ".");
+            player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY) +"Color updated successfully to " + colorName + ".");
             GUIFactory.editCurrencyPanel(player,currency,getParent().getParent()).open();
         } catch (Exception e) {
-            player.sendMessage("§a[Banco] §cError: §e" + e.getMessage());
+            player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.RED)+"Error: "+ ChatColor.stringValueOf(Colors.YELLOW)+ e.getMessage());
             this.openParent();
         }
     }
 
     private IItemStack createColorItem(Materials material, String chatColor, String colorName) {
         return createItem(material, chatColor + colorName,
-                "§7Click to select this color",
+                ChatColor.stringValueOf(Colors.GRAY)+"Click to select this color.",
                 chatColor + "Example: " + currency.getSingular());
     }
 }

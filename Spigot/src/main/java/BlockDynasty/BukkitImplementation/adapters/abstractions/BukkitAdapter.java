@@ -6,6 +6,7 @@ import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.abstractions.IInventory;
@@ -55,6 +56,16 @@ public class BukkitAdapter implements PlatformAdapter {
     @Override
     public File getDataFolder() {
         return BlockDynastyEconomy.getInstance().getDataFolder();
+    }
+
+    @Override
+    public boolean isLegacy() {
+        return Version.isLegacy();
+    }
+
+    @Override
+    public boolean hasSupportAdventureText() {
+        return Version.hasSupportAdventureText();
     }
 
 

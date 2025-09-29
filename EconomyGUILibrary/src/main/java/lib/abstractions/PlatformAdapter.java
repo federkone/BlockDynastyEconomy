@@ -22,4 +22,6 @@ public interface PlatformAdapter {
     void sendPluginMessage(String channel, byte[] message);
     IScheduler getScheduler();
     File getDataFolder();
+    boolean isLegacy();
+    boolean hasSupportAdventureText();
 }

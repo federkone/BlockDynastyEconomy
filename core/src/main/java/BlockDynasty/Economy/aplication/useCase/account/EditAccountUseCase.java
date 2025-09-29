@@ -30,7 +30,7 @@ public class EditAccountUseCase {
             return Result.failure("Account not found", result.getErrorCode());
         }
 
-        return Result.success(null);
+        return Result.success();
     }
 
     public Result<Void> allowReceive(UUID uuid) {
@@ -44,7 +44,7 @@ public class EditAccountUseCase {
             return Result.failure("Account not found", result.getErrorCode());
         }
 
-        return Result.success(null);
+        return Result.success();
     }
 
     public Result<Void> blockAccount(UUID uuid) {
@@ -58,7 +58,7 @@ public class EditAccountUseCase {
             return Result.failure("Account not found", result.getErrorCode());
         }
 
-        return Result.success(null);
+        return Result.success();
     }
 
     public Result<Void> unblockAccount(UUID uuid) {
@@ -72,6 +72,6 @@ public class EditAccountUseCase {
             return Result.failure("Account not found", result.getErrorCode());
         }
 
-        return Result.success(null);
+        return Result.success();
     }
 }

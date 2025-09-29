@@ -9,6 +9,8 @@ import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +58,8 @@ public class OfferOfflineGUI extends TransferFoundsGUI{
     @Override
     public void addCustomButtons() {
         super.addCustomButtons();
-        setItem(4, createItem(Materials.PAPER, "§aSelect Player to Offer",
-                        "§7Click to select the player you want to offer", "§7And before that, the Currencies"),
+        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Player to Offer",
+                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the player you want to offer", ChatColor.stringValueOf(Colors.WHITE)+"And before that, the Currencies"),
                 null);
     }
 }

@@ -17,16 +17,16 @@ public class AdminPanelGUI extends AbstractGUI {
     }
 
     private void initializeButtons() {
-        setItem(20, createItem(Materials.EMERALD, "§6Edit Currencies", "§7Click to edit currencies"), event -> {
+        setItem(20, createItem(Materials.EMERALD, "Edit Currencies", "Click to edit currencies"), event -> {
             GUIFactory.currencyPanel( sender, this).open();
         });
 
 
-        setItem(24, createItem(Materials.PLAYER_HEAD, "§6Manage Accounts", "§7Click to manage accounts"), event -> {
+        setItem(24, createItem(Materials.PLAYER_HEAD, "Manage Accounts", "Click to manage accounts"), event -> {
             GUIFactory.accountPanel( sender, this).open();
         });
 
-        setItem(40, createItem(Materials.BARRIER, "§cExit", "§7Click to exit"), event -> {
+        setItem(40, createItem(Materials.BARRIER, "Exit", "Click to exit"), event -> {
             this.close();
         });
 

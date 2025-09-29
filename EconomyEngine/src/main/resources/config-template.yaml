@@ -12,6 +12,10 @@
 online: true
 debug: false
 
+#This parameter forces the Minecraft API to strictly use the vanilla color system.
+#It's not necessary to change this option unless you're experiencing compatibility issues.
+#Default is false.
+forceVanillaColorsSystem: false
 
 #Enable or Disable Vault integration.
 vault: true
@@ -36,7 +40,7 @@ sql:
   # With this you can manage the h2/sqlite database from a web browser.
   EnableWebEditorSqlServer: false
 
-# Redis configuration, this replaces module messaging with Proxy:Velocity, BungeeCord, for sync cache balances between servers etc.
+# Redis configuration, this replaces module messaging with Proxy:Velocity, BungeeCord, for sync cache balances,notifications between servers.
 redis:
   enabled: false
   host: localhost

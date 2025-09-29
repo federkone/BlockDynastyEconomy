@@ -125,6 +125,6 @@ public class TradeCurrenciesUseCase {
         this.updateForwarder.sendUpdateMessage("event", new TradeEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo).toJson(), accountTo.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("event", new TradeEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo).toJson(), accountFrom.getUuid().toString());
 
-        return Result.success(null);
+        return Result.success();
     }
 }

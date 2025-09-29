@@ -12,11 +12,11 @@ import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
-import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
-import java.util.UUID;
 
 public class AccountListToOffers extends PaginatedGUI<Offer> {
     private final AcceptOfferUseCase acceptOfferUseCase;
@@ -52,13 +52,13 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
 
         return createItem(
                 Materials.PLAYER_HEAD,
-                "§a" + vendedor.getNickname(),
+                ChatColor.stringValueOf(Colors.GREEN) + vendedor.getNickname(),
                 "",
-                "§fAmount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                "§fPrice: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                "Amount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                "Price: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
                 "",
-                "§aLeft Click to Accept",
-                "§cRight Click to Cancel"
+                ChatColor.stringValueOf(Colors.GREEN)+"Left Click to Accept",
+                ChatColor.stringValueOf(Colors.RED)+"Right Click to Cancel"
             );
 
     }
@@ -67,9 +67,9 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
     protected void functionLeftItemClick(Offer offer) {
         Result<Void> result =acceptOfferUseCase.execute(offer.getComprador().getUuid(),offer.getVendedor().getUuid());
         if (result.isSuccess()) {
-            sender.sendMessage("§aOffer accepted successfully!");
+            sender.sendMessage("Offer accepted successfully!");
         } else {
-            sender.sendMessage("§cFailed to accept offer: " + result.getErrorMessage());
+            sender.sendMessage("Failed to accept offer: " + result.getErrorMessage());
         }
         GUIFactory.seeOffersPanel(sender,getParent()).open();
     }
@@ -78,17 +78,17 @@ public class AccountListToOffers extends PaginatedGUI<Offer> {
     protected void functionRightItemClick(Offer offer) {
         Result<Void> result =cancelOfferUseCase.execute(offer.getVendedor());
         if (result.isSuccess()) {
-            sender.sendMessage("§aOffer cancelled");
+            sender.sendMessage("Offer cancelled");
         } else {
-            sender.sendMessage("§cFailed to cancel offer: " + result.getErrorMessage());
+            sender.sendMessage("Failed to cancel offer: " + result.getErrorMessage());
         }
         GUIFactory.seeOffersPanel(sender,getParent()).open();
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "§7Received Offers List",
-                        "§aClick to Refresh"),
+        setItem(4, createItem(Materials.PAPER, "Received Offers List",
+                        "Click to Refresh"),
                 unused -> {
                     refresh();
                 });

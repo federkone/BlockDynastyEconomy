@@ -9,6 +9,8 @@ import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.CurrenciesList;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.UUID;
 
@@ -40,7 +42,7 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
             GUIFactory.seeMyOffersPanel(sender).open();
 
         }else{
-            sender.sendMessage("§cError: " + result.getErrorMessage()+ "."+result.getErrorCode());
+            sender.sendMessage(ChatColor.stringValueOf(Colors.RED)+"Error: " + result.getErrorMessage()+ "."+result.getErrorCode());
         }
 
         return null;
@@ -48,8 +50,8 @@ public class CurrencyListToOfferSecond extends CurrenciesList {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "§aSelect Currency to Receive",
-                        "§7Click to select the currency you want to receive", "And before that, the amount"
+        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Currency to Receive",
+                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to receive", "And before that, the amount"
                 ),
                 null);
 

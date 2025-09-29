@@ -15,6 +15,10 @@ public class Result<T> {
         return new Result<>(value, null, null);
     }
 
+    public static <T> Result<T> success() {
+        return new Result<>(null, null, null);
+    }
+
     public static <T> Result<T> failure(String errorMessage, ErrorCode errorCode) {
         return new Result<>(null, errorMessage, errorCode);
     }
@@ -25,6 +29,10 @@ public class Result<T> {
 
     public boolean isSuccess() {
         return errorMessage == null;
+    }
+
+    public boolean isVoid() {
+        return value == null;
     }
 
     public String getErrorMessage() {

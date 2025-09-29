@@ -8,8 +8,9 @@ import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
-import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +56,16 @@ public class BalanceGUI extends PaginatedGUI<Money> {
         Currency currency = money.getCurrency();
         return createItem(Materials.GOLD_INGOT,
                 ChatColor.stringValueOf(currency.getColor()) + currency.getSingular(),
-                "§eBalance: §f" + ChatColor.stringValueOf(currency.getColor()) + money.format());
+                ChatColor.stringValueOf(Colors.YELLOW)+"Balance: " + ChatColor.stringValueOf(currency.getColor()) + money.format());
     }
 
     @Override
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, "§cNo Currencies", "§7There are no coins in the account");
+        return createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED)+"No Currencies", ChatColor.stringValueOf(Colors.WHITE)+"There are no coins in the account");
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.BOOK, "§6Account balance", "§7Available balances"), null);
+        setItem(4, createItem(Materials.BOOK, ChatColor.stringValueOf(Colors.GOLD)+"Account balance", ChatColor.stringValueOf(Colors.WHITE)+"Available balances"), null);
     }
 }

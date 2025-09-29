@@ -9,6 +9,8 @@ import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.CurrenciesList;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -37,8 +39,8 @@ public class CurrencyListToPay extends CurrenciesList {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "§aSelect Currency to Pay",
-                        "§7Click to select the currency you want to pay", "§7And before that, the amount"),
+        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Currency to Pay",
+                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to pay", ChatColor.stringValueOf(Colors.WHITE)+"And before that, the amount"),
                 null);
 
     }

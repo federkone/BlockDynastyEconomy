@@ -3,6 +3,8 @@ package lib.gui.templates.abstractions;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.*;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
 
@@ -29,8 +31,8 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
 
     @Override
     protected void addCustomButtons() {
-        setItem(39, createItem(Materials.NAME_TAG, "§6Search Player",
-                        "§7Click to search a player by name","§7CaseSensitive"),
+        setItem(39, createItem(Materials.NAME_TAG, ChatColor.stringValueOf(Colors.GOLD)+"Search Player",
+                        ChatColor.stringValueOf(Colors.WHITE)+"Click to search a player by name",ChatColor.stringValueOf(Colors.WHITE)+"CaseSensitive"),
                 unused -> openAnvilSearch(unused));
     }
 
@@ -43,7 +45,7 @@ public abstract class AccountsList extends PaginatedGUI<Player>{
                 showPlayers(List.of(foundPlayer));
                 this.open();
             } else {
-                sender.sendMessage("§cPlayer not found!");
+                sender.sendMessage(ChatColor.stringValueOf(Colors.RED)+"Player not found!");
                 this.open();
             }
             return null;

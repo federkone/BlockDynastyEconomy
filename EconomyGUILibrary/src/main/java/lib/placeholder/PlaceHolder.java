@@ -7,7 +7,7 @@ import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
-import lib.messages.ChatColor;
+import lib.util.colors.ChatColor;
 import lib.messages.MessageService;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class PlaceHolder {
     private final SearchAccountUseCase searchAccountUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public PlaceHolder( SearchAccountUseCase searchAccountUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public PlaceHolder(SearchAccountUseCase searchAccountUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.searchAccountUseCase = searchAccountUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
@@ -112,7 +112,7 @@ public class PlaceHolder {
             return MessageService.getMessage("balance_top.balance",
                     Map.of(
                             "number", String.valueOf(position + 1),
-                            "currencycolor", "" + ChatColor.stringValueOf(money.getCurrency().getColor()),
+                            "currencycolor", "" + ChatColor.formatColorToPlaceholder(money.getCurrency().getColor()),
                             "player", account.getNickname(),
                             "balance", money.format()
                     )
@@ -130,7 +130,7 @@ public class PlaceHolder {
             string.append(MessageService.getMessage("balance_top.balance",
                     Map.of(
                             "number", String.valueOf(i + 1),
-                            "currencycolor", "" + ChatColor.stringValueOf(money.getCurrency().getColor()),
+                            "currencycolor", "" + ChatColor.formatColorToPlaceholder(money.getCurrency().getColor()),
                             "player", account.getNickname(),
                             "balance", money.format()
                     )
@@ -176,7 +176,7 @@ public class PlaceHolder {
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
             // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
-            return ChatColor.stringValueOf(currency.getColor()) + currency.format(account.getMoney(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
+            return ChatColor.formatColorToPlaceholder(currency.getColor()) + currency.format(account.getMoney(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
             //return currency.format(account.getBalance(currency).getBalance());
             return String.valueOf(account.getMoney(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%

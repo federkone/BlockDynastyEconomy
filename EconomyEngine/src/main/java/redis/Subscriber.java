@@ -28,6 +28,7 @@ public class Subscriber {
     private Thread listenerThread;
     private boolean running = false;
     private final String channelName;
+    private final String INSTANCE_ID;
 
 
     public Subscriber(RedisData redisData,PlatformAdapter platformAdapter, IOfferService offerService, ICurrencyService currencyService, IAccountService accountService, EventManager eventManager) {
@@ -44,6 +45,7 @@ public class Subscriber {
                 .build();
 
         this.channelName = redisData.getChannelName();
+        this.INSTANCE_ID = redisData.getInstanceID();
     }
 
     public void startListening() {
@@ -61,8 +63,11 @@ public class Subscriber {
                         }
 
                         try {
-                            Map<String, String> messageData = gson.fromJson(message,
-                                    new TypeToken<Map<String, String>>(){}.getType());
+                            Map<String, String> messageData = gson.fromJson(message, new TypeToken<Map<String, String>>(){}.getType());
+
+                            if(messageData.get("instanceId").equals(INSTANCE_ID)){
+                                return;
+                            }
 
                             String type = messageData.get("type");
                             String target = messageData.get("target");

@@ -95,7 +95,7 @@ public class TransferFundsUseCase {
         }
 
         updateCacheAndEmitEvents(accountFrom, accountTo, currency, amount, result);
-        return Result.success(null);
+        return Result.success();
     }
 
     private void updateCacheAndEmitEvents(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result) {

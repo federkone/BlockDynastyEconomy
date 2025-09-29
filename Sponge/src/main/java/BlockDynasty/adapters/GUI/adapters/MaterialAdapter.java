@@ -2,6 +2,7 @@ package BlockDynasty.adapters.GUI.adapters;
 
 import lib.gui.abstractions.Materials;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
@@ -44,12 +45,17 @@ public class MaterialAdapter {
                 Optional<ServerPlayer> optional= Sponge.server().player(displayName);
                 optional.ifPresent(serverPlayer -> item.offer(Keys.GAME_PROFILE, serverPlayer.profile()));
             }
-            item.offer(Keys.CUSTOM_NAME,  Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName)).build());
+            //item.offer(Keys.CUSTOM_NAME,  Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(displayName)).build());
+            item.offer(Keys.CUSTOM_NAME,  MiniMessage.miniMessage().deserialize(displayName));
 
         }
         if(lore != null){
+            //List<Component> loreComponents = lore.stream()
+            //        .map(m -> Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(m)).build())
+            //        .collect(Collectors.toList());
+
             List<Component> loreComponents = lore.stream()
-                    .map(m -> Component.text().append(LegacyComponentSerializer.legacyAmpersand().deserialize(m)).build())
+                    .map(m ->  MiniMessage.miniMessage().deserialize(m))
                     .collect(Collectors.toList());
             item.offer(Keys.LORE, loreComponents);
         }

@@ -10,9 +10,10 @@ import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IItemStack;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.Materials;
-import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.PaginatedGUI;
 import lib.gui.GUIFactory;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
 
@@ -55,12 +56,12 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
 
         return createItem(
                 Materials.PLAYER_HEAD,
-                "§a" + comprador.getNickname(),
+                ChatColor.stringValueOf(Colors.GREEN) + comprador.getNickname(),
                 "",
-                "§fAmount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                "§fPrice: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                "Amount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                "Price: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
                 "",
-                "§cLeft Click to Cancel"
+                ChatColor.stringValueOf(Colors.RED)+"Left Click to Cancel"
             );
     }
     @Override
@@ -68,16 +69,16 @@ public class AccountListFromOffers extends PaginatedGUI<Offer> {
         Result<Void> result =cancelOfferUseCase.execute(offer.getVendedor());
         if (result.isSuccess()) {
             GUIFactory.seeMyOffersPanel(player).open();
-            player.sendMessage("§aOffer cancelled");
+            player.sendMessage("Offer cancelled");
         } else {
             this.close();
-            player.sendMessage("§cFailed to cancel offer: " + result.getErrorMessage());
+            player.sendMessage("Failed to cancel offer: " + result.getErrorMessage());
         }
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "§7Offer List",
+        setItem(4, createItem(Materials.PAPER, "Offer List",
                         "Click to refresh"),
                 unused -> {
                     refresh();

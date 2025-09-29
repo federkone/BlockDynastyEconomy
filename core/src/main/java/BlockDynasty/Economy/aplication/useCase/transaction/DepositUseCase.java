@@ -105,7 +105,7 @@ public class DepositUseCase {
         this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount,context));
 
-        return Result.success(null);
+        return Result.success();
     }
 
 

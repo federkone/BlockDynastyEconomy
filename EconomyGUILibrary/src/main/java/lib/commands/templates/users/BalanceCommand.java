@@ -6,7 +6,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
-import lib.messages.ChatColor;
+import lib.util.colors.ChatColor;
 import lib.messages.MessageService;
 
 import java.util.List;

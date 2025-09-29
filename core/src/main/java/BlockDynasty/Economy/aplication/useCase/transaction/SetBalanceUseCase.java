@@ -94,6 +94,6 @@ public class SetBalanceUseCase {
         this.economyLogger.log("[BALANCE SET] Account: " + account.getNickname() + " were set to: " + currency.format(amount));
         this.eventManager.emit( new SetEvent(account.getPlayer(), currency, amount,context));
 
-        return Result.success(null);
+        return Result.success();
     }
 }

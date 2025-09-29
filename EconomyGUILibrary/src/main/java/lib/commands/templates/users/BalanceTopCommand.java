@@ -7,7 +7,7 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
-import lib.messages.ChatColor;
+import lib.util.colors.ChatColor;
 import lib.messages.MessageService;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ public class BalanceTopCommand extends AbstractCommand {
             try {
                 limit = Integer.parseInt(args[1]);
             } catch (NumberFormatException e) {
-                sender.sendMessage("§cEl segundo argumento debe ser un numero");
+                sender.sendMessage("El segundo argumento debe ser un numero");
                 return false;
             }
         }
@@ -57,7 +57,7 @@ public class BalanceTopCommand extends AbstractCommand {
                 String message = MessageService.getMessage("balance_top.balance",
                         Map.of(
                                 "number", String.valueOf(i+1),
-                                "currencycolor",ChatColor.stringValueOf(currency.getColor()),
+                                "currencycolor", ChatColor.stringValueOf(currency.getColor()),
                                 "player",account.getNickname(),
                                 "balance",currency.format(balanceValue))
                         );

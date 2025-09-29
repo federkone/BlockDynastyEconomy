@@ -102,6 +102,6 @@ public class WithdrawUseCase {
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount,context));
 
-        return Result.success(null);
+        return Result.success();
     }
 }

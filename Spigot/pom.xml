@@ -164,7 +164,7 @@
             <groupId>com.BlockDynasty</groupId>
             <artifactId>EconomyEngine</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
 

@@ -17,8 +17,8 @@ import java.util.function.Function;
 public class TextInput implements ITextInput {
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
-        owner.sendMessage("§6[" + title + "] §f" + initialText);
-        owner.sendMessage("§7Type your response in chat. Type 'cancel' to cancel.");
+        owner.sendMessage("[" + title + "] " + initialText);
+        owner.sendMessage("Type your response in chat. Type 'cancel' to cancel.");
         owner.closeInventory();
 
         TextInput.ChatInputListener listener = new TextInput.ChatInputListener(null,owner, title, function);
@@ -30,8 +30,8 @@ public class TextInput implements ITextInput {
     @Override
     public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
 
-        owner.sendMessage("§6[" + title + "] §f" + initialText);
-        owner.sendMessage("§7Type your response in chat. Type 'cancel' to cancel. Type 'back' to go back.");
+        owner.sendMessage("[" + title + "] " + initialText);
+        owner.sendMessage("Type your response in chat. Type 'cancel' to cancel. Type 'back' to go back.");
         owner.closeInventory();
 
         TextInput.ChatInputListener listener = new TextInput.ChatInputListener(parent,owner, title, function);
@@ -67,7 +67,7 @@ public class TextInput implements ITextInput {
             TextComponent component = (TextComponent) event.message();
             String input = component.content();
             if (input.equalsIgnoreCase("cancel")) {
-                owner.sendMessage("§cOperation cancelled.");
+                owner.sendMessage("Operation cancelled.");
                 Sponge.eventManager().unregisterListeners(this);
                 return;
             }
@@ -83,7 +83,7 @@ public class TextInput implements ITextInput {
                 Sponge.eventManager().unregisterListeners(this);
                 return;
             }
-            owner.sendMessage("§6[" + title + "] §f" + response);
+            owner.sendMessage("[" + title + "] " + response);
             Sponge.eventManager().unregisterListeners(this);
         }
 

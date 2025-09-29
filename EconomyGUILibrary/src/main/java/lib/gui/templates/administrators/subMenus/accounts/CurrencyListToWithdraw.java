@@ -8,11 +8,10 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
-import lib.gui.templates.abstractions.ChatColor;
 import lib.gui.templates.abstractions.CurrenciesList;
+import lib.util.colors.ChatColor;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class CurrencyListToWithdraw extends CurrenciesList {
     private final WithdrawUseCase withdrawUseCase;
@@ -31,7 +30,7 @@ public class CurrencyListToWithdraw extends CurrenciesList {
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount) {
         Result<Void> result = withdrawUseCase.execute(targetPlayer.getUuid(), currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
-            sender.sendMessage("&7Success withdraw " +ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + "&7 from " + targetPlayer.getNickname() + "'s account.");
+            sender.sendMessage("Success withdraw " + ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + " from " + targetPlayer.getNickname() + "'s account.");
             this.openParent();
             return null;
         } else {

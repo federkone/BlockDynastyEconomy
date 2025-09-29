@@ -4,7 +4,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
-import lib.gui.templates.abstractions.ChatColor;
+import lib.util.colors.ChatColor;
 
 import java.util.List;
 
@@ -22,9 +22,9 @@ public class ListCommand extends AbstractCommand {
             return false;
         }
         List<Currency> currencies = searchCurrencyUseCase.getCurrencies();
-        sender.sendMessage( "§7There are §f" + currencies.size() + "§7 currencies.");
+        sender.sendMessage( "There are " + currencies.size() + " currencies.");
         for (Currency currency : currencies) {
-            sender.sendMessage("§a§l>> " + ChatColor.stringValueOf(currency.getColor()) + currency.getSingular());
+            sender.sendMessage(">> " + ChatColor.stringValueOf(currency.getColor()) + currency.getSingular());
         }
         return true;
     }

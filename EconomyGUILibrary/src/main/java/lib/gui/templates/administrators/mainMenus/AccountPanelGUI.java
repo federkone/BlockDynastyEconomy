@@ -46,8 +46,8 @@ public class AccountPanelGUI extends AccountsList {
     @Override
     protected void addCustomButtons(){
         super.addCustomButtons();
-        setItem(4, createItem(Materials.PAPER, "§aSelect Account to edit",
-                        "§7Click to select an account, or search by name","#Ordered by name, CaseSensitive"),
+        setItem(4, createItem(Materials.PAPER, "Select Account to edit",
+                        "Click to select an account, or search by name","#Ordered by name, CaseSensitive"),
                 null);
     }
     @Override

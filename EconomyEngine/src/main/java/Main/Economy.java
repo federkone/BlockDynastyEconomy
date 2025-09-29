@@ -14,6 +14,7 @@ import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
 import lib.gui.abstractions.ITextInput;
 import lib.placeholder.PlaceHolder;
+import lib.util.colors.ChatColor;
 import listeners.*;
 import proxy.ProxyReceiver;
 import proxy.ProxySender;
@@ -40,6 +41,7 @@ public class Economy {
         Console.setConsole(console);
         this.platformAdapter=platformAdapter;
         configuration= new Configuration(platformAdapter.getDataFolder());
+        if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
 
         repository = new Repository(getConnection(configuration));
 

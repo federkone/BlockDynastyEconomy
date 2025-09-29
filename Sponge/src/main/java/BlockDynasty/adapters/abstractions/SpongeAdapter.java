@@ -78,6 +78,16 @@ public class SpongeAdapter implements PlatformAdapter {
     }
 
     @Override
+    public boolean isLegacy() {
+        return false;
+    }
+
+    @Override
+    public boolean hasSupportAdventureText() {
+        return true;
+    }
+
+    @Override
     public IItemStack createItemStack(Materials material) {
         ItemStack itemStack = ItemStack.of(MaterialAdapter.toItemType(material));
         return  new ItemStackAdapter(itemStack);

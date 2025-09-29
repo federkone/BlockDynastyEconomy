@@ -1,7 +1,10 @@
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.gui.abstractions.Materials;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemFlag;
@@ -12,6 +15,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings( "deprecation")
 public class MaterialAdapter {
@@ -94,11 +98,22 @@ public class MaterialAdapter {
         }
 
         if (displayName != null) {
-            meta.setDisplayName(displayName);
+            if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+                meta.setDisplayName(displayName);
+            }else {
+                meta.displayName(MiniMessage.miniMessage().deserialize(displayName));
+            }
         }
 
         if (lore != null) {
-            meta.setLore(lore);
+            if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+                meta.setLore(lore);
+            }else {
+                List<Component> loreComponents = lore.stream()
+                        .map(m ->  MiniMessage.miniMessage().deserialize(m))
+                        .collect(Collectors.toList());
+                meta.lore(loreComponents);
+            }
         }
 
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

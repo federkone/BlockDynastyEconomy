@@ -7,6 +7,8 @@ import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.abstractions.Materials;
 import lib.gui.templates.abstractions.AccountsList;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +48,6 @@ public class PayGUI extends AccountsList {
     @Override
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
-        setItem(4, createItem(Materials.PAPER, "§aSelect Player to Pay", "§7Click to select the player you want to pay","#Ordered by name"), null);
+        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Player to Pay", ChatColor.stringValueOf(Colors.WHITE)+"Click to select the player you want to pay","#Ordered by name"), null);
     }
 }

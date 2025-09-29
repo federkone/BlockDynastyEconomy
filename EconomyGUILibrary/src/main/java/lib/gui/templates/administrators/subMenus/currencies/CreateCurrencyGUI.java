@@ -7,6 +7,8 @@ import lib.gui.GUIFactory;
 import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 public class CreateCurrencyGUI {
     private final IEntityGUI player;
@@ -42,7 +44,7 @@ public class CreateCurrencyGUI {
     private void createCurrency(String singular, String plural) {
         try {
             createCurrencyUseCase.createCurrency(singular, plural);
-            player.sendMessage("§6[Bank] §aThe currency §e" + singular + "§a has been created successfully.");
+            player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY)+"The currency " + singular + ChatColor.stringValueOf(Colors.GREEN)+" has been created successfully.");
 
             //Result<Currency> result = searchCurrencyUseCase.getCurrency(singular);
             //if (result.isSuccess()) {
@@ -51,7 +53,7 @@ public class CreateCurrencyGUI {
             GUIFactory.currencyPanel(player, parent).open();
         }
         catch (CurrencyException e) {
-            player.sendMessage("§6[Bank] §cError creating currency: §e" + e.getMessage());
+            player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.RED)+"Error creating currency: "+ChatColor.stringValueOf(Colors.YELLOW) + e.getMessage());
             player.closeInventory();
         }
     }

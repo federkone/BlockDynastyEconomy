@@ -40,6 +40,6 @@ public class AcceptOfferUseCase {
         offerService.acceptOffer(playerAccept,playerOffer);
         eventManager.emit(new OfferAccepted(offer));
         courier.sendUpdateMessage("event", new OfferAccepted( offer).toJson(),playerOffer.toString());
-        return Result.success(null);
+        return Result.success();
     }
 }

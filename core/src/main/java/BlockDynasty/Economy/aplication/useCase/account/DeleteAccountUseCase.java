@@ -31,7 +31,7 @@ public class DeleteAccountUseCase {
         if (!result.isSuccess()) {
             return Result.failure("Failed to delete account for player: " + name, result.getErrorCode());
         }
-        return Result.success(null);
+        return Result.success();
     }
 
     public Result<Void> execute(UUID uuid){
@@ -45,6 +45,6 @@ public class DeleteAccountUseCase {
         if (!result.isSuccess()) {
             return Result.failure("Failed to delete account for UUID: " + uuid, result.getErrorCode());
         }
-        return Result.success(null);
+        return Result.success();
     }
 }

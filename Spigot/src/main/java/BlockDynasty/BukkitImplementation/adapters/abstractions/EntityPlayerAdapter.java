@@ -1,10 +1,14 @@
 package BlockDynasty.BukkitImplementation.adapters.abstractions;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.abstractions.IEntityGUI;
 import lib.abstractions.IPlayer;
 import lib.gui.abstractions.IInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -38,7 +42,13 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(translateColorCodes(message));
+        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+            message = translateColorCodes(message);
+            player.sendMessage(message);
+        }else {
+            Component textonuevo = MiniMessage.miniMessage().deserialize(message);
+            player.sendMessage(textonuevo);
+        }
     }
 
     private String translateColorCodes(String message) {
@@ -63,7 +73,6 @@ public class EntityPlayerAdapter implements IPlayer {
     @Override
     public void openInventory(IInventory inventory) {
         Inventory inventoryBukkit= (Inventory) inventory.getHandle();
-        //Scheduler.run(ContextualTask.build(()->{player.openInventory(inventoryBukkit);},player));
         player.openInventory(inventoryBukkit);
     }
 

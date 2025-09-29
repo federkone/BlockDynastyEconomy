@@ -110,19 +110,19 @@ public abstract class PaginatedGUI<T> extends AbstractGUI {
     }
 
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, "§cNo Elements", "§7There are no items to display");
+        return createItem(Materials.BARRIER, "No Elements", "There are no items to display");
     }
 
     protected IItemStack createPreviousButton() {
-        return createItem(Materials.ARROW, "§aPrevious page", "§7Click to see previous items");
+        return createItem(Materials.ARROW, "Previous page", "Click to see previous items");
     }
 
     protected IItemStack createNextButton() {
-        return createItem(Materials.ARROW, "§aNext Page", "§7Click to see more items");
+        return createItem(Materials.ARROW, "Next Page", "Click to see more items");
     }
 
     protected IItemStack createBackButton() {
-        return createItem(Materials.BARRIER, "§cBack", "§7Click to go back");
+        return createItem(Materials.BARRIER, "Back", "Click to go back");
     }
 
     protected void addCustomButtons() {

@@ -17,6 +17,7 @@ public class Publisher implements Courier {
     private final PlatformAdapter platformAdapter;
     private final HostAndPort hostAndPort;
     private final JedisClientConfig config;
+    private final String INSTANCE_ID;
 
     public Publisher(RedisData redisData, PlatformAdapter platformAdapter) {
         this.channelName = redisData.getChannelName();
@@ -27,6 +28,7 @@ public class Publisher implements Courier {
                 .user(redisData.getUsername())
                 .password(redisData.getPassword())
                 .build();
+        this.INSTANCE_ID = redisData.getInstanceID();
     }
 
     @Override
@@ -39,15 +41,14 @@ public class Publisher implements Courier {
         if (shouldSkipProcessing(type, target)) {
             return;
         }
-
         try (UnifiedJedis jedis = new UnifiedJedis(hostAndPort, config)) {
             Map<String, String> messageData = new HashMap<>();
             messageData.put("type", type);
             messageData.put("target", target);
+            messageData.put("instanceId", INSTANCE_ID);
             if (data != null) {
                 messageData.put("data", data);
             }
-
             String jsonMessage = gson.toJson(messageData);
             jedis.publish(channelName, jsonMessage);
         } catch (Exception e) {

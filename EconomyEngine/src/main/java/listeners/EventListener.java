@@ -12,8 +12,9 @@ import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import lib.abstractions.PlatformAdapter;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.GUIFactory;
-import lib.gui.templates.abstractions.ChatColor;
 import lib.scheduler.ContextualTask;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.math.BigDecimal;
 
@@ -33,11 +34,11 @@ public class EventListener {
             String senderName = event.getPayer().getNickname();
 
             if (player != null){
-                player.sendMessage("&7You paid " + colorCode+format + "&7 to " + receiverName);
+                player.sendMessage("You paid " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" to " + receiverName);
                 player.playNotificationSound();
             }
             if (target != null){
-                target.sendMessage("&7You received " + colorCode+format + "&7 from " +senderName);
+                target.sendMessage("You received " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" from " +senderName);
                 target.playNotificationSound();
             }
         });
@@ -55,7 +56,7 @@ public class EventListener {
 
 
             if (player != null) {
-                player.sendMessage("&7You transferred " + colorCode+format + "&7 to " + receiverName);
+                player.sendMessage("You transferred " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" to " + receiverName);
                 player.playNotificationSound();
 
                 Runnable task=()->{
@@ -65,7 +66,7 @@ public class EventListener {
             }
 
             if (target != null) {
-                target.sendMessage("&7You received " + colorCode+format + "&7 from " + senderName);
+                target.sendMessage("You received " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" from " + senderName);
                 target.playNotificationSound();
 
                 Runnable task=()->{
@@ -89,7 +90,7 @@ public class EventListener {
 
 
             if (player != null) {
-                player.sendMessage("&7You exchanged " + fromColorCode + fromFormat + "&7 to " + toColorCode + toFormat+"&7.");
+                player.sendMessage("You exchanged " + fromColorCode + fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" to " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
                 player.playNotificationSound();
             }
         });
@@ -109,7 +110,7 @@ public class EventListener {
 
 
             if (sender != null ) {
-                sender.sendMessage("&7You trade " +fromColorCode+fromFormat + " &7to " + event.getToPlayer().getNickname() + " &7for " + toColorCode + toFormat+"&7.");
+                sender.sendMessage("You trade " +fromColorCode+fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" to " + event.getToPlayer().getNickname() + ChatColor.stringValueOf(Colors.WHITE)+" for " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
                 sender.playNotificationSound();
 
                 Runnable task=()->{
@@ -119,7 +120,7 @@ public class EventListener {
 
             }
             if (receiver != null){
-                receiver.sendMessage("&7You received " + fromColorCode+fromFormat + " &7from " + event.getFromPlayer().getNickname()+ " &7for " + toColorCode + toFormat+"&7.");
+                receiver.sendMessage("You received " + fromColorCode+fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" from " + event.getFromPlayer().getNickname()+ ChatColor.stringValueOf(Colors.WHITE)+" for " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
                 receiver.playNotificationSound();
 
                 Runnable task=()->{
@@ -136,7 +137,7 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage( "&7Has received a deposit " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
+                    player.sendMessage("Has received a deposit " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -149,7 +150,7 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage( "&7Has extracted " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
+                    player.sendMessage("Has extracted " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -161,7 +162,7 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage( "&7your balance has been established  " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + "&7." );
+                    player.sendMessage("your balance has been established " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -205,7 +206,7 @@ public class EventListener {
 
 
             if (receiver != null ) {
-                receiver.sendMessage(" Your offer from " +offer.getVendedor().getNickname() + " has been canceled.");
+                receiver.sendMessage("Your offer from " +offer.getVendedor().getNickname() + " has been canceled.");
 
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(receiver.getUniqueId());
@@ -216,7 +217,7 @@ public class EventListener {
 
 
             if (sender != null){
-                sender.sendMessage(" The offer to " + offer.getComprador().getNickname()  + " has been canceled.");
+                sender.sendMessage("The offer to " + offer.getComprador().getNickname()  + " has been canceled.");
 
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(sender.getUniqueId());
@@ -233,7 +234,7 @@ public class EventListener {
 
 
             if (receiver != null ) {
-                receiver.sendMessage(" Your offer from " +offer.getVendedor().getNickname() + " has expired.");
+                receiver.sendMessage("Your offer from " +offer.getVendedor().getNickname() + " has expired.");
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(receiver.getUniqueId());
                 };
