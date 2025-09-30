@@ -20,7 +20,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.services.IAccountService;
-import org.jetbrains.annotations.NotNull;
+
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -130,18 +130,18 @@ public interface IApi {
     String getDefaultCurrencyNamePlural();
     String getDefaultCurrencyNameSingular();
 
-    String format(@NotNull BigDecimal amount);
-    String format(@NotNull BigDecimal amount, @NotNull String currency);
+    String format(BigDecimal amount);
+    String format(BigDecimal amount, String currency);
 
     List<String> getCurrenciesNamesList();
 
-    EconomyResponse createAccount(final @NotNull UUID accountID, final @NotNull String name);
+    EconomyResponse createAccount(final UUID accountID, final String name);
 
-    EconomyResponse deleteAccount(final @NotNull UUID accountID);
-    EconomyResponse deleteAccount(final @NotNull String name);
+    EconomyResponse deleteAccount(final UUID accountID);
+    EconomyResponse deleteAccount(final String name);
 
-    EconomyResponse blockAccountTransactions(final @NotNull UUID accountID);
-    EconomyResponse unblockAccountTransactions(final @NotNull UUID accountID);
+    EconomyResponse blockAccountTransactions(final UUID accountID);
+    EconomyResponse unblockAccountTransactions(final UUID accountID);
 
     EconomyResponse createCurrency(String plural,String singular);
     EconomyResponse deleteCurrency(String name);

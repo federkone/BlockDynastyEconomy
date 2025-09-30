@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.BlockDynasty</groupId>
         <artifactId>project-parent</artifactId>
@@ -12,14 +10,6 @@
     </parent>
 
     <artifactId>BlockdynastyEconomy-Paper</artifactId>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-
-    </properties>
 
     <distributionManagement>
         <repository>
@@ -31,8 +21,6 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </snapshotRepository>
-
-
     </distributionManagement>
 
     <build>
@@ -116,13 +104,6 @@
     </repositories>
 
     <dependencies>
-        <!-- Dependency on core module -->
-        <dependency>
-            <groupId>com.BlockDynasty</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <dependency>
             <groupId>dev.folia</groupId>
             <artifactId>folia-api</artifactId>
@@ -151,7 +132,6 @@
             <version>1.10.6-SNAPSHOT</version>
         </dependency>
 
-
         <!--  -->
         <dependency>
             <groupId>me.clip</groupId>
@@ -164,9 +144,8 @@
             <groupId>com.BlockDynasty</groupId>
             <artifactId>EconomyEngine</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
-
 
     </dependencies>
 

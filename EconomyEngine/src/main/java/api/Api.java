@@ -35,7 +35,6 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -309,7 +308,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public String format(@NotNull BigDecimal amount) {
+    public String format(BigDecimal amount) {
         Result<Currency> currencyResult =  this.searchCurrencyUseCase.getDefaultCurrency();
         if (currencyResult.isSuccess()) {
             Currency currency = currencyResult.getValue();
@@ -320,7 +319,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public String format(@NotNull BigDecimal amount, @NotNull String currency) {
+    public String format(BigDecimal amount, String currency) {
         Result<Currency> currencyResult =  this.searchCurrencyUseCase.getCurrency(currency);
         if (currencyResult.isSuccess()) {
             Currency curr = currencyResult.getValue();
@@ -337,7 +336,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public EconomyResponse createAccount(@NotNull UUID accountID, @NotNull String name) {
+    public EconomyResponse createAccount(UUID accountID, String name) {
         Result<Account> result =  this.createAccountUseCase.execute(accountID, name);
         if (result.isSuccess()) {
             return EconomyResponse.success();
@@ -347,7 +346,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public EconomyResponse deleteAccount(@NotNull UUID accountID) {
+    public EconomyResponse deleteAccount(UUID accountID) {
         Result<Void> result =  this.deleteAccountUseCase.execute(accountID);
         if (result.isSuccess()) {
             return EconomyResponse.success();
@@ -357,7 +356,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public EconomyResponse deleteAccount(@NotNull String name) {
+    public EconomyResponse deleteAccount(String name) {
         Result<Void> result =  this.deleteAccountUseCase.execute(name);
         if (result.isSuccess()) {
             return EconomyResponse.success();
@@ -367,7 +366,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public EconomyResponse blockAccountTransactions(@NotNull UUID accountID) {
+    public EconomyResponse blockAccountTransactions(UUID accountID) {
         Result<Void> result =  this.editAccountUseCase.blockAccount(accountID);
         if (result.isSuccess()) {
             return EconomyResponse.success();
@@ -377,7 +376,7 @@ public class Api implements IApi {
     }
 
     @Override
-    public EconomyResponse unblockAccountTransactions(@NotNull UUID accountID) {
+    public EconomyResponse unblockAccountTransactions(UUID accountID) {
         Result<Void> result =  this.editAccountUseCase.unblockAccount(accountID);
         if (result.isSuccess()) {
             return EconomyResponse.success();

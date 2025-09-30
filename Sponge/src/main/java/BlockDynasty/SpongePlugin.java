@@ -47,7 +47,7 @@ import proxy.ProxyData;
 import java.nio.file.Path;
 
 
-@Plugin("blockdynastyeco")
+@Plugin("blockdynastyeconomy")
 
 public class SpongePlugin {
     private static PluginContainer container;

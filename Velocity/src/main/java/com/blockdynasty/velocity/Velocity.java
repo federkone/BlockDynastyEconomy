@@ -40,7 +40,8 @@ import java.util.UUID;
 @Plugin(
     id = "blockdynastyeconomy",
     name = "BlockDynastyEconomy",
-    version = "1.0"
+    version = "1.0",
+    authors = {"federkone"}
 )
 public class Velocity {
     private static final String CHANNEL_NAME = "proxy:blockdynasty";

@@ -107,7 +107,9 @@ public class MaterialAdapter {
 
         if (isPlayerHead(item.getType())) {
             SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-            skullMeta.setOwner(displayName);
+            if (isValidPlayerName(displayName)){
+                skullMeta.setOwner(displayName);
+            }
             meta = skullMeta;
         } else {
             meta = item.getItemMeta();
@@ -135,7 +137,10 @@ public class MaterialAdapter {
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
     }
-
+    private static boolean isValidPlayerName(String name) {
+        if (name == null) return false;
+        return name.matches("^[a-zA-Z0-9_]{3,16}$");
+    }
     private static boolean isPlayerHead(Material material) {
         if (Version.isLegacy()) {
             return material == Material.valueOf("SKULL_ITEM");
