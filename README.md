@@ -6,9 +6,9 @@
 # BlockDynasty-Economy
 
 ## ✅ Supported Versions Table Paper/Spigot/Folia/Canvas
-api-version: 1.15 Spigot
-JDK 17 minimum requirement
-Java Runtime (class file version 60.0)
+- **Spigot API version**: `1.15`  
+- **JDK**: 17 (minimum requirement)  
+- **Java Runtime**: class file version `60.0`  
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
@@ -28,9 +28,9 @@ Java Runtime (class file version 60.0)
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
 
 ## ✅ Supported Versions Table Sponge
-api: Sponge 8
-JDK 21 minimum requirement
-Tested in: Sponge Vanilla server
+- **Api**: `Sponge 8`
+- **JDK**: 21 minimum requirement
+- **Tested in**: Sponge Vanilla server
 | Version | Status | Required JDK | Notes |
 | 1.21.3   | ✅     | JDK 21+      | Fully supported |
 
