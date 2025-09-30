@@ -5,8 +5,8 @@
 
 ## BlockDynasty-Economy
 
-### ✅ Mysql v8.0.38
-### ✅ Redis "Jedis": 5.2.0
+#### ✅ Mysql v8.0.38
+#### ✅ Redis "Jedis": 5.2.0
 
 ---
 ### ✅ Supported Versions Paper/Spigot/Folia/Canvas
