@@ -2,8 +2,7 @@
 # BlockDynastyEconomy Plugin
 # Version: 1.0
 
-# Developer(s): Nullplague.
-# GitHub:
+# Developer(s): @Federkone.
 
 # 'online' Select your server's operating mode. Online is for official accounts where UUIDs are unique
 # and are the source of truth, with support for name change detection from Mojang.

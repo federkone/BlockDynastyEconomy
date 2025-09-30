@@ -10,7 +10,7 @@
       "name": "blockdynastyeconomy",
       "version": "${version}",
       "entrypoint": "BlockDynasty.SpongePlugin",
-      "description": "My plugin description",
+      "description": "Blockdynasty economy plugin",
       "branding": {},
       "links": {
       },

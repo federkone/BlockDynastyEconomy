@@ -1,3 +1,19 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package lib.placeholder;
 
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
@@ -175,10 +191,8 @@ public class PlaceHolder {
         Currency currency = result.getValue();
 
         if (placeholder.equals("balance_" + currencyName + "_formatted")) {  //todo, permit use _symbol for formated with symbol
-            // return String.valueOf(Math.round(account.getBalance(currency).getBalance().doubleValue()));
             return ChatColor.formatColorToPlaceholder(currency.getColor()) + currency.format(account.getMoney(currency).getAmount());//%BlockDynastyEconomy_balance_Dinero_formatted%
         } else {
-            //return currency.format(account.getBalance(currency).getBalance());
             return String.valueOf(account.getMoney(currency).getAmount().doubleValue());   //%BlockDynastyEconomy_balance_Dinero%
         }
     }

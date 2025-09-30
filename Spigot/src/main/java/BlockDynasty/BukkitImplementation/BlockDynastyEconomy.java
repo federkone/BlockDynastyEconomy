@@ -1,3 +1,19 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package BlockDynasty.BukkitImplementation;
 
 import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
@@ -66,7 +82,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     private void registerEvents() {
         Listener economyListener;
-        if(getServer().getOnlineMode()){ //get Config().getBoolean("online-mode",true)
+        if(getServer().getOnlineMode()){ //configuration.getBoolean("online")
             economyListener = new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
             Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
         }else {
@@ -83,7 +99,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
         //vault.init(economy.getVaultLogger());
         PlaceHolder.register(economy.getPlaceHolder());
-        ChannelRegister.init(this,economy.getApi());
+        ChannelRegister.init(this);
     }
 
     public static BlockDynastyEconomy getInstance() {
