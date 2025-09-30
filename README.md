@@ -3,9 +3,13 @@
 ![License](https://img.shields.io/badge/License-Apache%20v2.0-blue.svg)
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
-# BlockDynasty-Economy
+## BlockDynasty-Economy
 
-## ✅ Supported Versions Table Paper/Spigot/Folia/Canvas
+### ✅ Mysql v8.0.38
+### ✅ Redis "Jedis": 5.2.0
+
+---
+### ✅ Supported Versions Paper/Spigot/Folia/Canvas
 - **Spigot API version**: `1.15`  
 - **JDK**: `17` (minimum requirement)  
 - **Java Runtime**: class file version `60.0`  
@@ -27,15 +31,28 @@
 | 1.20.x  | ✅     | JDK 21+      | Fully supported |
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
 
-## ✅ Supported Versions Table Sponge
+### ✅ Supported Versions Sponge
 - **Api**: `Sponge 8`
 - **JDK**: `21` minimum requirement
 - **Tested in**: Sponge Vanilla server
   
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
-| 1.21.3   | ✅     | JDK 21+      | Fully supported |
+| 1.21.3   | ✅    | JDK 21+      | Fully supported |
+
+---
+
+### ✅ Supported Versions Velocity
+
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 3.4.0   | ✅    | JDK 21+      | Fully supported |
+
+---
+### ✅ Supported Versions BungeeCord
+
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 1.21.*  | ✅     | JDK 21+      | Fully supported |
 
 
-## ✅ Mysql v8.0.38
-## ✅ Redis "Jedis": 5.2.0
