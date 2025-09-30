@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.blockdynasty</groupId>
-  <artifactId>bungeecord</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>BlockDynastyEconomy-BungeeCord</artifactId>
+  <version>1.0</version>
   <packaging>jar</packaging>
 
   <name>bungeecord</name>
