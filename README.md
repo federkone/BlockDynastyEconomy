@@ -1,3 +1,10 @@
+![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+![License](https://img.shields.io/badge/License-Apache%20v2.0-blue.svg)
+![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
+
+# BlockDynasty-Economy
+
 Proyecto basado en arquitectura limpia,por capas "Onion", representada con la capa de: dominio,aplicacion, e infraestructura
 
 Pruebas unitarias y de integracion,TDD, ejecutadas con JUnit
