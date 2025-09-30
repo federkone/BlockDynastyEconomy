@@ -37,6 +37,7 @@ public class CurrencyService implements ICurrencyService {
 
         if(currencies.isEmpty()){
             Currency defaultCurrency = new Currency(UUID.randomUUID(), "Money", "Money");
+            defaultCurrency.setColor("GREEN");
             defaultCurrency.setDefaultCurrency(true);
             repository.saveCurrency(defaultCurrency);
             currencies.add(defaultCurrency);

@@ -23,7 +23,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 
 
-
 public class PlaceHolderExpansion extends PlaceholderExpansion {
     private final PlaceHolder placeHolder;
 
@@ -51,7 +50,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "Nullplague";
+        return "@federkone";
     }
 
     @Override

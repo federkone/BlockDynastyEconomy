@@ -6,8 +6,8 @@
   "license": "All-Rights-Reserved",
   "plugins": [
     {
-      "id": "blockdynastyeco",
-      "name": "blockdynastyeconomy",
+      "id": "blockdynastyeconomy",
+      "name": "BlockDynastyEconomy",
       "version": "${version}",
       "entrypoint": "BlockDynasty.SpongePlugin",
       "description": "Blockdynasty economy plugin",

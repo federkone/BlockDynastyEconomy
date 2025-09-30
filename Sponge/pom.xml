@@ -9,6 +9,13 @@
         <version>1.0</version>
     </parent>
 
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <spongeapi.version>13.0.0</spongeapi.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <artifactId>BlockDynastyEconomy-Sponge</artifactId>
     <build>
         <defaultGoal>clean package</defaultGoal>
@@ -31,32 +38,13 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <filters>
-                                <filter>
-                                    <artifact>net.kyori:*</artifact>
-                                    <excludes>
-                                        <exclude>**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.google.code.gson:*</artifact>
-                                    <excludes>
-                                        <exclude>**</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <spongeapi.version>13.0.0</spongeapi.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+
     <repositories>
         <repository>
             <id>spongepowered-repo</id>
@@ -76,6 +64,7 @@
             <version>1</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.BlockDynasty</groupId>
             <artifactId>EconomyEngine</artifactId>
@@ -84,5 +73,4 @@
         </dependency>
 
     </dependencies>
-
 </project>

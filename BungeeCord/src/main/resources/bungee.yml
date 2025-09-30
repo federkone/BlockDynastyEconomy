@@ -1,3 +1,4 @@
 name: BlockDynastyEconomy
 version: '1.0'
+author: 'federkone'
 main: com.blockdynasty.economyProxy.BlockDynastyEconomy
