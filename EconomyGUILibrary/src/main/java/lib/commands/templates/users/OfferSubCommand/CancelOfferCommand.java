@@ -48,22 +48,10 @@ public class CancelOfferCommand extends AbstractCommand {
 
         Player player = new Player(playerFrom.getUniqueId(), playerFrom.getName());
         Result<Void> result =cancelOfferUseCase.execute(player);
-        if(result.isSuccess()){
-            //playerFrom.sendMessage("La oferta de "+sender.getName()+" ha sido cancelada");
-            //playerFrom.sendMessage(messageService.getOfferCancelMessage(sender.getName()));
-            //sender.sendMessage("La oferta para "+playerFrom.getName()+" ha sido cancelada");
-            //sender.sendMessage(messageService.getOfferCancelToMessage(playerFrom.getName()));
-        }else{
-            switch (result.getErrorCode()){
-                case OFFER_NOT_FOUND:
-                    sender.sendMessage(" offers not found");
-                    break;
-                default:
-                    sender.sendMessage("error inesperado");
-                    //playerFrom.sendMessage();
-                    break;
-            }
+        if(!result.isSuccess()){
+            sender.sendMessage(result.getErrorMessage()+" "+result.getErrorCode());
+            return false;
         }
-        return false;
+        return true;
     }
 }

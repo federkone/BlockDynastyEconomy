@@ -36,7 +36,7 @@ public class EconomyCommand extends AbstractCommand {
 
         if (args.length == 0) {
             List<Command> subCommands = getSubCommands();
-            StringBuilder helpMessage = new StringBuilder("&2&l>>"+this.getName()+" Subcommands:\n");
+            StringBuilder helpMessage = new StringBuilder(">>"+this.getName()+" Subcommands:\n");
             for (Command cmd : subCommands) {
                 helpMessage.append("- ").append(cmd.getName()).append("\n");
             }
@@ -51,7 +51,7 @@ public class EconomyCommand extends AbstractCommand {
 
         if (subCommand == null) {
             List<Command> subCommands = getSubCommands();
-            StringBuilder helpMessage = new StringBuilder("&2&l>>"+this.getName()+" Subcommands:\n");
+            StringBuilder helpMessage = new StringBuilder(">>"+this.getName()+" Subcommands:\n");
             for (Command cmd : subCommands) {
                 helpMessage.append("- ").append(cmd.getName()).append("\n");
             }

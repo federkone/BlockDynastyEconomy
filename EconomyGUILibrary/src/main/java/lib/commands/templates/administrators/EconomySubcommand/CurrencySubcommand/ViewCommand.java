@@ -22,6 +22,7 @@ import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
 import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
 
@@ -47,25 +48,25 @@ public class ViewCommand extends AbstractCommand {
 
         Currency currency = resultCurrency.getValue();
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("§a--- Currency Info ---")
+        stringBuilder.append(ChatColor.stringValueOf(Colors.GREEN)+"--- Currency Info ---")
                 .append("\n")
-                     .append("§7ID: §c" + currency.getUuid().toString())
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"ID: "+ChatColor.stringValueOf(Colors.RED) + currency.getUuid().toString())
                 .append("\n")
-                     .append("§7Singular: "+ currency.getSingular() + "§7, Plural: " + currency.getPlural())
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Singular: "+ currency.getSingular() + ", Plural: " + currency.getPlural())
                 .append("\n")
-                     .append("§7Color: " + ChatColor.stringValueOf(currency.getColor()) +currency.getColor())
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Color: " + ChatColor.stringValueOf(currency.getColor()) +currency.getColor())
                 .append("\n")
-                     .append("§7Symbol: "+ currency.getSymbol())
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Symbol: "+ currency.getSymbol())
                 .append("\n")
-                     .append("§7Start Balance: "  + currency.format(currency.getDefaultBalance()) + "§7.")
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Start Balance: "  + currency.format(currency.getDefaultBalance()) )
                 .append("\n")
-                     .append("§7Decimals: " + (currency.isDecimalSupported() ? "§aYes" : "§cNo"))
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Decimals: " + (currency.isDecimalSupported() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"))
                 .append("\n")
-                     .append("§7Default: " + (currency.isDefaultCurrency() ? "§aYes" : "§cNo"))
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Default: " + (currency.isDefaultCurrency() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"))
                 .append("\n")
-                     .append("§7Payable: " + (currency.isTransferable() ? "§aYes" : "§cNo"))
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Payable: " + (currency.isTransferable() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"))
                 .append("\n")
-                     .append("§7Rate: "+ currency.getExchangeRate());
+                     .append(ChatColor.stringValueOf(Colors.GRAY)+"Rate: "+ currency.getExchangeRate());
 
         sender.sendMessage(stringBuilder.toString());
         return true;

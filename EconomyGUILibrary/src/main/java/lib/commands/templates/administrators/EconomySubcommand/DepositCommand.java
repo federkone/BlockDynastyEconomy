@@ -59,7 +59,7 @@ public class DepositCommand extends AbstractCommand {
         if (!result.isSuccess()) {
             sender.sendMessage("Deposit failed "+  result.getErrorMessage()+" "+ result.getErrorCode());
         }else {
-            sender.sendMessage("&aDeposit successful");
+            sender.sendMessage("Deposit successful");
         }
 
         return true;

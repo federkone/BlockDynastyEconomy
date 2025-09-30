@@ -49,19 +49,9 @@ public class DenyOfferCommand extends AbstractCommand {
         Player player = new Player(playerFrom.getUniqueId(), playerFrom.getName());
 
         Result<Void> result =cancelOfferUseCase.execute(player);
-        if (result.isSuccess()) {
-            playerFrom.sendMessage("La oferta de "+sender.getName()+" ha sido rechazada");
-            sender.sendMessage("La oferta para "+playerFrom.getName()+" ha sido rechazada");
-        }else{
-            switch (result.getErrorCode()){
-                case OFFER_NOT_FOUND:
-                    sender.sendMessage("");
-                    break;
-                default:
-                    sender.sendMessage("error inesperado");
-                    //playerFrom.sendMessage(messageService.getUnexpectedErrorMessage());
-                    break;
-            }
+        if (!result.isSuccess()) {
+            sender.sendMessage(result.getErrorMessage()+" " +result.getErrorCode());
+            return false;
         }
         return true;
     }

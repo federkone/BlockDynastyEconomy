@@ -51,11 +51,11 @@ public class EditStartBalCommand extends AbstractCommand {
 
         try {
             editCurrencyUseCase.editStartBal(currencyName, finalAmount);
-            sender.sendMessage("§7Starting balance for §f" + currencyName + " §7set: §a" + finalAmount);
+            sender.sendMessage("Starting balance for " + currencyName + " set: " + finalAmount);
         } catch (CurrencyNotFoundException e) {
             sender.sendMessage("unknown currency");
         } catch (TransactionException e) {
-            sender.sendMessage( "§cError: §7" + e.getMessage());
+            sender.sendMessage( "Error: " + e.getMessage());
         } catch (DecimalNotSupportedException e) {
             sender.sendMessage("No decimal support for " + currencyName);
         }

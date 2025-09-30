@@ -41,11 +41,11 @@ public class SetDefaultCommand extends AbstractCommand {
         String currencyName =args[0];
         try {
             editCurrencyUseCase.setDefaultCurrency(currencyName);
-            sender.sendMessage("§7Set default currency to §f" + currencyName);
+            sender.sendMessage("Set default currency to " + currencyName);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage( "§cUnknown currency");
+            sender.sendMessage("Unknown currency");
         } catch (TransactionException e) {
-            sender.sendMessage( "§cError while setting default currency");
+            sender.sendMessage("Error while setting default currency");
         }
 
         return true;

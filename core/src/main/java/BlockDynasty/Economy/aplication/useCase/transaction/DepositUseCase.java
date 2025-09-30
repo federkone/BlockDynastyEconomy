@@ -118,7 +118,7 @@ public class DepositUseCase {
 
         this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("event", new DepositEvent(account.getPlayer(), currency, amount,context).toJson(), account.getPlayer().getUuid().toString()); //enviar el depositEvent en formato string o json
-        this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular());
+        this.logger.log("[DEPOSIT] Account: " + account.getNickname() + " has received a deposit of " + currency.format(amount) + " " + currency.getSingular());
         this.eventManager.emit(new DepositEvent(account.getPlayer(), currency, amount,context));
 
         return Result.success();

@@ -42,11 +42,11 @@ public class EditPayableCommand extends AbstractCommand {
 
         try {
             toggleFeaturesUseCase.togglePayable(currencyName);
-            sender.sendMessage( "§7Toggled payability for §f" + currencyName);
+            sender.sendMessage( "Toggled payability for " + currencyName);
         } catch (CurrencyNotFoundException e) {
             sender.sendMessage("Unknown currency.");
         } catch (TransactionException e) {
-            sender.sendMessage("§cAn error occurred while toggling payability for §f" + currencyName);
+            sender.sendMessage("An error occurred while toggling payability for " + currencyName);
         }
 
         return true;

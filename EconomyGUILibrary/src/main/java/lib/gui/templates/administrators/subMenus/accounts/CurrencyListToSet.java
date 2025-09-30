@@ -25,6 +25,8 @@ import lib.gui.abstractions.IGUI;
 import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.templates.abstractions.CurrenciesList;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -46,7 +48,7 @@ public class CurrencyListToSet extends CurrenciesList {
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount) {
         Result<Void> result = setBalanceUseCase.execute(targetPlayer.getUuid(), currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
-            sender.sendMessage("Set success");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY)+" Set success");
             this.openParent();
             return null;
         } else {
