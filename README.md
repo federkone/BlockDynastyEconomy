@@ -7,7 +7,7 @@
 
 ## ✅ Supported Versions Table Paper/Spigot/Folia/Canvas
 - **Spigot API version**: `1.15`  
-- **JDK**: 17 (minimum requirement)  
+- **JDK**: `17` (minimum requirement)  
 - **Java Runtime**: class file version `60.0`  
 
 | Version | Status | Required JDK | Notes |
@@ -29,9 +29,11 @@
 
 ## ✅ Supported Versions Table Sponge
 - **Api**: `Sponge 8`
-- **JDK**: 21 minimum requirement
+- **JDK**: `21` minimum requirement
 - **Tested in**: Sponge Vanilla server
+  
 | Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
 | 1.21.3   | ✅     | JDK 21+      | Fully supported |
 
 
