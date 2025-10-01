@@ -28,7 +28,7 @@ public class CreateCurrencyCommand extends AbstractCommand {
     private final CreateCurrencyUseCase createCurrencyUseCase;
 
     public CreateCurrencyCommand(CreateCurrencyUseCase createCurrencyUseCase) {
-        super("create", "BlockDynastyEconomy.command.currency",List.of("singular", "plural"));
+        super("create", "",List.of("singular", "plural"));
         this.createCurrencyUseCase = createCurrencyUseCase;
     }
 

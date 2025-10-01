@@ -39,7 +39,7 @@ public class Console {
     }
 
     public static void logError(String message){
-        console.log(message);
+        console.logError(message);
     }
 
 

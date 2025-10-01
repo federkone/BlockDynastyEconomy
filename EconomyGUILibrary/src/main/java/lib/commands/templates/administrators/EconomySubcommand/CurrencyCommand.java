@@ -24,7 +24,7 @@ import java.util.List;
 
 public class CurrencyCommand extends AbstractCommand {
     public CurrencyCommand() {
-        super("currency","BlockDynastyEconomy.command.currency");
+        super("currency","BlockDynastyEconomy.command.economy.superUser");
     }
 
     @Override

@@ -28,7 +28,7 @@ public class ListCommand extends AbstractCommand {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
     public ListCommand(SearchCurrencyUseCase searchCurrencyUseCase){
-        super("list","BlockDynastyEconomy.command.currency");
+        super("list","");
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 

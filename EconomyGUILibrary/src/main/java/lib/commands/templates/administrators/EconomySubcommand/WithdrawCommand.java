@@ -30,7 +30,7 @@ public class WithdrawCommand extends AbstractCommand {
     private final WithdrawUseCase withdraw;
 
     public WithdrawCommand(WithdrawUseCase withdraw) {
-        super("take", "BlockDynastyEconomy.command.take",List.of("player", "amount", "currency"));
+        super("take", "",List.of("player", "amount", "currency"));
         this.withdraw = withdraw;
     }
 

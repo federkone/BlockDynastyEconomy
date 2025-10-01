@@ -28,7 +28,7 @@ public class DeleteCurrencyCommand extends AbstractCommand {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
 
     public DeleteCurrencyCommand( DeleteCurrencyUseCase deleteCurrencyUseCase) {
-        super("delete", "BlockDynastyEconomy.command.currency",List.of("currency"));
+        super("delete", "",List.of("currency"));
         this.deleteCurrencyUseCase = deleteCurrencyUseCase;
 
     }

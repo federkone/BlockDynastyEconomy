@@ -30,7 +30,7 @@ public class SetCommand extends AbstractCommand {
     private final SetBalanceUseCase setbalance;
 
     public SetCommand(SetBalanceUseCase setbalance) {
-        super("set", "BlockDynastyEconomy.command.set",List.of("player", "amount", "currency"));
+        super("set", "",List.of("player", "amount", "currency"));
         this.setbalance = setbalance;
 
     }

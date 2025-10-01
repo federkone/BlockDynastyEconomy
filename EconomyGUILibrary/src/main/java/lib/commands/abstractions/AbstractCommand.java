@@ -69,12 +69,17 @@ public abstract class AbstractCommand implements Command {
     private boolean hasArgs() {
         return !args.isEmpty();
     }
+    private boolean hasPermission() {
+        return !permission.isEmpty();
+    }
 
     @Override
     public boolean execute(IEntityCommands sender, String[] args) {
-        if (!sender.hasPermission(getPermission())) {
-            sender.sendMessage(MessageService.getMessage("nopermission"));
-            return false;
+        if (hasPermission()) {
+            if (!sender.hasPermission(getPermission())){
+                sender.sendMessage(MessageService.getMessage("nopermission"));
+                return false;
+            }
         }
 
         if (hasArgs()) {

@@ -28,7 +28,7 @@ public class SetDefaultCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public SetDefaultCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("default","BlockDynastyEconomy.command.currency", List.of("currency"));
+        super("default","", List.of("currency"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 

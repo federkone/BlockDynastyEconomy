@@ -30,7 +30,7 @@ public class ViewCommand extends AbstractCommand {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
     public ViewCommand(SearchCurrencyUseCase searchCurrencyUseCase) {
-        super("view","BlockDynastyEconomy.command.currency", List.of("currency"));
+        super("view","", List.of("currency"));
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 

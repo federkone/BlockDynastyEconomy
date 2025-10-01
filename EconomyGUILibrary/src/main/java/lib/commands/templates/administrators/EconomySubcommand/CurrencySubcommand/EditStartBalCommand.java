@@ -29,7 +29,7 @@ public class EditStartBalCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditStartBalCommand(EditCurrencyUseCase editCurrencyUseCase){
-        super("startBal", "BlockDynastyEconomy.command.currency",List.of("currency","amount"));
+        super("startBal", "",List.of("currency","amount"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 

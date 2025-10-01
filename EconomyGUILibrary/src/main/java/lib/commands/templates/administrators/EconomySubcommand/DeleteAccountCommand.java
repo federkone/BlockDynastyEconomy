@@ -28,7 +28,7 @@ public class DeleteAccountCommand extends AbstractCommand {
     private DeleteAccountUseCase deleteAccountUseCase;
 
     public DeleteAccountCommand(DeleteAccountUseCase deleteAccountUseCase) {
-        super("deleteAccount","BlockDynastyEconomy.command.account", List.of("player"));
+        super("deleteAccount","", List.of("player"));
         this.deleteAccountUseCase = deleteAccountUseCase;
     }
 

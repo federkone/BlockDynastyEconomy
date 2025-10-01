@@ -24,7 +24,7 @@ import lib.gui.abstractions.IEntityGUI;
 public class EconomyGUICommand extends AbstractCommand {
 
     public EconomyGUICommand() {
-        super("menu", "BlockDynastyEconomy.command.menu");
+        super("menu", "BlockDynastyEconomy.command.economy.superUser");
     }
 
     @Override

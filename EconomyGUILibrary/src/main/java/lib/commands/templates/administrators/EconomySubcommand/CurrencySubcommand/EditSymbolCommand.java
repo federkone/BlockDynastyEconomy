@@ -28,7 +28,7 @@ public class EditSymbolCommand extends AbstractCommand {
     private EditCurrencyUseCase editCurrencyUseCase;
 
     public EditSymbolCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("symbol","BlockDynastyEconomy.command.currency", List.of("currency","symbol"));
+        super("symbol","", List.of("currency","symbol"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
