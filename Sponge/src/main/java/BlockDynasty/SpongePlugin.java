@@ -16,17 +16,19 @@
 
 package BlockDynasty;
 
-import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
 import BlockDynasty.adapters.ConsoleAdapter;
 import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.abstractions.SpongeAdapter;
+import BlockDynasty.adapters.listeners.PlayerJoinListenerOffline;
+import BlockDynasty.adapters.listeners.PlayerJoinListenerOnline;
 import BlockDynasty.adapters.proxy.ProxyReceiverImp;
 import BlockDynasty.adapters.spongeEconomyApi.EconomyServiceAdapter;
 import BlockDynasty.adapters.spongeEconomyApi.MultiCurrencyService;
 import BlockDynasty.utils.Console;
 import Main.Economy;
 import com.google.inject.Inject;
+import files.Configuration;
 import lib.commands.CommandsFactory;
 
 import org.apache.logging.log4j.Logger;
@@ -35,15 +37,14 @@ import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.lifecycle.*;
-import org.spongepowered.api.event.network.ServerSideConnectionEvent;
 import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 import proxy.ProxyData;
 
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 
 
@@ -53,6 +54,7 @@ public class SpongePlugin {
     private static PluginContainer container;
     private static Logger logger;
     private static final Economy economy= new Economy();
+    private static Configuration configuration;
     public static Path configPath;
     private static RawDataChannel channel;
 
@@ -74,23 +76,25 @@ public class SpongePlugin {
         // Perform any one-time setup
         Console.setConsole(new ConsoleAdapter());
         economy.init(new TextInput(),new ConsoleAdapter(), new SpongeAdapter());
+        configuration = economy.getConfiguration();
         Console.log("Plugin constructed...");
     }
 
     @Listener
     public void provideEconomy(final ProvideServiceEvent.EngineScoped<MultiCurrencyService> event) {
-        //info: El servicio de Economia de Sponge solo soporta 1 default Currency, no tiene interface para multiples monedas....
+        //Info: Sponge Economy service only supports 1 default currency, it does not have an interface for multiple currencies....
         event.suggest(() -> new EconomyServiceAdapter( economy.getApi() ));
     }
 
     @Listener
     public void onServerStarting(final StartingEngineEvent<Server> event) {
-
+        registerEvents();
         Console.log("Server is starting...");
     }
 
     @Listener
     public void onServerStopping(final StoppingEngineEvent<Server> event) {
+        economy.shutdown();
         Console.log("Server is stopping...");
     }
 
@@ -100,14 +104,21 @@ public class SpongePlugin {
         Console.log("Registered commands...");
     }
 
-    @Listener
-    public void onPlayerJoin(final ServerSideConnectionEvent.Join event) {
-        ServerPlayer player = event.player();
+    private void registerEvents(){
+        if(configuration.getBoolean("online")){
+            if(!Sponge.server().isOnlineModeEnabled()){
+                Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
+            }
+            Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOnline(economy.getPlayerJoinListener()), MethodHandles.lookup());
+            Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
+        }
 
-        if(Sponge.server().isOnlineModeEnabled()){
-            economy.getPlayerJoinListener().loadOnlinePlayerAccount(EntityPlayerAdapter.of(player));
-        }else{
-            economy.getPlayerJoinListener().loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
+        if (!configuration.getBoolean("online")) {
+            if(Sponge.server().isOnlineModeEnabled()){
+                Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
+            }
+            Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOffline(economy.getPlayerJoinListener()),MethodHandles.lookup());
+            Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }
     }
 

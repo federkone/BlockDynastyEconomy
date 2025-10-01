@@ -29,14 +29,14 @@ public class ConsoleAdapter implements IConsole {
 
 
     public void debug(String message) {
-        if(debugEnabled) console.info(Debug_Prefix + message);
+        if(debugEnabled) console.debug(message);
     }
 
     public void log(String message){
-        console.info(Console_Prefix + message);
+        console.info(message);
     }
 
     public void logError(String message){
-        console.info(Error_Prefix + message);
+        console.error(message);
     }
 }
