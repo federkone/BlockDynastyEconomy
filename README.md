@@ -5,11 +5,15 @@
 
 ## BlockDynasty-Economy
 
-#### ✅ Mysql v8.0.38
-#### ✅ Redis "Jedis": 5.2.0
+### 🗃️ Supported Databases
+- **MySQL**: v8.0.38
+- **SQLite**: Compatible 
+- **H2**: Compatible
+- **Redis**: "Jedis" 5.2.0
 
----
-### ✅ Supported Versions Paper/Spigot/Folia/Canvas
+> **💡 Note**: REDIS replaces the need to use proxy plugins like Velocity or BungeeCord.
+----
+### 🎯 Supported Versions Paper/Spigot/Folia/Canvas
 - **Spigot API version**: `1.15`  
 - **JDK**: `17` (minimum requirement)  
 - **Java Runtime**: class file version `60.0`  
@@ -31,7 +35,11 @@
 | 1.20.x  | ✅     | JDK 21+      | Fully supported |
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
 
-### ✅ Supported Versions Sponge
+- **Vault** ✅
+- **VaultUnlocked** ✅
+----
+
+### 🎯 Supported Versions Sponge
 - **Api**: `Sponge 8`
 - **JDK**: `21` minimum requirement
 - **Tested in**: Sponge Vanilla server
@@ -40,19 +48,19 @@
 |---------|--------|--------------|-------|
 | 1.21.3   | ✅    | JDK 21+      | Fully supported |
 
----
+- **'spongepowered.api.service.economy'** registered ✅
+----
 
-### ✅ Supported Versions Velocity
+### 🎯 Supported Versions Velocity
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
 | 3.1.1   | ✅     | JDK 17+      | Fully supported |
 
----
-### ✅ Supported Versions BungeeCord
+----
+### 🎯 Supported Versions BungeeCord
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
 | 1.21.*  | ✅     | JDK 21+      | Fully supported |
-
 
