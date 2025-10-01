@@ -43,11 +43,11 @@ public class DeleteCurrencyCommand extends AbstractCommand {
 
         try {
             deleteCurrencyUseCase.deleteCurrency(currencyName);
-            sender.sendMessage( "§7Deleted currency: §a" + currencyName);
+            sender.sendMessage( "Deleted currency: " + currencyName);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage("§7"+ e.getMessage()+" ensure you has another currency setted as default.");
+            sender.sendMessage(e.getMessage()+" ensure you has another currency setted as default.");
         } catch (TransactionException e) {
-            sender.sendMessage( "§cError while deleting currency: §4" + e.getMessage());
+            sender.sendMessage("Error while deleting currency: " + e.getMessage());
         }
 
         return false;

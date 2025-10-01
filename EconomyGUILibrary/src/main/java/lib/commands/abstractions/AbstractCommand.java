@@ -80,7 +80,7 @@ public abstract class AbstractCommand implements Command {
         if (hasArgs()) {
             if (args.length < getArgs().size()) {
                 String stringArgs = String.join(" ", getArgs());
-                sender.sendMessage("§2§l>>"+getName()+ " "+stringArgs);
+                sender.sendMessage(">> "+getName()+ " "+stringArgs);
                 return false;
             }
         }

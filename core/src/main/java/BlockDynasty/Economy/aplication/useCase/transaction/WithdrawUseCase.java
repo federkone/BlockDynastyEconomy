@@ -114,7 +114,7 @@ public class WithdrawUseCase {
 
         this.accountService.syncOnlineAccount(result.getValue());
         this.updateForwarder.sendUpdateMessage("event",new WithdrawEvent(account.getPlayer(), currency, amount,context).toJson() ,account.getUuid().toString());
-        this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular());
+        this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " has made a withdrawal of " + currency.format(amount) + " " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount,context));
 
         return Result.success();

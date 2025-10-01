@@ -26,6 +26,7 @@ import lib.gui.abstractions.IEntityGUI;
 import lib.gui.abstractions.ITextInput;
 import lib.gui.templates.abstractions.CurrenciesList;
 import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.math.BigDecimal;
 
@@ -46,7 +47,7 @@ public class CurrencyListToDeposit extends CurrenciesList {
     public String execute(IEntityGUI sender, Currency currency, BigDecimal amount){
         Result<Void> result = depositUseCase.execute(targetPlayer.getUuid(),currency.getSingular(), amount, Context.COMMAND);
         if (result.isSuccess()) {
-            sender.sendMessage("Deposited "+ ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) + " to " + targetPlayer.getNickname() + "'s account.");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY)+"Deposited "+ ChatColor.stringValueOf(currency.getColor()) + currency.format(amount) +ChatColor.stringValueOf(Colors.GRAY)+ " to " + targetPlayer.getNickname() + "'s account.");
             this.openParent();
             return null;
         } else {

@@ -43,9 +43,9 @@ public class EditSymbolCommand extends AbstractCommand {
 
         try {
             editCurrencyUseCase.editSymbol(currencyName, currencySymbol);
-            sender.sendMessage("§7Currency symbol for §f" + currencyName + " §7updated: §a" + currencySymbol);
+            sender.sendMessage("Currency symbol for " + currencyName + " updated: " + currencySymbol);
         } catch (TransactionException e) {
-            sender.sendMessage("§7error in transaction.");
+            sender.sendMessage("error in transaction.");
         } catch (CurrencyNotFoundException e) {
             sender.sendMessage("Unknown currency: " + currencyName);
         }

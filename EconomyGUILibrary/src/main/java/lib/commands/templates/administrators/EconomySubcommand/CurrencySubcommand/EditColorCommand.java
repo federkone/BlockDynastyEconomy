@@ -21,6 +21,8 @@ import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyColorUnf
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 
 import java.util.List;
 
@@ -40,22 +42,22 @@ public class EditColorCommand extends AbstractCommand {
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§0§lBLACK §7= black");
-            sender.sendMessage("§1§lDARK BLUE §7= dark_blue");
-            sender.sendMessage("§2§lDARK GREEN §7= dark_green");
-            sender.sendMessage("§3§lDARK AQUA §7= dark_aqua");
-            sender.sendMessage("§4§lDARK RED §7= dark_red");
-            sender.sendMessage("§5§lDARK PURPLE §7= dark_purple");
-            sender.sendMessage("§6§lGOLD §7= gold");
-            sender.sendMessage("§7§lGRAY §7= gray");
-            sender.sendMessage("§8§lDARK GRAY §7= dark_gray");
-            sender.sendMessage("§9§lBLUE §7= blue");
-            sender.sendMessage("§a§lGREEN §7= green");
-            sender.sendMessage("§b§lAQUA §7= aqua");
-            sender.sendMessage("§c§lRED §7= red");
-            sender.sendMessage("§d§lLIGHT PURPLE §7= light_purple");
-            sender.sendMessage("§e§lYELLOW §7= yellow");
-            sender.sendMessage("§f§lWHITE §7= white|reset");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.BLACK)+" BLACK");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_BLUE)+" DARK BLUE");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_GREEN)+" DARK GREEN");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_AQUA)+" DARK AQUA");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_RED)+" DARK RED");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_PURPLE)+" DARK PURPLE");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.GOLD)+" GOLD");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.GRAY)+" GRAY");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.DARK_GRAY)+" DARK GRAY");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.BLUE)+" BLUE");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+" GREEN");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.AQUA)+" AQUA");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.RED)+" RED");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.LIGHT_PURPLE)+" LIGHT PURPLE");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.YELLOW)+" YELLOW");
+            sender.sendMessage(ChatColor.stringValueOf(Colors.WHITE)+" WHITE");
             return false;
         }
 
@@ -65,11 +67,11 @@ public class EditColorCommand extends AbstractCommand {
 
             try {
                 editCurrencyUseCase.editColor(currencyName, colorString);
-                sender.sendMessage("§7Color for §f" + currencyName + " §7updated: " + colorString);
+                sender.sendMessage("Color for " + currencyName + " updated: " + colorString);
             } catch (CurrencyNotFoundException e) {
-                sender.sendMessage("§cCurrency not found.");
+                sender.sendMessage("Currency not found.");
             } catch (CurrencyColorUnformat e) {
-                sender.sendMessage("§cInvalid chat color.");
+                sender.sendMessage("Invalid chat color.");
             }
 
         return true;

@@ -35,6 +35,7 @@ import lib.util.colors.Colors;
 import java.math.BigDecimal;
 
 public class EventListener {
+    private static String prefix = ChatColor.stringValueOf(Colors.GREEN)+"[Bank] ";
 
     public static void register(EventManager eventManager, PlatformAdapter platformAdapter) {
 
@@ -50,11 +51,17 @@ public class EventListener {
             String senderName = event.getPayer().getNickname();
 
             if (player != null){
-                player.sendMessage("You paid " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" to " + receiverName);
+                player.sendMessage(prefix
+                        +ChatColor.stringValueOf(Colors.GRAY)+"You paid "
+                        + colorCode+format
+                        + ChatColor.stringValueOf(Colors.GRAY)+" to " + receiverName);
                 player.playNotificationSound();
             }
             if (target != null){
-                target.sendMessage("You received " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" from " +senderName);
+                target.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You received "
+                        + colorCode+format
+                        + ChatColor.stringValueOf(Colors.GRAY)+" from " +senderName);
                 target.playNotificationSound();
             }
         });
@@ -72,7 +79,10 @@ public class EventListener {
 
 
             if (player != null) {
-                player.sendMessage("You transferred " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" to " + receiverName);
+                player.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You transferred "
+                        + colorCode+format
+                        + ChatColor.stringValueOf(Colors.GRAY)+" to " + receiverName);
                 player.playNotificationSound();
 
                 Runnable task=()->{
@@ -82,7 +92,10 @@ public class EventListener {
             }
 
             if (target != null) {
-                target.sendMessage("You received " + colorCode+format + ChatColor.stringValueOf(Colors.WHITE)+" from " + senderName);
+                target.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You received "
+                        + colorCode+format
+                        + ChatColor.stringValueOf(Colors.GRAY)+" from " + senderName);
                 target.playNotificationSound();
 
                 Runnable task=()->{
@@ -106,7 +119,12 @@ public class EventListener {
 
 
             if (player != null) {
-                player.sendMessage("You exchanged " + fromColorCode + fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" to " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
+                player.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You exchanged "
+                        + fromColorCode + fromFormat
+                        + ChatColor.stringValueOf(Colors.GRAY)+" to "
+                        + toColorCode + toFormat
+                        +ChatColor.stringValueOf(Colors.GRAY)+".");
                 player.playNotificationSound();
             }
         });
@@ -126,7 +144,13 @@ public class EventListener {
 
 
             if (sender != null ) {
-                sender.sendMessage("You trade " +fromColorCode+fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" to " + event.getToPlayer().getNickname() + ChatColor.stringValueOf(Colors.WHITE)+" for " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
+                sender.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You trade "
+                        + fromColorCode+fromFormat
+                        + ChatColor.stringValueOf(Colors.GRAY)+" to " + event.getToPlayer().getNickname()
+                        + ChatColor.stringValueOf(Colors.GRAY)+" in exchange for "
+                        + toColorCode + toFormat
+                        +ChatColor.stringValueOf(Colors.GRAY)+".");
                 sender.playNotificationSound();
 
                 Runnable task=()->{
@@ -136,7 +160,13 @@ public class EventListener {
 
             }
             if (receiver != null){
-                receiver.sendMessage("You received " + fromColorCode+fromFormat + ChatColor.stringValueOf(Colors.WHITE)+" from " + event.getFromPlayer().getNickname()+ ChatColor.stringValueOf(Colors.WHITE)+" for " + toColorCode + toFormat+ChatColor.stringValueOf(Colors.WHITE)+".");
+                receiver.sendMessage(prefix
+                        +ChatColor.stringValueOf(Colors.GRAY)+"You received "
+                        + fromColorCode+fromFormat
+                        + ChatColor.stringValueOf(Colors.GRAY) +" from " + event.getFromPlayer().getNickname()
+                        + ChatColor.stringValueOf(Colors.GRAY)+" in exchange for "
+                        + toColorCode + toFormat
+                        +ChatColor.stringValueOf(Colors.GRAY)+".");
                 receiver.playNotificationSound();
 
                 Runnable task=()->{
@@ -153,7 +183,10 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage("Has received a deposit " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
+                    player.sendMessage(prefix
+                            + ChatColor.stringValueOf(Colors.GRAY)+"Has received a deposit "
+                            + ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount())
+                            + ChatColor.stringValueOf(Colors.GRAY)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -166,7 +199,9 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage("Has extracted " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
+                    player.sendMessage(prefix+ChatColor.stringValueOf(Colors.GRAY)+"Has extracted "
+                            + ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount())
+                            + ChatColor.stringValueOf(Colors.GRAY)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -178,7 +213,10 @@ public class EventListener {
             if (event.getContext() == Context.COMMAND){
                 IEntityCommands player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
-                    player.sendMessage("your balance has been established " +ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount()) + ChatColor.stringValueOf(Colors.WHITE)+"." );
+                    player.sendMessage(prefix
+                            + ChatColor.stringValueOf(Colors.GRAY)+"your balance has been established "
+                            + ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount())
+                            + ChatColor.stringValueOf(Colors.GRAY)+"." );
                     player.playNotificationSound();
                 }
             }
@@ -194,15 +232,25 @@ public class EventListener {
             Currency currencyValue = offer.getTipoMonto();
             BigDecimal amountValue = offer.getMonto();
 
+            String fromFormat = currencyOffered.format(amountOffered);
+            String fromColorCode = ChatColor.stringValueOf(currencyOffered.getColor());
+            String toFormat = currencyValue.format(amountValue);
+            String toColorCode = ChatColor.stringValueOf(currencyValue.getColor());
+
             if (sender != null) {
-                sender.sendMessage("You have sent an offer to " + offer.getComprador().getNickname() +
-                        " offering " + amountOffered + " " + currencyOffered.getSingular() +
-                        " in exchange for " + amountValue + " " + currencyValue.getSingular());
+                sender.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You have sent an offer to " + offer.getComprador().getNickname()
+                        + " offering " + fromColorCode + fromFormat
+                        + ChatColor.stringValueOf(Colors.GRAY)
+                        + ChatColor.stringValueOf(Colors.GRAY)+" in exchange for "
+                        + toColorCode + toFormat);
             }
             if (receiver != null){
-                receiver.sendMessage("You have received an offer from " + offer.getVendedor().getNickname() +
-                        " offering " + amountOffered + " " + currencyOffered.getSingular() +
-                        " in exchange for " + amountValue + " " + currencyValue.getSingular());
+                receiver.sendMessage(prefix
+                        + ChatColor.stringValueOf(Colors.GRAY)+"You received an offer from " + offer.getVendedor().getNickname()
+                        + " offering " + fromColorCode + fromFormat
+                        + ChatColor.stringValueOf(Colors.GRAY)+" in exchange for "
+                        + toColorCode + toFormat);
                 receiver.playNotificationSound();
 
 
@@ -222,7 +270,7 @@ public class EventListener {
 
 
             if (receiver != null ) {
-                receiver.sendMessage("Your offer from " +offer.getVendedor().getNickname() + " has been canceled.");
+                receiver.sendMessage(prefix+ChatColor.stringValueOf(Colors.GRAY)+"Your offer from " +offer.getVendedor().getNickname() + " has been canceled.");
 
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(receiver.getUniqueId());
@@ -233,7 +281,7 @@ public class EventListener {
 
 
             if (sender != null){
-                sender.sendMessage("The offer to " + offer.getComprador().getNickname()  + " has been canceled.");
+                sender.sendMessage(prefix+ChatColor.stringValueOf(Colors.GRAY)+"The offer to " + offer.getComprador().getNickname()  + " has been canceled.");
 
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(sender.getUniqueId());
@@ -250,7 +298,7 @@ public class EventListener {
 
 
             if (receiver != null ) {
-                receiver.sendMessage("Your offer from " +offer.getVendedor().getNickname() + " has expired.");
+                receiver.sendMessage(prefix +ChatColor.stringValueOf(Colors.GRAY)+"Your offer from " +offer.getVendedor().getNickname() + " has expired.");
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(receiver.getUniqueId());
                 };
@@ -258,7 +306,8 @@ public class EventListener {
             }
 
             if (sender != null){
-                sender.sendMessage(" The offer to " + offer.getComprador().getNickname()  + " has expired.");
+                sender.sendMessage(prefix
+                        +ChatColor.stringValueOf(Colors.GRAY)+"The offer to " + offer.getComprador().getNickname()  + " has expired.");
 
                 Runnable task = () -> {
                     GUIFactory.getGuiService().refresh(sender.getUniqueId());

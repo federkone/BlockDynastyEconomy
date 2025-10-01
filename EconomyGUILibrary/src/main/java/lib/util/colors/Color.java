@@ -50,7 +50,7 @@ public class Color {
             case "DARK_RED": return "#AA0000";
             case "DARK_PURPLE": return "#AA00AA";
             case "GOLD": return "#FFAA00";
-            case "GRAY": return "#AAAAAA";
+            case "GRAY": return "#C4C4C4";
             case "DARK_GRAY": return "#555555";
             case "BLUE": return "#5555FF";
             case "GREEN": return "#55FF55";

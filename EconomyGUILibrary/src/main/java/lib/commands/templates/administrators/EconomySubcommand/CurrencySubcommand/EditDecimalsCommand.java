@@ -42,11 +42,11 @@ public class EditDecimalsCommand extends AbstractCommand {
 
         try {
             toggleFeaturesUseCase.toggleDecimals(currencyName);
-            sender.sendMessage ("§7Toggled Decimal Support for §f" + currencyName);
+            sender.sendMessage ("Toggled Decimal Support for " + currencyName);
         } catch (CurrencyNotFoundException e) {
-            sender.sendMessage(" §cUnknown currency.§f " + currencyName);
+            sender.sendMessage("Unknown currency. " + currencyName);
         } catch (TransactionException e) {
-            sender.sendMessage( "§cError toggling decimals for currency §f" + currencyName);
+            sender.sendMessage( "Error toggling decimals for currency " + currencyName);
         }
         return true;
     }

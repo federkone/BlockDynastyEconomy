@@ -43,11 +43,11 @@ public class CreateCurrencyCommand extends AbstractCommand {
 
         try {
             createCurrencyUseCase.createCurrency(single, plural);
-            sender.sendMessage( "§7Created currency: §a" + single);
+            sender.sendMessage("Created currency: " + single);
         } catch (CurrencyAlreadyExist e) {
-            sender.sendMessage( "§cCurrency Already Exist.");
+            sender.sendMessage("Currency Already Exist.");
         } catch (TransactionException e) {
-            sender.sendMessage( "§cAn error occurred while creating the currency.");
+            sender.sendMessage("An error occurred while creating the currency.");
         }
 
         return true;

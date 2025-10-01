@@ -74,7 +74,7 @@ public class BuyCommand extends AbstractCommand {
             }
 
         }else{
-            sender.sendMessage( "Error: " + result.getErrorMessage());
+            sender.sendMessage("Error: " + result.getErrorMessage());
         }
 
         return true;
