@@ -46,7 +46,7 @@
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
-| 3.4.0   | ✅    | JDK 21+      | Fully supported |
+| 3.1.1   | ✅     | JDK 17+      | Fully supported |
 
 ---
 ### ✅ Supported Versions BungeeCord
