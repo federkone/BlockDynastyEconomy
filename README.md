@@ -49,6 +49,7 @@
 | 1.21.3   | ✅    | JDK 21+      | Fully supported |
 
 - **'spongepowered.api.service.economy'** registered ✅
+- **Support Channel Comunication: Velocity,BungeeCord** ✅
 ----
 
 ### 🎯 Supported Versions Velocity
