@@ -29,7 +29,7 @@ public class PayCommand extends AbstractCommand {
     private final PayUseCase pay;
 
     public PayCommand(PayUseCase pay) {
-        super("pay","BlockDynastyEconomy.command.pay", List.of("player","amount","currency"));
+        super("pay","BlockDynastyEconomy.players.pay", List.of("player","amount","currency"));
         this.pay = pay;
     }
 

@@ -32,7 +32,7 @@ public class BalanceCommand extends AbstractCommand {
     private final GetBalanceUseCase balance;
 
     public BalanceCommand(GetBalanceUseCase balance) {
-        super("balance","BlockDynastyEconomy.command.balance");
+        super("balance","BlockDynastyEconomy.players.balance");
         this.balance = balance;
     }
 

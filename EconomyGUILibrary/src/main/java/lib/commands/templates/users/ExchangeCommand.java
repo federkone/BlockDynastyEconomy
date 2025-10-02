@@ -29,7 +29,7 @@ public class ExchangeCommand extends AbstractCommand {
     private ExchangeUseCase exchange;
 
     public ExchangeCommand(ExchangeUseCase exchange) {
-        super("exchange","BlockDynastyEconomy.command.exchange", List.of("fromCurrency","toCurrency","toAmount" ));
+        super("exchange","BlockDynastyEconomy.players.exchange", List.of("fromCurrency","toCurrency","toAmount" ));
         this.exchange = exchange;
     }
 

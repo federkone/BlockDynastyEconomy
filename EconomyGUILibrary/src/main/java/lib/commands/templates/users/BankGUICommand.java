@@ -24,7 +24,7 @@ import lib.gui.components.IEntityGUI;
 public class BankGUICommand extends AbstractCommand {
 
     public BankGUICommand() {
-        super("bank", "BlockDynastyEconomy.command.bank");
+        super("bank", "BlockDynastyEconomy.players.bank");
     }
 
     @Override
