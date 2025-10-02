@@ -16,12 +16,11 @@
 
 package lib.gui;
 
-import lib.gui.abstractions.ClickType;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IGUIService;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.ClickType;
+import lib.gui.components.IGUI;
+import lib.gui.components.IGUIService;
+import lib.gui.components.IEntityGUI;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

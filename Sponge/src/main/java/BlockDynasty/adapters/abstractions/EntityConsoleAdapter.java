@@ -17,7 +17,7 @@
 package BlockDynasty.adapters.abstractions;
 
 import lib.commands.abstractions.IEntityCommands;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 

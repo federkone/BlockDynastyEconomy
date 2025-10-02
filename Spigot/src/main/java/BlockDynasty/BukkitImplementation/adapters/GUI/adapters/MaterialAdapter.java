@@ -18,7 +18,7 @@ package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Version;
-import lib.gui.abstractions.Materials;
+import lib.gui.components.Materials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;

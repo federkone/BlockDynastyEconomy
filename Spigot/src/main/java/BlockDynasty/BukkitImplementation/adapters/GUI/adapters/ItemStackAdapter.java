@@ -16,7 +16,7 @@
 
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
-import lib.gui.abstractions.IItemStack;
+import lib.gui.components.IItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;

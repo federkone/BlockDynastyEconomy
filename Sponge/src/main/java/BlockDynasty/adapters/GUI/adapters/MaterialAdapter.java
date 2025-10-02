@@ -16,10 +16,9 @@
 
 package BlockDynasty.adapters.GUI.adapters;
 
-import lib.gui.abstractions.Materials;
+import lib.gui.components.Materials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;

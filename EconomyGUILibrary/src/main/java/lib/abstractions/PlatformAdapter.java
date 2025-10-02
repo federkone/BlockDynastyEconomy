@@ -16,10 +16,9 @@
 
 package lib.abstractions;
 
-import lib.gui.abstractions.IInventory;
-import lib.gui.abstractions.IItemStack;
-import lib.gui.abstractions.Materials;
-import lib.scheduler.ContextualTask;
+import lib.gui.components.IInventory;
+import lib.gui.components.IItemStack;
+import lib.gui.components.Materials;
 import lib.scheduler.IScheduler;
 
 import java.io.File;

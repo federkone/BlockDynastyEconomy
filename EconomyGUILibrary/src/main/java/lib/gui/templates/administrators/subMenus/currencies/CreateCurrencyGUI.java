@@ -20,9 +20,9 @@ import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyException;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IEntityGUI;
-import lib.gui.abstractions.ITextInput;
+import lib.gui.components.IGUI;
+import lib.gui.components.IEntityGUI;
+import lib.gui.components.ITextInput;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 

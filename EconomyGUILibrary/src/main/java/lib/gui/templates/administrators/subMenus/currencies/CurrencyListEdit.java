@@ -19,12 +19,12 @@ package lib.gui.templates.administrators.subMenus.currencies;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IEntityGUI;
-import lib.gui.abstractions.ITextInput;
-import lib.gui.templates.abstractions.CurrenciesList;
+import lib.gui.components.IGUI;
+import lib.gui.components.IEntityGUI;
+import lib.gui.components.ITextInput;
+import lib.gui.components.abstractions.CurrencySelectorAndAmount;
 
-public class CurrencyListEdit extends CurrenciesList {
+public class CurrencyListEdit extends CurrencySelectorAndAmount {
     private final IEntityGUI player;
     public CurrencyListEdit(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI abstractGUI, ITextInput textInput) {
         super( player, searchCurrencyUseCase,abstractGUI,textInput);

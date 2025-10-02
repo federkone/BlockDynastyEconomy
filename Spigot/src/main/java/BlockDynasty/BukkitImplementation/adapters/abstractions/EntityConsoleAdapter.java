@@ -19,7 +19,7 @@ package BlockDynasty.BukkitImplementation.adapters.abstractions;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.commands.abstractions.IEntityCommands;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
