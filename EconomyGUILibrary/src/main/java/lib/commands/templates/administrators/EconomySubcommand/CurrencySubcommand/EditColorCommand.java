@@ -30,14 +30,13 @@ public class EditColorCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditColorCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("color","BlockDynastyEconomy.command.currency", List.of("currency", "color"));
+        super("color","", List.of("currency", "color"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 
     @Override
     public boolean execute(IEntityCommands sender, String[] args) {
-        if (!sender.hasPermission(getPermission())){
-            sender.sendMessage("no permission");
+        if(!super.execute( sender, args)){
             return false;
         }
 

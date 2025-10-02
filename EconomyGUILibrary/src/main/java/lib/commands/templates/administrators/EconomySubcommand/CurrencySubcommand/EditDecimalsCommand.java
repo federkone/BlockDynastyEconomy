@@ -28,7 +28,7 @@ public class EditDecimalsCommand extends AbstractCommand {
     public final EditCurrencyUseCase toggleFeaturesUseCase;
 
     public EditDecimalsCommand(EditCurrencyUseCase toggleFeaturesUseCase) {
-        super("decimal","BlockDynastyEconomy.command.currency", List.of("currency"));
+        super("decimal","", List.of("currency"));
         this.toggleFeaturesUseCase = toggleFeaturesUseCase;
     }
 

@@ -28,7 +28,7 @@ public class EditSingularNameCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditSingularNameCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("singular", "BlockDynastyEconomy.command.currency",List.of("currency","newSingular"));
+        super("singular", "",List.of("currency","newSingular"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 

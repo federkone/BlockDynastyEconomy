@@ -30,7 +30,7 @@ public class BuyCommand extends AbstractCommand {
     private final WithdrawUseCase withdraw;
 
     public BuyCommand(WithdrawUseCase withdraw) {
-        super("buy","BlockDynastyEconomy.command.buycommand",List.of("player", "amount", "currency", "command..."));
+        super("buy","",List.of("player", "amount", "currency", "command..."));
         this.withdraw = withdraw;
     }
 

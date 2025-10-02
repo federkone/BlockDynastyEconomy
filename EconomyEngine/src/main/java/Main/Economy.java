@@ -28,7 +28,7 @@ import files.logs.VaultLogger;
 import lib.commands.CommandsFactory;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.ITextInput;
+import lib.gui.components.ITextInput;
 import lib.placeholder.PlaceHolder;
 import lib.util.colors.ChatColor;
 import listeners.*;

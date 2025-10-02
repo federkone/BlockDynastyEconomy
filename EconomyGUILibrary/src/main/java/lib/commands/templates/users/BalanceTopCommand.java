@@ -34,7 +34,7 @@ public class BalanceTopCommand extends AbstractCommand {
     private final SearchAccountUseCase searchAccountUseCase;
 
     public BalanceTopCommand(SearchAccountUseCase searchAccountUseCase) {
-        super("baltop" ,"BlockDynastyEconomy.command.baltop", List.of("currency" ,"limit"));
+        super("baltop" ,"BlockDynastyEconomy.players.baltop", List.of("currency" ,"limit"));
         this.searchAccountUseCase = searchAccountUseCase;
     }
 

@@ -28,7 +28,7 @@ public class EditPayableCommand extends AbstractCommand {
     private final EditCurrencyUseCase toggleFeaturesUseCase;
 
     public EditPayableCommand(EditCurrencyUseCase toggleFeaturesUseCase) {
-        super("payable","BlockDynastyEconomy.command.currency", List.of("currency"));
+        super("payable","", List.of("currency"));
         this.toggleFeaturesUseCase = toggleFeaturesUseCase;
     }
 

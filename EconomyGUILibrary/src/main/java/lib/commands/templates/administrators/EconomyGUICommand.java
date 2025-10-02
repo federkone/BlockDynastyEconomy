@@ -19,12 +19,12 @@ package lib.commands.templates.administrators;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 
 public class EconomyGUICommand extends AbstractCommand {
 
     public EconomyGUICommand() {
-        super("menu", "BlockDynastyEconomy.command.menu");
+        super("menu", "BlockDynastyEconomy.economy.superUser");
     }
 
     @Override
@@ -35,7 +35,7 @@ public class EconomyGUICommand extends AbstractCommand {
 
         IEntityGUI entityGUI = sender.asEntityGUI();
         if (entityGUI != null) {
-            GUIFactory.adminPanel(entityGUI).open();
+            GUIFactory.economyAdminPanel(entityGUI).open();
         }else {
             sender.sendMessage("Economy Admin GUI is only available for players.");
         }

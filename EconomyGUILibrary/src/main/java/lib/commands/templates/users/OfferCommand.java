@@ -25,7 +25,7 @@ import java.util.List;
 public class OfferCommand extends AbstractCommand {
 
     public OfferCommand() {
-        super("offer","BlockDynastyEconomy.command.offer");
+        super("offer","BlockDynastyEconomy.players.offer");
     }
 
     @Override

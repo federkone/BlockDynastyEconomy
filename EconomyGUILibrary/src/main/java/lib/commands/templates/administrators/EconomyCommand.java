@@ -25,7 +25,7 @@ import java.util.List;
 public class EconomyCommand extends AbstractCommand {
 
     public EconomyCommand() {
-        super("eco","BlockDynastyEconomy.command.economy");
+        super("eco","BlockDynastyEconomy.economy");
     }
 
     @Override

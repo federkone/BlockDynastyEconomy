@@ -28,7 +28,7 @@ public class EditPluralNameCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditPluralNameCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("plural", "BlockDynastyEconomy.command.currency",List.of("currency","newPlural"));
+        super("plural", "",List.of("currency","newPlural"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 

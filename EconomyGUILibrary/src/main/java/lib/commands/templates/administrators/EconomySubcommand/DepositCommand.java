@@ -30,7 +30,7 @@ public class DepositCommand extends AbstractCommand {
     private final DepositUseCase deposit;
 
     public DepositCommand(DepositUseCase deposit) {
-        super("give", "BlockDynastyEconomy.command.give",List.of("player", "amount", "currency"));
+        super("give", "",List.of("player", "amount", "currency"));
         this.deposit = deposit;
     }
 

@@ -28,7 +28,7 @@ public class EditRateCommand extends AbstractCommand {
     private final EditCurrencyUseCase editCurrencyUseCase;
 
     public EditRateCommand(EditCurrencyUseCase editCurrencyUseCase) {
-        super("rate","BlockDynastyEconomy.command.currency", List.of("currency","rate"));
+        super("rate","", List.of("currency","rate"));
         this.editCurrencyUseCase = editCurrencyUseCase;
     }
 

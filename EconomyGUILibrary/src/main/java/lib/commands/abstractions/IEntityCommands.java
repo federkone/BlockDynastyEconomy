@@ -16,7 +16,7 @@
 
 package lib.commands.abstractions;
 
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 import lib.scheduler.IEntity;
 
 import java.util.UUID;

@@ -20,18 +20,17 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.result.Result;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IEntityGUI;
-import lib.gui.abstractions.ITextInput;
-import lib.gui.abstractions.Materials;
-import lib.gui.templates.abstractions.CurrenciesList;
+import lib.gui.components.IGUI;
+import lib.gui.components.IEntityGUI;
+import lib.gui.components.ITextInput;
+import lib.gui.components.Materials;
+import lib.gui.components.abstractions.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public class CurrencyListToPay extends CurrenciesList {
+public class CurrencyListToPay extends CurrencySelectorAndAmount {
     private final PayUseCase payUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 

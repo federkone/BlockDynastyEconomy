@@ -19,12 +19,12 @@ package lib.commands.templates.users;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 
 public class BankGUICommand extends AbstractCommand {
 
     public BankGUICommand() {
-        super("bank", "BlockDynastyEconomy.command.bank");
+        super("bank", "BlockDynastyEconomy.players.bank");
     }
 
     @Override

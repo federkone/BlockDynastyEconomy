@@ -21,12 +21,12 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.persistence.Exceptions.TransactionException;
-import lib.gui.abstractions.IGUI;
-import lib.gui.abstractions.IEntityGUI;
-import lib.gui.abstractions.ITextInput;
-import lib.gui.templates.abstractions.CurrenciesList;
+import lib.gui.components.IGUI;
+import lib.gui.components.IEntityGUI;
+import lib.gui.components.ITextInput;
+import lib.gui.components.abstractions.CurrencySelectorAndAmount;
 
-public class CurrencyListDelete extends CurrenciesList {
+public class CurrencyListDelete extends CurrencySelectorAndAmount {
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
     private final IEntityGUI player;
     private final ITextInput textInput;

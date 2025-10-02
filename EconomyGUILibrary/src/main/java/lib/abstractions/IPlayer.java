@@ -17,7 +17,7 @@
 package lib.abstractions;
 
 import lib.commands.abstractions.IEntityCommands;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
 
 public interface IPlayer extends IEntityGUI, IEntityCommands {
 }

@@ -81,11 +81,18 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerEvents() {
-        Listener economyListener;
-        if(getServer().getOnlineMode()){ //configuration.getBoolean("online")
+        Listener economyListener=new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
+        if(configuration.getBoolean("online")) {
+            if(!getServer().getOnlineMode()){
+                Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
+            }
             economyListener = new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
             Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
-        }else {
+        }
+        if (!configuration.getBoolean("online")){
+            if(getServer().getOnlineMode()){
+                Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
+            }
             economyListener = new PlayerJoinListenerOffline(economy.getPlayerJoinListener());
             Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
         }

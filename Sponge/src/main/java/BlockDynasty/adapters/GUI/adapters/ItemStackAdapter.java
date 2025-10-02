@@ -16,7 +16,7 @@
 
 package BlockDynasty.adapters.GUI.adapters;
 
-import lib.gui.abstractions.IItemStack;
+import lib.gui.components.IItemStack;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.List;

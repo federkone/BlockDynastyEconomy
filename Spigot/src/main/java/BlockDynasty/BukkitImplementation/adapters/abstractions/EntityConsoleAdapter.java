@@ -16,8 +16,12 @@
 
 package BlockDynasty.BukkitImplementation.adapters.abstractions;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import lib.commands.abstractions.IEntityCommands;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.IEntityGUI;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.UUID;
@@ -49,7 +53,13 @@ public class EntityConsoleAdapter implements IEntityCommands {
 
     @Override
     public void sendMessage(String message) {
-        commandSender.sendMessage(translateColorCodes(message));
+        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+            message = translateColorCodes(message);
+            commandSender.sendMessage(message);
+        }else {
+            Component textonuevo = MiniMessage.miniMessage().deserialize(message);
+            commandSender.sendMessage(textonuevo);
+        }
     }
 
     private String translateColorCodes(String message) {

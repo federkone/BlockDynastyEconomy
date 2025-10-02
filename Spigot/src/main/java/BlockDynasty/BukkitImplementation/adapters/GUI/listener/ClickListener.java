@@ -18,8 +18,8 @@ package BlockDynasty.BukkitImplementation.adapters.GUI.listener;
 
 import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
 import lib.gui.GUIFactory;
-import lib.gui.abstractions.ClickType;
-import lib.gui.abstractions.IEntityGUI;
+import lib.gui.components.ClickType;
+import lib.gui.components.IEntityGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
