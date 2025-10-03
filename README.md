@@ -4,6 +4,7 @@
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
 ## BlockDynasty-Economy
+Wiki: https://wiki.blockdynasty.net
 
 ### 🗃️ Supported Databases
 - **MySQL**: v8.0.38
