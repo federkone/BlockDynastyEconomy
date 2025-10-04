@@ -3,93 +3,66 @@
 ![License](https://img.shields.io/badge/License-Apache%20v2.0-blue.svg)
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
-# BlockDynasty-Economy
+## BlockDynasty-Economy
+Wiki: https://wiki.blockdynasty.net
 
-Proyecto basado en arquitectura limpia,por capas "Onion", representada con la capa de: dominio,aplicacion, e infraestructura
+### 🗃️ Supported Databases
+- **MySQL**: v8.0.38
+- **SQLite**: Compatible 
+- **H2**: Compatible
+- **Redis**: "Jedis" 5.2.0
 
-Pruebas unitarias y de integracion,TDD, ejecutadas con JUnit
+> **💡 Note**: REDIS replaces the need to use proxy plugins like Velocity or BungeeCord.
+----
+### 🎯 Supported Versions Paper/Spigot/Folia/Canvas
+- **Spigot API version**: `1.15`  
+- **JDK**: `17` (minimum requirement)  
+- **Java Runtime**: class file version `60.0`  
 
-Basado en la Metodologia "Rational Unified Process" dirigido por Casos de Usos
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 1.8.x   | ✅     | JDK 17+      | Fully supported |
+| 1.9.x   | ✅     | JDK 17+      | Fully supported |
+| 1.10.x  | ✅     | JDK 17+      | Fully supported |
+| 1.11.x  | ✅     | JDK 17+      | Fully supported |
+| 1.12.x  | ✅     | JDK 17+      | Fully supported |
+| 1.13.x  | ❌     | -            | Not supported |
+| 1.14.x  | ❌     | -            | Not supported |
+| 1.15.x  | ❌     | -            | Not supported |
+| 1.16.x  | ❌     | -            | Not supported |
+| 1.17.1  | ✅     | JDK 17+      | Fully supported |
+| 1.18.x  | ✅     | JDK 21+      | Fully supported |
+| 1.19.x  | ✅     | JDK 21+      | Fully supported |
+| 1.20.x  | ✅     | JDK 21+      | Fully supported |
+| 1.21.x  | ✅     | JDK 21+      | Fully supported |
 
-Tecnologias fundamentales: Base de datos transaccionales orquestada por un ORM
+- **Vault** ✅
+- **VaultUnlocked** ✅
+----
 
-Implementacion de la arquitectura con multiples Patrones de diseños para ejecutar la implementación de manera ordenada y legible.
+### 🎯 Supported Versions Sponge
+- **Api**: `Sponge 8`
+- **JDK**: `21` minimum requirement
+- **Tested in**: Sponge Vanilla server
+  
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 1.21.3   | ✅    | JDK 21+      | Fully supported |
 
+- **'spongepowered.api.service.economy'** registered ✅
+- **Support Channel Comunication: Velocity,BungeeCord** ✅
+----
 
-Patron - modelo Cache-Aside (Look-aside cache) con validación transaccional final en la DB.
+### 🎯 Supported Versions Velocity
 
-    -Cache-aside (lazy-loading cache)
-        Se lee primero de caché, pero la DB es la fuente de la verdad.
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 3.1.1   | ✅     | JDK 17+      | Fully supported |
 
-    -Write-through fallback
-        Escribes en la DB y luego sincronizas la caché si todo salió bien.
+----
+### 🎯 Supported Versions BungeeCord
 
-lista de compatibilidad: 1.8 -> 1.12 .... 1.17.1 -> 1.21.5
-desde 1.13 hasta 1.16.9 el plugin no es compatible, requieren estrictamente java 8
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| 1.21.*  | ✅     | JDK 21+      | Fully supported |
 
-Todo list:
-
-    -Refactorizar el sistema de informes de transacciones, migrar a la nueva arquitectura basada en eventos de transacciones
-    -Razonar lo siguiente: donde se deberia realizar el redondeo de monedas en el sistema, ya que actualmente se esta realizando en el modelo de base de datos.
-           lo mas probable es que se deba realizar en el modelo de dominio, ya que es donde se define la logica de negocio y no en la infraestructura.
-    -refactor config file, add message file
-    -create command for edit accountCanReciveCurrency attribute
-    -complete use case and comand for delete accountDb
-
-
--placeholder for top currency holders (ex: %blockdynasty_<currency>_top_#_#%)- check
--añadir al placeholder la posibilidad de tener el money ademas de formateado con simbolo o sin simbolo -CHECK
-
-
----->
-
-#comandos de administracion para permitir:dar dinero, setear dinero, crear un "buycommand" para comprar comandos
-/economy take
-/economy give
-/economy set
-/economy buycommand
-
-#comandos de administracion para crear y editar monedas
-/economy currency create
-
-/economy currency delete
-
-/economy currency view
-
-/economy currency color
-
-/economy currency decimals
-
-/economy currency payable
-
-/economy currency rate
-
-/economy currency startbal
-
-/economy currency symbol
-
-/economy currency list
-
-/economy currency default
-
-/economy currency plural
-
-/economy currency singular
-
-#comandos publicos simplificados para los jugadores
-/pay
-
-/exchange           #intercambiar monedas
-
-/money            #ver monies
-
-/baltop             #ver top
-
-
-/offer create
-
-/offer cancel
-
-/offer accept
-
-/offer deny
