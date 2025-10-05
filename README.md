@@ -30,10 +30,10 @@ Wiki: https://wiki.blockdynasty.net
 | 1.14.x  | ❌     | -            | Not supported |
 | 1.15.x  | ❌     | -            | Not supported |
 | 1.16.x  | ❌     | -            | Not supported |
-| 1.17.1  | ✅     | JDK 17+      | Fully supported |
-| 1.18.x  | ✅     | JDK 21+      | Fully supported |
-| 1.19.x  | ✅     | JDK 21+      | Fully supported |
-| 1.20.x  | ✅     | JDK 21+      | Fully supported |
+| 1.17.1  | ✅     | JDK 17       | Fully supported |
+| 1.18.x  | ✅     | JDK 17       | Fully supported |
+| 1.19.x  | ✅     | JDK 17       | Fully supported |
+| 1.20.x  | ✅     | JDK 17+      | Fully supported |
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
 
 - **Vault** ✅
