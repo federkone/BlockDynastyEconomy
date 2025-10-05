@@ -3,7 +3,7 @@
     "name": "java_plain",
     "version": "1.0"
   },
-  "license": "All-Rights-Reserved",
+  "license": "Apache License, Version 2.0",
   "plugins": [
     {
       "id": "blockdynastyeconomy",
@@ -11,10 +11,11 @@
       "version": "${version}",
       "entrypoint": "BlockDynasty.SpongePlugin",
       "description": "Blockdynasty economy plugin",
-      "branding": {},
-      "links": {
-      },
       "contributors": [
+        {
+          "name": "Federkone",
+          "description": "Developer"
+        }
       ],
       "dependencies": [
         {

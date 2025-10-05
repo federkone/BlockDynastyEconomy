@@ -32,6 +32,7 @@ import files.Configuration;
 import lib.commands.CommandsFactory;
 
 import org.apache.logging.log4j.Logger;
+
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
@@ -43,6 +44,7 @@ import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
 import proxy.ProxyData;
+import org.bstats.sponge.Metrics;
 
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
@@ -57,13 +59,17 @@ public class SpongePlugin {
     private static Configuration configuration;
     public static Path configPath;
     private static RawDataChannel channel;
+    private final Metrics metrics;
 
     @Inject
-    SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir) {
+    public SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir, Metrics.Factory metricsFactory) {
         SpongePlugin.container = container;
         SpongePlugin.logger = logger;
         SpongePlugin.configPath = configDir;
+
+        metrics = metricsFactory.make(27472);
     }
+
 
     @Listener
     public void onRegisterChannel(final RegisterChannelEvent event) {

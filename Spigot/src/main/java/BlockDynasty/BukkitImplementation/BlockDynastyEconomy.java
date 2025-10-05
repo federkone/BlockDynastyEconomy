@@ -34,6 +34,7 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 
 import Main.Economy;
 import files.Configuration;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -60,6 +61,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             Console.logError("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
+        Metrics metrics = new Metrics(this, 27470);
     }
 
     @Override
