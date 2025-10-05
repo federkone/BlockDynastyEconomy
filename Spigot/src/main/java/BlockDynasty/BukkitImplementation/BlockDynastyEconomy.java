@@ -32,6 +32,7 @@ import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOn
 import BlockDynasty.BukkitImplementation.utils.Console;
 
 
+import BlockDynasty.BukkitImplementation.utils.Updater;
 import Main.Economy;
 import files.Configuration;
 import org.bstats.bukkit.Metrics;
@@ -42,6 +43,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
     private final Economy economy = new Economy();
     private static Configuration configuration;
+    private Metrics metrics;
 
     @Override
     public void onLoad() {
@@ -61,7 +63,11 @@ public class BlockDynastyEconomy extends JavaPlugin {
             Console.logError("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
-        Metrics metrics = new Metrics(this, 27470);
+
+        try {
+            metrics= new Metrics(this, 27470);
+            Updater.check(this,-1);
+        }catch (Exception e) {}
     }
 
     @Override
@@ -70,6 +76,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Vault.unhook();
         PlaceHolder.unregister();
         ChannelRegister.unhook(this);
+        if (metrics != null) {
+            metrics.shutdown();
+        }
     }
 
     private void initCoreServices() {

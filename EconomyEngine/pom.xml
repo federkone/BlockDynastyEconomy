@@ -22,7 +22,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>3.5.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -30,7 +30,46 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <minimizeJar>false</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <relocations>
+
+                                <relocation>
+                                    <pattern>org.xerial</pattern>
+                                    <shadedPattern>com.BlockDynasty.xerial</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.mysql</pattern>
+                                    <shadedPattern>com.BlockDynasty.mysql</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.h2database</pattern>
+                                    <shadedPattern>com.BlockDynasty.h2database</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.yaml</pattern>
+                                    <shadedPattern>com.BlockDynasty.yaml</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>redis.clients</pattern>
+                                    <shadedPattern>com.BlockDynasty.redis.clients</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.gson</pattern>
+                                    <shadedPattern>com.BlockDynasty.gson</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
