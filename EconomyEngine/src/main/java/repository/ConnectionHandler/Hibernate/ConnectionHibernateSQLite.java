@@ -37,21 +37,6 @@ public class ConnectionHibernateSQLite  extends   ConnectionHibernate{
 
     // This method starts the H2 web console server.
     private void startServerConsole(String dbFilePath){
-        /*try {
-            //System.setProperty("h2.consoleForcePassword", "true");
-            Server webServer = Server.createWebServer(
-                    "-web",
-                    "-webAllowOthers",
-                    "-webPort", "8082",
-                    "-baseDir",dbFilePath);
-            webServer.start();
-
-            Console.log("Console started at: http://localhost:8082"
-                    + "\n                               ->  JDBC URL: jdbc:sqlite:" + dbFilePath + "/database.db"
-                     );
-        } catch (SQLException e) {
-            Console.logError("Failed to start Web Console: " + e.getMessage());
-        }*/
         try {
             // Skip password requirement
             System.setProperty("h2.consoleForcePassword", "false");

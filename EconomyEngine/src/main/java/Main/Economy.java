@@ -76,9 +76,9 @@ public class Economy {
             case "mysql":
                 return new ConnectionHibernateMysql(configuration.getString("sql.host"), configuration.getInt("sql.port"), configuration.getString("sql.database"), configuration.getString("sql.username"), configuration.getString("sql.password"));
             case "h2":
-                return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("EnableWebEditorSqlServer"));
+                return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             case "sqlite":
-                return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("EnableWebEditorSqlServer"));
+                return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             default:
                 throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
         }

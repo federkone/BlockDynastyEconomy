@@ -31,6 +31,7 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
         configuration.setProperty("hibernate.connection.url", url);
         this.init();
 
+        Console.log(" server console" + enableServerConsole);
         if (enableServerConsole) {
             startServerConsole(dbFilePath);
         }
@@ -38,21 +39,6 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
 
     // This method starts the H2 web console server.
     private void startServerConsole(String dbFilePath){
-       /* try {
-            System.setProperty("h2.consoleForcePassword", "false");
-            Server webServer = Server.createWebServer(
-                    "-web",
-                    "-webAllowOthers",
-                    "-webPort", "8082",
-                    "-baseDir",dbFilePath);
-            webServer.start();
-
-            Console.log("H2 console started at: http://localhost:8082"
-                    + "\n                               ->  JDBC URL: jdbc:h2:file:" + dbFilePath + "/h2Database"
-                    );// + "\n                               ->  User: sa , Password: Admin123"
-        } catch (SQLException e) {
-            Console.logError("Failed to start H2 console: " + e.getMessage());
-        }*/
         try {
             // Skip password requirement
             System.setProperty("h2.consoleForcePassword", "false");
