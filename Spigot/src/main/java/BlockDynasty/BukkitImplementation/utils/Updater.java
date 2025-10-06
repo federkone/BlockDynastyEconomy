@@ -53,7 +53,7 @@ public class Updater {
             if (checkForUpdates()) {
                 Console.log("¡New version Available : " + newVersion + "!");
                 Console.log("Download in: " + getResourceURL());
-            }
+            }else{Console.log("The plugin is Updated");}
         } ));
     }
 

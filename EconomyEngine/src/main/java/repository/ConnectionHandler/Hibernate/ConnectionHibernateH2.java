@@ -31,7 +31,6 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
         configuration.setProperty("hibernate.connection.url", url);
         this.init();
 
-        Console.log(" server console" + enableServerConsole);
         if (enableServerConsole) {
             startServerConsole(dbFilePath);
         }

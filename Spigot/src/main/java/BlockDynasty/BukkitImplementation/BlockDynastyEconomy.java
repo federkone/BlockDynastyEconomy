@@ -66,7 +66,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
         try {
             metrics= new Metrics(this, 27470);
-            Updater.check(this,-1);
+            Updater.check(this,129308);
         }catch (Exception e) {}
     }
 
