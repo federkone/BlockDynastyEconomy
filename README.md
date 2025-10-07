@@ -1,6 +1,7 @@
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2105085ed78d4490886a0f2ede104f98)](https://app.codacy.com/gh/BlockDynasty/BlockDynastyEconomy/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 ![License](https://img.shields.io/badge/License-Apache%20v2.0-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+![Status](https://img.shields.io/badge/Status-In%20Progress-yellow)
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
 ## BlockDynasty-Economy
