@@ -59,6 +59,22 @@
                                         <exclude>META-INF/*.RSA</exclude>
                                     </excludes>
                                 </filter>
+                                <filter>
+                                    <artifact>com.h2database:h2</artifact>
+                                    <excludes>
+                                        <exclude>org/h2/tools/Upgrade*</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.hibernate.orm:hibernate-core</artifact>
+                                    <excludes>
+                                        <exclude>org/hibernate/tool/**</exclude>
+                                        <exclude>org/hibernate/cfg/reveng/**</exclude>
+                                        <exclude>org/hibernate/jmx/**</exclude>
+                                        <exclude>org/hibernate/testing/**</exclude>
+                                        <exclude>org/hibernate/envers/**</exclude>
+                                    </excludes>
+                                </filter>
                             </filters>
                             <relocations>
                                 <relocation>
