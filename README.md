@@ -5,7 +5,7 @@
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
 ## BlockDynasty-Economy
-Issues -> https://github.com/BlockDynasty/BlockDynastyEconomy
+Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
 
 Wiki: https://wiki.blockdynasty.net
 
