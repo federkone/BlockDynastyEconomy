@@ -16,6 +16,8 @@
 
 package BlockDynasty.BukkitImplementation.utils;
 
+import org.bukkit.Bukkit;
+
 import java.util.Arrays;
 
 public class Version {
@@ -30,6 +32,9 @@ public class Version {
         return Arrays.stream(versions).anyMatch(currentVersion::startsWith);
     }
 
+    public static boolean isMohist() {
+        return JavaUtil.classExists("com.mohistmc.MohistMC");
+    }
     /**
      *  this is useful for item Creations
      **/

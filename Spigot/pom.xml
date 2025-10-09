@@ -85,6 +85,10 @@
                                     <pattern>net.wesjd.anvilgui</pattern>
                                     <shadedPattern>com.BlockDynasty.anvilgui</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.antlr</pattern>
+                                    <shadedPattern>com.BlockDynasty.antlr</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>

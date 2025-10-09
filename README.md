@@ -7,6 +7,12 @@
 ## BlockDynasty-Economy
 Wiki: https://wiki.blockdynasty.net
 
+Spigot: https://www.spigotmc.org/resources/dynastyeconomy.129308
+
+Modrinth: https://modrinth.com/plugin/dynastyeconomy
+
+Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
+
 ### 🗃️ Supported Databases
 - **MySQL**: v8.0.38
 - **SQLite**: Compatible 

@@ -17,7 +17,8 @@
 package BlockDynasty.BukkitImplementation;
 
 import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInput;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInputAnvil;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInputFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
@@ -84,7 +85,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void initCoreServices() {
         //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(),new BukkitAdapter());
+        economy.init(TextInputFactory.getTextInput(),new ConsoleAdapter(),new BukkitAdapter());
         configuration = economy.getConfiguration();
     }
     private void registerCommands(){
