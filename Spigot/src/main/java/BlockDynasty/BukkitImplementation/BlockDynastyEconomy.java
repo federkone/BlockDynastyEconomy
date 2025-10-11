@@ -17,8 +17,7 @@
 package BlockDynasty.BukkitImplementation;
 
 import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInputAnvil;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.TextInputFactory;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInputFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
@@ -34,6 +33,7 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 
 
 import BlockDynasty.BukkitImplementation.utils.Updater;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import Main.Economy;
 import files.Configuration;
 import org.bstats.bukkit.Metrics;
@@ -42,7 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
     private static BlockDynastyEconomy instance;
-    private final Economy economy = new Economy();
+    private Economy economy;
     private static Configuration configuration;
     private Metrics metrics;
 
@@ -53,6 +53,12 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Version.isUnsupportedVersion()){
+            getLogger().severe("Unsupported Minecraft version detected: " + org.bukkit.Bukkit.getBukkitVersion());
+            getLogger().severe("Disabling plugin to prevent issues.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         instance = this;
         try {
             initCoreServices();
@@ -61,7 +67,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
             setupIntegrations();
             Console.log("§aPlugin enabled successfully!");
         } catch (Exception e) {
-            Console.logError("An error occurred during plugin initialization: " + e.getMessage());
+            getLogger().severe("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
 
@@ -73,7 +79,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        economy.shutdown();
+        Economy.shutdown();
         Vault.unhook();
         PlaceHolder.unregister();
         ChannelRegister.unhook(this);
@@ -85,9 +91,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private void initCoreServices() {
         //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         Console.setConsole(new ConsoleAdapter());
-        economy.init(TextInputFactory.getTextInput(),new ConsoleAdapter(),new BukkitAdapter());
+        economy = Economy.init(TextInputFactory.getTextInput(),new ConsoleAdapter(),new BukkitAdapter());
         configuration = economy.getConfiguration();
     }
+
     private void registerCommands(){
         CommandRegister.registerAll();
     }

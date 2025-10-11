@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
+package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;

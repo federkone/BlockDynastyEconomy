@@ -151,11 +151,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- gui- Anvil -->
+        <!-- gui-  Anvil https://github.com/WesJD/AnvilGUI -->
         <dependency>
             <groupId>net.wesjd</groupId>
             <artifactId>anvilgui</artifactId>
-            <version>1.10.6-SNAPSHOT</version>
+            <version>1.10.9-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--  -->

@@ -45,15 +45,15 @@ import repository.Repository;
 
 public class Economy {
     private Core core;
-    private IRepository repository;
+    private static IRepository repository;
     private PlayerJoinListener playerJoinListener;
     private IApi api;
     private PlaceHolder placeHolder;
-    private Subscriber subscriber;
+    private static Subscriber subscriber;
     private Configuration configuration;
     private PlatformAdapter platformAdapter;
 
-    public void init(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
+    private Economy(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
         Console.setConsole(console);
         this.platformAdapter=platformAdapter;
         configuration= new Configuration(platformAdapter.getDataFolder());
@@ -69,6 +69,10 @@ public class Economy {
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
         GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+    }
+
+    public static Economy init(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
+        return new Economy(textInput, console, platformAdapter);
     }
 
     private Connection getConnection(Configuration configuration){
@@ -100,7 +104,7 @@ public class Economy {
         }
     }
 
-    public void shutdown(){
+    public static void shutdown(){
         if (repository != null) {
             repository.close();
         }
