@@ -16,15 +16,13 @@
 
 package BlockDynasty.BukkitImplementation.scheduler;
 
-import BlockDynasty.BukkitImplementation.utils.JavaUtil;
 import BlockDynasty.BukkitImplementation.utils.Console;
+import BlockDynasty.BukkitImplementation.utils.Version;
 import BlockDynasty.FoliaImplementation.scheduler.SchedulerFolia;
 import lib.scheduler.ContextualTask;
 import lib.scheduler.IScheduler;
 
 public class SchedulerFactory {
-    public static final boolean isFolia = JavaUtil.classExists("io.papermc.paper.threadedregions.RegionizedServer");
-    public static final boolean isCanvas = JavaUtil.classExists("io.canvasmc.canvas.server.ThreadedServer"); //tested and is redundant with Folia, probably not needed
     private static IScheduler schedulerInstance;
 
     public static IScheduler getScheduler() {
@@ -32,7 +30,7 @@ public class SchedulerFactory {
             return schedulerInstance;
         }
 
-        if(isFolia || isCanvas){
+        if(Version.hasFoliaScheduler()) {
             schedulerInstance = SchedulerFolia.init();
             Console.log("Folia detected, applying Folia scheduler implementation.");
         }else{

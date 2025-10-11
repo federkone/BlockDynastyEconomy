@@ -36,6 +36,11 @@ public class PlayerJoinListenerOnline implements Listener {
         this.playerJoin = playerJoin;
     }
 
+    /**
+     * PlayerLoginEvent Deprecated on paper > 1.21.7
+     * Not Critical for this plugin,recommended to use PlayerJoinEvent only.
+     * **/
+    @Deprecated
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();

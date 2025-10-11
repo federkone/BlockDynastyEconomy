@@ -1,4 +1,4 @@
-package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
+package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
@@ -6,6 +6,8 @@ import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.ITextInput;
 import lib.scheduler.ContextualTask;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,9 +35,9 @@ public class TextInputChat implements ITextInput {
     }
 
     private void sendInitialMessages(IEntityGUI owner, String title, String initialText, boolean hasParent) {
-        owner.sendMessage("[" + title + "] " + initialText);
-        owner.sendMessage("Type your response in chat.");
-        owner.sendMessage( "Type 'cancel' to cancel." + (hasParent ? " Type 'back' to go back." : ""));
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ChatColor.stringValueOf(Colors.GRAY) + initialText);
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY) +"Type your response in chat.");
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY) +"Type "+ChatColor.stringValueOf(Colors.RED) +"cancel"+ChatColor.stringValueOf(Colors.GRAY) +" to cancel." + (hasParent ? ChatColor.stringValueOf(Colors.GRAY) +" Type "+ChatColor.stringValueOf(Colors.RED) +"back"+ChatColor.stringValueOf(Colors.GRAY) +" to go back." : ""));
         owner.closeInventory();
     }
 
@@ -67,7 +69,7 @@ public class TextInputChat implements ITextInput {
 
             Scheduler.run(ContextualTask.build( () -> {
                 if (message.equalsIgnoreCase("cancel")) {
-                    owner.sendMessage( "Operation cancelled.");
+                    owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ChatColor.stringValueOf(Colors.RED)+"Operation cancelled.");
                     HandlerList.unregisterAll(this);
                     return;
                 }
@@ -80,7 +82,7 @@ public class TextInputChat implements ITextInput {
 
                 String result = function.apply(message);
                 if (result != null) {
-                    owner.sendMessage( "[" + title + "] "+ result);
+                    owner.sendMessage( ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ ChatColor.stringValueOf(Colors.GRAY)+result);
                 }
 
                 HandlerList.unregisterAll(this);

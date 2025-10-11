@@ -55,7 +55,7 @@ import java.nio.file.Path;
 public class SpongePlugin {
     private static PluginContainer container;
     private static Logger logger;
-    private static final Economy economy= new Economy();
+    private static Economy economy;
     private static Configuration configuration;
     public static Path configPath;
     private static RawDataChannel channel;
@@ -81,7 +81,7 @@ public class SpongePlugin {
     public void onConstructPlugin(final ConstructPluginEvent event) {
         // Perform any one-time setup
         Console.setConsole(new ConsoleAdapter());
-        economy.init(new TextInput(),new ConsoleAdapter(), new SpongeAdapter());
+        economy = Economy.init(new TextInput(),new ConsoleAdapter(), new SpongeAdapter());
         configuration = economy.getConfiguration();
         Console.log("Plugin constructed...");
     }
@@ -100,7 +100,7 @@ public class SpongePlugin {
 
     @Listener
     public void onServerStopping(final StoppingEngineEvent<Server> event) {
-        economy.shutdown();
+        Economy.shutdown();
         Console.log("Server is stopping...");
     }
 
