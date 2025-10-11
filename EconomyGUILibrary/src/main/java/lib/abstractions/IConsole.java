@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package BlockDynasty.BukkitImplementation.adapters.GUI.listener;
+package lib.abstractions;
 
-import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
-import lib.gui.GUIFactory;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+public interface IConsole {
 
-public class CloseListener implements Listener {
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) { //solo cuando el usuario cierra con ESC
-        GUIFactory.getGuiService().unregisterGUI(EntityPlayerAdapter.of((Player) event.getPlayer()));
-    }
+    void debug(String message);
+    void log(String message);
+    void logError(String message);
 }

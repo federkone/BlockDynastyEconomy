@@ -36,6 +36,7 @@ public interface PlatformAdapter {
 
     void sendPluginMessage(String channel, byte[] message);
     IScheduler getScheduler();
+    IConsole getConsole();
     File getDataFolder();
     boolean isLegacy();
     boolean hasSupportAdventureText();

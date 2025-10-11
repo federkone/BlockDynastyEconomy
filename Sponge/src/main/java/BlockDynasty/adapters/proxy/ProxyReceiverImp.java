@@ -17,8 +17,8 @@
 package BlockDynasty.adapters.proxy;
 
 import org.spongepowered.api.network.channel.raw.RawDataChannel;
-import proxy.ProxyData;
-import proxy.ProxyReceiver;
+import platform.proxy.ProxyData;
+import platform.proxy.ProxyReceiver;
 
 
 //WARNING THIS CODE ONLY WORKS ON SPONGE SERVER 1.23, IN VERSION 1.20.1 NOT WORKS

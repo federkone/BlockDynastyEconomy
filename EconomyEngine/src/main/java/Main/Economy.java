@@ -22,18 +22,20 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
-import files.Configuration;
-import files.logs.EconomyLogger;
-import files.logs.VaultLogger;
+import platform.files.Configuration;
+import platform.files.logs.EconomyLogger;
+import platform.files.logs.VaultLogger;
 import lib.commands.CommandsFactory;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
 import lib.gui.components.ITextInput;
 import lib.placeholder.PlaceHolder;
 import lib.util.colors.ChatColor;
-import listeners.*;
-import proxy.ProxyReceiver;
-import proxy.ProxySender;
+import platform.listeners.EventListener;
+import platform.listeners.IPlayerJoin;
+import platform.listeners.PlayerJoinListener;
+import platform.proxy.ProxyReceiver;
+import platform.proxy.ProxySender;
 import redis.Publisher;
 import redis.RedisData;
 import redis.Subscriber;
@@ -42,6 +44,7 @@ import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
 import repository.Repository;
+import utils.Console;
 
 public class Economy {
     private Core core;
@@ -53,10 +56,10 @@ public class Economy {
     private Configuration configuration;
     private PlatformAdapter platformAdapter;
 
-    private Economy(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
-        Console.setConsole(console);
+    private Economy(ITextInput textInput, PlatformAdapter platformAdapter){
         this.platformAdapter=platformAdapter;
         configuration= new Configuration(platformAdapter.getDataFolder());
+        Console.setConsole(platformAdapter.getConsole(),configuration);
         if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
 
         repository = new Repository(getConnection(configuration));
@@ -71,8 +74,8 @@ public class Economy {
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
-    public static Economy init(ITextInput textInput, IConsole console, PlatformAdapter platformAdapter){
-        return new Economy(textInput, console, platformAdapter);
+    public static Economy init(ITextInput textInput, PlatformAdapter platformAdapter){
+        return new Economy(textInput, platformAdapter);
     }
 
     private Connection getConnection(Configuration configuration){

@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-package redis;
+package platform.proxy;
 
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import utils.Console;
 import com.google.gson.Gson;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
-import redis.clients.jedis.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Publisher implements Courier {
-    private final Gson gson = new Gson();
-    private final String channelName;
+public class ProxySender implements Courier {
     private final PlatformAdapter platformAdapter;
-    private final HostAndPort hostAndPort;
-    private final JedisClientConfig config;
-    private final String INSTANCE_ID;
 
-    public Publisher(RedisData redisData, PlatformAdapter platformAdapter) {
-        this.channelName = redisData.getChannelName();
+    private final Gson gson = new Gson();
+
+    public ProxySender( PlatformAdapter platformAdapter) {
         this.platformAdapter = platformAdapter;
-
-        this.hostAndPort = new HostAndPort(redisData.getHost(), redisData.getPort());
-        this.config = DefaultJedisClientConfig.builder()
-                .user(redisData.getUsername())
-                .password(redisData.getPassword())
-                .build();
-        this.INSTANCE_ID = redisData.getInstanceID();
     }
 
     @Override
@@ -57,21 +48,12 @@ public class Publisher implements Courier {
         if (shouldSkipProcessing(type, target)) {
             return;
         }
-        try (UnifiedJedis jedis = new UnifiedJedis(hostAndPort, config)) {
-            Map<String, String> messageData = new HashMap<>();
-            messageData.put("type", type);
-            messageData.put("target", target);
-            messageData.put("instanceId", INSTANCE_ID);
-            if (data != null) {
-                messageData.put("data", data);
-            }
-            String jsonMessage = gson.toJson(messageData);
-            jedis.publish(channelName, jsonMessage);
-        } catch (Exception e) {
-            Console.logError("Redis publish error: " + e.getMessage());
+        try {
+            platformAdapter.sendPluginMessage(ProxyData.getChannelName(), createMessage(type, data, target));
+        } catch (IOException e) {
+            Console.logError(e.getMessage());
         }
     }
-
 
     private boolean shouldSkipProcessing(String type, String target) {
         switch (type) {
@@ -82,5 +64,24 @@ public class Publisher implements Courier {
             default:
                 return false;
         }
+    }
+
+    private byte[] createMessage(String type, String data, String target) throws IOException {
+        // Create the message data map
+        Map<String, String> messageData = new HashMap<>();
+        messageData.put("type", type);
+        messageData.put("target", target);
+        if (data != null) {
+            messageData.put("data", data);
+        }
+
+        String jsonMessage = gson.toJson(messageData);
+
+        ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
+        try (DataOutputStream out = new DataOutputStream(outBytes)) {
+            out.writeUTF(jsonMessage);
+        }
+
+        return outBytes.toByteArray();
     }
 }

@@ -16,16 +16,11 @@
 
 package BlockDynasty.utils;
 
-import BlockDynasty.SpongePlugin;
-import Main.IConsole;
-import org.apache.logging.log4j.Logger;
+import BlockDynasty.adapters.platformAdapter.ConsoleAdapter;
+import lib.abstractions.IConsole;
 
 public class Console {
-    private static IConsole console;
-
-    public static void setConsole(IConsole consoleInstance) {
-        console = consoleInstance;
-    }
+    private static final IConsole console= new ConsoleAdapter();
 
     public static void debug(String message) {
         console.debug(message);
@@ -38,5 +33,4 @@ public class Console {
     public static void logError(String message){
         console.logError(message);
     }
-
 }

@@ -16,8 +16,8 @@
 
 package BlockDynasty.BukkitImplementation.adapters.listeners;
 
-import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
-import listeners.IPlayerJoin;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
+import platform.listeners.IPlayerJoin;
 import org.bukkit.entity.Player;
 
 public class PlayerJoinListenerOffline extends PlayerJoinListenerOnline {

@@ -16,8 +16,8 @@
 
 package BlockDynasty.BukkitImplementation.adapters.commands;
 
-import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
-import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityConsoleAdapter;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityConsoleAdapter;
 import lib.commands.abstractions.IEntityCommands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

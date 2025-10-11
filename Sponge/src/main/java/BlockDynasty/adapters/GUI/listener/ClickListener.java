@@ -16,7 +16,7 @@
 
 package BlockDynasty.adapters.GUI.listener;
 
-import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
+import BlockDynasty.adapters.platformAdapter.EntityPlayerAdapter;
 import lib.gui.GUIFactory;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Cause;

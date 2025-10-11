@@ -17,8 +17,8 @@
 package BlockDynasty.adapters.commands;
 
 
-import BlockDynasty.adapters.abstractions.EntityConsoleAdapter;
-import BlockDynasty.adapters.abstractions.EntityPlayerAdapter;
+import BlockDynasty.adapters.platformAdapter.EntityConsoleAdapter;
+import BlockDynasty.adapters.platformAdapter.EntityPlayerAdapter;
 import lib.commands.abstractions.Command;
 import lib.commands.abstractions.IEntityCommands;
 import net.kyori.adventure.text.Component;

@@ -16,19 +16,18 @@
 
 package BlockDynasty;
 
-import BlockDynasty.adapters.ConsoleAdapter;
 import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
-import BlockDynasty.adapters.abstractions.SpongeAdapter;
+import BlockDynasty.adapters.platformAdapter.SpongeAdapter;
 import BlockDynasty.adapters.listeners.PlayerJoinListenerOffline;
 import BlockDynasty.adapters.listeners.PlayerJoinListenerOnline;
 import BlockDynasty.adapters.proxy.ProxyReceiverImp;
-import BlockDynasty.adapters.spongeEconomyApi.EconomyServiceAdapter;
-import BlockDynasty.adapters.spongeEconomyApi.MultiCurrencyService;
+import BlockDynasty.adapters.integrations.spongeEconomyApi.EconomyServiceAdapter;
+import BlockDynasty.adapters.integrations.spongeEconomyApi.MultiCurrencyService;
 import BlockDynasty.utils.Console;
 import Main.Economy;
 import com.google.inject.Inject;
-import files.Configuration;
+import platform.files.Configuration;
 import lib.commands.CommandsFactory;
 
 import org.apache.logging.log4j.Logger;
@@ -43,7 +42,7 @@ import org.spongepowered.api.event.lifecycle.*;
 import org.spongepowered.api.network.channel.raw.RawDataChannel;
 import org.spongepowered.plugin.PluginContainer;
 import org.spongepowered.plugin.builtin.jvm.Plugin;
-import proxy.ProxyData;
+import platform.proxy.ProxyData;
 import org.bstats.sponge.Metrics;
 
 import java.lang.invoke.MethodHandles;
@@ -80,8 +79,7 @@ public class SpongePlugin {
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
         // Perform any one-time setup
-        Console.setConsole(new ConsoleAdapter());
-        economy = Economy.init(new TextInput(),new ConsoleAdapter(), new SpongeAdapter());
+        economy = Economy.init(new TextInput(), new SpongeAdapter());
         configuration = economy.getConfiguration();
         Console.log("Plugin constructed...");
     }
@@ -95,19 +93,16 @@ public class SpongePlugin {
     @Listener
     public void onServerStarting(final StartingEngineEvent<Server> event) {
         registerEvents();
-        Console.log("Server is starting...");
     }
 
     @Listener
     public void onServerStopping(final StoppingEngineEvent<Server> event) {
         Economy.shutdown();
-        Console.log("Server is stopping...");
     }
 
     @Listener
     public void onRegisterCommands(final RegisterCommandEvent<Command.Parameterized> event) {
         CommandRegister.registerCommands(event, container, CommandsFactory.Commands.getMainCommands());
-        Console.log("Registered commands...");
     }
 
     private void registerEvents(){
@@ -137,6 +132,10 @@ public class SpongePlugin {
     }
     public static RawDataChannel getChannel() {
         return channel;
+    }
+
+    public static Configuration getConfiguration() {
+        return configuration;
     }
 }
 

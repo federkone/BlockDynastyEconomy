@@ -17,7 +17,7 @@ package BlockDynasty.BukkitImplementation.adapters.proxy;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import proxy.ProxyReceiver;
+import platform.proxy.ProxyReceiver;
 
 
 /**
