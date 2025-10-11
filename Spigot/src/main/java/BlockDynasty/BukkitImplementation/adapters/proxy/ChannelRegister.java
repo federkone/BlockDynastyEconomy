@@ -18,7 +18,7 @@ package BlockDynasty.BukkitImplementation.adapters.proxy;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Console;
-import proxy.ProxyData;
+import platform.proxy.ProxyData;
 
 public class ChannelRegister {
 

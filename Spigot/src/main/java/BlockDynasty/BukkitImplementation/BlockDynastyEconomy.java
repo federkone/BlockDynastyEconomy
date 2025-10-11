@@ -16,7 +16,6 @@
 
 package BlockDynasty.BukkitImplementation;
 
-import BlockDynasty.BukkitImplementation.adapters.ConsoleAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInputFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
@@ -24,7 +23,7 @@ import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.adapters.proxy.ChannelRegister;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 
-import BlockDynasty.BukkitImplementation.adapters.abstractions.BukkitAdapter;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOffline;
 import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOnline;
@@ -35,7 +34,7 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.BukkitImplementation.utils.Updater;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import Main.Economy;
-import files.Configuration;
+import platform.files.Configuration;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -90,8 +89,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     private void initCoreServices() {
         //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
-        Console.setConsole(new ConsoleAdapter());
-        economy = Economy.init(TextInputFactory.getTextInput(),new ConsoleAdapter(),new BukkitAdapter());
+        economy = Economy.init(TextInputFactory.getTextInput(),new BukkitAdapter());
         configuration = economy.getConfiguration();
     }
 

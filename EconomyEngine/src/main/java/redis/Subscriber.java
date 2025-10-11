@@ -20,7 +20,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
-import Main.Console;
+import utils.Console;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lib.abstractions.IPlayer;

@@ -16,7 +16,7 @@
 
 package redis;
 
-import files.Configuration;
+import platform.files.Configuration;
 
 import java.util.UUID;
 

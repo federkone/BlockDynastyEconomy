@@ -16,11 +16,10 @@
 
 package repository.ConnectionHandler.Hibernate;
 
-import Main.Console;
+import utils.Console;
 import org.h2.tools.Server;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 
 public class ConnectionHibernateH2 extends ConnectionHibernate {
 

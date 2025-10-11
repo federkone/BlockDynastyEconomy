@@ -20,6 +20,8 @@ import BlockDynasty.SpongePlugin;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
 import net.kyori.adventure.text.TextComponent;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -33,21 +35,20 @@ import java.util.function.Function;
 public class TextInput implements ITextInput {
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
-        owner.sendMessage("[" + title + "] " + initialText);
-        owner.sendMessage("Type your response in chat. Type 'cancel' to cancel.");
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ChatColor.stringValueOf(Colors.GRAY) + initialText);
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY)+"Type your response in chat. Type"+ChatColor.stringValueOf(Colors.RED) +" cancel "+ ChatColor.stringValueOf(Colors.GRAY)+ "to cancel.");
         owner.closeInventory();
 
         TextInput.ChatInputListener listener = new TextInput.ChatInputListener(null,owner, title, function);
 
         Sponge.eventManager().registerListeners(SpongePlugin.getPlugin(), listener);
-
     }
 
     @Override
     public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
 
-        owner.sendMessage("[" + title + "] " + initialText);
-        owner.sendMessage("Type your response in chat. Type 'cancel' to cancel. Type 'back' to go back.");
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ChatColor.stringValueOf(Colors.GRAY) + initialText);
+        owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY)+"Type your response in chat. Type"+ChatColor.stringValueOf(Colors.RED) +" cancel "+ ChatColor.stringValueOf(Colors.GRAY)+"to cancel. Type" +ChatColor.stringValueOf(Colors.RED) +" back "+ChatColor.stringValueOf(Colors.GRAY)+"to go back.");
         owner.closeInventory();
 
         TextInput.ChatInputListener listener = new TextInput.ChatInputListener(parent,owner, title, function);
@@ -83,7 +84,7 @@ public class TextInput implements ITextInput {
             TextComponent component = (TextComponent) event.message();
             String input = component.content();
             if (input.equalsIgnoreCase("cancel")) {
-                owner.sendMessage("Operation cancelled.");
+                owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ChatColor.stringValueOf(Colors.RED)+"Operation cancelled.");
                 Sponge.eventManager().unregisterListeners(this);
                 return;
             }
@@ -99,7 +100,7 @@ public class TextInput implements ITextInput {
                 Sponge.eventManager().unregisterListeners(this);
                 return;
             }
-            owner.sendMessage("[" + title + "] " + response);
+            owner.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[" + title + "] "+ ChatColor.stringValueOf(Colors.GRAY)+ response);
             Sponge.eventManager().unregisterListeners(this);
         }
 

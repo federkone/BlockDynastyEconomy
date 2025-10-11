@@ -16,7 +16,7 @@
 
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
-import BlockDynasty.BukkitImplementation.adapters.abstractions.EntityPlayerAdapter;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
 import lib.placeholder.PlaceHolder;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
