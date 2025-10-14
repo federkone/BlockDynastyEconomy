@@ -39,6 +39,7 @@ public abstract class AbstractCommand implements Command {
         this.permission = permission;
     }
 
+    @Override
     public void registerSubCommand(Command executor) {
         subCommands.add(executor);
     }

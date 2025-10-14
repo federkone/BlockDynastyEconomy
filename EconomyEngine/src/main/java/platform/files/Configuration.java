@@ -30,8 +30,8 @@ import java.util.Map;
 
 public class Configuration {
     private Map<String, Object> config;
-    private final String templatePath = "config-template.yaml";
     private final String databasePath = "/database";
+    private final String templatePath = "config-template.yaml";
     private final String configName = "config.yaml";
     private final String logsPath = "/logs";
     private final File configFile;
@@ -58,7 +58,6 @@ public class Configuration {
                 configFile.getParentFile().mkdirs();
             }
 
-            // Directly copy the template file to preserve comments
             try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templatePath)) {
                 if (inputStream == null) {
                     throw new IOException("Template resource not found: " + templatePath);
@@ -66,7 +65,6 @@ public class Configuration {
                 Files.copy(inputStream, configFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            // Load the config after creating it
             loadConfig();
         } catch (IOException e) {
             throw new RuntimeException("Failed to create config file", e);
@@ -77,47 +75,70 @@ public class Configuration {
         try {
             Yaml yaml = new Yaml();
             config = yaml.load(Files.newInputStream(configFile.toPath()));
-
             if (config == null) {
                 config = new HashMap<>();
             }
+
+            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templatePath)) {
+                if (inputStream == null) {
+                    throw new IOException("Template resource not found: " + templatePath);
+                }
+                Map<String, Object> defaultConfig = yaml.load(inputStream);
+                if (defaultConfig != null) {
+
+                    if(checkIfNeedUpdate(defaultConfig, config)) {
+                        mergeConfigs(defaultConfig, config);
+
+                        //guardar el config actualizado
+                        DumperOptions options = new DumperOptions();
+                        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+                        options.setProcessComments(true);
+                        options.setPrettyFlow(true);
+                        options.setIndent(2);
+                        Yaml yamlWriter = new Yaml(options);
+                        String yamlString = yamlWriter.dump(config);
+                        Files.write(configFile.toPath(), yamlString.getBytes(StandardCharsets.UTF_8));
+                    }
+                }
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load config "+ e.getMessage());
+            throw new RuntimeException("Failed to load config: " + e.getMessage(), e);
         }
     }
 
-    public void saveConfig() {
-        try {
-            // Create a temporary copy of the current file to preserve comments
-            File tempFile = new File(configFile.getParentFile(), "temp-config.yaml");
-            if (configFile.exists()) {
-                Files.copy(configFile.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    public boolean checkIfNeedUpdate(Map<String, Object> defaultConfig, Map<String, Object> config) {
+        for (Map.Entry<String, Object> entry : defaultConfig.entrySet()) {
+            String key = entry.getKey();
+            Object defaultValue = entry.getValue();
+
+            if (!config.containsKey(key)) {
+                return true;
             }
 
-            // Update values
-            DumperOptions options = new DumperOptions();
-            options.setPrettyFlow(true);
-            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-            options.setIndent(2);
-
-            Yaml yaml = new Yaml(options);
-            String content = yaml.dump(config);
-
-            Files.write(configFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
-
-            // Cleanup
-            if (tempFile.exists()) {
-                tempFile.delete();
+            if (defaultValue instanceof Map && config.get(key) instanceof Map) {
+                return checkIfNeedUpdate((Map<String, Object>) defaultValue, (Map<String, Object>) config.get(key));
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save config", e);
+        }
+        return false;
+    }
+
+    public void mergeConfigs(Map<String, Object> defaultConfig, Map<String, Object> config) {
+        for (Map.Entry<String, Object> entry : defaultConfig.entrySet()) {
+            String key = entry.getKey();
+            Object defaultValue = entry.getValue();
+
+            if (!config.containsKey(key)) {
+                config.put(key, defaultValue);
+            } else {
+                Object currentValue = config.get(key);
+                if (defaultValue instanceof Map && currentValue instanceof Map) {
+                    mergeConfigs((Map<String, Object>) defaultValue, (Map<String, Object>) currentValue);
+                }
+            }
         }
     }
 
-    public Map<String, Object> getConfig() {
-        return config;
-    }
 
     @SuppressWarnings("unchecked")
     public <T> T get(String path, Class<T> type) {

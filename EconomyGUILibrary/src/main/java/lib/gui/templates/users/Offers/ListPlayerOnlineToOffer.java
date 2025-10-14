@@ -24,6 +24,9 @@ import lib.gui.components.Materials;
 import lib.gui.templates.users.ListPlayersOnline;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
+
+import java.util.Map;
 
 public class ListPlayerOnlineToOffer extends ListPlayersOnline {
     private final IEntityGUI sender;
@@ -41,8 +44,8 @@ public class ListPlayerOnlineToOffer extends ListPlayersOnline {
     @Override
     public void addCustomButtons() {
         super.addCustomButtons();
-        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Player to Offer",
-                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the player you want to offer",ChatColor.stringValueOf(Colors.WHITE)+"And before that, the Currencies"),
+        setItem(4, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"OfferListPlayer.button1.nameItem"),
+                        Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"OfferListPlayer.button1.lore")),
                 null);
     }
 }

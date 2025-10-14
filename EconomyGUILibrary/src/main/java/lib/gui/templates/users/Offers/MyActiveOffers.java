@@ -30,8 +30,10 @@ import lib.gui.components.abstractions.PaginatedPanel;
 import lib.gui.GUIFactory;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.List;
+import java.util.Map;
 
 public class MyActiveOffers extends PaginatedPanel<Offer> {
     private final CancelOfferUseCase cancelOfferUseCase;
@@ -69,12 +71,11 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
 
         return createItem(
                 Materials.PLAYER_HEAD,
-                ChatColor.stringValueOf(Colors.GREEN) + comprador.getNickname(),
-                "",
-                "Amount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                "Price: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
-                "",
-                ChatColor.stringValueOf(Colors.RED)+"Left Click to Cancel"
+                Message.process(Map.of("playerName", comprador.getNickname()), "MyActiveOffers.button1.nameItem"),
+                Message.processLines(Map.of(
+                        "amount", ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                        "price", ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                        "color1", ChatColor.stringValueOf(Colors.GREEN)), "MyActiveOffers.button1.lore")
             );
     }
     @Override
@@ -91,8 +92,8 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "Offer List",
-                        "Click to refresh"),
+        setItem(4, createItem(Materials.PAPER, Message.process("MyActiveOffers.button2.nameItem"),
+                        Message.process("MyActiveOffers.button2.lore")),
                 unused -> {
                     refresh();
                 });

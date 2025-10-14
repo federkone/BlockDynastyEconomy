@@ -26,8 +26,10 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class CreateOfferFirstPanel extends CurrencySelectorAndAmount {
     private final BlockDynasty.Economy.domain.entities.account.Player target;
@@ -64,8 +66,8 @@ public class CreateOfferFirstPanel extends CurrencySelectorAndAmount {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Currency to Offer",
-                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to offer", ChatColor.stringValueOf(Colors.WHITE)+"And before that, the amount"),
+        setItem(4, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"OfferListPlayer.button2.nameItem"),
+                        Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"OfferListPlayer.button2.lore")),
                 null);
 
     }

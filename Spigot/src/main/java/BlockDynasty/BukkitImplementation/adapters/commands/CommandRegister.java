@@ -20,19 +20,19 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import lib.commands.abstractions.Command;
 import lib.commands.CommandsFactory;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public class CommandRegister {
     private static List<Command> commands = CommandsFactory.Commands.getMainCommands();
-    private static final JavaPlugin plugin= BlockDynastyEconomy.getInstance();
+    private static final BlockDynastyEconomy plugin= BlockDynastyEconomy.getInstance();
 
-    public static void registerAll(){
+    public static void registerAllEconomySystem(){
+        CommandsFactory.Commands.registerSubCommand("eco",new ReloadCommand(plugin));
+
         for(Command command: commands){
             CommandAdapter commandAdapter = new CommandAdapter(command);
             TabCompletionAdapter tabCompleterAdapter = new TabCompletionAdapter(command);
-
             PluginCommand pluginCommand = plugin.getCommand(command.getName());
 
             if (pluginCommand != null) {

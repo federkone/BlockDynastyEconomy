@@ -26,4 +26,9 @@ public class ConnectionHibernateMysql extends ConnectionHibernate {
         configuration.setProperty("hibernate.connection.password", password);
         this.init();
     }
+
+    @Override
+    protected void stopServer() {
+
+    }
 }

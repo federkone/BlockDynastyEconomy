@@ -20,8 +20,12 @@ import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.Materials;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class PaginatedPanel<T> extends AbstractPanel {
     protected int currentPage = 0;
@@ -126,19 +130,24 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     }
 
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, "No Elements", "There are no items to display");
+        return createItem(Materials.BARRIER, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button1.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button1.lore"));
     }
 
     protected IItemStack createPreviousButton() {
-        return createItem(Materials.ARROW, "Previous page", "Click to see previous items");
+        return createItem(Materials.ARROW,  Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button2.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button2.lore"));
     }
 
     protected IItemStack createNextButton() {
-        return createItem(Materials.ARROW, "Next Page", "Click to see more items");
+        return createItem(Materials.ARROW,  Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button3.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button3.lore"));
     }
 
     protected IItemStack createBackButton() {
-        return createItem(Materials.BARRIER, "Back", "Click to go back");
+        return createItem(Materials.BARRIER,
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button4.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button4.lore"));
     }
 
     protected void addCustomButtons() {

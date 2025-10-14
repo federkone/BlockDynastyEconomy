@@ -20,6 +20,7 @@ import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import lib.abstractions.IMessages;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IGUI;
 import lib.gui.components.IGUIService;
@@ -39,6 +40,7 @@ import lib.gui.templates.users.Exchange.ExchangeFirstPanel;
 import lib.gui.templates.users.Offers.CreateOfferFirstPanel;
 import lib.gui.templates.users.Offers.MyActiveOffers;
 import lib.gui.templates.users.Offers.ReceivedOffers;
+import lib.util.colors.Message;
 
 import java.util.UUID;
 
@@ -51,7 +53,8 @@ public class GUIFactory {
     private static final IGUIService guiService = new GUIService();
 
     public static void init(CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase, TransactionsUseCase transactionsUseCase,
-                            OfferUseCase offerUseCase, ITextInput textInput, PlatformAdapter adapter) {
+                            OfferUseCase offerUseCase, ITextInput textInput, PlatformAdapter adapter, IMessages messages) {
+        Message.addLang(messages);
         AbstractPanel.setPlatformAdapter(adapter,guiService);
         GUIFactory.currencyUseCase = currencyUseCase;
         GUIFactory.accountsUseCase = accountsUseCase;

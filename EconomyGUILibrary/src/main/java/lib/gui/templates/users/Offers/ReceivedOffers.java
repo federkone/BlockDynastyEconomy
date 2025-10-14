@@ -31,8 +31,10 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.PaginatedPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.List;
+import java.util.Map;
 
 public class ReceivedOffers extends PaginatedPanel<Offer> {
     private final AcceptOfferUseCase acceptOfferUseCase;
@@ -42,7 +44,7 @@ public class ReceivedOffers extends PaginatedPanel<Offer> {
     public ReceivedOffers(SearchOfferUseCase searchOfferUseCase, AcceptOfferUseCase acceptOfferUseCase,
                           CancelOfferUseCase cancelOfferUseCase,
                           IEntityGUI sender, IGUI parent) {
-        super("Received Offers", 5, sender, parent, 21);
+        super(Message.process("ReceivedOffers.title"), 5, sender, parent, 21);
         this.acceptOfferUseCase = acceptOfferUseCase;
         this.cancelOfferUseCase = cancelOfferUseCase;
         this.searchOfferUseCase = searchOfferUseCase;
@@ -68,13 +70,12 @@ public class ReceivedOffers extends PaginatedPanel<Offer> {
 
         return createItem(
                 Materials.PLAYER_HEAD,
-                ChatColor.stringValueOf(Colors.GREEN) + vendedor.getNickname(),
-                "",
-                "Amount: " + ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
-                "Price: " + ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
-                "",
-                ChatColor.stringValueOf(Colors.GREEN)+"Left Click to Accept",
-                ChatColor.stringValueOf(Colors.RED)+"Right Click to Cancel"
+                Message.process(Map.of("playerName", vendedor.getNickname()), "ReceivedOffers.button1.nameItem"),
+                Message.processLines(Map.of(
+                        "amount", ChatColor.stringValueOf(tipoCantidad.getColor()) + tipoCantidad.format(offer.getCantidad()),
+                        "price", ChatColor.stringValueOf(tipoMonto.getColor()) + tipoMonto.format(offer.getMonto()),
+                        "color1", ChatColor.stringValueOf(Colors.GREEN),
+                        "color2", ChatColor.stringValueOf(Colors.RED)), "ReceivedOffers.button1.lore")
             );
 
     }
@@ -103,8 +104,8 @@ public class ReceivedOffers extends PaginatedPanel<Offer> {
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, "Received Offers List",
-                        "Click to Refresh"),
+        setItem(4, createItem(Materials.PAPER,  Message.process("ReceivedOffers.button2.nameItem"),
+                        Message.process("ReceivedOffers.button2.lore")),
                 unused -> {
                     refresh();
                 });

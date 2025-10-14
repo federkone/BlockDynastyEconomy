@@ -23,6 +23,7 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
 import platform.files.Configuration;
+import platform.files.Languages;
 import platform.files.logs.EconomyLogger;
 import platform.files.logs.VaultLogger;
 import lib.commands.CommandsFactory;
@@ -44,6 +45,7 @@ import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
 import repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
 import repository.Repository;
+import services.Message;
 import utils.Console;
 
 public class Economy {
@@ -54,15 +56,20 @@ public class Economy {
     private PlaceHolder placeHolder;
     private static Subscriber subscriber;
     private Configuration configuration;
+    private Languages languages;
     private PlatformAdapter platformAdapter;
 
     private Economy(ITextInput textInput, PlatformAdapter platformAdapter){
         this.platformAdapter=platformAdapter;
         configuration= new Configuration(platformAdapter.getDataFolder());
+        languages = new Languages(platformAdapter.getDataFolder());
+        languages.loadMessages(configuration.getString("lang"));
+        Message.addLang(languages);
         Console.setConsole(platformAdapter.getConsole(),configuration);
         if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
 
         repository = new Repository(getConnection(configuration));
+        Console.log("Database connected successfully.");
 
         core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
         createListener(configuration,platformAdapter);
@@ -70,7 +77,7 @@ public class Economy {
         this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
         playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
         CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
-        GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter);
+        GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter,new Message());
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
@@ -93,8 +100,10 @@ public class Economy {
 
     private Courier createCourierImpl(Configuration configuration, PlatformAdapter platformAdapter){
         if(configuration.getBoolean("redis.enabled")){
+            Console.log("Redis Enabled");
             return new Publisher( new RedisData(configuration),platformAdapter);
         }else{
+            Console.log("Redis Disable - Using Proxy System");
             return new ProxySender(platformAdapter);
         }
     }

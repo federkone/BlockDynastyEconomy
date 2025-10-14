@@ -1,0 +1,229 @@
+prefix: "{color}[Bank] "
+
+#Events messages:
+pay1: "{prefix}{color}You paid {currency}{color} to {playerName}."
+pay2: "{prefix}{color}You received {currency}{color} from {playerName}."
+
+transfer1: "{prefix}{color}You transferred {currency}{color} to {playerName}."
+transfer2: "{prefix}{color}You received {currency} {color} from {playerName}."
+
+exchange: "{prefix}{color}You exchanged {fromCurrency}{color} to {toCurrency}{color}."
+
+trade1: "{prefix}{color}You trade {fromCurrency}{color} to {playerName}{color} in exchange for {toCurrency}{color}."
+trade2: "{prefix}{color}You received {fromCurrency}{color} from {playerName}{color} in exchange for {toCurrency}{color}."
+
+deposit: "{prefix}{color}Has received a deposit {currency}{color}."
+
+withdraw: "{prefix}{color}Has extracted {currency}{color}."
+
+set: "{prefix}{color}Your balance has been established {currency}{color}."
+
+offerCreated1: "{prefix}{color}You have sent an offer to {playerName} offering {fromCurrency}{color} in exchange for {toCurrency}{color}."
+offerCreated2: "{prefix}{color}You received an offer from {playerName} offering {fromCurrency}{color} in exchange for {toCurrency}{color}."
+
+offerCanceled1: "{prefix}{color}The offer from {playerName} has been canceled."
+offerCanceled2: "{prefix}{color}The offer to {playerName} has been canceled."
+
+offerExpired1: "{prefix}{color}The offer from {playerName} has expired."
+offerExpired2: "{prefix}{color}The offer to {playerName} has expired."
+
+
+#GUI messages
+#user panels
+listPlayersOnline:
+  title: "Select player"
+  button1:
+    nameItem: "{color}Select Player to Pay"
+    lore: "{color}Click to select the player you want to pay,{color}#Ordered by name"
+
+AccountList:
+  button1:
+    nameItem: "{color}Search Player"
+    lore: "{color}Click to search a player by name,{color}CaseSensitive"
+  button2:
+    nameItem: "Search Player"
+    lore: "Name.."
+    response: "Player not found!"
+
+listPlayersFromDb:
+  title: "Select player"
+  button1:
+    nameItem: "{color}Select Player to Transfer"
+    lore: "{color}Click to select the player you want to transfer,{color}#Ordered by name"
+
+CurrencyListToPay:
+  response: "Transaction Successful!"
+  button1:
+    nameItem: "{color}Select Currency to Pay"
+    lore: "{color}Click to select the currency you want to pay,{color}And before that the amount"
+
+BankPanel:
+  title: "Bank"
+  button1:
+    nameItem1: "{color}Account is Blocked"
+    nameItem2: "{color}Account is enabled"
+    lore: "{color}This affects:,Withdraw,Deposit,Transfer,Pay,Trade,Exchange,All economy op"
+  button2:
+    nameItem: "{color}Exchange currencies"
+    lore: "{color}Click to exchange currencies"
+  button3:
+    nameItem: "{color}Create Offer to Player online"
+    lore: "{color}Click to create an offer for trade currencies,{color}with other players Online"
+  button4:
+    nameItem: "{color}Create Offer To Network Player"
+    lore: "{color}Click to create an offer for trade currencies,{color}with other players from the network"
+  button5:
+    nameItem: "{color}My Active Offers"
+    lore: "{color}These are the offers you have created,{color}and are currently active."
+  button6:
+    nameItem: "{color}See Balance"
+    lore: "{color}Click to see your balance"
+  button7:
+    nameItem: "{color}Received Offers"
+    lore: "{color}Here you can view all the offers sent,{color}to you by other players."
+  button8:
+    nameItem: "{color}Pay a Player Online"
+    lore: "{color}Click to pay another,{color}Player Online in this server"
+  button9:
+    nameItem: "{color}Transfer a Player from the Network"
+    lore: "{color}Click to Transfer founds to another,{color}Player from the network"
+  button10:
+    nameItem: "{color}Exit"
+    lore: "{color}Click to exit"
+
+AccountBalance:
+  title: "Account balance"
+  button1:
+    nameItem: "{currency}"
+    lore: "{color}Balance: {currency}"
+  button2:
+     nameItem: "{color}No Currencies"
+     lore: "{color}There are no coins in the account"
+  button3:
+     nameItem: "{color}Account balance"
+     lore: "{color}Available balances"
+
+ReceivedOffers:
+  title: "Received Offers"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',Amount: {amount} ,Price: {price},' ',{color1}Left Click to Accept,{color2}Right Click to Cancel"
+  button2:
+    nameItem: "Received Offers List"
+    lore: "Click to Refresh"
+
+MyActiveOffers:
+  title: "My Active Offers"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',Amount: {amount} ,Price: {price},' ',{color2}Right Click to Cancel"
+  button2:
+    nameItem: "Offer List"
+    lore: "Click to refresh"
+
+OfferListPlayer:
+  button1:
+    nameItem: "{color}Select Player to Offer"
+    lore: "{color}Click to select the player you want to offer,{color}And before that the Currencies"
+  button2:
+    nameItem: "{color}Select Currency to Offer"
+    lore: "{color}Click to select the currency you want to offer,{color}And before that the amount"
+  button3:
+    nameItem: "{color}Select Currency to Receive"
+    lore: "{color}Click to select the currency you want to receive,{color}And before that the amount"
+
+CurrencySelector:
+  title: "Currency List"
+  button1:
+    nameItem: "{currency}"
+    lore: "Singular: {singular},Plural: {plural},Transferable: {transferable},Exchange Rate: {exchangeRate}"
+  button2:
+    nameItem: "Amount to {currency}"
+    lore: "0"
+
+Exchange:
+  button1:
+    nameItem: "{color}Select Currency you want to receive"
+    lore: "{color}Click to select the currency you want to receive,{color}And before that the amount"
+  button2:
+    nameItem: "{color}Select Currency you want to give"
+    lore: "{color}Click to select the currency you want to give"
+
+Paginated:
+  button1:
+    nameItem: "{color}No Elements"
+    lore: "{color}There are no items to display"
+  button2:
+    nameItem: "{color}Previous page"
+    lore: "{color}Click to see previous items"
+  button3:
+    nameItem: "{color}Next Page"
+    lore: "{color}Click to see more items"
+  button4:
+    nameItem: "{color}Back"
+    lore: "{color}Click to go back"
+
+#admin panel
+EconomyAdminPanel:
+  title: "Economy Admin Panel"
+  button1:
+    nameItem: "{color}Edit Currencies"
+    lore: "{color}Click to edit currencies"
+  button2:
+    nameItem: "{color}Manage Accounts"
+    lore: "{color}Click to manage player accounts"
+  button3:
+    nameItem: "{color}Exit"
+    lore: "{color}Click to exit"
+
+CurrencyAdminPanel:
+  title: "Currency Manager"
+  button1:
+    nameItem: "{color}Create Currency"
+    lore: "{color}Click to create new currency"
+  button2:
+    nameItem: "{color}Delete Currency"
+    lore: "{color}Click to delete currency"
+  button3:
+    nameItem: "{color}Edit Currency"
+    lore: "{color}Click to edit Currency"
+  button4:
+    nameItem: "{color}Config Features"
+    lore: "{color}Click"
+  button5:
+    nameItem: "{color}Back"
+    lore: "{color}Click to go back"
+
+AccountSelectorToEdit:
+  title: "Select player"
+  button1:
+    nameItem: "Select Account to edit"
+    lore: "Click to select an account, or search by name Ordered by name CaseSensitive"
+
+EditCurrencyPanel:
+  title: "Edit Currency: {currency}"
+  button1:
+    nameItem: "{currency}"
+    lore: "Symbol: {symbol},Color: {color},Beginning balance: {balance},Exchange rate: {rate},Transferable: {transferable},Default currency: {default},Supports decimals: {decimals}"
+  button2:
+    nameItem: "{color}Edit Opening Balance"
+    lore: "{color}Click to modify the initial balance"
+  button3:
+    nameItem: "{color}Set Exchange Rate"
+    lore: "{color}Click to modify the exchange rate"
+  button4:
+    nameItem: "{color}Edit Color"
+    lore: "{color}Click to change the color of the currency"
+  button5:
+    nameItem: "{color}Edit Symbol"
+    lore: "{color}Click to change the currency symbol"
+  button6:
+    nameItem: "{color}Set as Default"
+    lore: "{color}Click to make this currency default"
+  button7:
+    nameItem: "{color}Edit Singular Name"
+    lore: "{color}Click to change the singular name"
+  button8:
+    nameItem: "{color}Edit Plural Name"
+    lore: "{color}Click to change the plural name"
+#COMMANDS MESSAGES

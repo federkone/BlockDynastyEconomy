@@ -147,5 +147,24 @@ public class CommandsFactory {
             return MainCommands;
         }
 
+        public static Command getCommand(String commandName) {
+            for(Command command: MainCommands){
+                if(command.getName().equalsIgnoreCase(commandName)){
+                    return command;
+                }
+            }
+            return null;
+        }
+
+        public static void registerMainCommand(Command command) {
+            if(getCommand(command.getName())==null)
+                MainCommands.add(command);
+        }
+
+        public static void registerSubCommand(String mainCommand, Command subCommand) {
+            Command command = getCommand(mainCommand);
+            if(command!=null)
+                command.registerSubCommand(subCommand);
+        }
     }
 }

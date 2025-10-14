@@ -26,6 +26,7 @@ import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.gui.components.abstractions.AccountsList;
+import lib.util.colors.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class AccountSelectorToEdit extends AccountsList {
     private final SearchAccountUseCase searchAccountUseCase;
 
     public AccountSelectorToEdit(IEntityGUI sender, SearchAccountUseCase searchAccountUseCase, IGUI parent, ITextInput textInput) {
-        super("Select player", 5,sender,parent,textInput);
+        super(Message.process("AccountSelectorToEdit.title"), 5,sender,parent,textInput);
         this.searchAccountUseCase = searchAccountUseCase;
         this.sender = sender;
 
@@ -62,8 +63,8 @@ public class AccountSelectorToEdit extends AccountsList {
     @Override
     protected void addCustomButtons(){
         super.addCustomButtons();
-        setItem(4, createItem(Materials.PAPER, "Select Account to edit",
-                        "Click to select an account, or search by name","#Ordered by name, CaseSensitive"),
+        setItem(4, createItem(Materials.PAPER, Message.process("AccountSelectorToEdit.button1.nameItem"),
+                        Message.processLines("AccountSelectorToEdit.button1.lore")),
                 null);
     }
     @Override

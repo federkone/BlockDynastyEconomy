@@ -25,15 +25,17 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.AccountsList;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ListPlayersOnline extends AccountsList {
     private final IEntityGUI sender;
 
     public ListPlayersOnline(IEntityGUI sender, IGUI parent , ITextInput textInput ) {
-        super("Select Player", 5,sender,parent, textInput );
+        super(Message.process("listPlayersOnline.title"), 5,sender,parent, textInput );
         this.sender = sender;
 
         List<Player> players = platformAdapter.getOnlinePlayers().stream()
@@ -64,6 +66,8 @@ public class ListPlayersOnline extends AccountsList {
     @Override
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
-        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Player to Pay", ChatColor.stringValueOf(Colors.WHITE)+"Click to select the player you want to pay","#Ordered by name"), null);
+        setItem(4, createItem(Materials.PAPER,
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersOnline.button1.nameItem")
+                , Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersOnline.button1.lore")), null);
     }
 }
