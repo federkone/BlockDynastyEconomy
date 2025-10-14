@@ -27,9 +27,11 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.PaginatedPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class AccountBalance extends PaginatedPanel<Money> {
@@ -37,7 +39,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
     private final UUID targetUUID;
 
     public AccountBalance(IEntityGUI player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
-        super("Account balance", 3, player, parent, 7); // 7 currencies per page
+        super(Message.process("AccountBalance.title"), 3, player, parent, 7); // 7 currencies per page
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = player.getUniqueId();
 
@@ -45,7 +47,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
     }
 
     public AccountBalance(IEntityGUI sender, UUID target, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
-        super("Account balance", 3, sender, parent, 7);
+        super(Message.process("AccountBalance.title"), 3, sender, parent, 7);
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetUUID = target;
 
@@ -71,17 +73,20 @@ public class AccountBalance extends PaginatedPanel<Money> {
     protected IItemStack createItemFor(Money money) {
         Currency currency = money.getCurrency();
         return createItem(Materials.GOLD_INGOT,
-                ChatColor.stringValueOf(currency.getColor()) + currency.getSingular(),
-                ChatColor.stringValueOf(Colors.YELLOW)+"Balance: " + ChatColor.stringValueOf(currency.getColor()) + money.format());
+                Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
+                                "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"));
     }
 
     @Override
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED)+"No Currencies", ChatColor.stringValueOf(Colors.WHITE)+"There are no coins in the account");
+        return createItem(Materials.BARRIER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.RED)),"AccountBalance.button2.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button2.lore"));
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.BOOK, ChatColor.stringValueOf(Colors.GOLD)+"Account balance", ChatColor.stringValueOf(Colors.WHITE)+"Available balances"), null);
+        setItem(4, createItem(Materials.BOOK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountBalance.button3.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button3.lore")), null);
     }
 }

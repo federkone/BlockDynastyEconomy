@@ -36,12 +36,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class Repository implements IRepository {
+    private Connection connection;
     private final SessionFactory sessionFactory;
-    IAccountRepository accountRepository;
-    ICurrencyRepository currencyRepository;
-    ITransactions transactionsRepository;
+    private IAccountRepository accountRepository;
+    private ICurrencyRepository currencyRepository;
+    private ITransactions transactionsRepository;
 
     public Repository(Connection connection) {
+        this.connection = connection;
         this.sessionFactory = connection.getSession();
         this.accountRepository = new AccountRepository(sessionFactory);
         this.currencyRepository = new CurrencyRepository(sessionFactory);
@@ -190,7 +192,7 @@ public class Repository implements IRepository {
 
     @Override
     public void close() {
-        sessionFactory.close();
+        connection.close();
     }
 
     @Override

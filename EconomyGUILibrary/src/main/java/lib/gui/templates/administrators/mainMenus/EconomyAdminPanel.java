@@ -20,29 +20,36 @@ import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.Materials;
 import lib.gui.components.abstractions.AbstractPanel;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Colors;
+import lib.util.colors.Message;
+
+import java.util.Map;
 
 public class EconomyAdminPanel extends AbstractPanel {
     private final IEntityGUI sender;
 
-    public EconomyAdminPanel(IEntityGUI sender)
-    {
-        super("Economy Admin Panel", 5,sender);
+    public EconomyAdminPanel(IEntityGUI sender) {
+        super(Message.process("EconomyAdminPanel.title"), 5,sender);
         this.sender = sender;
 
         initializeButtons();
     }
 
     private void initializeButtons() {
-        setItem(20, createItem(Materials.EMERALD, "Edit Currencies", "Click to edit currencies"), event -> {
+        setItem(20, createItem(Materials.EMERALD, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button1.nameItem"),
+                        Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button1.lore")),
+                event -> {
             GUIFactory.currencyPanel( sender, this).open();
         });
 
-
-        setItem(24, createItem(Materials.PLAYER_HEAD, "Manage Accounts", "Click to manage accounts"), event -> {
+        setItem(24, createItem(Materials.PLAYER_HEAD, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button2.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button2.lore")), event -> {
             GUIFactory.accountSelectorToEdit( sender, this).open();
         });
 
-        setItem(40, createItem(Materials.BARRIER, "Exit", "Click to exit"), event -> {
+        setItem(40, createItem(Materials.BARRIER, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"EconomyAdminPanel.button3.nameItem"),
+                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button3.lore")), event -> {
             this.close();
         });
 

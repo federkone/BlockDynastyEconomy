@@ -26,6 +26,9 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.AbstractPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
+
+import java.util.Map;
 
 public class EditCurrencyPanel extends AbstractPanel {
     private final IEntityGUI player;
@@ -34,7 +37,7 @@ public class EditCurrencyPanel extends AbstractPanel {
     private final ITextInput textInput;
 
     public EditCurrencyPanel(IEntityGUI player, Currency currency, EditCurrencyUseCase editCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
-        super("Edit Currency: " + currency.getSingular(), 5,player, parentGUI);
+        super(Message.process(Map.of("currency",currency.getSingular()),"EditCurrencyPanel.title"), 5,player, parentGUI);
         this.player = player;
         this.currency = currency;
         this.textInput = textInput;
@@ -47,35 +50,36 @@ public class EditCurrencyPanel extends AbstractPanel {
         // Current currency info
         String color = ChatColor.stringValueOf(currency.getColor());
         setItem(4, createItem(Materials.GOLD_INGOT,
-                        color + currency.getSingular() + " / " + currency.getPlural(),
-                        "Symbol: " + color + currency.getSymbol(),
-                        "Color: " + color + currency.getColor(),
-                        "Beginning balance: " + color + currency.getDefaultBalance(),
-                        "Exchange rate: " + color + currency.getExchangeRate(),
-                        "Transferable: " + (currency.isTransferable() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"),
-                        "Default currency: " + (currency.isDefaultCurrency() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"),
-                        "Supports decimals: " + (currency.isDecimalSupported() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No")),
+                        Message.process(Map.of("currency",color + currency.getSingular() + " / " + currency.getPlural()), "EditCurrencyPanel.button1.nameItem"),
+                        Message.processLines(Map.of(
+                                "symbol",color + currency.getSymbol(),
+                                "color",color + currency.getColor(),
+                                "balance",color + currency.getDefaultBalance(),
+                                "rate",color + currency.getExchangeRate(),
+                                "transferable",(currency.isTransferable() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"),
+                                "default",(currency.isDefaultCurrency() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No"),
+                                "decimals",(currency.isDecimalSupported() ? ChatColor.stringValueOf(Colors.GREEN)+"Yes" : ChatColor.stringValueOf(Colors.RED)+"No")),"EditCurrencyPanel.button1.lore")),
                 null);
 
         // Edit Start Balance button
-        setItem(11, createItem(Materials.EMERALD_BLOCK, ChatColor.stringValueOf(Colors.GREEN)+"Edit Opening Balance",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to modify the initial balance"), f -> {openStartBalanceInput();});
+        setItem(11, createItem(Materials.EMERALD_BLOCK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button2.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button2.lore")), f -> {openStartBalanceInput();});
 
         // Set Currency Rate button
-        setItem(13, createItem(Materials.GOLD_NUGGET, ChatColor.stringValueOf(Colors.YELLOW)+"Set Exchange Rate",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to modify the exchange rate"), f -> {openExchangeRateInput();});
+        setItem(13, createItem(Materials.GOLD_NUGGET, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button3.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button3.lore")), f -> {openExchangeRateInput();});
 
         // Edit Color button
-        setItem(15, createItem(Materials.LIME_DYE, ChatColor.stringValueOf(Colors.GREEN)+"Edit Color",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to change the color of the currency"), f -> {openColorSelectionGUI();});
+        setItem(15, createItem(Materials.LIME_DYE, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button4.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button4.lore")), f -> {openColorSelectionGUI();});
 
         // Edit Symbol button
-        setItem(20, createItem(Materials.NAME_TAG, ChatColor.stringValueOf(Colors.YELLOW)+"Edit Symbol",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to change the currency symbol"), f -> {openSymbolInput();});
+        setItem(20, createItem(Materials.NAME_TAG, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button5.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button5.lore")), f -> {openSymbolInput();});
 
         // Set Default Currency button
-        setItem(22, createItem(Materials.NETHER_STAR, ChatColor.stringValueOf(Colors.YELLOW)+"Set as Default",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to make this currency default"), f -> {
+        setItem(22, createItem(Materials.NETHER_STAR, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button6.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button6.lore")), f -> {
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
                 player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY) + currency.getSingular() + " is now the default currency.");
@@ -103,12 +107,12 @@ public class EditCurrencyPanel extends AbstractPanel {
                 });
 
         // Edit Singular Name button
-        setItem(29, createItem(Materials.PAPER, "Edit Singular Name",
-                "Click to change the singular name"), f -> {openSingularNameInput();});
+        setItem(29, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button7.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button7.lore")), f -> {openSingularNameInput();});
 
         // Edit Plural Name button
-        setItem(31, createItem(Materials.BOOK, "Edit Plural Name",
-                "Click to change the plural name"), f -> {openPluralNameInput();});
+        setItem(31, createItem(Materials.BOOK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button8.nameItem"),
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button8.lore")), f -> {openPluralNameInput();});
 
         // Toggle Decimals button
         setItem(33, createItem(

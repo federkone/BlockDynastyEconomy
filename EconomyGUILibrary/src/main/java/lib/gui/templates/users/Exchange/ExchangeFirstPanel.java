@@ -26,6 +26,9 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
+
+import java.util.Map;
 
 public class ExchangeFirstPanel extends CurrencySelectorAndAmount {
     private final IEntityGUI player;
@@ -48,8 +51,8 @@ public class ExchangeFirstPanel extends CurrencySelectorAndAmount {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Currency you want to give",
-                        ChatColor.stringValueOf(Colors.WHITE)+"Click to select the currency you want to give"),
+        setItem(4, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"Exchange.button2.nameItem"),
+                        Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"Exchange.button2.lore")),
                 null);
 
     }

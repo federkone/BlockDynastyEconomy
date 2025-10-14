@@ -49,14 +49,19 @@ public abstract class ConnectionHibernate implements Connection {
         }
     }
 
+    @Override
     public SessionFactory getSession() {
         return sessionFactory;
     }
 
+    @Override
     public void close() {
         if (sessionFactory != null) {
             sessionFactory.close();
         }
+        stopServer();
     }
+
+    protected abstract void stopServer();
 
 }

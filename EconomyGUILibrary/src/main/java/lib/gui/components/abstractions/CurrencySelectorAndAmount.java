@@ -21,9 +21,11 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.*;
 import lib.util.colors.ChatColor;
+import lib.util.colors.Message;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class CurrencySelectorAndAmount extends PaginatedPanel<Currency> {
@@ -32,7 +34,7 @@ public abstract class CurrencySelectorAndAmount extends PaginatedPanel<Currency>
     private final ITextInput textInput;
 
     public CurrencySelectorAndAmount(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IGUI parentGUI, ITextInput textInput) {
-        super("Currency List", 5,player,parentGUI,21);
+        super(Message.process("CurrencySelector.title"), 5,player,parentGUI,21);
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.player = player;
         this.textInput = textInput;
@@ -72,17 +74,18 @@ public abstract class CurrencySelectorAndAmount extends PaginatedPanel<Currency>
     protected IItemStack createItemFor(Currency currency) {
         String color = ChatColor.stringValueOf(currency.getColor());
         return createItem(Materials.GOLD_INGOT,
-                color + currency.getSingular(),
-                "Singular: " + color + currency.getSingular(),
-                "Plural: " + color + currency.getPlural(),
-                "Transferable: " + (currency.isTransferable() ? "Yes" : "No"),
-                "Exchange Rate: "+ color+ currency.getExchangeRate()
+                Message.process(Map.of("currency",color+currency.getSingular()),"CurrencySelector.button1.nameItem"),
+                Message.processLines(Map.of(
+                        "singular",color + currency.getSingular(),
+                        "plural",color + currency.getPlural(),
+                        "transferable",(currency.isTransferable() ? "Yes" : "No"),
+                        "exchangeRate",color+ currency.getExchangeRate()),"CurrencySelector.button1.lore")
         );
     }
 
     @Override
     protected void functionLeftItemClick(Currency currency) {
-        textInput.open(this,player,"Amount to "+currency.getSingular(),"0", s->{
+        textInput.open(this,player,Message.process(Map.of("currency",currency.getSingular()),"CurrencySelector.button2.nameItem"),Message.process("CurrencySelector.button2.lore"), s->{
             try {
                 BigDecimal amount = new BigDecimal(s);
                 return execute(player, currency, amount);

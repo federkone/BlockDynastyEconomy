@@ -21,8 +21,10 @@ import lib.gui.components.IEntityGUI;
 import lib.gui.components.*;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class AccountsList extends PaginatedPanel<Player> {
     private final ITextInput textInput;
@@ -47,13 +49,14 @@ public abstract class AccountsList extends PaginatedPanel<Player> {
 
     @Override
     protected void addCustomButtons() {
-        setItem(39, createItem(Materials.NAME_TAG, ChatColor.stringValueOf(Colors.GOLD)+"Search Player",
-                        ChatColor.stringValueOf(Colors.WHITE)+"Click to search a player by name",ChatColor.stringValueOf(Colors.WHITE)+"CaseSensitive"),
+        setItem(39, createItem(Materials.NAME_TAG,
+                        Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountList.button1.nameItem"),
+                        Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"AccountList.button1.lore")),
                 unused -> openAnvilSearch(unused));
     }
 
     protected void openAnvilSearch(IEntityGUI sender) {
-        textInput.open(this, sender, "Search Player", "Name..", s -> {
+        textInput.open(this, sender,Message.process("AccountList.button2.nameItem"), Message.process("AccountList.button2.lore"), s -> {
             Player foundPlayer = findPlayerByName(s);
 
             if (foundPlayer != null) {
@@ -61,7 +64,7 @@ public abstract class AccountsList extends PaginatedPanel<Player> {
                 showPlayers(List.of(foundPlayer));
                 this.open();
             } else {
-                sender.sendMessage(ChatColor.stringValueOf(Colors.RED)+"Player not found!");
+                sender.sendMessage(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.RED)),"AccountList.button2.response"));
                 this.open();
             }
             return null;

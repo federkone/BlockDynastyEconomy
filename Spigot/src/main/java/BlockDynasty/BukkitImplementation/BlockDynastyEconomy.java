@@ -20,6 +20,7 @@ import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInp
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
 import BlockDynasty.BukkitImplementation.adapters.proxy.ChannelRegister;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 
@@ -34,6 +35,8 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.BukkitImplementation.utils.Updater;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import Main.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 import platform.files.Configuration;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.Listener;
@@ -76,6 +79,30 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }catch (Exception e) {}
     }
 
+    public void reload() {
+        Console.log("Reloading plugin...");
+        HandlerList.unregisterAll();
+        PlaceHolder.unregister();
+        Vault.unhook();
+        ChannelRegister.unhook(this);
+        Economy.shutdown();
+        try {
+            initCoreServices();
+            registerEvents();
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                if(configuration.getBoolean("online")) {
+                    economy.getPlayerJoinListener().loadOnlinePlayerAccount(EntityPlayerAdapter.of(player));
+                }else{
+                    economy.getPlayerJoinListener().loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
+                }
+            });
+            setupIntegrations();
+            Console.log("§aPlugin enabled successfully!");
+        } catch (Exception e) {
+            Console.logError("during plugin initialization: " + e.getMessage());
+        }
+    }
+
     @Override
     public void onDisable() {
         Economy.shutdown();
@@ -94,7 +121,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
 
     private void registerCommands(){
-        CommandRegister.registerAll();
+        CommandRegister.registerAllEconomySystem();
     }
 
     private void registerEvents() {
@@ -121,7 +148,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
     }
     private void setupIntegrations() {
         Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
-        //vault.init(economy.getVaultLogger());
         PlaceHolder.register(economy.getPlaceHolder());
         ChannelRegister.init(this);
     }

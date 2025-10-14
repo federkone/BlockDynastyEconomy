@@ -28,16 +28,18 @@ import lib.gui.components.Materials;
 import lib.gui.components.abstractions.AccountsList;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
+import lib.util.colors.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ListPlayersFromDb extends AccountsList {
     private IEntityGUI sender;
     private final SearchAccountUseCase searchAccountUseCase;
     public ListPlayersFromDb(IEntityGUI sender, IGUI parent, SearchAccountUseCase searchAccountUseCase , ITextInput textInput) {
-        super("Select Player", 5, sender, parent, textInput);
+        super(Message.process("listPlayersFromDb.title"), 5, sender, parent, textInput);
         this.sender = sender;
         this.searchAccountUseCase = searchAccountUseCase;
         Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
@@ -74,6 +76,8 @@ public class ListPlayersFromDb extends AccountsList {
     @Override
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
-        setItem(4, createItem(Materials.PAPER, ChatColor.stringValueOf(Colors.GREEN)+"Select Player to Transfer", ChatColor.stringValueOf(Colors.WHITE)+"Click to select the player you want to transfer","#Ordered by name"), null);
+        setItem(4, createItem(Materials.PAPER,
+                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersFromDb.button1.nameItem")
+                , Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersFromDb.button1.lore")), null);
     }
 }

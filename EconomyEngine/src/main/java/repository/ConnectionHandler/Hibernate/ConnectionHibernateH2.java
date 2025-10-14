@@ -22,6 +22,7 @@ import org.h2.tools.Server;
 import java.nio.charset.StandardCharsets;
 
 public class ConnectionHibernateH2 extends ConnectionHibernate {
+    private Server webServer;
 
     public ConnectionHibernateH2(String dbFilePath,boolean enableServerConsole) {
         super();
@@ -47,7 +48,7 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
             System.setProperty("h2.webAdminPassword", "");
 
             // Create web server with customized settings
-            Server webServer = Server.createWebServer(
+            webServer = Server.createWebServer(
                     "-web",
                     "-webAllowOthers",
                     "-webPort", "8082",
@@ -66,6 +67,13 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
             Console.log("  -> JDBC URL: " + jdbcUrl);
         } catch (Exception e) {
             Console.logError("Failed to start H2 console: " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void stopServer() {
+        if (webServer != null) {
+            webServer.stop();
         }
     }
 }

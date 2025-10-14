@@ -1,8 +1,11 @@
 # Main Configuration file.
 # BlockDynastyEconomy Plugin
-# Version: 1.0
+# Version: 1.0.3
 
 # Developer(s): @Federkone.
+
+#EN (English), ES (Spanish). You can also create your own language file in the language folder.
+lang: EN
 
 #The plugin is designed to work in both offline and online modes.
 #Therefore:

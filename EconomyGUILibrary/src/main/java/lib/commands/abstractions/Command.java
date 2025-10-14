@@ -25,5 +25,5 @@ public interface Command {
     String getName();
     String getDescription();
     String getPermission();
-
+    void registerSubCommand(Command executor);
 }
