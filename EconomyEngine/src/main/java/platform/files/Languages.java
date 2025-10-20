@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Languages{
     private final String languagePath = "/languages";
-    private String[] languagesFiles = {"EN.yaml", "ES.yaml"};
+    private String[] languagesFiles = {"EN.yaml", "ES.yaml","RU.yaml","ZH.yaml"};
     //string nombre EN, ES, etc y File objeto File
     private Map<String,File> languageFileMap = new java.util.HashMap<>();
     private static Map<String, Object> mensajes=new HashMap<>();
@@ -22,10 +22,11 @@ public class Languages{
         this.rootDirectory = rootDirectory;
         this.langDirectory = new File(rootDirectory, languagePath);
         if (!this.langDirectory.exists()) {
-            createLanguagesDirectory();
-        } else {
-            loadLanguagesFiles();
+            this.langDirectory.mkdirs();
         }
+
+        copyMissingLanguageFiles();
+        loadLanguagesFiles();
         loadMessages("EN");
     }
 
@@ -49,6 +50,23 @@ public class Languages{
             loadLanguagesFiles();
         } catch (Exception e) {
             throw new RuntimeException("Failed to create languages directory", e);
+        }
+    }
+    private void copyMissingLanguageFiles() {
+        try {
+            for (String langFile : languagesFiles) {
+                File file = new File(langDirectory, langFile);
+                if (!file.exists()) {
+                    try (var inputStream = getClass().getClassLoader().getResourceAsStream("languages/" + langFile)) {
+                        if (inputStream == null) {
+                            throw new RuntimeException("Language resource not found: " + langFile);
+                        }
+                        Files.copy(inputStream, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to copy language files", e);
         }
     }
 

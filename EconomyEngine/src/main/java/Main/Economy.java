@@ -62,13 +62,19 @@ public class Economy {
     private Economy(ITextInput textInput, PlatformAdapter platformAdapter){
         this.platformAdapter=platformAdapter;
         configuration= new Configuration(platformAdapter.getDataFolder());
+        if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
         languages = new Languages(platformAdapter.getDataFolder());
         languages.loadMessages(configuration.getString("lang"));
         Message.addLang(languages);
         Console.setConsole(platformAdapter.getConsole(),configuration);
-        if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
 
-        repository = new Repository(getConnection(configuration));
+        try{
+            repository = new Repository(getConnection(configuration));
+        }catch (Exception e){
+            Console.logError("Error connection database, check your credentials.");
+            throw new RuntimeException(e.getMessage());
+        }
+
         Console.log("Database connected successfully.");
 
         core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
@@ -90,12 +96,12 @@ public class Economy {
             case "mysql":
                 return new ConnectionHibernateMysql(configuration.getString("sql.host"), configuration.getInt("sql.port"), configuration.getString("sql.database"), configuration.getString("sql.username"), configuration.getString("sql.password"));
             case "h2":
-                return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
+                 return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             case "sqlite":
-                return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
+                 return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             default:
-                throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
-        }
+                 throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
+            }
     }
 
     private Courier createCourierImpl(Configuration configuration, PlatformAdapter platformAdapter){

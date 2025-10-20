@@ -4,7 +4,7 @@
 
 # Developer(s): @Federkone.
 
-#EN (English), ES (Spanish). You can also create your own language file in the language folder.
+#EN(English), ES(Spanish),RU(Russia),ZH(Chinese) You can also create your own language file in the language folder.
 lang: EN
 
 #The plugin is designed to work in both offline and online modes.

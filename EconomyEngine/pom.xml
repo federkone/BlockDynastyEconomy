@@ -30,8 +30,9 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>false</minimizeJar>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <minimizeJar>false</minimizeJar>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -40,14 +41,35 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>**/LICENSE*</exclude>
+                                        <exclude>**/NOTICE*</exclude>
+                                        <exclude>**/*.txt</exclude>
+                                        <exclude>**/doc/**</exclude>
+                                        <exclude>**/test/**</exclude>
+                                        <exclude>**/samples/**</exclude>
                                     </excludes>
                                 </filter>
                                 <filter>
                                     <artifact>com.h2database:h2</artifact>
                                     <excludes>
+                                        <exclude>org/h2/tools/Upgrade*</exclude>
                                         <exclude>org/h2/tools/**</exclude>
                                         <exclude>org/h2/sample/**</exclude>
                                         <exclude>org/h2/build/**</exclude>
+                                        <exclude>org/h2/test/**</exclude>
+                                        <exclude>org/h2/javadoc/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.xerial:sqlite-jdbc</artifact>
+                                    <excludes>
+                                        <exclude>org/sqlite/native/Linux/android/**</exclude>
+                                        <exclude>org/sqlite/native/Mac/**</exclude>
+                                        <exclude>org/sqlite/native/FreeBSD/**</exclude>
+                                        <exclude>org/sqlite/native/AIX/**</exclude>
+                                        <exclude>org/sqlite/native/OpenBSD/**</exclude>
+                                        <exclude>org/sqlite/native/SunOS/**</exclude>
+                                        <exclude>org/sqlite/test/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>

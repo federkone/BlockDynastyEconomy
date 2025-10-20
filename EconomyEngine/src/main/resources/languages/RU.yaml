@@ -1,0 +1,229 @@
+prefix: "{color}[Банк] "
+
+#Events messages:
+pay1: "{prefix}{color}Вы заплатили {currency}{color} игроку {playerName}."
+pay2: "{prefix}{color}Вы получили {currency}{color} от {playerName}."
+
+transfer1: "{prefix}{color}Вы перевели {currency}{color} игроку {playerName}."
+transfer2: "{prefix}{color}Вы получили {currency} {color} от {playerName}."
+
+exchange: "{prefix}{color}Вы обменяли {fromCurrency}{color} на {toCurrency}{color}."
+
+trade1: "{prefix}{color}Вы обменяли {fromCurrency}{color} с {playerName}{color} на {toCurrency}{color}."
+trade2: "{prefix}{color}Вы получили {fromCurrency}{color} от {playerName}{color} в обмен на {toCurrency}{color}."
+
+deposit: "{prefix}{color}Получен депозит {currency}{color}."
+
+withdraw: "{prefix}{color}Выведено {currency}{color}."
+
+set: "{prefix}{color}Ваш баланс установлен на {currency}{color}."
+
+offerCreated1: "{prefix}{color}Вы отправили предложение {playerName}, предлагая {fromCurrency}{color} в обмен на {toCurrency}{color}."
+offerCreated2: "{prefix}{color}Вы получили предложение от {playerName}, предлагающего {fromCurrency}{color} в обмен на {toCurrency}{color}."
+
+offerCanceled1: "{prefix}{color}Предложение от {playerName} было отменено."
+offerCanceled2: "{prefix}{color}Предложение для {playerName} было отменено."
+
+offerExpired1: "{prefix}{color}Предложение от {playerName} истекло."
+offerExpired2: "{prefix}{color}Предложение для {playerName} истекло."
+
+
+#GUI messages
+#user panels
+listPlayersOnline:
+  title: "Выберите игрока"
+  button1:
+    nameItem: "{color}Выбрать игрока для оплаты"
+    lore: "{color}Нажмите, чтобы выбрать игрока для оплаты,{color}#Отсортировано по имени"
+
+AccountList:
+  button1:
+    nameItem: "{color}Найти игрока"
+    lore: "{color}Нажмите для поиска игрока по имени,{color}С учетом регистра"
+  button2:
+    nameItem: "Найти игрока"
+    lore: "Имя.."
+    response: "Игрок не найден!"
+
+listPlayersFromDb:
+  title: "Выберите игрока"
+  button1:
+    nameItem: "{color}Выбрать игрока для перевода"
+    lore: "{color}Нажмите, чтобы выбрать игрока для перевода,{color}#Отсортировано по имени"
+
+CurrencyListToPay:
+  response: "Транзакция успешна!"
+  button1:
+    nameItem: "{color}Выбрать валюту для оплаты"
+    lore: "{color}Нажмите, чтобы выбрать валюту для оплаты,{color}И предварительно указать сумму"
+
+
+BankPanel:
+  title: "Банк"
+  button1:
+    nameItem1: "{color}Аккаунт заблокирован"
+    nameItem2: "{color}Аккаунт активен"
+    lore: "{color}Это влияет на:,Вывод,Депозит,Перевод,Оплату,Торговлю,Обмен,Все экономические операции"
+  button2:
+    nameItem: "{color}Обмен валют"
+    lore: "{color}Нажмите для обмена валют"
+  button3:
+    nameItem: "{color}Создать предложение игроку онлайн"
+    lore: "{color}Нажмите чтобы создать предложение по обмену валют,{color}с другими игроками в сети"
+  button4:
+    nameItem: "{color}Создать предложение игроку сети"
+    lore: "{color}Нажмите чтобы создать предложение по обмену валют,{color}с другими игроками сети"
+  button5:
+    nameItem: "{color}Мои активные предложения"
+    lore: "{color}Это предложения, которые вы создали,{color}и в настоящее время активны"
+  button6:
+    nameItem: "{color}Посмотреть баланс"
+    lore: "{color}Нажмите чтобы посмотреть ваш баланс"
+  button7:
+    nameItem: "{color}Полученные предложения"
+    lore: "{color}Здесь вы можете просмотреть все предложения,{color}отправленные вам другими игроками"
+  button8:
+    nameItem: "{color}Оплатить игроку онлайн"
+    lore: "{color}Нажмите чтобы оплатить другому,{color}игроку онлайн на этом сервере"
+  button9:
+    nameItem: "{color}Перевести игроку сети"
+    lore: "{color}Нажмите чтобы перевести средства другому,{color}игроку из сети"
+  button10:
+    nameItem: "{color}Выход"
+    lore: "{color}Нажмите для выхода"
+
+AccountBalance:
+  title: "Баланс счета"
+  button1:
+    nameItem: "{currency}"
+    lore: "{color}Баланс: {currency}"
+  button2:
+    nameItem: "{color}Нет валют"
+    lore: "{color}На счету нет средств"
+  button3:
+    nameItem: "{color}Баланс счета"
+    lore: "{color}Доступные балансы"
+
+ReceivedOffers:
+  title: "Полученные предложения"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',Количество: {amount} ,Цена: {price},' ',{color1}Левый клик - Принять,{color2}Правый клик - Отменить"
+  button2:
+    nameItem: "Список полученных предложений"
+    lore: "Нажмите для обновления"
+
+MyActiveOffers:
+  title: "Мои активные предложения"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',Количество: {amount} ,Цена: {price},' ',{color2}Правый клик - Отменить"
+  button2:
+    nameItem: "Список предложений"
+    lore: "Нажмите для обновления"
+
+OfferListPlayer:
+  button1:
+    nameItem: "{color}Выбрать игрока для предложения"
+    lore: "{color}Нажмите чтобы выбрать игрока для предложения,{color}И предварительно указать валюты"
+  button2:
+    nameItem: "{color}Выбрать валюту для предложения"
+    lore: "{color}Нажмите чтобы выбрать валюту для предложения,{color}И предварительно указать сумму"
+  button3:
+    nameItem: "{color}Выбрать валюту для получения"
+    lore: "{color}Нажмите чтобы выбрать валюту для получения,{color}И предварительно указать сумму"
+
+CurrencySelector:
+  title: "Список валют"
+  button1:
+    nameItem: "{currency}"
+    lore: "Единственное число: {singular},Множественное число: {plural},Переводимая: {transferable},Курс обмена: {exchangeRate}"
+  button2:
+    nameItem: "Сумма в {currency}"
+    lore: "0"
+
+Exchange:
+  button1:
+    nameItem: "{color}Выбрать валюту для получения"
+    lore: "{color}Нажмите чтобы выбрать валюту для получения,{color}И предварительно указать сумму"
+  button2:
+    nameItem: "{color}Выбрать валюту для обмена"
+    lore: "{color}Нажмите чтобы выбрать валюту для обмена"
+
+Paginated:
+  button1:
+    nameItem: "{color}Нет элементов"
+    lore: "{color}Нет элементов для отображения"
+  button2:
+    nameItem: "{color}Предыдущая страница"
+    lore: "{color}Нажмите чтобы увидеть предыдущие элементы"
+  button3:
+    nameItem: "{color}Следующая страница"
+    lore: "{color}Нажмите чтобы увидеть больше элементов"
+  button4:
+    nameItem: "{color}Назад"
+    lore: "{color}Нажмите чтобы вернуться"
+
+#admin panel
+EconomyAdminPanel:
+  title: "Панель администратора экономики"
+  button1:
+    nameItem: "{color}Редактировать валюты"
+    lore: "{color}Нажмите для редактирования валют"
+  button2:
+    nameItem: "{color}Управление счетами"
+    lore: "{color}Нажмите для управления счетами игроков"
+  button3:
+    nameItem: "{color}Выход"
+    lore: "{color}Нажмите для выхода"
+
+CurrencyAdminPanel:
+  title: "Управление валютами"
+  button1:
+    nameItem: "{color}Создать валюту"
+    lore: "{color}Нажмите чтобы создать новую валюту"
+  button2:
+    nameItem: "{color}Удалить валюту"
+    lore: "{color}Нажмите чтобы удалить валюту"
+  button3:
+    nameItem: "{color}Редактировать валюту"
+    lore: "{color}Нажмите чтобы редактировать валюту"
+  button4:
+    nameItem: "{color}Настройки функций"
+    lore: "{color}Нажмите"
+  button5:
+    nameItem: "{color}Назад"
+    lore: "{color}Нажмите чтобы вернуться"
+
+AccountSelectorToEdit:
+  title: "Выберите игрока"
+  button1:
+    nameItem: "Выбрать счет для редактирования"
+    lore: "Нажмите чтобы выбрать счет, или найдите по имени Отсортировано по имени С учетом регистра"
+
+EditCurrencyPanel:
+  title: "Редактирование валюты: {currency}"
+  button1:
+    nameItem: "{currency}"
+    lore: "Символ: {symbol},Цвет: {color},Начальный баланс: {balance},Курс обмена: {rate},Переводимая: {transferable},Валюта по умолчанию: {default},Поддерживает десятичные: {decimals}"
+  button2:
+    nameItem: "{color}Редактировать начальный баланс"
+    lore: "{color}Нажмите чтобы изменить начальный баланс"
+  button3:
+    nameItem: "{color}Установить курс обмена"
+    lore: "{color}Нажмите чтобы изменить курс обмена"
+  button4:
+    nameItem: "{color}Изменить цвет"
+    lore: "{color}Нажмите чтобы изменить цвет валюты"
+  button5:
+    nameItem: "{color}Изменить символ"
+    lore: "{color}Нажмите чтобы изменить символ валюты"
+  button6:
+    nameItem: "{color}Установить по умолчанию"
+    lore: "{color}Нажмите чтобы сделать эту валюту валютой по умолчанию"
+  button7:
+    nameItem: "{color}Изменить название в единственном числе"
+    lore: "{color}Нажмите чтобы изменить название в единственном числе"
+  button8:
+    nameItem: "{color}Изменить название во множественном числе"
+    lore: "{color}Нажмите чтобы изменить название во множественном числе"

@@ -79,14 +79,18 @@ public class SpongePlugin {
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
         // Perform any one-time setup
-        economy = Economy.init(new TextInput(), new SpongeAdapter());
-        configuration = economy.getConfiguration();
-        Console.log("Plugin constructed...");
+        try {
+            economy = Economy.init(new TextInput(), new SpongeAdapter());
+            configuration = economy.getConfiguration();
+            Console.log("Plugin constructed...");
+        }catch (Exception e){
+            Console.logError("Error during plugin construction: " + e.getMessage());
+            throw new RuntimeException();
+        }
     }
 
     @Listener
-    public void provideEconomy(final ProvideServiceEvent.EngineScoped<MultiCurrencyService> event) {
-        //Info: Sponge Economy service only supports 1 default currency, it does not have an interface for multiple currencies....
+    public void registerEconomyService(final ProvideServiceEvent.EngineScoped<MultiCurrencyService> event) {
         event.suggest(() -> new EconomyServiceAdapter( economy.getApi() ));
     }
 
@@ -102,6 +106,7 @@ public class SpongePlugin {
 
     @Listener
     public void onRegisterCommands(final RegisterCommandEvent<Command.Parameterized> event) {
+        //TestEconomyCommand.registerTestCommand( event, container);
         CommandRegister.registerCommands(event, container, CommandsFactory.Commands.getMainCommands());
     }
 

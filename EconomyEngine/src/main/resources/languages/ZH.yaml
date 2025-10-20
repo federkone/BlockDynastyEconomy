@@ -1,0 +1,228 @@
+prefix: "{color}[银行] "
+
+#Events messages:
+pay1: "{prefix}{color}你向{playerName}支付了{currency}{color}。"
+pay2: "{prefix}{color}你收到了来自{playerName}的{currency}{color}。"
+
+transfer1: "{prefix}{color}你向{playerName}转账了{currency}{color}。"
+transfer2: "{prefix}{color}你收到了来自{playerName}的{currency}{color}。"
+
+exchange: "{prefix}{color}你将{fromCurrency}{color}兑换成了{toCurrency}{color}。"
+
+trade1: "{prefix}{color}你与{playerName}{color}交易，用{fromCurrency}{color}换取了{toCurrency}{color}。"
+trade2: "{prefix}{color}你从{playerName}{color}收到了{fromCurrency}{color}，并支付了{toCurrency}{color}。"
+
+deposit: "{prefix}{color}已收到存款{currency}{color}。"
+
+withdraw: "{prefix}{color}已提取{currency}{color}。"
+
+set: "{prefix}{color}你的余额已设置为{currency}{color}。"
+
+offerCreated1: "{prefix}{color}你向{playerName}发送了一个报价，提供{fromCurrency}{color}以换取{toCurrency}{color}。"
+offerCreated2: "{prefix}{color}你收到了来自{playerName}的报价，提供{fromCurrency}{color}以换取{toCurrency}{color}。"
+
+offerCanceled1: "{prefix}{color}来自{playerName}的报价已被取消。"
+offerCanceled2: "{prefix}{color}向{playerName}的报价已被取消。"
+
+offerExpired1: "{prefix}{color}来自{playerName}的报价已过期。"
+offerExpired2: "{prefix}{color}向{playerName}的报价已过期。"
+
+
+#GUI messages
+#user panels
+listPlayersOnline:
+  title: "选择玩家"
+  button1:
+    nameItem: "{color}选择要支付的玩家"
+    lore: "{color}点击选择你想要支付的玩家,{color}#按名称排序"
+
+AccountList:
+  button1:
+    nameItem: "{color}搜索玩家"
+    lore: "{color}点击按名称搜索玩家,{color}区分大小写"
+  button2:
+    nameItem: "搜索玩家"
+    lore: "名称.."
+    response: "未找到玩家!"
+
+listPlayersFromDb:
+  title: "选择玩家"
+  button1:
+    nameItem: "{color}选择要转账的玩家"
+    lore: "{color}点击选择你想要转账的玩家,{color}#按名称排序"
+
+CurrencyListToPay:
+  response: "交易成功!"
+  button1:
+    nameItem: "{color}选择支付货币"
+    lore: "{color}点击选择你想要支付的货币,{color}并先指定金额"
+
+BankPanel:
+  title: "银行"
+  button1:
+    nameItem1: "{color}账户已冻结"
+    nameItem2: "{color}账户已启用"
+    lore: "{color}这会影响:,取款,存款,转账,支付,交易,兑换,所有经济操作"
+  button2:
+    nameItem: "{color}兑换货币"
+    lore: "{color}点击兑换货币"
+  button3:
+    nameItem: "{color}创建在线玩家报价"
+    lore: "{color}点击创建货币交易报价,{color}与其他在线玩家"
+  button4:
+    nameItem: "{color}创建网络玩家报价"
+    lore: "{color}点击创建货币交易报价,{color}与网络中的其他玩家"
+  button5:
+    nameItem: "{color}我的活跃报价"
+    lore: "{color}这些是你创建的报价,{color}目前处于活跃状态"
+  button6:
+    nameItem: "{color}查看余额"
+    lore: "{color}点击查看你的余额"
+  button7:
+    nameItem: "{color}收到的报价"
+    lore: "{color}在这里你可以查看所有,{color}其他玩家发送给你的报价"
+  button8:
+    nameItem: "{color}支付在线玩家"
+    lore: "{color}点击支付给另一个,{color}在此服务器的在线玩家"
+  button9:
+    nameItem: "{color}转账给网络玩家"
+    lore: "{color}点击转账资金给另一个,{color}来自网络的玩家"
+  button10:
+    nameItem: "{color}退出"
+    lore: "{color}点击退出"
+
+AccountBalance:
+  title: "账户余额"
+  button1:
+    nameItem: "{currency}"
+    lore: "{color}余额: {currency}"
+  button2:
+    nameItem: "{color}无货币"
+    lore: "{color}账户中没有货币"
+  button3:
+    nameItem: "{color}账户余额"
+    lore: "{color}可用余额"
+
+ReceivedOffers:
+  title: "收到的报价"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',数量: {amount} ,价格: {price},' ',{color1}左键接受,{color2}右键取消"
+  button2:
+    nameItem: "收到的报价列表"
+    lore: "点击刷新"
+
+MyActiveOffers:
+  title: "我的活跃报价"
+  button1:
+    nameItem: "{playerName}"
+    lore: "' ',数量: {amount} ,价格: {price},' ',{color2}右键取消"
+  button2:
+    nameItem: "报价列表"
+    lore: "点击刷新"
+
+OfferListPlayer:
+  button1:
+    nameItem: "{color}选择要报价的玩家"
+    lore: "{color}点击选择你想要报价的玩家,{color}并先指定货币"
+  button2:
+    nameItem: "{color}选择要提供的货币"
+    lore: "{color}点击选择你想要提供的货币,{color}并先指定金额"
+  button3:
+    nameItem: "{color}选择要接收的货币"
+    lore: "{color}点击选择你想要接收的货币,{color}并先指定金额"
+
+CurrencySelector:
+  title: "货币列表"
+  button1:
+    nameItem: "{currency}"
+    lore: "单数: {singular},复数: {plural},可转账: {transferable},汇率: {exchangeRate}"
+  button2:
+    nameItem: "金额为 {currency}"
+    lore: "0"
+
+Exchange:
+  button1:
+    nameItem: "{color}选择要接收的货币"
+    lore: "{color}点击选择你想要接收的货币,{color}并先指定金额"
+  button2:
+    nameItem: "{color}选择要支付的货币"
+    lore: "{color}点击选择你想要支付的货币"
+
+Paginated:
+  button1:
+    nameItem: "{color}无元素"
+    lore: "{color}没有要显示的项目"
+  button2:
+    nameItem: "{color}上一页"
+    lore: "{color}点击查看上一页项目"
+  button3:
+    nameItem: "{color}下一页"
+    lore: "{color}点击查看更多项目"
+  button4:
+    nameItem: "{color}返回"
+    lore: "{color}点击返回"
+
+#admin panel
+EconomyAdminPanel:
+  title: "经济管理面板"
+  button1:
+    nameItem: "{color}编辑货币"
+    lore: "{color}点击编辑货币"
+  button2:
+    nameItem: "{color}管理账户"
+    lore: "{color}点击管理玩家账户"
+  button3:
+    nameItem: "{color}退出"
+    lore: "{color}点击退出"
+
+CurrencyAdminPanel:
+  title: "货币管理器"
+  button1:
+    nameItem: "{color}创建货币"
+    lore: "{color}点击创建新货币"
+  button2:
+    nameItem: "{color}删除货币"
+    lore: "{color}点击删除货币"
+  button3:
+    nameItem: "{color}编辑货币"
+    lore: "{color}点击编辑货币"
+  button4:
+    nameItem: "{color}配置功能"
+    lore: "{color}点击"
+  button5:
+    nameItem: "{color}返回"
+    lore: "{color}点击返回"
+
+AccountSelectorToEdit:
+  title: "选择玩家"
+  button1:
+    nameItem: "选择要编辑的账户"
+    lore: "点击选择一个账户，或按名称搜索 按名称排序 区分大小写"
+
+EditCurrencyPanel:
+  title: "编辑货币: {currency}"
+  button1:
+    nameItem: "{currency}"
+    lore: "符号: {symbol},颜色: {color},初始余额: {balance},汇率: {rate},可转账: {transferable},默认货币: {default},支持小数: {decimals}"
+  button2:
+    nameItem: "{color}编辑初始余额"
+    lore: "{color}点击修改初始余额"
+  button3:
+    nameItem: "{color}设置汇率"
+    lore: "{color}点击修改汇率"
+  button4:
+    nameItem: "{color}编辑颜色"
+    lore: "{color}点击更改货币颜色"
+  button5:
+    nameItem: "{color}编辑符号"
+    lore: "{color}点击更改货币符号"
+  button6:
+    nameItem: "{color}设为默认"
+    lore: "{color}点击将此货币设为默认货币"
+  button7:
+    nameItem: "{color}编辑单数名称"
+    lore: "{color}点击更改单数名称"
+  button8:
+    nameItem: "{color}编辑复数名称"
+    lore: "{color}点击更改复数名称"

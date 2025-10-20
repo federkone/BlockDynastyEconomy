@@ -44,8 +44,8 @@ public abstract class ConnectionHibernate implements Connection {
         try {
             this.sessionFactory = this.configuration.buildSessionFactory();
             //sessionFactory = new Configuration().configure().buildSessionFactory(); //bildea la sesion con los parametros del archivo hibernate.cfg.xml
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError("Initial SessionFactory creation failed: " + ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Initial SessionFactory creation failed: " + ex);
         }
     }
 
