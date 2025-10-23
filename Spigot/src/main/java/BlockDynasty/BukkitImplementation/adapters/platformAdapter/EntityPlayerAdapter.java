@@ -31,7 +31,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.UUID;
 
 public class EntityPlayerAdapter implements IPlayer {
-    Player player;
+    private Player player;
 
     private EntityPlayerAdapter(Player player) {
         this.player = player;

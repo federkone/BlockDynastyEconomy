@@ -16,6 +16,7 @@
 
 package platform.listeners;
 
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -28,10 +29,9 @@ public class PlayerJoinListener implements IPlayerJoin {
     protected final SearchAccountUseCase searchAccountUseCase;
     protected final IAccountService accountService;
 
-    public PlayerJoinListener(CreateAccountUseCase createAccountUseCase, SearchAccountUseCase searchAccountUseCase, IAccountService accountService) {
-
-        this.createAccountUseCase = createAccountUseCase;
-        this.searchAccountUseCase = searchAccountUseCase;
+    public PlayerJoinListener(UseCaseFactory useCaseFactory, IAccountService accountService) {
+        this.createAccountUseCase = useCaseFactory.createAccount();
+        this.searchAccountUseCase = useCaseFactory.searchAccount();
         this.accountService = accountService;
     }
 

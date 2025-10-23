@@ -45,7 +45,7 @@ public class CreateAccountUseCaseTest {
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5 ,repository, currencyService);
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,repository);
     }
 
     @Test

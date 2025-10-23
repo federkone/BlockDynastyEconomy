@@ -51,14 +51,14 @@ public class DeleteCurrencyUseCaseTest {
         searchAccountUseCase = new SearchAccountUseCase(accountService, repository);
         deleteCurrencyUseCase = new DeleteCurrencyUseCase(currencyService, accountService,repository,null);
         createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, accountService, null,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,repository);
 
     }
 
     @Test
     public void deleteCurrencyTest() {
 
-        createCurrencyUseCase.createCurrency("dinero", "dinero");
+        createCurrencyUseCase.execute("dinero", "dinero");
         createAccountUseCase.execute(UUID.randomUUID(), "Nullplague");
 
         deleteCurrencyUseCase.deleteCurrency("dinero");

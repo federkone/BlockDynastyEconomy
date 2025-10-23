@@ -47,8 +47,8 @@ public class DeleteAccountUseCaseTest {
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5 ,repository, currencyService);
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
-        deleteAccountUseCase = new DeleteAccountUseCase(repository, accountService, searchAccountUseCase);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,repository);
+        deleteAccountUseCase = new DeleteAccountUseCase(repository, accountService);
 
     }
 

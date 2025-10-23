@@ -80,7 +80,7 @@ public class TransferUseCaseTest {
 
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        transferFundsUseCase = new TransferFundsUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        transferFundsUseCase = new TransferFundsUseCase(currencyService,accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test

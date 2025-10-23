@@ -40,7 +40,7 @@ public class CreateCurrencyUseCase {
         this.updateForwarder = updateForwarder;
     }
 
-    public void createCurrency(String singular,String plural){
+    public void execute(String singular, String plural){
         if (currencyService.currencyExist(singular) || currencyService.currencyExist(plural)){
             throw new CurrencyAlreadyExist("Currency already exist");
         }

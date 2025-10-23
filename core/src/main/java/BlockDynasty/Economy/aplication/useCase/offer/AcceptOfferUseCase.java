@@ -41,8 +41,8 @@ public class AcceptOfferUseCase {
         this.eventManager = eventmanager;
     }
 
-    public Result<Void> execute (UUID playerAccept, UUID playerOffer) {  //puede aceptarle la oferta a alguien en especifico
-        Offer offer = offerService.getOffer(playerAccept,playerOffer); //objener la oferta de un vendedor en especifico
+    public Result<Void> execute (UUID playerAccept, UUID playerOffer) {
+        Offer offer = offerService.getOffer(playerAccept,playerOffer);
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
         }

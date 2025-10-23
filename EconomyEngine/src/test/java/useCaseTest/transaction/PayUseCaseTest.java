@@ -90,7 +90,7 @@ public class PayUseCaseTest {
 
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        payUseCase = new PayUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,repository,new CourierTest(),new LoggerTest(),eventManager);
+        payUseCase = new PayUseCase(currencyService,accountService,repository,new CourierTest(),new LoggerTest(),eventManager);
         editCurrencyUseCase= new EditCurrencyUseCase(currencyService ,new CourierTest(),repository);
 
         eventManager.subscribe(PayEvent.class, event -> { System.out.println( event.getPayer().getNickname() + " realizo un pago a "+ event.getReceived().getNickname()+ " de un monto de " +event.getAmount()); } );

@@ -19,6 +19,7 @@ package BlockDynasty.Economy.aplication.useCase.transaction;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.events.transactionsEvents.TradeEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -42,15 +43,13 @@ public class TradeCurrenciesUseCase {
     private final IAccountService accountService;
     private final EventManager eventManager;
 
-    public TradeCurrenciesUseCase(SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase,
-                                  IAccountService accountService,IRepository dataStore,
+    public TradeCurrenciesUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore,
                                   Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, dataStore);
+        this.searchAccountUseCase = new SearchAccountUseCase(accountService, dataStore);
         this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
-        this.searchAccountUseCase = searchAccountUseCase;
         this.economyLogger = economyLogger;
         this.eventManager = eventManager;
     }

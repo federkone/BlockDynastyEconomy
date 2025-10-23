@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package BlockDynasty.Economy.aplication.useCase.account.types;
+package BlockDynasty.Economy.aplication.useCase.account.balance;
 
-public interface GetAccountsUseCase {
+//borrar su balance de una cuenta x, de una Currency X "nombreMoneda", borrar el balance de una cuenta
+public class DeleteBalanceUseCase {
 }

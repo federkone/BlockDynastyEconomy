@@ -93,7 +93,7 @@ public class TradeCurrenciesUseCaseTest {
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(currencyService,accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
     }
 
     @Test

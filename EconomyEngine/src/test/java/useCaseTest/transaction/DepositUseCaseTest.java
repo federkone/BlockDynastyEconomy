@@ -63,11 +63,11 @@ public class DepositUseCaseTest {
 
         searchAccountUseCase = new SearchAccountUseCase(accountService, repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,repository);
         createCurrenyUseCase = new CreateCurrencyUseCase(currencyService, accountService, new CourierTest(), repository);
-        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,repository,new CourierTest(),new LoggerTest(),new EventManager());
+        depositUseCase = new DepositUseCase( accountService,currencyService,repository,new CourierTest(),new LoggerTest(),new EventManager());
 
-        createCurrenyUseCase.createCurrency(dinero.getSingular(), dinero.getPlural());
+        createCurrenyUseCase.execute(dinero.getSingular(), dinero.getPlural());
         createAccountUseCase.execute(nullplague.getUuid(), nullplague.getNickname());
     }
 

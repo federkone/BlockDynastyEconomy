@@ -17,6 +17,7 @@
 package useCaseTest.transaction;
 
 import BlockDynasty.Economy.Core;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import mockClass.CourierTest;
@@ -49,6 +50,7 @@ public class WithdrawUseCaseTest {
     WithdrawUseCase withdrawUseCase;
     SearchAccountUseCase searchAccountUseCase;
     Core core;
+    UseCaseFactory useCaseFactory;
 
     @BeforeEach
     void setUp() {
@@ -59,13 +61,14 @@ public class WithdrawUseCaseTest {
 
        this.core = new Core(repository, 5, new CourierTest(),new LoggerTest());
        currencyService = core.getServicesManager().getCurrencyService();
+       useCaseFactory = core.getUseCaseFactory();
 
-        core.getCurrencyUseCase().getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());
-        core.getAccountsUseCase().getCreateAccountUseCase().execute(nullplague.getUuid(), nullplague.getNickname());
-        core.getTransactionsUseCase().getDepositUseCase().execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
+        useCaseFactory.createCurrency().execute(dinero.getSingular(), dinero.getPlural());
+        useCaseFactory.createAccount().execute(nullplague.getUuid(), nullplague.getNickname());
+        useCaseFactory.deposit().execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
 
-        withdrawUseCase = core.getTransactionsUseCase().getWithdrawUseCase();
-        searchAccountUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
+        withdrawUseCase = useCaseFactory.withdraw();
+        searchAccountUseCase = useCaseFactory.searchAccount();
 
     }
 
@@ -73,7 +76,7 @@ public class WithdrawUseCaseTest {
     void withdrawUseCaseTestWithFounds() {
         Result<Void> result =withdrawUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
         assertEquals(true, result.isSuccess());
-        Result<Money> accountResult = core.getAccountsUseCase().getGetBalanceUseCase().getBalance(nullplague.getUuid(),"dinero");
+        Result<Money> accountResult =useCaseFactory.getBalance().execute(nullplague.getUuid(),"dinero");
         assertEquals(0,accountResult.getValue().getAmount().compareTo(BigDecimal.valueOf(0 )));
     }
 
@@ -110,7 +113,7 @@ public class WithdrawUseCaseTest {
 
     @Test
     void withdrawUseCaseTestWithCurrencyNoSupportDecimals(){
-        core.getCurrencyUseCase().getEditCurrencyUseCase().toggleDecimals("dinero");
+       useCaseFactory.editCurrency().toggleDecimals("dinero");
 
         Result<Void> result = withdrawUseCase.execute("nullplague", "dinero", BigDecimal.valueOf(1000.50));
         assertEquals(ErrorCode.DECIMAL_NOT_SUPPORTED, result.getErrorCode());

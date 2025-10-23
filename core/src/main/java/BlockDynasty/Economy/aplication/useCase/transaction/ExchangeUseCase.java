@@ -20,6 +20,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.events.transactionsEvents.ExchangeEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -34,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-//TODO: aqui se puede agregar el impuesto por cambio de divisa segun el rate de la moneda
 public class ExchangeUseCase {
     private  final SearchCurrencyUseCase searchCurrencyUseCase;
     private final IRepository dataStore;
@@ -44,15 +44,14 @@ public class ExchangeUseCase {
     private final IAccountService accountService;
     private final EventManager eventManager;
 
-    public ExchangeUseCase(SearchCurrencyUseCase searchCurrencyUseCase,
-                           SearchAccountUseCase searchAccountUseCase, IAccountService accountService, IRepository dataStore, Courier updateForwarder,
+    public ExchangeUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder,
                            Log economyLogger, EventManager eventManager) {
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, dataStore);
+        this.searchAccountUseCase = new SearchAccountUseCase(accountService, dataStore);
         this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
         this.economyLogger = economyLogger;
-        this.searchAccountUseCase = searchAccountUseCase;
         this.eventManager = eventManager;
     }
 

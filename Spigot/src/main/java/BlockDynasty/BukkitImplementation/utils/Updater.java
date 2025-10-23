@@ -30,8 +30,11 @@ public class Updater {
         }
     }
 
-    private String getResourceURL() {
+    private String getResourceSpigot() {
         return "https://www.spigotmc.org/resources/" + project;
+    }
+    private String getResourceModrinth() {
+        return "https://modrinth.com/plugin/dynastyeconomy";
     }
 
     private boolean checkForUpdates() {
@@ -71,7 +74,8 @@ public class Updater {
         Scheduler.run(ContextualTask.build( ()->{
             if (checkForUpdates()) {
                 Console.log("¡New version Available : " + newVersion + "!");
-                Console.log("Download in: " + getResourceURL());
+                Console.log("Download in Spigot: " + getResourceSpigot());
+                Console.log("Download in Modrinth: " + getResourceModrinth());
             }else{Console.log("The plugin is Updated");}
         } ));
     }

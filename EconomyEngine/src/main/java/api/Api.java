@@ -18,13 +18,12 @@ package api;
 
 import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.services.AccountService;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.types.GetAccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.balance.GetBalanceUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
@@ -63,45 +62,47 @@ public class Api implements IApi {
     private final EventManager eventManager;
 
     public Api(Core core) {
+        UseCaseFactory factory = core.getUseCaseFactory();
         accountService = core.getServicesManager().getAccountService();
-        searchCurrencyUseCase = core.getCurrencyUseCase().getGetCurrencyUseCase();
-        getBalanceUseCase = core.getAccountsUseCase().getGetBalanceUseCase();
-        createAccountUseCase = core.getAccountsUseCase().getCreateAccountUseCase();
-        searchAccountUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
-        deleteAccountUseCase = core.getAccountsUseCase().getDeleteAccountUseCase();
-        editAccountUseCase = core.getAccountsUseCase().getEditAccountUseCase();
-        createCurrencyUseCase = core.getCurrencyUseCase().getCreateCurrencyUseCase();
-        deleteCurrencyUseCase = core.getCurrencyUseCase().getDeleteCurrencyUseCase();
-        getAccountsUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
+        searchCurrencyUseCase = factory.searchCurrency();
+        getBalanceUseCase = factory.getBalance();
+        createAccountUseCase = factory.createAccount();
+        searchAccountUseCase = factory.searchAccount();
+        deleteAccountUseCase = factory.deleteAccount();
+        editAccountUseCase = factory.editAccount();
+        createCurrencyUseCase = factory.createCurrency();
+        deleteCurrencyUseCase = factory.deleteCurrency();
+        getAccountsUseCase = factory.searchAccount();
 
-        withdrawUseCase = core.getTransactionsUseCase().getWithdrawUseCase();
-        depositUseCase = core.getTransactionsUseCase().getDepositUseCase();
-        setBalanceUseCase = core.getTransactionsUseCase().getSetBalanceUseCase();
-        tradeCurrenciesUseCase = core.getTransactionsUseCase().getTradeCurrenciesUseCase();
-        transferFundsUseCase = core.getTransactionsUseCase().getTransferFundsUseCase();
-        exchangeUseCase = core.getTransactionsUseCase().getExchangeUseCase();
+        withdrawUseCase = factory.withdraw();
+        depositUseCase = factory.deposit();
+        setBalanceUseCase = factory.setBalance();
+        tradeCurrenciesUseCase = factory.tradeCurrencies();
+        transferFundsUseCase = factory.transferFunds();
+        exchangeUseCase = factory.exchange();
 
         this.eventManager= core.getServicesManager().getEventManager();
     }
 
     public Api(Core core, Log log){
+        UseCaseFactory factory = core.getUseCaseFactory();
         accountService = core.getServicesManager().getAccountService();
-        searchCurrencyUseCase = core.getCurrencyUseCase().getGetCurrencyUseCase();
-        getBalanceUseCase = core.getAccountsUseCase().getGetBalanceUseCase();
-        createAccountUseCase = core.getAccountsUseCase().getCreateAccountUseCase();
-        searchAccountUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
-        deleteAccountUseCase = core.getAccountsUseCase().getDeleteAccountUseCase();
-        editAccountUseCase = core.getAccountsUseCase().getEditAccountUseCase();
-        createCurrencyUseCase = core.getCurrencyUseCase().getCreateCurrencyUseCase();
-        deleteCurrencyUseCase = core.getCurrencyUseCase().getDeleteCurrencyUseCase();
-        getAccountsUseCase = core.getAccountsUseCase().getGetAccountsUseCase();
+        searchCurrencyUseCase = factory.searchCurrency();
+        getBalanceUseCase = factory.getBalance();
+        createAccountUseCase = factory.createAccount();
+        searchAccountUseCase = factory.searchAccount();
+        deleteAccountUseCase = factory.deleteAccount();
+        editAccountUseCase = factory.editAccount();
+        createCurrencyUseCase = factory.createCurrency();
+        deleteCurrencyUseCase = factory.deleteCurrency();
+        getAccountsUseCase = factory.searchAccount();
 
-        withdrawUseCase = core.getTransactionsUseCase(log).getWithdrawUseCase();
-        depositUseCase = core.getTransactionsUseCase(log).getDepositUseCase();
-        setBalanceUseCase = core.getTransactionsUseCase(log).getSetBalanceUseCase();
-        tradeCurrenciesUseCase = core.getTransactionsUseCase(log).getTradeCurrenciesUseCase();
-        transferFundsUseCase = core.getTransactionsUseCase(log).getTransferFundsUseCase();
-        exchangeUseCase = core.getTransactionsUseCase(log).getExchangeUseCase();
+        withdrawUseCase = factory.withdraw(log);
+        depositUseCase = factory.deposit(log);
+        setBalanceUseCase = factory.setBalance(log);
+        tradeCurrenciesUseCase = factory.tradeCurrencies(log);
+        transferFundsUseCase = factory.transferFunds(log);
+        exchangeUseCase = factory.exchange(log);
 
         this.eventManager= core.getServicesManager().getEventManager();
     }
@@ -180,7 +181,7 @@ public class Api implements IApi {
     }
 
     public BigDecimal getBalance(UUID uuid){
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(uuid);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve default balance: " + balanceResult.getErrorMessage());
         }
@@ -189,7 +190,7 @@ public class Api implements IApi {
 
     @Override
     public BigDecimal getBalance(String name) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(name);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(name);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve default balance: " + balanceResult.getErrorMessage());
         }
@@ -197,7 +198,7 @@ public class Api implements IApi {
     }
 
     public BigDecimal getBalance(UUID uuid, String currency) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid, currency);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(uuid, currency);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance for currency '" + currency + "': " + balanceResult.getErrorMessage());
         }
@@ -206,7 +207,7 @@ public class Api implements IApi {
 
     @Override
     public BigDecimal getBalance(String name, String currency) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(name, currency);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(name, currency);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance for currency '" + currency + "': " + balanceResult.getErrorMessage());
         }
@@ -237,7 +238,7 @@ public class Api implements IApi {
 
     @Override
     public boolean hasAmount(UUID uuid, BigDecimal amount) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(uuid);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance: " + balanceResult.getErrorMessage());
         }
@@ -246,7 +247,7 @@ public class Api implements IApi {
 
     @Override
     public boolean hasAmount(String name, BigDecimal amount) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(name);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(name);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance: " + balanceResult.getErrorMessage());
         }
@@ -255,7 +256,7 @@ public class Api implements IApi {
 
     @Override
     public boolean hasAmount(UUID uuid, BigDecimal amount, String currency) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(uuid , currency);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(uuid , currency);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance: " + balanceResult.getErrorMessage());
         }
@@ -264,7 +265,7 @@ public class Api implements IApi {
 
     @Override
     public boolean hasAmount(String name, BigDecimal amount, String currency) {
-        Result<Money> balanceResult =  this.getBalanceUseCase.getBalance(name , currency);
+        Result<Money> balanceResult =  this.getBalanceUseCase.execute(name , currency);
         if (!balanceResult.isSuccess()) {
             throw new IllegalStateException("Failed to retrieve balance: " + balanceResult.getErrorMessage());
         }
@@ -388,7 +389,7 @@ public class Api implements IApi {
     @Override
     public EconomyResponse createCurrency(String plural, String singular) {
         try{
-            this.createCurrencyUseCase.createCurrency(plural, singular);
+            this.createCurrencyUseCase.execute(plural, singular);
             return EconomyResponse.success();
         }
         catch (Exception e){

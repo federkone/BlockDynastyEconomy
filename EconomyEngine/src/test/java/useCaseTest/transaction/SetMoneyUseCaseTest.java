@@ -17,6 +17,7 @@
 package useCaseTest.transaction;
 
 import BlockDynasty.Economy.Core;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -44,6 +45,7 @@ public class SetMoneyUseCaseTest {
     IRepository repository;
     SetBalanceUseCase setBalanceUseCase;
     Core core;
+    UseCaseFactory useCaseFactory;
 
     @BeforeEach
     void setUp() {
@@ -54,10 +56,11 @@ public class SetMoneyUseCaseTest {
 
         this.core = new Core(repository, 5, new CourierTest(),new LoggerTest());
 
+       useCaseFactory = core.getUseCaseFactory();
 
-        setBalanceUseCase = core.getTransactionsUseCase().getSetBalanceUseCase();
-        core.getCurrencyUseCase().getCreateCurrencyUseCase().createCurrency(dinero.getSingular(), dinero.getPlural());
-        core.getAccountsUseCase().getCreateAccountUseCase().execute(nullplague.getUuid(), nullplague.getNickname());
+        setBalanceUseCase = useCaseFactory.setBalance();
+        useCaseFactory.createCurrency().execute(dinero.getSingular(), dinero.getPlural());
+        useCaseFactory.createAccount().execute(nullplague.getUuid(), nullplague.getNickname());
     }
 
     @Test
@@ -65,7 +68,7 @@ public class SetMoneyUseCaseTest {
         Result<Void> result = setBalanceUseCase.execute(nullplague.getNickname(), "dinero", BigDecimal.valueOf(1));
         assertTrue(result.isSuccess());
 
-        Result<Money> accountResult = core.getAccountsUseCase().getGetBalanceUseCase().getBalance( nullplague.getNickname(), "dinero");
+        Result<Money> accountResult = useCaseFactory.getBalance().execute( nullplague.getNickname(), "dinero");
         assertEquals(BigDecimal.valueOf(1), accountResult.getValue( ).getAmount());
     }
 

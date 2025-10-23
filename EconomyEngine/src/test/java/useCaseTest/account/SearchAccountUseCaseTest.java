@@ -58,10 +58,10 @@ public class SearchAccountUseCaseTest {
         currencyService = new CurrencyService(repository);
         accountService = new AccountService(5 ,repository, currencyService);
         searchAccountUseCase = new SearchAccountUseCase(accountService,repository);
-        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService, searchAccountUseCase,repository);
+        createAccountUseCase = new CreateAccountUseCase(accountService, currencyService,repository);
         createCurrencyUseCase = new CreateCurrencyUseCase(currencyService, accountService,null, repository);
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
-        depositUseCase = new DepositUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService, repository, null, null,new EventManager());
+        depositUseCase = new DepositUseCase(accountService,currencyService, repository, null, null,new EventManager());
 
 
         //createCurrencyUseCase.createCurrency("dinero", "dinero");

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package BlockDynasty.Economy.aplication.useCase.balance;
+package BlockDynasty.Economy.aplication.useCase.account.balance;
 
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
@@ -32,7 +32,7 @@ public class GetBalanceUseCase {
         this.searchAccountUseCase = searchAccountUseCase;
     }
 
-    public Result<Money> getBalance(String accountName, String currencyName) {
+    public Result<Money> execute(String accountName, String currencyName) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountName);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
@@ -40,7 +40,7 @@ public class GetBalanceUseCase {
         return performGetBalance(accountResult.getValue(), currencyName);
     }
 
-    public Result<Money> getBalance(String accountName) { //default currency
+    public Result<Money> execute(String accountName) { //default currency
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountName);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
@@ -48,7 +48,7 @@ public class GetBalanceUseCase {
         return performGetBalance(accountResult.getValue());
     }
 
-    public Result<Money> getBalance(UUID accountUUID, String currencyName) {
+    public Result<Money> execute(UUID accountUUID, String currencyName) {
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountUUID);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
@@ -56,7 +56,7 @@ public class GetBalanceUseCase {
         return performGetBalance(accountResult.getValue(), currencyName);
     }
 
-    public Result<Money> getBalance(UUID accountUUID) { //default currency
+    public Result<Money> execute(UUID accountUUID) { //default currency
         Result<Account> accountResult = this.searchAccountUseCase.getAccount(accountUUID);
         if(!accountResult.isSuccess()) {
             return Result.failure( accountResult.getErrorMessage(),accountResult.getErrorCode());
