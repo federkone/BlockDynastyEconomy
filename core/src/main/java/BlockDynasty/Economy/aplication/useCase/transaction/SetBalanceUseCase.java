@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -34,7 +35,7 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class SetBalanceUseCase extends TransactionUseCase{
+public class SetBalanceUseCase extends TransactionUseCase implements ISetBalanceUseCase {
     public SetBalanceUseCase(ICurrencyService currencyService,IAccountService accountService, IRepository dataStore,
                              Courier updateForwarder, Log economyLogger, EventManager eventManager) {
         super( accountService, currencyService, dataStore, updateForwarder, economyLogger, eventManager);

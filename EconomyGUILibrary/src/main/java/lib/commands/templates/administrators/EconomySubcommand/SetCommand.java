@@ -16,7 +16,7 @@
 
 package lib.commands.templates.administrators.EconomySubcommand;
 
-import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
@@ -27,9 +27,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class SetCommand extends AbstractCommand {
-    private final SetBalanceUseCase setbalance;
+    private final ISetBalanceUseCase setbalance;
 
-    public SetCommand(SetBalanceUseCase setbalance) {
+    public SetCommand(ISetBalanceUseCase setbalance) {
         super("set", "",List.of("player", "amount", "currency"));
         this.setbalance = setbalance;
 

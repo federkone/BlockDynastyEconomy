@@ -68,6 +68,9 @@ public class CommandsFactory {
             WithdrawCommand withdrawCommand = new WithdrawCommand(useCaseFactory.withdraw());
             DepositCommand depositCommand = new DepositCommand(useCaseFactory.deposit());
             SetCommand setCommand = new SetCommand(useCaseFactory.setBalance());
+            ExchangeCommand exchangeCommand = new ExchangeCommand(useCaseFactory.exchange());
+
+            BuyCommand buyCommand = new BuyCommand(useCaseFactory.withdraw());
 
             CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(useCaseFactory.createCurrency());
             DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(useCaseFactory.deleteCurrency());
@@ -83,8 +86,6 @@ public class CommandsFactory {
             EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(useCaseFactory.editCurrency());
             EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(useCaseFactory.editCurrency());
 
-            BuyCommand buyCommand = new BuyCommand(useCaseFactory.withdraw());
-
             CreateOfferCommand createOfferCommand = new CreateOfferCommand(useCaseFactory.createOffer());
             CancelOfferCommand cancelOfferCommand = new CancelOfferCommand(useCaseFactory.cancelOffer());
             AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(useCaseFactory.acceptOffer());
@@ -93,7 +94,7 @@ public class CommandsFactory {
             PayCommand payCommand = new PayCommand(useCaseFactory.pay());
             BalanceCommand balanceCommand = new BalanceCommand(useCaseFactory.getBalance());
             BalanceTopCommand balanceTopCommand = new BalanceTopCommand(useCaseFactory.searchAccount());
-            ExchangeCommand exchangeCommand = new ExchangeCommand(useCaseFactory.exchange());
+
             BankGUICommand bankGUICommand = new BankGUICommand();
             EconomyGUICommand economyGUICommand = new EconomyGUICommand();
 

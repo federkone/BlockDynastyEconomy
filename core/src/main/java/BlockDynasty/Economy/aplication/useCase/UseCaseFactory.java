@@ -6,6 +6,7 @@ import BlockDynasty.Economy.aplication.useCase.account.balance.*;
 import BlockDynasty.Economy.aplication.useCase.currency.*;
 import BlockDynasty.Economy.aplication.useCase.offer.*;
 import BlockDynasty.Economy.aplication.useCase.transaction.*;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.*;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
@@ -56,40 +57,41 @@ public class UseCaseFactory {
     public SearchCurrencyUseCase searchCurrency(){
         return new SearchCurrencyUseCase(servicesManager.getCurrencyService(),repository);
     }
-    public WithdrawUseCase withdraw(){
+
+    public IWithdrawUseCase withdraw(){
         return new WithdrawUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public WithdrawUseCase withdraw(Log log){
+    public IWithdrawUseCase withdraw(Log log){
         return new WithdrawUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public DepositUseCase deposit(){
+    public IDepositUseCase deposit(){
         return new DepositUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public DepositUseCase deposit(Log log){
+    public IDepositUseCase deposit(Log log){
         return new DepositUseCase(servicesManager.getAccountService(), servicesManager.getCurrencyService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public SetBalanceUseCase setBalance(){
+    public ISetBalanceUseCase setBalance(){
         return new SetBalanceUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public SetBalanceUseCase setBalance(Log log){
+    public ISetBalanceUseCase setBalance(Log log){
         return new SetBalanceUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public ExchangeUseCase exchange(){
+    public IExchangeUseCase exchange(){
         return new ExchangeUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public ExchangeUseCase exchange(Log log){
+    public IExchangeUseCase exchange(Log log){
         return new ExchangeUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public TradeCurrenciesUseCase tradeCurrencies(){
+    public ITradeUseCase tradeCurrencies(){
         return new TradeCurrenciesUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public TradeCurrenciesUseCase tradeCurrencies(Log log){
+    public ITradeUseCase tradeCurrencies(Log log){
         return new TradeCurrenciesUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public TransferFundsUseCase transferFunds(){
+    public ITransferUseCase transferFunds(){
         return new TransferFundsUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
-    public TransferFundsUseCase transferFunds(Log log){
+    public ITransferUseCase transferFunds(Log log){
         return new TransferFundsUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
 

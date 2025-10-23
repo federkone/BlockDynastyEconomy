@@ -18,6 +18,7 @@ package lib.gui.templates.administrators.subMenus.accounts;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
@@ -31,12 +32,12 @@ import lib.util.colors.Colors;
 import java.math.BigDecimal;
 
 public class SetBalancePanel extends CurrencySelectorAndAmount {
-    private final SetBalanceUseCase setBalanceUseCase;
+    private final ISetBalanceUseCase setBalanceUseCase;
 
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
     public SetBalancePanel(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
-                           SearchCurrencyUseCase searchCurrencyUseCase, SetBalanceUseCase setBalanceUseCase, IGUI parentGUI, ITextInput textInput) {
+                           SearchCurrencyUseCase searchCurrencyUseCase, ISetBalanceUseCase setBalanceUseCase, IGUI parentGUI, ITextInput textInput) {
         super( player, searchCurrencyUseCase, parentGUI, textInput);
         this.targetPlayer = targetPlayer;
         this.setBalanceUseCase = setBalanceUseCase;

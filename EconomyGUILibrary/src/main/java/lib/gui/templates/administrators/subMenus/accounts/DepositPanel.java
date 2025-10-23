@@ -18,6 +18,7 @@ package lib.gui.templates.administrators.subMenus.accounts;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
@@ -31,12 +32,12 @@ import lib.util.colors.Colors;
 import java.math.BigDecimal;
 
 public class DepositPanel extends CurrencySelectorAndAmount {
-    private final DepositUseCase depositUseCase;
+    private final IDepositUseCase depositUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
 
     public DepositPanel(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
-                        SearchCurrencyUseCase searchCurrencyUseCase, DepositUseCase depositUseCase, IGUI parentGUI, ITextInput textInput) {
+                        SearchCurrencyUseCase searchCurrencyUseCase, IDepositUseCase depositUseCase, IGUI parentGUI, ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,textInput);
         this.targetPlayer = targetPlayer;
         this.depositUseCase = depositUseCase;

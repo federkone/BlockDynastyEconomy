@@ -18,6 +18,7 @@ package lib.gui.templates.users.Exchange;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IExchangeUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
@@ -33,10 +34,10 @@ import java.util.Map;
 public class ExchangeFirstPanel extends CurrencySelectorAndAmount {
     private final IEntityGUI player;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final ExchangeUseCase exchangeUseCase;
+    private final IExchangeUseCase exchangeUseCase;
     private final ITextInput textInput;
 
-    public ExchangeFirstPanel(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, ExchangeUseCase exchangeUseCase, IGUI parentGUI , ITextInput textInput) {
+    public ExchangeFirstPanel(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, IExchangeUseCase exchangeUseCase, IGUI parentGUI , ITextInput textInput) {
         super(player, searchCurrencyUseCase, parentGUI,textInput);
         this.player = player;
         this.textInput = textInput;

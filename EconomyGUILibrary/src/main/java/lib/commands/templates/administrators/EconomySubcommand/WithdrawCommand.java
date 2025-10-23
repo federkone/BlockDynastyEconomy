@@ -16,7 +16,7 @@
 
 package lib.commands.templates.administrators.EconomySubcommand;
 
-import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
@@ -27,9 +27,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class WithdrawCommand extends AbstractCommand {
-    private final WithdrawUseCase withdraw;
+    private final IWithdrawUseCase withdraw;
 
-    public WithdrawCommand(WithdrawUseCase withdraw) {
+    public WithdrawCommand(IWithdrawUseCase withdraw) {
         super("take", "",List.of("player", "amount", "currency"));
         this.withdraw = withdraw;
     }

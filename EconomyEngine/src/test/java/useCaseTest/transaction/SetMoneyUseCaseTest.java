@@ -18,6 +18,7 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -43,7 +44,7 @@ public class SetMoneyUseCaseTest {
     Account nullplague;
     Currency dinero;
     IRepository repository;
-    SetBalanceUseCase setBalanceUseCase;
+    ISetBalanceUseCase setBalanceUseCase;
     Core core;
     UseCaseFactory useCaseFactory;
 

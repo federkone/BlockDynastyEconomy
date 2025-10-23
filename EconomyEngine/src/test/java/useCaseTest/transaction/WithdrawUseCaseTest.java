@@ -18,6 +18,7 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import mockClass.CourierTest;
@@ -47,7 +48,7 @@ public class WithdrawUseCaseTest {
     IRepository repository;
     ICurrencyService currencyService;
     AccountService accountService;
-    WithdrawUseCase withdrawUseCase;
+    IWithdrawUseCase withdrawUseCase;
     SearchAccountUseCase searchAccountUseCase;
     Core core;
     UseCaseFactory useCaseFactory;

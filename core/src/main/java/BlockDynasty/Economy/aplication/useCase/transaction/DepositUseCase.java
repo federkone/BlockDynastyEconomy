@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -34,7 +35,7 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class DepositUseCase extends TransactionUseCase {
+public class DepositUseCase extends TransactionUseCase implements IDepositUseCase {
     public DepositUseCase(IAccountService accountService, ICurrencyService currencyService,
                           IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
         super(accountService, currencyService, dataStore, updateForwarder, logger, eventManager);

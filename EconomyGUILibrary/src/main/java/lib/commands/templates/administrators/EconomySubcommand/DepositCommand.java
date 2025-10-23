@@ -16,7 +16,7 @@
 
 package lib.commands.templates.administrators.EconomySubcommand;
 
-import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
@@ -27,9 +27,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class DepositCommand extends AbstractCommand {
-    private final DepositUseCase deposit;
+    private final IDepositUseCase deposit;
 
-    public DepositCommand(DepositUseCase deposit) {
+    public DepositCommand(IDepositUseCase deposit) {
         super("give", "",List.of("player", "amount", "currency"));
         this.deposit = deposit;
     }

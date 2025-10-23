@@ -17,6 +17,8 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ITransferUseCase;
+import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.TransferEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -34,53 +36,12 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class TransferFundsUseCase {
-    private final IRepository dataStore;
-    private final Courier updateForwarder;
-    private final Log economyLogger;
-    private final EventManager eventManager;
-    private final SearchAccountUseCase searchAccountUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final IAccountService accountService;
-
+public class TransferFundsUseCase extends TransactionUseCase implements ITransferUseCase {
     public TransferFundsUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        this.searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
-        this.searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
-        this.accountService = accountService;
-        this.dataStore = dataStore;
-        this.updateForwarder = updateForwarder;
-        this.economyLogger = economyLogger;
-        this.eventManager = eventManager;
+        super( accountService, currencyService, dataStore, updateForwarder, economyLogger, eventManager);
     }
-
-    public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
-        Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
-        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
-        return execute(accountFromResult, accountToResult, currency, amount);
-    }
-
-    public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
-        Result<Account> accountFromResult = this.searchAccountUseCase.getAccount(userFrom);
-        Result<Account> accountToResult = this.searchAccountUseCase.getAccount(userTo);
-        return execute(accountFromResult, accountToResult, currency, amount);
-    }
-    //new
-    public Result<Void> execute(Result<Account> accountFromResult, Result<Account> accountToResult, String currency, BigDecimal amount) {
-        if (!accountFromResult.isSuccess()) {
-            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
-        }
-        if (!accountToResult.isSuccess()) {
-            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
-        }
-        Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
-        if (!currencyResult.isSuccess()) {
-            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
-        }
-
-        return performTransaction(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
-    }
-
-    private Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+    @Override
+    protected Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         if(!currency.isTransferable()){
             return Result.failure("Currency is not transferable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }
@@ -116,22 +77,24 @@ public class TransferFundsUseCase {
     private void updateCacheAndEmitEvents(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result) {
         this.accountService.syncOnlineAccount(result.getValue().getTo());
         this.accountService.syncOnlineAccount(result.getValue().getFrom());
-        //this.updateForwarder.sendUpdateMessage("account", accountFrom.getUuid().toString());
-        //this.updateForwarder.sendUpdateMessage("account", accountTo.getUuid().toString());
         this.updateForwarder.sendUpdateMessage("event",new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount).toJson(), accountTo.getUuid().toString());
         logSuccess(accountFrom, accountTo, currency, amount);
         emitEvent(accountFrom, accountTo, currency, amount);
     }
 
     protected void logSuccess(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
-        this.economyLogger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " send " + currency.format(amount) + " to " + accountTo.getNickname());
+        this.logger.log("[TRANSFER] Account: " + accountFrom.getNickname() + " send " + currency.format(amount) + " to " + accountTo.getNickname());
     };
 
     protected void logFailure(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount, Result<TransferResult> result){
-        this.economyLogger.log("[TRANSFER Failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
+        this.logger.log("[TRANSFER Failed] Account: " + accountFrom.getNickname() + " pay " + currency.format(amount) + " to " + accountTo.getNickname() + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
     };
 
     protected void emitEvent(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
         this.eventManager.emit(new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount));
     };
+
+
+
+
 }

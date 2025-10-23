@@ -4,10 +4,10 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.account.IAccount;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -46,26 +46,30 @@ public abstract class TransactionUseCase {
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
-        return this.execute(accountResult, currencyName, amount, Context.SYSTEM);
+        return this.execute( this.searchAccountUseCase.getAccount(targetUUID), currencyName, amount, Context.SYSTEM);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
-        return this.execute(accountResult, currencyName, amount,Context.SYSTEM);
+        return this.execute(this.searchAccountUseCase.getAccount(targetName), currencyName, amount,Context.SYSTEM);
+    }
+
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
+        return execute(this.searchAccountUseCase.getAccount(userFrom),  this.searchAccountUseCase.getAccount(userTo), currency, amount);
+    }
+
+    public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
+        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currency, amount);
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount, Context context) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetUUID);
-        return this.execute(accountResult, currencyName, amount,context);
+        return this.execute(this.searchAccountUseCase.getAccount(targetUUID), currencyName, amount,context);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount,Context context) {
-        Result<Account> accountResult = this.searchAccountUseCase.getAccount(targetName);
-        return this.execute(accountResult, currencyName, amount,context);
+        return this.execute(this.searchAccountUseCase.getAccount(targetName), currencyName, amount,context);
     }
 
-    private Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount,Context context) {
+    public Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount,Context context) {
         if (!accountResult.isSuccess()) {
             return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
         }
@@ -77,5 +81,90 @@ public abstract class TransactionUseCase {
         return performTransaction(accountResult.getValue(), currencyResult.getValue(), amount,context);
     }
 
-    protected abstract Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context);
+    public Result<Void> execute(Result<Account> accountFromResult, Result<Account> accountToResult, String currency, BigDecimal amount) {
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+        Result<Currency> currencyResult = this.searchCurrencyUseCase.getCurrency(currency);
+        if (!currencyResult.isSuccess()) {
+            return Result.failure(currencyResult.getErrorMessage(), currencyResult.getErrorCode());
+        }
+
+        return performTransaction(accountFromResult.getValue(), accountToResult.getValue(), currencyResult.getValue(), amount);
+    }
+
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+    }
+
+    public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+        return execute(this.searchAccountUseCase.getAccount(accountUuid),currencyFromName, currencyToname, amountFrom, amountTo);
+    }
+
+    public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+    }
+
+    public Result<BigDecimal> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+        return execute(this.searchAccountUseCase.getAccount(accountString),currencyFromName, currencyToname, amountFrom, amountTo);
+    }
+
+    private Result<BigDecimal> execute(Result<Account> accountResult, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
+        if (!accountResult.isSuccess()) {
+            return Result.failure(accountResult.getErrorMessage(), accountResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult = this.searchCurrencyUseCase.getCurrency(currencyFromName);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult = this.searchCurrencyUseCase.getCurrency(currencyToname);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performTransaction(accountResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
+    }
+
+    private Result<Void> execute(Result<Account> accountFromResult,Result<Account> accountToResult,  String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
+
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<Currency> currencyFromResult =  this.searchCurrencyUseCase.getCurrency(currencyFromS);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<Currency> currencyToResult =  this.searchCurrencyUseCase.getCurrency(currencyToS);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return performTransaction(accountFromResult.getValue(), accountToResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
+    }
+
+    protected Result<BigDecimal> performTransaction(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        return Result.failure( "Not implemented", ErrorCode.NOT_IMPLEMENTED);
+    };
+
+    protected Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        return Result.failure( "Not implemented", ErrorCode.NOT_IMPLEMENTED);
+    };
+
+    protected Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
+        return Result.failure( "Not implemented", ErrorCode.NOT_IMPLEMENTED);
+    };
+
+    protected Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context){
+        return Result.failure( "Not implemented", ErrorCode.NOT_IMPLEMENTED);
+    };
 }

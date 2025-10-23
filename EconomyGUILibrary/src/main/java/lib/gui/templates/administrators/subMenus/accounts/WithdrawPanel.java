@@ -18,6 +18,7 @@ package lib.gui.templates.administrators.subMenus.accounts;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
@@ -31,11 +32,11 @@ import lib.util.colors.Colors;
 import java.math.BigDecimal;
 
 public class WithdrawPanel extends CurrencySelectorAndAmount {
-    private final WithdrawUseCase withdrawUseCase;
+    private final IWithdrawUseCase withdrawUseCase;
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
     public WithdrawPanel(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,
-                         SearchCurrencyUseCase searchCurrencyUseCase, WithdrawUseCase withdrawUseCase,
+                         SearchCurrencyUseCase searchCurrencyUseCase, IWithdrawUseCase withdrawUseCase,
                          IGUI parentGUI, ITextInput textInput) {
         super( player, searchCurrencyUseCase, parentGUI,textInput);
         this.targetPlayer = targetPlayer;
