@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ITradeUseCase;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -30,19 +31,19 @@ import java.util.UUID;
 
 public class AcceptOfferUseCase {
     private final IOfferService offerService;
-    private final TradeCurrenciesUseCase tradeCurrenciesUseCase;
+    private final ITradeUseCase tradeCurrenciesUseCase;
     private final Courier courier;
     private final EventManager eventManager;
 
-    public AcceptOfferUseCase(IOfferService offerService, Courier courier, EventManager eventmanager, TradeCurrenciesUseCase tradeCurrenciesUseCase) {
+    public AcceptOfferUseCase(IOfferService offerService, Courier courier, EventManager eventmanager, ITradeUseCase tradeCurrenciesUseCase) {
         this.offerService = offerService;
         this.tradeCurrenciesUseCase = tradeCurrenciesUseCase;
         this.courier = courier;
         this.eventManager = eventmanager;
     }
 
-    public Result<Void> execute (UUID playerAccept, UUID playerOffer) {  //puede aceptarle la oferta a alguien en especifico
-        Offer offer = offerService.getOffer(playerAccept,playerOffer); //objener la oferta de un vendedor en especifico
+    public Result<Void> execute (UUID playerAccept, UUID playerOffer) {
+        Offer offer = offerService.getOffer(playerAccept,playerOffer);
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
         }

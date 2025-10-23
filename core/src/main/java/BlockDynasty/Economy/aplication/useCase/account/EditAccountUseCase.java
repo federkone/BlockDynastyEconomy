@@ -16,9 +16,11 @@
 
 package BlockDynasty.Economy.aplication.useCase.account;
 
+import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.Result;
+import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 
 import java.util.UUID;
@@ -28,9 +30,9 @@ public class EditAccountUseCase {
     private final SearchAccountUseCase searchAccountUseCase;
     private final Courier courier;
 
-    public EditAccountUseCase(SearchAccountUseCase searchAccountUseCase, IRepository dataStore, Courier courier) {
+    public EditAccountUseCase(IAccountService accountService, IRepository dataStore, Courier courier) {
+        this.searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         this.dataStore = dataStore;
-        this.searchAccountUseCase = searchAccountUseCase;
         this.courier = courier;
     }
 

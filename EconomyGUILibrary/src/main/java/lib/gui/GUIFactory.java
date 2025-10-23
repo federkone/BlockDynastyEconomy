@@ -15,10 +15,7 @@
  */
 
 package lib.gui;
-import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
-import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import lib.abstractions.IMessages;
 import lib.abstractions.PlatformAdapter;
@@ -45,21 +42,14 @@ import lib.util.colors.Message;
 import java.util.UUID;
 
 public class GUIFactory {
-    private static CurrencyUseCase currencyUseCase;
-    private static AccountsUseCase accountsUseCase;
-    private static TransactionsUseCase transactionsUseCase;
-    private static OfferUseCase offerUseCase;
     private static ITextInput textInput;
     private static final IGUIService guiService = new GUIService();
+    private static UseCaseFactory useCaseFactory;
 
-    public static void init(CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase, TransactionsUseCase transactionsUseCase,
-                            OfferUseCase offerUseCase, ITextInput textInput, PlatformAdapter adapter, IMessages messages) {
+    public static void init(UseCaseFactory useCaseFactory, ITextInput textInput, PlatformAdapter adapter, IMessages messages) {
         Message.addLang(messages);
         AbstractPanel.setPlatformAdapter(adapter,guiService);
-        GUIFactory.currencyUseCase = currencyUseCase;
-        GUIFactory.accountsUseCase = accountsUseCase;
-        GUIFactory.transactionsUseCase = transactionsUseCase;
-        GUIFactory.offerUseCase = offerUseCase;
+        GUIFactory.useCaseFactory= useCaseFactory;
         GUIFactory.textInput = textInput;
 
     }
@@ -74,24 +64,24 @@ public class GUIFactory {
     }
     //account admin panel
         public static IGUI accountSelectorToEdit(IEntityGUI sender, IGUI parent){
-            return new AccountSelectorToEdit(sender,accountsUseCase.getGetAccountsUseCase(),parent,textInput);
+            return new AccountSelectorToEdit(sender,useCaseFactory.searchAccount(),parent,textInput);
         }
         //submenus for accountPanel
             public static IGUI editAccountPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
-                return new EditAccountPanel(accountsUseCase.getDeleteAccountUseCase(), accountsUseCase.getEditAccountUseCase(),accountsUseCase.getGetAccountsUseCase(),sender, target, parent,textInput);
+                return new EditAccountPanel(useCaseFactory.deleteAccount(),useCaseFactory.editAccount(),useCaseFactory.searchAccount(),sender, target, parent,textInput);
             }
             //submenus for editAccountPanel
                 public static IGUI balancePanel(IEntityGUI sender, UUID target, IGUI parent) {
-                    return new AccountBalance(sender, target, accountsUseCase.getGetBalanceUseCase(), parent);
+                    return new AccountBalance(sender, target, useCaseFactory.getBalance(), parent);
                 }
                 public static IGUI depositPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-                    return new DepositPanel( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getDepositUseCase(),parent,textInput);
+                    return new DepositPanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.deposit(),parent,textInput);
                 }
                 public static IGUI setPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-                    return  new SetBalancePanel( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getSetBalanceUseCase(),parent,textInput);
+                    return  new SetBalancePanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.setBalance(),parent,textInput);
                 }
                 public static IGUI withdrawPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
-                    return new WithdrawPanel( sender,target,currencyUseCase.getGetCurrencyUseCase(),transactionsUseCase.getWithdrawUseCase(),parent,textInput);
+                    return new WithdrawPanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.withdraw(),parent,textInput);
                 }
 
         //currency admin panel
@@ -100,48 +90,48 @@ public class GUIFactory {
         }
         //submenus for currencyPanel
             public static void createCurrencyPanel(IEntityGUI sender, IGUI parent) {
-                new CreateCurrencyGUI(sender, currencyUseCase.getCreateCurrencyUseCase(),currencyUseCase.getGetCurrencyUseCase(),parent,textInput);
+                new CreateCurrencyGUI(sender, useCaseFactory.createCurrency(),useCaseFactory.searchCurrency(),parent,textInput);
             }
             public static IGUI currencyListToDeletePanel(IEntityGUI player, IGUI parent) {
-                return new CurrencyListDelete(player, currencyUseCase.getGetCurrencyUseCase(), currencyUseCase.getDeleteCurrencyUseCase(), parent,textInput);
+                return new CurrencyListDelete(player, useCaseFactory.searchCurrency(), useCaseFactory.deleteCurrency(), parent,textInput);
             }
             public static IGUI currencyListToEditPanel(IEntityGUI player, IGUI parent) {
-                return new CurrencyListEdit(player, currencyUseCase.getGetCurrencyUseCase(), parent,textInput);
+                return new CurrencyListEdit(player, useCaseFactory.searchCurrency(), parent,textInput);
             }
             //submenus for currencyListToEditPanel
                 public static IGUI editCurrencyPanel(IEntityGUI sender, Currency currency, IGUI parent) {
-                    return new EditCurrencyPanel(sender, currency, currencyUseCase.getEditCurrencyUseCase(), parent,textInput);
+                    return new EditCurrencyPanel(sender, currency,useCaseFactory.editCurrency(), parent,textInput);
                 }
                 //submenus for editCurrencyPanel
                     public static IGUI colorSelectorPanel(IEntityGUI sender, Currency currency, EditCurrencyPanel parent) {
-                        return new ColorSelectionPanel( sender,currency, currencyUseCase.getEditCurrencyUseCase(), parent,textInput);
+                        return new ColorSelectionPanel( sender,currency,useCaseFactory.editCurrency(), parent,textInput);
                     }
     //_-------------------------------------------------------------------------------
     //main bank user panel
     public static IGUI bankPanel(IEntityGUI sender) {
-        return new BankPanel(sender, accountsUseCase.getGetAccountsUseCase(),textInput);
+        return new BankPanel(sender, useCaseFactory.searchAccount(),textInput);
     }
     //submenus for bankPanel
         public static IGUI createOfferFirstPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent ){
-            return new CreateOfferFirstPanel(sender,target,currencyUseCase.getGetCurrencyUseCase(),offerUseCase.getCreateOfferUseCase(), parent, textInput);
+            return new CreateOfferFirstPanel(sender,target,useCaseFactory.searchCurrency(),useCaseFactory.createOffer(), parent, textInput);
         }
         public static IGUI balancePanel(IEntityGUI sender, IGUI parent) {
-            return new AccountBalance(sender, accountsUseCase.getGetBalanceUseCase(), parent);
+            return new AccountBalance(sender, useCaseFactory.getBalance(), parent);
         }
         public static IGUI listPlayersFromDb(IEntityGUI sender, IGUI parent) {
-            return new ListPlayersFromDb(sender, parent, accountsUseCase.getGetAccountsUseCase(),textInput);
+            return new ListPlayersFromDb(sender, parent, useCaseFactory.searchAccount(),textInput);
         }
         public static IGUI exchangeFirstPanel(IEntityGUI sender, IGUI parent) {
-            return new ExchangeFirstPanel(sender, currencyUseCase.getGetCurrencyUseCase(), transactionsUseCase.getExchangeUseCase(), parent , textInput);
+            return new ExchangeFirstPanel(sender, useCaseFactory.searchCurrency(), useCaseFactory.exchange(), parent , textInput);
         }
         public static IGUI receivedOffers(IEntityGUI sender, IGUI parent) {
-            return new ReceivedOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getAcceptOfferUseCase(),offerUseCase.getCancelOfferUseCase(), sender, parent );
+            return new ReceivedOffers(useCaseFactory.searchOffer(), useCaseFactory.acceptOffer(),useCaseFactory.cancelOffer(), sender, parent );
         }
         public static IGUI myActiveOffers(IEntityGUI sender, IGUI parent) {
-            return new MyActiveOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getCancelOfferUseCase(), sender, parent);
+            return new MyActiveOffers(useCaseFactory.searchOffer(),useCaseFactory.cancelOffer(), sender, parent);
         }
         public static IGUI myActiveOffers(IEntityGUI sender) {
-            return new MyActiveOffers(offerUseCase.getSearchOfferUseCase(), offerUseCase.getCancelOfferUseCase(), sender, null);
+            return new MyActiveOffers(useCaseFactory.searchOffer(), useCaseFactory.cancelOffer(), sender, null);
         }
         public static IGUI listPlayersOnline(IEntityGUI sender, IGUI parent) {
         return new ListPlayersOnline(sender, parent, textInput);
@@ -151,8 +141,8 @@ public class GUIFactory {
                 return new CurrencyListToPay(
                         sender,
                         target,
-                        currencyUseCase.getGetCurrencyUseCase(),
-                        transactionsUseCase.getPayUseCase(),
+                        useCaseFactory.searchCurrency(),
+                        useCaseFactory.pay(),
                         parent,
                         textInput
                 );

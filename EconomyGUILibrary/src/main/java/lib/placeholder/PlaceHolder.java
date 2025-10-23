@@ -16,6 +16,7 @@
 
 package lib.placeholder;
 
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -33,9 +34,9 @@ public class PlaceHolder {
     private final SearchAccountUseCase searchAccountUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public PlaceHolder(SearchAccountUseCase searchAccountUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
-        this.searchAccountUseCase = searchAccountUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
+    public PlaceHolder(UseCaseFactory useCaseFactory) {
+        this.searchAccountUseCase = useCaseFactory.searchAccount();
+        this.searchCurrencyUseCase = useCaseFactory.searchCurrency();
     }
 
     public String onRequest(IEntityCommands player, String s) {

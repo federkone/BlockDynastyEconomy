@@ -17,9 +17,6 @@
 package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import api.IApi;
 import net.milkbowl.vault.economy.Economy;

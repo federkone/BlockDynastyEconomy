@@ -16,7 +16,7 @@
 
 package lib.commands.templates.users;
 
-import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IExchangeUseCase;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
 import lib.commands.abstractions.AbstractCommand;
@@ -26,9 +26,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class ExchangeCommand extends AbstractCommand {
-    private ExchangeUseCase exchange;
+    private IExchangeUseCase exchange;
 
-    public ExchangeCommand(ExchangeUseCase exchange) {
+    public ExchangeCommand(IExchangeUseCase exchange) {
         super("exchange","BlockDynastyEconomy.players.exchange", List.of("fromCurrency","toCurrency","toAmount" ));
         this.exchange = exchange;
     }

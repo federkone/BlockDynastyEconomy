@@ -33,11 +33,6 @@ public class SearchAccountUseCase {
         this.dataStore = dataStore;
     }
 
-    /**
-     * Retrieves all system accounts.
-     *
-     * @return Result containing a list of system accounts or an error if none found.
-     */
     public Result<List<Account>> getOfflineAccounts() {
         List<Account> accounts = accountService.getAccountsOffline();
         if (accounts.isEmpty()) {
@@ -46,11 +41,6 @@ public class SearchAccountUseCase {
         return Result.success(accounts);
     }
 
-    /**
-     * Retrieves an account by its name.
-     * @param name the name of the account to retrieve
-     * @return Result containing the account if found, or an error if not found
-     */
     public Result<Account> getAccount(String name) {
         Account account = this.accountService.getAccount(name);
         if (account != null) {
@@ -60,11 +50,6 @@ public class SearchAccountUseCase {
         //podemos hacer un new Account(account); como programación defensiva, o elaborar un value Object para mostrar valores hacia el exterior
     }
 
-    /**
-     * Retrieves an account by its UUID.
-     * @param uuid the UUID of the account to retrieve
-     * @return Result containing the account if found, or an error if not found
-     */
     public Result<Account> getAccount(UUID uuid) {
         Account account =  this.accountService.getAccount(uuid);
         if (account != null) {
@@ -74,14 +59,6 @@ public class SearchAccountUseCase {
          //podemos hacer un new Account(account); como programación defensiva, o elaborar un value Object para mostrar valores hacia el exterior
     }
 
-    /**
-     * Retrieves the top accounts for a given currency.
-     * If the cache is available and contains enough accounts, it returns the cached list.
-     * @param currency the currency for which to retrieve the top accounts
-     * @param limit the maximum number of accounts to return
-     * @param offset the offset from which to start returning accounts
-     * @return Result containing a list of top accounts or an error if none found
-     */
    public Result<List<Account>> getTopAccounts(String currency, int limit, int offset) {
        if (limit <= 0) {
            return Result.failure("Limit must be greater than 0", ErrorCode.INVALID_ARGUMENT);

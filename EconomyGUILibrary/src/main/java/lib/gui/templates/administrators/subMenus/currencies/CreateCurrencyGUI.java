@@ -59,7 +59,7 @@ public class CreateCurrencyGUI {
 
     private void createCurrency(String singular, String plural) {
         try {
-            createCurrencyUseCase.createCurrency(singular, plural);
+            createCurrencyUseCase.execute(singular, plural);
             player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY)+"The currency " + singular + ChatColor.stringValueOf(Colors.GREEN)+" has been created successfully.");
 
             //Result<Currency> result = searchCurrencyUseCase.getCurrency(singular);

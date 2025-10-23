@@ -23,17 +23,15 @@ import BlockDynasty.Economy.domain.services.IAccountService;
 
 import java.util.UUID;
 
-//todo: dado un nombre o uuid de un jugador, elimina su cuenta de la cache  y la base de datos
-//el comando que utiliza este caso de uso en infraestructura podria expulsar inmediatamente al jugador del servidor para evitar problemas
 public class DeleteAccountUseCase {
     IRepository repository;
     IAccountService accountService;
     SearchAccountUseCase searchAccountUseCase;
 
-    public DeleteAccountUseCase(IRepository repository, IAccountService accountService, SearchAccountUseCase searchAccountUseCase) {
-           this.repository= repository;
-           this.accountService = accountService;
-           this.searchAccountUseCase = searchAccountUseCase;
+    public DeleteAccountUseCase(IRepository repository, IAccountService accountService) {
+        this.searchAccountUseCase = new SearchAccountUseCase( accountService, repository);
+        this.repository= repository;
+        this.accountService = accountService;
     }
 
     public Result<Void> execute(String name){

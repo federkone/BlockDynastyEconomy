@@ -45,16 +45,15 @@ public class EventListener {
 
             Currency currency = event.getCurrency();
             String format = currency.format(event.getAmount());
-            String colorCode = ChatColor.stringValueOf(currency.getColor());
             String receiverName = event.getReceived().getNickname();
             String senderName = event.getPayer().getNickname();
 
             if (player != null){
-                player.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(colorCode)+format, "playerName",receiverName),"pay1"));
+                player.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor())+format, "playerName",receiverName),"pay1"));
                 player.playNotificationSound();
             }
             if (target != null){
-                target.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(colorCode)+format,"playerName",senderName),"pay2"));
+                target.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor())+format,"playerName",senderName),"pay2"));
                 target.playNotificationSound();
             }
         });
@@ -65,13 +64,12 @@ public class EventListener {
 
             Currency currency = event.getCurrency();
             String format = currency.format(event.getAmount());
-            String colorCode = ChatColor.stringValueOf(currency.getColor());
             String receiverName = event.getToPlayer().getNickname();
             String senderName = event.getFromPlayer().getNickname();
 
 
             if (player != null) {
-                player.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(colorCode)+format, "playerName",receiverName),"transfer1"));
+                player.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor())+format, "playerName",receiverName),"transfer1"));
                 player.playNotificationSound();
 
                 Runnable task=()->{
@@ -81,7 +79,7 @@ public class EventListener {
             }
 
             if (target != null) {
-                target.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(colorCode)+format, "playerName",senderName),"transfer2"));
+                target.sendMessage(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor())+format, "playerName",senderName),"transfer2"));
                 target.playNotificationSound();
 
                 Runnable task=()->{
@@ -96,15 +94,12 @@ public class EventListener {
 
             Currency fromCurrency = event.getFromCurrency();
             String fromFormat = fromCurrency.format(event.getAmount());
-            String fromColorCode = ChatColor.stringValueOf(fromCurrency.getColor());
 
             Currency toCurrency = event.getToCurrency();
             String toFormat = toCurrency.format(event.getExchangedAmount());
-            String toColorCode = ChatColor.stringValueOf(toCurrency.getColor());
-
 
             if (player != null) {
-                player.sendMessage(Message.process(Map.of("fromCurrency",ChatColor.stringValueOf(fromColorCode)+fromFormat,"toCurrency",ChatColor.stringValueOf(toColorCode)+toFormat),"exchange"));
+                player.sendMessage(Message.process(Map.of("fromCurrency",ChatColor.stringValueOf(fromCurrency.getColor())+fromFormat,"toCurrency",ChatColor.stringValueOf(toCurrency.getColor())+toFormat),"exchange"));
                 player.playNotificationSound();
             }
         });
@@ -115,17 +110,14 @@ public class EventListener {
 
             Currency fromCurrency = event.getCurrencyFrom();
             String fromFormat = fromCurrency.format(event.getAmountFrom());
-            String fromColorCode = ChatColor.stringValueOf(fromCurrency.getColor());
 
             Currency toCurrency = event.getCurrencyTo();
             String toFormat = toCurrency.format(event.getAmountTo());
-            String toColorCode = ChatColor.stringValueOf(toCurrency.getColor());
-
 
             if (sender != null ) {
                 sender.sendMessage(Message.process(
-                        Map.of("fromCurrency",ChatColor.stringValueOf(fromColorCode)+fromFormat,
-                                "toCurrency",ChatColor.stringValueOf(toColorCode)+toFormat,
+                        Map.of("fromCurrency",ChatColor.stringValueOf(fromCurrency.getColor())+fromFormat,
+                                "toCurrency",ChatColor.stringValueOf(toCurrency.getColor())+toFormat,
                                 "playerName",event.getToPlayer().getNickname()
                         ),"trade1"));
                 sender.playNotificationSound();
@@ -138,8 +130,8 @@ public class EventListener {
             }
             if (receiver != null){
                 receiver.sendMessage(Message.process(
-                        Map.of("fromCurrency",ChatColor.stringValueOf(fromColorCode)+fromFormat,
-                                "toCurrency",ChatColor.stringValueOf(toColorCode)+toFormat,
+                        Map.of("fromCurrency",ChatColor.stringValueOf(fromCurrency.getColor())+fromFormat,
+                                "toCurrency",ChatColor.stringValueOf(toCurrency.getColor())+toFormat,
                                 "playerName",event.getFromPlayer().getNickname()
                 ),"trade2"));
                 receiver.playNotificationSound();
@@ -200,22 +192,20 @@ public class EventListener {
             BigDecimal amountValue = offer.getMonto();
 
             String fromFormat = currencyOffered.format(amountOffered);
-            String fromColorCode = ChatColor.stringValueOf(currencyOffered.getColor());
             String toFormat = currencyValue.format(amountValue);
-            String toColorCode = ChatColor.stringValueOf(currencyValue.getColor());
 
             if (sender != null) {
                 sender.sendMessage(Message.process(
                         Map.of("playerName", offer.getComprador().getNickname(),
-                                "fromCurrency",ChatColor.stringValueOf(fromColorCode) + fromFormat,
-                                "toCurrency",ChatColor.stringValueOf(toColorCode) + toFormat
+                                "fromCurrency",ChatColor.stringValueOf(currencyOffered.getColor()) + fromFormat,
+                                "toCurrency",ChatColor.stringValueOf(currencyValue.getColor()) + toFormat
                 ),"offerCreated1"));
             }
             if (receiver != null){
                 receiver.sendMessage(Message.process(
                         Map.of("playerName", offer.getVendedor().getNickname(),
-                                "fromCurrency",ChatColor.stringValueOf(fromColorCode)+ fromFormat,
-                                "toCurrency",ChatColor.stringValueOf(toColorCode) + toFormat
+                                "fromCurrency",ChatColor.stringValueOf(currencyOffered.getColor())+ fromFormat,
+                                "toCurrency",ChatColor.stringValueOf(currencyValue.getColor()) + toFormat
                         ),"offerCreated2"));
                 receiver.playNotificationSound();
 

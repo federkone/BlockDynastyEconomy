@@ -38,7 +38,6 @@ public class CreateOfferUseCase {
     private final Courier courier;
     private final EventManager eventManager;
 
-    //todo: crear oferta si, solo si no existe una pendiente entre enviador y receptor. primero tengo que obtener ambos jugadores con GetplayerUseCase y asegurarse que existan, ,GetCurrencyUseCase y asegurarse que la moneda existente exista, y luego crear la oferta guardandola en el OfferManager
     public CreateOfferUseCase(IOfferService offerService, Courier courier, EventManager eventManager,SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase) {
         this.offerService = offerService;
         this.searchCurrencyUseCase = searchCurrencyUseCase;

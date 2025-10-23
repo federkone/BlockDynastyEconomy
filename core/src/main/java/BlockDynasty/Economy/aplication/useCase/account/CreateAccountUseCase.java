@@ -35,11 +35,11 @@ public class CreateAccountUseCase {
     private final IRepository dataStore;
     private final SearchAccountUseCase searchAccountUseCase;
 
-    public CreateAccountUseCase(IAccountService accountService, ICurrencyService currencyService, SearchAccountUseCase searchAccountUseCase, IRepository dataStore) {
+    public CreateAccountUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
+        this.searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         this.accountService = accountService;
         this.currencyService = currencyService;
         this.dataStore = dataStore;
-        this.searchAccountUseCase = searchAccountUseCase;
     }
 
     public Result<Account> execute(UUID userUuid , String userName) {

@@ -84,7 +84,7 @@ public class ExchangeUseCaseTest {
         searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, repository);
 
         // Initialize the exchange use case to test
-        exchangeUseCase = new ExchangeUseCase(searchCurrencyUseCase, searchAccountUseCase,accountService,
+        exchangeUseCase = new ExchangeUseCase(currencyService,accountService,
                 repository, new CourierTest(), new LoggerTest(),new EventManager());
     }
 

@@ -17,10 +17,7 @@
 package BlockDynasty.Economy;
 
 import BlockDynasty.Economy.aplication.services.ServicesManager;
-import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
-import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
@@ -28,40 +25,21 @@ import BlockDynasty.Economy.domain.services.log.Log;
 public class Core {
     private final IRepository repository;
     private final Courier courier;
+    private final UseCaseFactory useCaseFactory;
 
     private final ServicesManager services;
-    private final AccountsUseCase accountsUseCase;
-    private final CurrencyUseCase currencyUseCase;
-    private final TransactionsUseCase transactionsUseCase;
-    private final OfferUseCase offerUseCase;
 
     public Core(IRepository repository, int cacheTopMinutes, Courier courier, Log log) {
         this.repository = repository;
         this.courier = courier;
-
         this.services = new ServicesManager( repository, cacheTopMinutes, courier);
-        this.accountsUseCase = new AccountsUseCase(services, repository,courier);
-        this.currencyUseCase = new CurrencyUseCase(services, repository, accountsUseCase, courier);
-        this.transactionsUseCase = new TransactionsUseCase(currencyUseCase,accountsUseCase, services.getAccountService(), repository, courier, log, services.getEventManager());
-        this.offerUseCase = new OfferUseCase(services.getOfferService(),courier, services.getEventManager(), this.currencyUseCase.getGetCurrencyUseCase(),this.accountsUseCase.getGetAccountsUseCase(),this.transactionsUseCase.getTradeCurrenciesUseCase());
+        this.useCaseFactory = new UseCaseFactory(services, repository, courier, log);
     }
 
     public ServicesManager getServicesManager() {
         return this.services;
     }
-    public AccountsUseCase getAccountsUseCase() {
-        return this.accountsUseCase;
-    }
-    public CurrencyUseCase getCurrencyUseCase() {
-        return this.currencyUseCase;
-    }
-    public TransactionsUseCase getTransactionsUseCase() {
-        return this.transactionsUseCase;
-    }
-    public TransactionsUseCase getTransactionsUseCase(Log log) {
-        return new TransactionsUseCase(getCurrencyUseCase(), getAccountsUseCase(), services.getAccountService(),this.repository, this.courier, log, this.services.getEventManager());
-    }
-    public OfferUseCase getOfferUseCase() {
-        return this.offerUseCase;
+    public UseCaseFactory getUseCaseFactory() {
+        return this.useCaseFactory;
     }
 }

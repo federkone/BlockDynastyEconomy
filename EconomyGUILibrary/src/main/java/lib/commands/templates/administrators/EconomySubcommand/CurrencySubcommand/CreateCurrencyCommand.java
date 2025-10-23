@@ -42,7 +42,7 @@ public class CreateCurrencyCommand extends AbstractCommand {
         String plural = args[1];
 
         try {
-            createCurrencyUseCase.createCurrency(single, plural);
+            createCurrencyUseCase.execute(single, plural);
             sender.sendMessage("Created currency: " + single);
         } catch (CurrencyAlreadyExist e) {
             sender.sendMessage("Currency Already Exist.");

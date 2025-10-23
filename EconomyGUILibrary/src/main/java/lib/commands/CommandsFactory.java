@@ -16,10 +16,7 @@
 
 package lib.commands;
 
-import BlockDynasty.Economy.aplication.useCase.AccountsUseCase;
-import BlockDynasty.Economy.aplication.useCase.CurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.OfferUseCase;
-import BlockDynasty.Economy.aplication.useCase.TransactionsUseCase;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import lib.commands.abstractions.Command;
 import lib.abstractions.PlatformAdapter;
 import lib.commands.templates.administrators.EconomyGUICommand;
@@ -40,23 +37,17 @@ import java.util.List;
 
 public class CommandsFactory {
     private static PlatformAdapter platformAdapter;
-    private static TransactionsUseCase transactionsUseCase;
-    private static CurrencyUseCase currencyUseCase;
-    private static AccountsUseCase accountsUseCase;
     private static MessageService messageService=new MessageService();
-    private static OfferUseCase offerUseCase;
+    private static UseCaseFactory useCaseFactory;
 
-    public static void init(TransactionsUseCase transactionsUseCase, OfferUseCase offerUseCase, CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase,PlatformAdapter platformAdapter) {
-        CommandsFactory.transactionsUseCase = transactionsUseCase;
-        CommandsFactory.offerUseCase = offerUseCase;
-        CommandsFactory.accountsUseCase = accountsUseCase;
-        CommandsFactory.currencyUseCase = currencyUseCase;
+    public static void init(PlatformAdapter platformAdapter, UseCaseFactory useCaseFactory) {
         CommandsFactory.platformAdapter = platformAdapter;
+        CommandsFactory.useCaseFactory = useCaseFactory;
         Commands.init();
     }
-    public static void init(TransactionsUseCase transactionsUseCase, OfferUseCase offerUseCase, CurrencyUseCase currencyUseCase, AccountsUseCase accountsUseCase,PlatformAdapter platformAdapter, MessageProvider messageProvider) {
+    public static void init(PlatformAdapter platformAdapter, MessageProvider messageProvider,UseCaseFactory useCaseFactory) {
         MessageService.setProvider( messageProvider);
-        init(transactionsUseCase, offerUseCase, currencyUseCase, accountsUseCase, platformAdapter);
+        init(platformAdapter,useCaseFactory);
     }
 
     public static PlatformAdapter getPlatformAdapter() {
@@ -74,35 +65,36 @@ public class CommandsFactory {
             OfferCommand offerCommand = new OfferCommand();//main
             EconomyCommand economyCommand = new EconomyCommand();//main
             CurrencyCommand currencyCommand = new CurrencyCommand();//main
-            WithdrawCommand withdrawCommand = new WithdrawCommand(transactionsUseCase.getWithdrawUseCase());
-            DepositCommand depositCommand = new DepositCommand(transactionsUseCase.getDepositUseCase());
-            SetCommand setCommand = new SetCommand(transactionsUseCase.getSetBalanceUseCase());
+            WithdrawCommand withdrawCommand = new WithdrawCommand(useCaseFactory.withdraw());
+            DepositCommand depositCommand = new DepositCommand(useCaseFactory.deposit());
+            SetCommand setCommand = new SetCommand(useCaseFactory.setBalance());
+            ExchangeCommand exchangeCommand = new ExchangeCommand(useCaseFactory.exchange());
 
-            CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(currencyUseCase.getCreateCurrencyUseCase());
-            DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(currencyUseCase.getDeleteCurrencyUseCase());
-            EditColorCommand editColorCommand = new EditColorCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditPayableCommand editPayableCommand = new EditPayableCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditRateCommand editRateCommand = new EditRateCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditStartBalCommand editStartBalCommand = new EditStartBalCommand(currencyUseCase.getEditCurrencyUseCase());
-            ViewCommand ViewCommand = new ViewCommand(currencyUseCase.getGetCurrencyUseCase());
-            EditSymbolCommand editSymbolCommand = new EditSymbolCommand(currencyUseCase.getEditCurrencyUseCase());
-            ListCommand listCommand = new ListCommand(currencyUseCase.getGetCurrencyUseCase());
-            SetDefaultCommand setDefaultCommand = new SetDefaultCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(currencyUseCase.getEditCurrencyUseCase());
-            EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(currencyUseCase.getEditCurrencyUseCase());
+            BuyCommand buyCommand = new BuyCommand(useCaseFactory.withdraw());
 
-            BuyCommand buyCommand = new BuyCommand(transactionsUseCase.getWithdrawUseCase());
+            CreateCurrencyCommand createCurrencyCommand = new CreateCurrencyCommand(useCaseFactory.createCurrency());
+            DeleteCurrencyCommand deleteCurrencyCommand = new DeleteCurrencyCommand(useCaseFactory.deleteCurrency());
+            EditColorCommand editColorCommand = new EditColorCommand(useCaseFactory.editCurrency());
+            EditDecimalsCommand editDecimalsCommand = new EditDecimalsCommand(useCaseFactory.editCurrency());
+            EditPayableCommand editPayableCommand = new EditPayableCommand(useCaseFactory.editCurrency());
+            EditRateCommand editRateCommand = new EditRateCommand(useCaseFactory.editCurrency());
+            EditStartBalCommand editStartBalCommand = new EditStartBalCommand(useCaseFactory.editCurrency());
+            ViewCommand ViewCommand = new ViewCommand(useCaseFactory.searchCurrency());
+            EditSymbolCommand editSymbolCommand = new EditSymbolCommand(useCaseFactory.editCurrency());
+            ListCommand listCommand = new ListCommand(useCaseFactory.searchCurrency());
+            SetDefaultCommand setDefaultCommand = new SetDefaultCommand(useCaseFactory.editCurrency());
+            EditPluralNameCommand editPluralNameCommand = new EditPluralNameCommand(useCaseFactory.editCurrency());
+            EditSingularNameCommand editSingularNameCommand = new EditSingularNameCommand(useCaseFactory.editCurrency());
 
-            CreateOfferCommand createOfferCommand = new CreateOfferCommand(offerUseCase.getCreateOfferUseCase());
-            CancelOfferCommand cancelOfferCommand = new CancelOfferCommand(offerUseCase.getCancelOfferUseCase());
-            AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(offerUseCase.getAcceptOfferUseCase());
-            DenyOfferCommand denyOfferCommand = new DenyOfferCommand(offerUseCase.getCancelOfferUseCase());
+            CreateOfferCommand createOfferCommand = new CreateOfferCommand(useCaseFactory.createOffer());
+            CancelOfferCommand cancelOfferCommand = new CancelOfferCommand(useCaseFactory.cancelOffer());
+            AcceptOfferCommand acceptOfferCommand = new AcceptOfferCommand(useCaseFactory.acceptOffer());
+            DenyOfferCommand denyOfferCommand = new DenyOfferCommand(useCaseFactory.cancelOffer());
 
-            PayCommand payCommand = new PayCommand(transactionsUseCase.getPayUseCase());
-            BalanceCommand balanceCommand = new BalanceCommand(accountsUseCase.getGetBalanceUseCase());
-            BalanceTopCommand balanceTopCommand = new BalanceTopCommand(accountsUseCase.getGetAccountsUseCase());
-            ExchangeCommand exchangeCommand = new ExchangeCommand(transactionsUseCase.getExchangeUseCase());
+            PayCommand payCommand = new PayCommand(useCaseFactory.pay());
+            BalanceCommand balanceCommand = new BalanceCommand(useCaseFactory.getBalance());
+            BalanceTopCommand balanceTopCommand = new BalanceTopCommand(useCaseFactory.searchAccount());
+
             BankGUICommand bankGUICommand = new BankGUICommand();
             EconomyGUICommand economyGUICommand = new EconomyGUICommand();
 

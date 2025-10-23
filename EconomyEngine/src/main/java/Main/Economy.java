@@ -80,10 +80,10 @@ public class Economy {
         core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
         createListener(configuration,platformAdapter);
         api = new Api(core);
-        this.placeHolder = new PlaceHolder(core.getAccountsUseCase().getGetAccountsUseCase(), core.getCurrencyUseCase().getGetCurrencyUseCase());
-        playerJoinListener = new PlayerJoinListener(core.getAccountsUseCase().getCreateAccountUseCase(),core.getAccountsUseCase().getGetAccountsUseCase(),core.getServicesManager().getAccountService());
-        CommandsFactory.init(core.getTransactionsUseCase(), core.getOfferUseCase(),core.getCurrencyUseCase(), core.getAccountsUseCase(),platformAdapter);
-        GUIFactory.init(core.getCurrencyUseCase(), core.getAccountsUseCase(), core.getTransactionsUseCase(),core.getOfferUseCase(),textInput, platformAdapter,new Message());
+        this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
+        playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
+        CommandsFactory.init(platformAdapter,core.getUseCaseFactory());
+        GUIFactory.init(core.getUseCaseFactory(),textInput, platformAdapter,new Message());
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 

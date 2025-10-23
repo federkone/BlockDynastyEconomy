@@ -93,7 +93,7 @@ public class OfferUserCasesTest {
         searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
         EventManager eventManager = new EventManager();
-        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(searchCurrencyUseCase, searchAccountUseCase, accountService,dataStore,new CourierTest(),new LoggerTest(),eventManager);
+        tradeCurrenciesUseCase = new TradeCurrenciesUseCase(currencyService, accountService,dataStore,new CourierTest(),new LoggerTest(),eventManager);
         offerService = new OfferService(new CourierTest(),eventManager,1);
 
         createOfferUseCase = new CreateOfferUseCase( offerService,new CourierTest(),eventManager, searchCurrencyUseCase, searchAccountUseCase);
