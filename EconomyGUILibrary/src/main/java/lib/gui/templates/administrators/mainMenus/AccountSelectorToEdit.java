@@ -16,7 +16,8 @@
 
 package lib.gui.templates.administrators.mainMenus;
 
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOfflineAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
@@ -34,14 +35,14 @@ import java.util.stream.Collectors;
 
 public class AccountSelectorToEdit extends AccountsList {
     private final IEntityGUI sender;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetAccountByNameUseCase getAccountByNameUseCase;
 
-    public AccountSelectorToEdit(IEntityGUI sender, SearchAccountUseCase searchAccountUseCase, IGUI parent, ITextInput textInput) {
+    public AccountSelectorToEdit(IEntityGUI sender, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase, IGUI parent, ITextInput textInput) {
         super(Message.process("AccountSelectorToEdit.title"), 5,sender,parent,textInput);
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.getAccountByNameUseCase = getAccountByNameUseCase;
         this.sender = sender;
 
-        Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
+        Result<List<Account>> result = getOfflineAccountsUseCase.execute();
         if(result.isSuccess()) {
             List<Player> players = new ArrayList<>(result.getValue().stream()
                     .map(Account::getPlayer)
@@ -69,7 +70,7 @@ public class AccountSelectorToEdit extends AccountsList {
     }
     @Override
     public Player findPlayerByName(String playerName) {
-        Result<Account> result = searchAccountUseCase.getAccount(playerName);
+        Result<Account> result = getAccountByNameUseCase.execute(playerName);
         if(result.isSuccess()){
             return result.getValue().getPlayer();
         }else {return null;}

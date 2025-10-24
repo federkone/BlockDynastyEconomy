@@ -19,7 +19,7 @@ package useCaseTest.transaction;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.ExchangeUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -100,7 +100,7 @@ public class ExchangeUseCaseTest {
         assertEquals(BigDecimal.valueOf(30000).doubleValue(), result.getValue().doubleValue());
 
         // Verify balances were updated correctly
-        Account updatedAccount = searchAccountUseCase.getAccount("player").getValue();
+        Account updatedAccount = searchAccountUseCase.execute("player").getValue();
         assertEquals(BigDecimal.valueOf(101).setScale(2), updatedAccount.getMoney(coin).getAmount().setScale(2));
         assertEquals(BigDecimal.valueOf(10000).doubleValue(), updatedAccount.getMoney(dinero).getAmount().doubleValue());
     }

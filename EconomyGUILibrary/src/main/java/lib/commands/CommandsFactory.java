@@ -93,7 +93,7 @@ public class CommandsFactory {
 
             PayCommand payCommand = new PayCommand(useCaseFactory.pay());
             BalanceCommand balanceCommand = new BalanceCommand(useCaseFactory.getBalance());
-            BalanceTopCommand balanceTopCommand = new BalanceTopCommand(useCaseFactory.searchAccount());
+            BalanceTopCommand balanceTopCommand = new BalanceTopCommand(useCaseFactory.topAccounts());
 
             BankGUICommand bankGUICommand = new BankGUICommand();
             EconomyGUICommand economyGUICommand = new EconomyGUICommand();

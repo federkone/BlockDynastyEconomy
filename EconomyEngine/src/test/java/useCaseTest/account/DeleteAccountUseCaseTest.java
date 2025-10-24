@@ -19,7 +19,7 @@ package useCaseTest.account;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
@@ -59,7 +59,7 @@ public class DeleteAccountUseCaseTest {
         Result<Void> result = deleteAccountUseCase.execute("nullplague");
         assertTrue(result.isSuccess(), "Expected deletion to be successful");
 
-        Result<Account> accountResult = searchAccountUseCase.getAccount("nullplague");
+        Result<Account> accountResult = searchAccountUseCase.execute("nullplague");
         System.out.println(accountResult.getErrorCode());
         assertEquals(ErrorCode.ACCOUNT_NOT_FOUND , accountResult.getErrorCode(), "Expected account to be not found after deletion");
     }

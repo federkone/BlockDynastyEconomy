@@ -1,7 +1,8 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -19,7 +20,8 @@ import java.util.UUID;
 
 public abstract class TransactionUseCase {
     protected final SearchCurrencyUseCase searchCurrencyUseCase;
-    protected final SearchAccountUseCase searchAccountUseCase;
+    protected final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
+    protected final GetAccountByNameUseCase getAccountByNameUseCase;
     protected final IRepository dataStore;
     protected final Courier updateForwarder;
     protected final EventManager eventManager;
@@ -29,7 +31,8 @@ public abstract class TransactionUseCase {
     protected TransactionUseCase(IAccountService accountService, ICurrencyService currencyService,
                                  IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
         this.searchCurrencyUseCase = new SearchCurrencyUseCase(currencyService, dataStore);
-        this.searchAccountUseCase = new SearchAccountUseCase(accountService, dataStore);
+        this.getAccountByNameUseCase = new GetAccountByNameUseCase(accountService);
+        this.getAccountByUUIDUseCase = new GetAccountByUUIDUseCase(accountService);
         this.accountService = accountService;
         this.dataStore = dataStore;
         this.updateForwarder = updateForwarder;
@@ -46,27 +49,27 @@ public abstract class TransactionUseCase {
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount) {
-        return this.execute( this.searchAccountUseCase.getAccount(targetUUID), currencyName, amount, Context.SYSTEM);
+        return this.execute( this.getAccountByUUIDUseCase.execute(targetUUID), currencyName, amount, Context.SYSTEM);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount) {
-        return this.execute(this.searchAccountUseCase.getAccount(targetName), currencyName, amount,Context.SYSTEM);
+        return this.execute(this.getAccountByNameUseCase.execute(targetName), currencyName, amount,Context.SYSTEM);
     }
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currency, BigDecimal amount) {
-        return execute(this.searchAccountUseCase.getAccount(userFrom),  this.searchAccountUseCase.getAccount(userTo), currency, amount);
+        return execute(getAccountByUUIDUseCase.execute(userFrom), getAccountByUUIDUseCase.execute(userTo), currency, amount);
     }
 
     public Result<Void> execute (String userFrom, String userTo, String currency, BigDecimal amount) {
-        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currency, amount);
+        return execute(this.getAccountByNameUseCase.execute(userFrom), this.getAccountByNameUseCase.execute(userTo), currency, amount);
     }
 
     public Result<Void> execute(UUID targetUUID, String currencyName, BigDecimal amount, Context context) {
-        return this.execute(this.searchAccountUseCase.getAccount(targetUUID), currencyName, amount,context);
+        return this.execute(getAccountByUUIDUseCase.execute(targetUUID), currencyName, amount,context);
     }
 
     public Result<Void> execute(String targetName, String currencyName, BigDecimal amount,Context context) {
-        return this.execute(this.searchAccountUseCase.getAccount(targetName), currencyName, amount,context);
+        return this.execute(this.getAccountByNameUseCase.execute(targetName), currencyName, amount,context);
     }
 
     public Result<Void> execute(Result<Account> accountResult, String currencyName, BigDecimal amount,Context context) {
@@ -97,19 +100,19 @@ public abstract class TransactionUseCase {
     }
 
     public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
-        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+        return execute(getAccountByUUIDUseCase.execute(userFrom), getAccountByUUIDUseCase.execute(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
     }
 
     public Result<BigDecimal> execute(UUID accountUuid, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        return execute(this.searchAccountUseCase.getAccount(accountUuid),currencyFromName, currencyToname, amountFrom, amountTo);
+        return execute(getAccountByUUIDUseCase.execute(accountUuid),currencyFromName, currencyToname, amountFrom, amountTo);
     }
 
     public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
-        return execute(this.searchAccountUseCase.getAccount(userFrom), this.searchAccountUseCase.getAccount(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+        return execute(this.getAccountByNameUseCase.execute(userFrom), this.getAccountByNameUseCase.execute(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
     }
 
     public Result<BigDecimal> execute(String accountString, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {
-        return execute(this.searchAccountUseCase.getAccount(accountString),currencyFromName, currencyToname, amountFrom, amountTo);
+        return execute(this.getAccountByNameUseCase.execute(accountString),currencyFromName, currencyToname, amountFrom, amountTo);
     }
 
     private Result<BigDecimal> execute(Result<Account> accountResult, String currencyFromName, String currencyToname, BigDecimal amountFrom, BigDecimal amountTo) {

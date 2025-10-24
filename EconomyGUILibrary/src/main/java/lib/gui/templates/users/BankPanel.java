@@ -16,7 +16,7 @@
 
 package lib.gui.templates.users;
 
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.GUIFactory;
@@ -35,20 +35,20 @@ import java.util.Map;
 
 public class BankPanel extends AbstractPanel {
     private final IEntityGUI player;
-    private final SearchAccountUseCase searchAccountUseCase;
     private final ITextInput textInput;
+    private final UseCaseFactory useCaseFactory;
 
-    public BankPanel(IEntityGUI player , SearchAccountUseCase SearchAccountUseCase, ITextInput textInput) {
+    public BankPanel(IEntityGUI player, UseCaseFactory useCaseFactory, ITextInput textInput) {
         super(Message.process("BankPanel.title") +" ["+player.getName()+"]", 4, player);
         this.player = player;
-        this.searchAccountUseCase = SearchAccountUseCase;
+        this.useCaseFactory = useCaseFactory;
         this.textInput = textInput;
 
         setupGUI();
     }
 
     private void setupGUI() {
-        Result<Account> account = searchAccountUseCase.getAccount(player.getUniqueId());
+        Result<Account> account = useCaseFactory.searchAccountByUUID().execute(player.getUniqueId());
         boolean isBlocked = false;
         if (account.isSuccess()){
             isBlocked = account.getValue().isBlocked();
@@ -77,7 +77,7 @@ public class BankPanel extends AbstractPanel {
                 Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button4.nameItem"),
                 Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"BankPanel.button4.lore")),
                 f -> {
-                    new ListPlayersOfflineToOffer(player,this,searchAccountUseCase,textInput).open();
+                    new ListPlayersOfflineToOffer(player,this,useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput).open();
                 });
         setItem(22,createItem(Materials.ENDER_CHEST,
                         Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button5.nameItem"),

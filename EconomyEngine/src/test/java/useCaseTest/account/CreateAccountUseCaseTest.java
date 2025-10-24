@@ -16,7 +16,7 @@
 
 package useCaseTest.account;
 
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.entities.account.Account;

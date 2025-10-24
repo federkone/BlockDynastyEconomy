@@ -16,7 +16,7 @@
 
 package lib.commands.templates.users;
 
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetTopAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BalanceTopCommand extends AbstractCommand {
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetTopAccountsUseCase getTopAccountsUseCase;
 
-    public BalanceTopCommand(SearchAccountUseCase searchAccountUseCase) {
+    public BalanceTopCommand(GetTopAccountsUseCase getTopAccountsUseCase) {
         super("baltop" ,"BlockDynastyEconomy.players.baltop", List.of("currency" ,"limit"));
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.getTopAccountsUseCase = getTopAccountsUseCase;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BalanceTopCommand extends AbstractCommand {
         }
         int finalLimit = limit;
 
-        Result<List<Account>> resultAccounts = searchAccountUseCase.getTopAccounts(nameCurrency, finalLimit,0);
+        Result<List<Account>> resultAccounts = getTopAccountsUseCase.execute(nameCurrency, finalLimit,0);
         if (!resultAccounts.isSuccess()){
             sender.sendMessage(resultAccounts.getErrorMessage());
 

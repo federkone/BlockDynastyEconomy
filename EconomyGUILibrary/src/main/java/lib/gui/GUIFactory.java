@@ -64,11 +64,11 @@ public class GUIFactory {
     }
     //account admin panel
         public static IGUI accountSelectorToEdit(IEntityGUI sender, IGUI parent){
-            return new AccountSelectorToEdit(sender,useCaseFactory.searchAccount(),parent,textInput);
+            return new AccountSelectorToEdit(sender,useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),parent,textInput);
         }
         //submenus for accountPanel
             public static IGUI editAccountPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
-                return new EditAccountPanel(useCaseFactory.deleteAccount(),useCaseFactory.editAccount(),useCaseFactory.searchAccount(),sender, target, parent,textInput);
+                return new EditAccountPanel(useCaseFactory.deleteAccount(),useCaseFactory.editAccount(),useCaseFactory.searchAccountByUUID(),sender, target, parent,textInput);
             }
             //submenus for editAccountPanel
                 public static IGUI balancePanel(IEntityGUI sender, UUID target, IGUI parent) {
@@ -109,7 +109,7 @@ public class GUIFactory {
     //_-------------------------------------------------------------------------------
     //main bank user panel
     public static IGUI bankPanel(IEntityGUI sender) {
-        return new BankPanel(sender, useCaseFactory.searchAccount(),textInput);
+        return new BankPanel(sender, useCaseFactory,textInput);
     }
     //submenus for bankPanel
         public static IGUI createOfferFirstPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent ){
@@ -119,7 +119,7 @@ public class GUIFactory {
             return new AccountBalance(sender, useCaseFactory.getBalance(), parent);
         }
         public static IGUI listPlayersFromDb(IEntityGUI sender, IGUI parent) {
-            return new ListPlayersFromDb(sender, parent, useCaseFactory.searchAccount(),textInput);
+            return new ListPlayersFromDb(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
         }
         public static IGUI exchangeFirstPanel(IEntityGUI sender, IGUI parent) {
             return new ExchangeFirstPanel(sender, useCaseFactory.searchCurrency(), useCaseFactory.exchange(), parent , textInput);

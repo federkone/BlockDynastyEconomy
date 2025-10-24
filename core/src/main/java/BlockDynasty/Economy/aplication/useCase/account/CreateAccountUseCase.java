@@ -16,6 +16,7 @@
 
 package BlockDynasty.Economy.aplication.useCase.account;
 
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
@@ -29,21 +30,22 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CreateAccountUseCase {
+public class CreateAccountUseCase{
     private final IAccountService accountService;
     private final ICurrencyService currencyService;
     private final IRepository dataStore;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
+
 
     public CreateAccountUseCase(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
-        this.searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         this.accountService = accountService;
         this.currencyService = currencyService;
         this.dataStore = dataStore;
+        this.getAccountByUUIDUseCase = new GetAccountByUUIDUseCase( accountService);
     }
 
     public Result<Account> execute(UUID userUuid , String userName) {
-        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(userUuid);
+        Result<Account> accountResult =  getAccountByUUIDUseCase.execute(userUuid);
         if (accountResult.isSuccess()) {
             return Result.failure("Account already exists for: " + accountResult.getValue().getNickname(), ErrorCode.ACCOUNT_ALREADY_EXISTS);
         }

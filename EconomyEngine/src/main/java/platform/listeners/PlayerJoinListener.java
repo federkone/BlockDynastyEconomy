@@ -18,7 +18,8 @@ package platform.listeners;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -26,17 +27,19 @@ import lib.commands.abstractions.IEntityCommands;
 
 public class PlayerJoinListener implements IPlayerJoin {
     protected final CreateAccountUseCase createAccountUseCase;
-    protected final SearchAccountUseCase searchAccountUseCase;
+    protected final GetAccountByNameUseCase getAccountByNameUseCase;
+    protected final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     protected final IAccountService accountService;
 
     public PlayerJoinListener(UseCaseFactory useCaseFactory, IAccountService accountService) {
         this.createAccountUseCase = useCaseFactory.createAccount();
-        this.searchAccountUseCase = useCaseFactory.searchAccount();
+        this.getAccountByNameUseCase = useCaseFactory.searchAccountByName();
+        this.getAccountByUUIDUseCase = useCaseFactory.searchAccountByUUID();
         this.accountService = accountService;
     }
 
     public void loadOnlinePlayerAccount(IEntityCommands player) {
-        Result<Account> result = searchAccountUseCase.getAccount(player.getUniqueId());
+        Result<Account> result = getAccountByUUIDUseCase.execute(player.getUniqueId());
         if (result.isSuccess()) {
             Result<Void> resultChangeName = accountService.checkNameChange(result.getValue(), player.getName());
             if(!resultChangeName.isSuccess()){
@@ -57,7 +60,7 @@ public class PlayerJoinListener implements IPlayerJoin {
 
     @Override
     public void loadOfflinePlayerAccount(IEntityCommands player) {
-        Result<Account> result = searchAccountUseCase.getAccount(player.getName());
+        Result<Account> result = getAccountByNameUseCase.execute(player.getName());
         if (result.isSuccess()) {
             Result<Void> resultChangeUuid = accountService.checkUuidChange(result.getValue(), player.getUniqueId());
             if(!resultChangeUuid.isSuccess()){

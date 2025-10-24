@@ -17,9 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IExchangeUseCase;
-import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.ExchangeEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -27,15 +25,12 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.UUID;
 
 public class ExchangeUseCase extends TransactionUseCase implements IExchangeUseCase {
     public ExchangeUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder,

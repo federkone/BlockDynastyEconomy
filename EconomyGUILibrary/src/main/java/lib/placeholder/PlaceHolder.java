@@ -17,7 +17,8 @@
 package lib.placeholder;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetTopAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Money;
@@ -31,11 +32,13 @@ import java.util.List;
 import java.util.Map;
 
 public class PlaceHolder {
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetTopAccountsUseCase getTopAccountsUseCase;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
     public PlaceHolder(UseCaseFactory useCaseFactory) {
-        this.searchAccountUseCase = useCaseFactory.searchAccount();
+        this.getAccountByUUIDUseCase = useCaseFactory.searchAccountByUUID();
+        this.getTopAccountsUseCase = useCaseFactory.topAccounts();
         this.searchCurrencyUseCase = useCaseFactory.searchCurrency();
     }
 
@@ -53,7 +56,7 @@ public class PlaceHolder {
         }
 
         // Obtener la cuenta del jugador
-        Result<Account> accountResult = searchAccountUseCase.getAccount(player.getUniqueId());
+        Result<Account> accountResult = getAccountByUUIDUseCase.execute(player.getUniqueId());
         if (!accountResult.isSuccess()) {
             return "Player data not found";
         }
@@ -105,7 +108,7 @@ public class PlaceHolder {
         }
 
         // Obtener las cuentas principales
-        Result<List<Account>> result = searchAccountUseCase.getTopAccounts(currencyName,limit,0);
+        Result<List<Account>> result = getTopAccountsUseCase.execute(currencyName,limit,0);
         if (!result.isSuccess()) {
             return "No accounts found";
         }

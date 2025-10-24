@@ -18,7 +18,7 @@ package lib.gui.templates.administrators.subMenus.accounts;
 
 import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.commands.abstractions.IEntityCommands;
@@ -34,18 +34,18 @@ import lib.util.colors.Colors;
 public class EditAccountPanel extends AbstractPanel {
     private final DeleteAccountUseCase deleteAccountUseCase;
     private final EditAccountUseCase editAccountUseCase;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     private final ITextInput textInput;
 
     public EditAccountPanel(
             DeleteAccountUseCase deleteAccountUseCase,
             EditAccountUseCase editAccountUseCase,
-            SearchAccountUseCase searchAccountUseCase,
+            GetAccountByUUIDUseCase getAccountByUUIDUseCase,
             IEntityGUI sender, Player target, IGUI parent, ITextInput textInput) {
         super("Edit Account: "+target.getNickname(), 5,sender,parent);
         this.deleteAccountUseCase = deleteAccountUseCase;
         this.editAccountUseCase = editAccountUseCase;
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.getAccountByUUIDUseCase = getAccountByUUIDUseCase;
         this.textInput = textInput;
 
         buttons(sender,target);
@@ -98,7 +98,7 @@ public class EditAccountPanel extends AbstractPanel {
                     GUIFactory.balancePanel( sender, target.getUuid(), this).open();
                 });
 
-        boolean isBlocked = searchAccountUseCase.getAccount(target.getUuid()).getValue().isBlocked();
+        boolean isBlocked = getAccountByUUIDUseCase.execute(target.getUuid()).getValue().isBlocked();
         if (isBlocked) {
             setItem(13, createItem(Materials.RED_CONCRETE, ChatColor.stringValueOf(Colors.RED)+"Account is blocked", "Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op"),
                     f -> {
