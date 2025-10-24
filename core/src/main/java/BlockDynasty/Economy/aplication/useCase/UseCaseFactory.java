@@ -13,10 +13,10 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 
 public class UseCaseFactory {
-    private ServicesManager servicesManager;
-    private IRepository repository;
-    private Courier courier;
-    private Log log;
+    private final ServicesManager servicesManager;
+    private final IRepository repository;
+    private final Courier courier;
+    private final Log log;
 
     public UseCaseFactory (ServicesManager servicesManager, IRepository repository, Courier courier, Log log){
         this.servicesManager = servicesManager;

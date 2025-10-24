@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.MultiAccountSingleCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ITransferUseCase;
 import BlockDynasty.Economy.domain.events.transactionsEvents.TransferEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
@@ -32,12 +33,23 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
 
-public class TransferFundsUseCase extends TransactionUseCase implements ITransferUseCase {
+public class TransferFundsUseCase extends MultiAccountSingleCurrencyOp implements ITransferUseCase {
+    private IRepository dataStore;
+    private Courier updateForwarder;
+    private Log logger;
+    private EventManager eventManager;
+    private IAccountService accountService;
+
     public TransferFundsUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        super( accountService, currencyService, dataStore, updateForwarder, economyLogger, eventManager);
+        super(accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.updateForwarder = updateForwarder;
+        this.logger = economyLogger;
+        this.eventManager = eventManager;
+        this.accountService = accountService;
     }
-    @Override
-    protected Result<Void> performTransaction(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
+
+    public Result<Void> execute(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount) {
         if(!currency.isTransferable()){
             return Result.failure("Currency is not transferable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }
@@ -89,8 +101,4 @@ public class TransferFundsUseCase extends TransactionUseCase implements ITransfe
     protected void emitEvent(Account accountFrom, Account accountTo, Currency currency, BigDecimal amount){
         this.eventManager.emit(new TransferEvent(accountFrom.getPlayer(),accountTo.getPlayer(), currency, amount));
     };
-
-
-
-
 }

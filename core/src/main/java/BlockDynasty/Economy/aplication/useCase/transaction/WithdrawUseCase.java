@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.SingleAccountSingleCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
@@ -32,13 +33,24 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
 
-public class WithdrawUseCase extends TransactionUseCase implements IWithdrawUseCase {
+public class WithdrawUseCase extends SingleAccountSingleCurrencyOp implements IWithdrawUseCase {
+    private final IRepository dataStore;
+    private final IAccountService accountService;
+    private final Log logger;
+    private final Courier updateForwarder;
+    private final EventManager eventManager;
+
     public WithdrawUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager){
-        super(accountService, currencyService, dataStore, updateForwarder, logger, eventManager);
+        super(accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.accountService = accountService;
+        this.logger = logger;
+        this.updateForwarder = updateForwarder;
+        this.eventManager = eventManager;
     }
 
     @Override
-    protected Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context) {
+    public Result<Void> execute(Account account, Currency currency, BigDecimal amount, Context context) {
         if (account.isBlocked()){
             return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }

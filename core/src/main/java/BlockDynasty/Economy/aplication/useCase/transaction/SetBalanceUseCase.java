@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.SingleAccountSingleCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.SetEvent;
@@ -32,14 +33,25 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
 
-public class SetBalanceUseCase extends TransactionUseCase implements ISetBalanceUseCase {
+public class SetBalanceUseCase extends SingleAccountSingleCurrencyOp implements ISetBalanceUseCase {
+    private final IRepository dataStore;
+    private final IAccountService accountService;
+    private final Log logger;
+    private final Courier updateForwarder;
+    private final EventManager eventManager;
+
     public SetBalanceUseCase(ICurrencyService currencyService,IAccountService accountService, IRepository dataStore,
                              Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        super( accountService, currencyService, dataStore, updateForwarder, economyLogger, eventManager);
+        super( accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.accountService = accountService;
+        this.logger = economyLogger;
+        this.updateForwarder = updateForwarder;
+        this.eventManager = eventManager;
     }
 
     @Override
-    protected Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context) {
+    public Result<Void> execute(Account account, Currency currency, BigDecimal amount, Context context) {
         if(amount.compareTo(BigDecimal.ZERO) < 0){
             return Result.failure("Amount must be greater than -1", ErrorCode.INVALID_AMOUNT);
         }
