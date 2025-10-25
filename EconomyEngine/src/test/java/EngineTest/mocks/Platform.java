@@ -5,6 +5,7 @@ import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
+import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.scheduler.IScheduler;
 
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class Platform implements PlatformAdapter {
-
 
     @Override
     public IPlayer getPlayer(String name) {
@@ -74,5 +74,10 @@ public class Platform implements PlatformAdapter {
     @Override
     public boolean hasSupportAdventureText() {
         return false;
+    }
+
+    @Override
+    public ITextInput getTextInput() {
+        return new TextInput();
     }
 }

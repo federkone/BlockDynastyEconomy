@@ -46,11 +46,11 @@ public class GUIFactory {
     private static final IGUIService guiService = new GUIService();
     private static UseCaseFactory useCaseFactory;
 
-    public static void init(UseCaseFactory useCaseFactory, ITextInput textInput, PlatformAdapter adapter, IMessages messages) {
+    public static void init(UseCaseFactory useCaseFactory,PlatformAdapter adapter, IMessages messages) {
         Message.addLang(messages);
         AbstractPanel.setPlatformAdapter(adapter,guiService);
         GUIFactory.useCaseFactory= useCaseFactory;
-        GUIFactory.textInput = textInput;
+        GUIFactory.textInput = adapter.getTextInput();
 
     }
     public static IGUIService getGuiService() {

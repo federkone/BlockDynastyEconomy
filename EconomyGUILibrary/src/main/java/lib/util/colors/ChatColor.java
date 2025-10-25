@@ -18,15 +18,24 @@ package lib.util.colors;
 
 public class ChatColor {
     private static ChatColorProvider chatColorProvider;
+    //default to modern
     static {
-        //chatColorProvider = new ChatColorVanilla();
         chatColorProvider = new ChatColorModern();
     }
 
-    public static void setupVanilla(){
+    public static void setupSystem(boolean supportModern, boolean forceVanillaColorSystem) {
+        if(!supportModern || forceVanillaColorSystem){
+            ChatColor.setupVanilla();
+        }else
+        {
+            ChatColor.setupModern();
+        }
+    }
+
+    private static void setupVanilla(){
         chatColorProvider = new ChatColorVanilla();
     }
-    public static void setupModern(){
+    private static void setupModern(){
         chatColorProvider = new ChatColorModern();
     }
 

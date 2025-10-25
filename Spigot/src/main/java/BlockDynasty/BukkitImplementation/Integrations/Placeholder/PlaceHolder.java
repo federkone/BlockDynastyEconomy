@@ -17,9 +17,6 @@
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
 import BlockDynasty.BukkitImplementation.utils.Console;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import api.IApi;
 import org.bukkit.Bukkit;
 
 public class PlaceHolder {

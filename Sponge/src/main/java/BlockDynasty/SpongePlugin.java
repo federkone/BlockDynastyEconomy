@@ -80,7 +80,7 @@ public class SpongePlugin {
     public void onConstructPlugin(final ConstructPluginEvent event) {
         // Perform any one-time setup
         try {
-            economy = Economy.init(new TextInput(), new SpongeAdapter());
+            economy = Economy.init(new SpongeAdapter());
             configuration = economy.getConfiguration();
             Console.log("Plugin constructed...");
         }catch (Exception e){

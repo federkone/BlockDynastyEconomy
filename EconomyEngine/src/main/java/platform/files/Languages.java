@@ -8,8 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Languages{
+    private final Configuration config;
     private final String languagePath = "/languages";
     private String[] languagesFiles = {"EN.yaml", "ES.yaml","RU.yaml","ZH.yaml"};
     //string nombre EN, ES, etc y File objeto File
@@ -18,7 +20,8 @@ public class Languages{
     private File langDirectory;
     private File rootDirectory;
 
-    public Languages(File rootDirectory) {
+    public Languages(File rootDirectory,Configuration config) {
+        this.config = config;
         this.rootDirectory = rootDirectory;
         this.langDirectory = new File(rootDirectory, languagePath);
         if (!this.langDirectory.exists()) {
@@ -27,7 +30,9 @@ public class Languages{
 
         copyMissingLanguageFiles();
         loadLanguagesFiles();
-        loadMessages("EN");
+
+        String lang= config.getString("lang");
+        loadMessages(Objects.requireNonNullElse(lang, "EN"));
     }
 
     //crear directorio y volcar los archivos de idiomas
