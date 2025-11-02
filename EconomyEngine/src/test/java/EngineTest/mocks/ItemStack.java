@@ -1,5 +1,6 @@
 package EngineTest.mocks;
 
+import EngineTest.mocks.utils.Color;
 import lib.gui.components.IItemStack;
 import lib.gui.components.Materials;
 
@@ -17,13 +18,8 @@ public class ItemStack implements IItemStack {
 
     @Override
     public IItemStack setDisplayName(String name) {
-        this.name = removeFormatCodes(name);
+        this.name = Color.parse(name);
         return this;
-    }
-
-    public static String removeFormatCodes(String input) {
-        if (input == null) return "";
-        return input.replaceAll("§[0-9a-f]", "");
     }
 
     @Override

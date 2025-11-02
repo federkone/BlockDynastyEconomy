@@ -3,19 +3,13 @@ package EngineTest;
 import EngineTest.mocks.MinecraftServer;
 import EngineTest.mocks.Player;
 import EngineTest.mocks.TextInput;
-import lib.abstractions.IPlayer;
 import lib.commands.CommandsFactory;
 import lib.commands.abstractions.Command;
 import lib.gui.GUIFactory;
-import lib.gui.GUIService;
 import lib.gui.components.ClickType;
 import lib.gui.components.IGUI;
 import org.junit.jupiter.api.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +37,29 @@ public class EngineTest {
         Command command= CommandsFactory.Commands.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"give","Fede","5000","Money"});
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"give","Nullplague","3000","Money"});
+    }
+
+    @Test
+    public void testCreateCurrencyGui(){
+        player.addPermission("BlockDynastyEconomy.economy.superUser");
+        Command command= CommandsFactory.Commands.getCommand("eco");
+        command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
+
+        System.out.println("Clicked on slot 20 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 20);
+        System.out.println("Clicked on slot 10 ->");
+        TextInput.setInput("Coin");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 10);
+        System.out.println("Clicked on slot 14 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 14);
+        System.out.println("Clicked on slot 11 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 11);
+        System.out.println("Clicked on slot 15 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 15);
+        System.out.println("Clicked on slot 11 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 11);
+
+
     }
 
     @Test
@@ -98,7 +115,6 @@ public class EngineTest {
     @AfterAll
     public static void afterAll() {
         MinecraftServer.stop();
-
     }
 
 }

@@ -68,10 +68,21 @@ public class Inventory implements IInventory {
         sb.append("+\n");
 
         for (int r = 0; r < getRows(); r++) {
-            // Borde superior más ancho
+            // Borde superior con números de slot
             sb.append("|");
             for (int c = 0; c < columns; c++) {
-                sb.append("-".repeat(slotWidth)).append("|");
+                int slotNumber = r * columns + c;
+                String slotText = String.format("[%02d]", slotNumber); // Formato: [00], [01], etc.
+
+                // Calcular la posición para centrar el número en los guiones
+                int totalDashes = slotWidth - slotText.length();
+                int dashesBefore = totalDashes / 2;
+                int dashesAfter = totalDashes - dashesBefore;
+
+                sb.append("-".repeat(dashesBefore))
+                        .append(slotText)
+                        .append("-".repeat(dashesAfter))
+                        .append("|");
             }
             sb.append("\n");
 
@@ -83,13 +94,20 @@ public class Inventory implements IInventory {
 
                 if (item != null) {
                     String materialName = item.toString();
-                    // Primera línea: mostrar hasta slotWidth - 2 caracteres
-                    String firstLine = materialName.length() > slotWidth - 2 ?
-                            materialName.substring(0, slotWidth - 2) : materialName;
-                    cellContent = String.format(" %-" + (slotWidth - 2) + "s ", firstLine);
+                    int maxVisualLength = slotWidth - 2;
+
+                    // Primera línea: truncar manteniendo ANSI
+                    String firstLine = truncateWithAnsi(materialName, maxVisualLength);
+                    int visualLength = getVisualLength(firstLine);
+
+                    // Calcular padding basado en longitud visual
+                    String padding = " ".repeat(maxVisualLength - visualLength);
+
+                    // Asegurar que los colores se resetee al final de la celda
+                    String resetIfNeeded = firstLine.contains("\u001B") ? "\u001B[0m" : "";
+                    cellContent = String.format(" %s%s%s ", firstLine, resetIfNeeded, padding);
                 } else {
-                    cellContent = " ".repeat(slotWidth - 2);
-                    cellContent = " " + cellContent + " ";
+                    cellContent = " ".repeat(slotWidth);
                 }
                 sb.append(cellContent).append("|");
             }
@@ -103,28 +121,66 @@ public class Inventory implements IInventory {
 
                 if (item != null) {
                     String materialName = item.toString();
-                    // Segunda línea: mostrar el resto del texto si hay más contenido
-                    if (materialName.length() > slotWidth - 2) {
-                        int startIndex = slotWidth - 2;
-                        String secondLine = materialName.length() > (slotWidth - 2) * 2 ?
-                                materialName.substring(startIndex, startIndex + slotWidth - 2) :
-                                materialName.substring(startIndex);
-                        cellContent = String.format(" %-" + (slotWidth - 2) + "s ", secondLine);
+                    int maxVisualLength = slotWidth - 2;
+
+                    // Calcular cuánto texto se mostró en la primera línea
+                    String firstLine = truncateWithAnsi(materialName, maxVisualLength);
+                    int firstLineVisualLength = getVisualLength(firstLine);
+
+                    // Obtener el texto restante después de la primera línea
+                    String remainingText = materialName;
+                    if (firstLineVisualLength < getVisualLength(materialName)) {
+                        // Remover el texto visual que ya se mostró (no los códigos ANSI)
+                        StringBuilder temp = new StringBuilder();
+                        int visualCharsRemoved = 0;
+                        boolean inAnsiCode = false;
+
+                        for (int i = 0; i < materialName.length(); i++) {
+                            char ch = materialName.charAt(i);
+
+                            if (ch == '\u001B') {
+                                inAnsiCode = true;
+                                temp.append(ch);
+                            } else if (inAnsiCode) {
+                                temp.append(ch);
+                                if (ch == 'm') {
+                                    inAnsiCode = false;
+                                }
+                            } else {
+                                if (visualCharsRemoved < firstLineVisualLength) {
+                                    visualCharsRemoved++;
+                                } else {
+                                    // Empezar a guardar desde aquí
+                                    temp.append(materialName.substring(i));
+                                    break;
+                                }
+                            }
+                        }
+                        remainingText = temp.toString();
                     } else {
-                        // Si no hay más texto, dejar vacío
-                        cellContent = " ".repeat(slotWidth - 2);
-                        cellContent = " " + cellContent + " ";
+                        // No hay más texto después de la primera línea
+                        remainingText = "";
                     }
+
+                    // Segunda línea: truncar el texto restante
+                    String secondLine = truncateWithAnsi(remainingText, maxVisualLength);
+                    int visualLength = getVisualLength(secondLine);
+
+                    // Calcular padding basado en longitud visual
+                    String padding = " ".repeat(maxVisualLength - visualLength);
+
+                    // Asegurar que los colores se resetee al final de la celda
+                    String resetIfNeeded = secondLine.contains("\u001B") ? "\u001B[0m" : "";
+                    cellContent = String.format(" %s%s%s ", secondLine, resetIfNeeded, padding);
                 } else {
-                    cellContent = " ".repeat(slotWidth - 2);
-                    cellContent = " " + cellContent + " ";
+                    cellContent = " ".repeat(slotWidth);
                 }
                 sb.append(cellContent).append("|");
             }
             sb.append("\n");
         }
 
-        // Borde inferior más ancho
+        // Borde inferior con números de slot (opcional)
         sb.append("|");
         for (int c = 0; c < columns; c++) {
             sb.append("-".repeat(slotWidth)).append("|");
@@ -132,5 +188,44 @@ public class Inventory implements IInventory {
         sb.append("\n");
 
         return sb.toString();
+    }
+
+    // Función auxiliar para eliminar códigos ANSI y obtener longitud visual
+    private int getVisualLength(String text) {
+        return text.replaceAll("\u001B\\[[;\\d]*m", "").length();
+    }
+
+
+    // Función auxiliar para truncar texto manteniendo códigos ANSI
+    private String truncateWithAnsi(String text, int maxVisualLength) {
+        if (getVisualLength(text) <= maxVisualLength) {
+            return text;
+        }
+
+        StringBuilder result = new StringBuilder();
+        int visualLength = 0;
+        boolean inAnsiCode = false;
+        StringBuilder ansiBuffer = new StringBuilder();
+
+        for (int i = 0; i < text.length() && visualLength < maxVisualLength; i++) {
+            char c = text.charAt(i);
+
+            if (c == '\u001B') {
+                inAnsiCode = true;
+                ansiBuffer.setLength(0);
+                ansiBuffer.append(c);
+            } else if (inAnsiCode) {
+                ansiBuffer.append(c);
+                if (c == 'm') {
+                    inAnsiCode = false;
+                    result.append(ansiBuffer);
+                }
+            } else {
+                result.append(c);
+                visualLength++;
+            }
+        }
+
+        return result.toString();
     }
 }

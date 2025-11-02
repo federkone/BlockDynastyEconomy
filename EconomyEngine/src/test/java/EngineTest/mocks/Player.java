@@ -1,5 +1,6 @@
 package EngineTest.mocks;
 
+import EngineTest.mocks.utils.Color;
 import lib.abstractions.IPlayer;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.components.IEntityGUI;
@@ -8,6 +9,8 @@ import lib.gui.components.IInventory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Player implements IPlayer {
     private List<String> permissions;
@@ -62,11 +65,7 @@ public class Player implements IPlayer {
 
     @Override
     public void sendMessage(String message) {
-        System.out.println(this.name+" "+"received message: "+removeFormatCodes(message));
-    }
-    public static String removeFormatCodes(String input) {
-        if (input == null) return "";
-        return input.replaceAll("§[0-9a-f]", "");
+        System.out.println(this.name+" "+"received message: "+ Color.parse(message));
     }
 
     @Override

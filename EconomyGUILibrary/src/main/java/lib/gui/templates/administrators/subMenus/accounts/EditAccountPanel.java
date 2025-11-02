@@ -52,7 +52,7 @@ public class EditAccountPanel extends AbstractPanel {
     }
 
     private void buttons(IEntityGUI sender, Player target) {
-        setItem(15,createItem(Materials.REDSTONE,"Delete account","The player's account is deleted,before a confirmation"),
+        setItem(15,createItem(Materials.REDSTONE,ChatColor.stringValueOf(Colors.RED)+"Delete account","The player's account is deleted,before a confirmation"),
                 f -> {
                     textInput.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
                         if(s.equals("yes")){
@@ -75,25 +75,25 @@ public class EditAccountPanel extends AbstractPanel {
                     });
                 });
 
-        setItem(40,createItem(Materials.BARRIER, "Back","Click to go back"),f->{
+        setItem(40,createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED)+"Back","Click to go back"),f->{
             GUIFactory.accountSelectorToEdit(sender,this.getParent().getParent()).open();});
 
-        setItem(29,createItem(Materials.PAPER,"Deposit Currency","Deposit currency into the player's account"),
+        setItem(29,createItem(Materials.PAPER,ChatColor.stringValueOf(Colors.AQUA)+"Deposit Currency","Deposit currency into the player's account"),
                 f -> {
                     GUIFactory.depositPanel(sender , target, this).open();
                 });
 
-        setItem(31,createItem(Materials.PAPER,"Set balance currency","Set the balance of a currency in the player's account"),
+        setItem(31,createItem(Materials.PAPER,ChatColor.stringValueOf(Colors.AQUA)+"Set balance currency","Set the balance of a currency in the player's account"),
                 f -> {
                     GUIFactory.setPanel(sender , target, this).open();
                 });
 
-        setItem(33,createItem(Materials.PAPER,"Withdraw Currency","Withdraw currency from the player's account"),
+        setItem(33,createItem(Materials.PAPER,ChatColor.stringValueOf(Colors.AQUA)+"Withdraw Currency","Withdraw currency from the player's account"),
                 f -> {
                     GUIFactory.withdrawPanel(sender , target, this).open();
                 });
 
-        setItem(11,createItem(Materials.BOOK, "See Balance","See the balance of the player's account"),
+        setItem(11,createItem(Materials.BOOK, ChatColor.stringValueOf(Colors.YELLOW)+"See Balance","See the balance of the player's account"),
                 f -> {
                     GUIFactory.balancePanel( sender, target.getUuid(), this).open();
                 });
