@@ -16,6 +16,8 @@
 
 package BlockDynasty.Economy.aplication.useCase.account;
 
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.Result;
@@ -26,17 +28,19 @@ import java.util.UUID;
 public class DeleteAccountUseCase {
     IRepository repository;
     IAccountService accountService;
-    SearchAccountUseCase searchAccountUseCase;
+    GetAccountByUUIDUseCase getAccountByUUIDUseCase;
+    GetAccountByNameUseCase getAccountByNameUseCase;
 
     public DeleteAccountUseCase(IRepository repository, IAccountService accountService) {
-        this.searchAccountUseCase = new SearchAccountUseCase( accountService, repository);
+        this.getAccountByNameUseCase = new GetAccountByNameUseCase(accountService);
+        this.getAccountByUUIDUseCase = new GetAccountByUUIDUseCase(accountService);
         this.repository= repository;
         this.accountService = accountService;
     }
 
     public Result<Void> execute(String name){
         // Primero, obtenemos la cuenta del jugador por su nombre
-        Result<Account> accountResult = searchAccountUseCase.getAccount(name);
+        Result<Account> accountResult = getAccountByNameUseCase.execute(name);
         if (!accountResult.isSuccess()) {
             return Result.failure("Account not found for player: " + name, accountResult.getErrorCode());
         }
@@ -50,7 +54,7 @@ public class DeleteAccountUseCase {
 
     public Result<Void> execute(UUID uuid){
         // Primero, obtenemos la cuenta del jugador por su UUID
-        Result<Account> accountResult = searchAccountUseCase.getAccount(uuid);
+        Result<Account> accountResult = getAccountByUUIDUseCase.execute(uuid);
         if (!accountResult.isSuccess()) {
             return Result.failure("Account not found for UUID: " + uuid, accountResult.getErrorCode());
         }

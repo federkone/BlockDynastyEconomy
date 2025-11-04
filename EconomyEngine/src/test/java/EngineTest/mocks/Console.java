@@ -1,27 +1,27 @@
 package EngineTest.mocks;
 
+import EngineTest.mocks.utils.Color;
 import lib.abstractions.IConsole;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Console implements IConsole {
 
 
     @Override
     public void debug(String message) {
-        System.out.println("[DEBUG] " + removeFormatCodes(message));
+        System.out.println("[DEBUG] " + Color.parse(message));
     }
 
     @Override
     public void log(String message) {
-        System.out.println("[LOG] " + removeFormatCodes(message));
+        System.out.println("[LOG] " + Color.parse(message));
     }
 
     @Override
     public void logError(String message) {
-        System.out.println("[ERROR] " + removeFormatCodes(message));
+        System.out.println("[ERROR] " + Color.parse(message));
     }
 
-    public static String removeFormatCodes(String input) {
-        if (input == null) return "";
-        return input.replaceAll("§[0-9a-f]", "");
-    }
 }

@@ -1,10 +1,12 @@
 package EngineTest.mocks;
 
+import EngineTest.mocks.utils.Color;
 import lib.abstractions.IConsole;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
+import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.scheduler.IScheduler;
 
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class Platform implements PlatformAdapter {
-
 
     @Override
     public IPlayer getPlayer(String name) {
@@ -68,11 +69,18 @@ public class Platform implements PlatformAdapter {
 
     @Override
     public boolean isLegacy() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean hasSupportAdventureText() {
-        return false;
+        boolean hasAdventure= true;
+        Color.init(hasAdventure);
+        return hasAdventure;
+    }
+
+    @Override
+    public ITextInput getTextInput() {
+        return new TextInput();
     }
 }

@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.SingleAccountSingleCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.DepositEvent;
@@ -26,23 +27,31 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public class DepositUseCase extends TransactionUseCase implements IDepositUseCase {
+public class DepositUseCase extends SingleAccountSingleCurrencyOp implements IDepositUseCase {
+    private final IRepository dataStore;
+    private final IAccountService accountService;
+    private final Log logger;
+    private final Courier updateForwarder;
+    private final EventManager eventManager;
+
     public DepositUseCase(IAccountService accountService, ICurrencyService currencyService,
                           IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager) {
-        super(accountService, currencyService, dataStore, updateForwarder, logger, eventManager);
+        super(accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.accountService = accountService;
+        this.logger = logger;
+        this.updateForwarder = updateForwarder;
+        this.eventManager = eventManager;
     }
 
     @Override
-    protected Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context) {
+    public Result<Void> execute(Account account, Currency currency, BigDecimal amount, Context context) {
         if (!account.canReceiveCurrency()) {
             return Result.failure("Account can't receive currency", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
@@ -59,7 +68,7 @@ public class DepositUseCase extends TransactionUseCase implements IDepositUseCas
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<Account> result = dataStore.deposit(account.getUuid().toString(), currency, amount);
+        Result<Account> result = this.dataStore.deposit(account.getUuid().toString(), currency, amount);
         if(!result.isSuccess()){
             this.logger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

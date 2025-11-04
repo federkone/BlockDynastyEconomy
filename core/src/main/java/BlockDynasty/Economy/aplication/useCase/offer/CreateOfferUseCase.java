@@ -17,14 +17,17 @@
 package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
+import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.services.IAccountService;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 
@@ -34,14 +37,15 @@ import java.util.UUID;
 public class CreateOfferUseCase {
     private final IOfferService offerService;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     private final Courier courier;
     private final EventManager eventManager;
 
-    public CreateOfferUseCase(IOfferService offerService, Courier courier, EventManager eventManager,SearchCurrencyUseCase searchCurrencyUseCase, SearchAccountUseCase searchAccountUseCase) {
+    public CreateOfferUseCase(IOfferService offerService, IAccountService accountService,
+                              Courier courier, EventManager eventManager, ICurrencyService currencyService, IRepository repository) {
         this.offerService = offerService;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.searchAccountUseCase = searchAccountUseCase;
+        this.searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService,repository);
+        this.getAccountByUUIDUseCase = new GetAccountByUUIDUseCase( accountService);
         this.courier = courier;
         this.eventManager = eventManager;
     }
@@ -51,12 +55,12 @@ public class CreateOfferUseCase {
             return Result.failure( "Sender and receiver cannot be the same player", ErrorCode.ACCOUNT_CAN_NOT_RECEIVE);
         }
 
-        Result<Account> accountSenderResult = this.searchAccountUseCase.getAccount(playerSender);
+        Result<Account> accountSenderResult = getAccountByUUIDUseCase.execute(playerSender);
         if (!accountSenderResult.isSuccess()) {
             return Result.failure(accountSenderResult.getErrorMessage(), accountSenderResult.getErrorCode());
         }
 
-        Result<Account> accountReciberResult = this.searchAccountUseCase.getAccount(playerReciber);
+        Result<Account> accountReciberResult = getAccountByUUIDUseCase.execute(playerReciber);
         if (!accountReciberResult.isSuccess()) {
             return Result.failure(accountReciberResult.getErrorMessage(), accountReciberResult.getErrorCode());
         }

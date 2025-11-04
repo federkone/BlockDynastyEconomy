@@ -18,7 +18,7 @@ package useCaseTest.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.TransferFundsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -102,8 +102,8 @@ public class TransferUseCaseTest {
         }*/
         Result<Void> result = transferFundsUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
 
-        assertEquals(BigDecimal.valueOf(0).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
-        assertEquals(BigDecimal.valueOf(10000).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(0).setScale(2), searchAccountUseCase.execute("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(10000).setScale(2), searchAccountUseCase.execute("cris").getValue().getMoney("dinero").getAmount().setScale(2));
     }
 
     @Test

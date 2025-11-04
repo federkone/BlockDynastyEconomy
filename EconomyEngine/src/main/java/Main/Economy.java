@@ -29,7 +29,6 @@ import platform.files.logs.VaultLogger;
 import lib.commands.CommandsFactory;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
-import lib.gui.components.ITextInput;
 import lib.placeholder.PlaceHolder;
 import lib.util.colors.ChatColor;
 import platform.listeners.EventListener;
@@ -40,10 +39,7 @@ import platform.proxy.ProxySender;
 import redis.Publisher;
 import redis.RedisData;
 import redis.Subscriber;
-import repository.ConnectionHandler.Hibernate.Connection;
-import repository.ConnectionHandler.Hibernate.ConnectionHibernateH2;
-import repository.ConnectionHandler.Hibernate.ConnectionHibernateMysql;
-import repository.ConnectionHandler.Hibernate.ConnectionHibernateSQLite;
+import repository.ConnectionHandler.Hibernate.*;
 import repository.Repository;
 import services.Message;
 import utils.Console;
@@ -59,49 +55,52 @@ public class Economy {
     private Languages languages;
     private PlatformAdapter platformAdapter;
 
-    private Economy(ITextInput textInput, PlatformAdapter platformAdapter){
+    private Economy(PlatformAdapter platformAdapter){
         this.platformAdapter=platformAdapter;
-        configuration= new Configuration(platformAdapter.getDataFolder());
-        if(!platformAdapter.hasSupportAdventureText() || configuration.getBoolean("forceVanillaColorsSystem") ){ChatColor.setupVanilla();}
-        languages = new Languages(platformAdapter.getDataFolder());
-        languages.loadMessages(configuration.getString("lang"));
+        this.configuration= new Configuration(platformAdapter.getDataFolder());
+        ChatColor.setupSystem(platformAdapter.hasSupportAdventureText(),configuration.getBoolean("forceVanillaColorsSystem") );
+
+        this.languages = new Languages(platformAdapter.getDataFolder(),configuration);
         Message.addLang(languages);
         Console.setConsole(platformAdapter.getConsole(),configuration);
 
+        this.initDatabase(configuration);
+
+        this.core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
+        this.createListener(configuration,platformAdapter);
+        this.api = new Api(core);
+        this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
+        this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
+        CommandsFactory.init(platformAdapter,core.getUseCaseFactory());
+        GUIFactory.init(core.getUseCaseFactory(),platformAdapter,new Message());
+        EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+    }
+
+    public static Economy init( PlatformAdapter platformAdapter){
+        return new Economy(platformAdapter);
+    }
+
+    private void initDatabase(Configuration configuration){
         try{
-            repository = new Repository(getConnection(configuration));
+            Connection connection = getConnection(configuration);
+            repository = new Repository(connection);
+            Console.log("Database connected successfully.");
         }catch (Exception e){
             Console.logError("Error connection database, check your credentials.");
             throw new RuntimeException(e.getMessage());
         }
-
-        Console.log("Database connected successfully.");
-
-        core=new Core(repository,60,createCourierImpl(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
-        createListener(configuration,platformAdapter);
-        api = new Api(core);
-        this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
-        playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
-        CommandsFactory.init(platformAdapter,core.getUseCaseFactory());
-        GUIFactory.init(core.getUseCaseFactory(),textInput, platformAdapter,new Message());
-        EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
-
-    public static Economy init(ITextInput textInput, PlatformAdapter platformAdapter){
-        return new Economy(textInput, platformAdapter);
-    }
-
     private Connection getConnection(Configuration configuration){
         switch (configuration.getString("sql.type")){
             case "mysql":
                 return new ConnectionHibernateMysql(configuration.getString("sql.host"), configuration.getInt("sql.port"), configuration.getString("sql.database"), configuration.getString("sql.username"), configuration.getString("sql.password"));
             case "h2":
-                 return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
+                return new ConnectionHibernateH2(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             case "sqlite":
-                 return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
+                return new ConnectionHibernateSQLite(configuration.getDatabasePath(),configuration.getBoolean("sql.EnableWebEditorSqlServer"));
             default:
-                 throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
-            }
+                throw new IllegalArgumentException("Unsupported database type: " + configuration.getString("sql.type"));
+        }
     }
 
     private Courier createCourierImpl(Configuration configuration, PlatformAdapter platformAdapter){
@@ -119,15 +118,6 @@ public class Economy {
             subscriber.startListening();
         }else{
             ProxyReceiver.init(core.getServicesManager().getAccountService(),core.getServicesManager().getCurrencyService(),core.getServicesManager().getEventManager(), core.getServicesManager().getOfferService(),platformAdapter);
-        }
-    }
-
-    public static void shutdown(){
-        if (repository != null) {
-            repository.close();
-        }
-        if (subscriber != null) {
-            subscriber.stopListening();
         }
     }
 
@@ -152,5 +142,14 @@ public class Economy {
 
     public Log getVaultLogger(){
         return VaultLogger.build(configuration,platformAdapter.getScheduler());
+    }
+
+    public static void shutdown(){
+        if (repository != null) {
+            repository.close();
+        }
+        if (subscriber != null) {
+            subscriber.stopListening();
+        }
     }
 }

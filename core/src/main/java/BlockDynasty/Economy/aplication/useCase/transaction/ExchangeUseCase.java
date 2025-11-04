@@ -17,9 +17,8 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.services.AccountService;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.SingleAccountMultiCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IExchangeUseCase;
-import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.ExchangeEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -27,24 +26,45 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.UUID;
 
-public class ExchangeUseCase extends TransactionUseCase implements IExchangeUseCase {
+public class ExchangeUseCase extends SingleAccountMultiCurrencyOp implements IExchangeUseCase {
+    private Courier updateForwarder;
+    private IAccountService accountService;
+    private Log logger;
+    private EventManager eventManager;
+    private IRepository dataStore;
+
     public ExchangeUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder,
                            Log economyLogger, EventManager eventManager) {
-        super(accountService,currencyService,dataStore,updateForwarder,economyLogger,eventManager);
+        super(accountService,currencyService,dataStore);
+        this.updateForwarder = updateForwarder;
+        this.accountService = accountService;
+        this.logger = economyLogger;
+        this.eventManager = eventManager;
+        this.dataStore = dataStore;
     }
 
-    @Override
-    protected Result<BigDecimal> performTransaction(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+    //si solo si los valores de intercambio son mayor a 0 se realiza el intercambio
+    public Result<BigDecimal> execute(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        //si el amountTo or amountFrom no son nullos y son negativos, error no se puede hacer el exchange entre estas dos monedas
+        if (currencyFrom.getExchangeRate() <=0) {
+            return Result.failure("The "+currencyFrom.getSingular() +" are not interchangeable.", ErrorCode.CURRENCY_HAS_NO_EXCHANGE_RATE);
+        }
+
+        if (currencyTo.getExchangeRate() <= 0){
+            return Result.failure("The "+currencyTo.getSingular() +" are not interchangeable.", ErrorCode.CURRENCY_HAS_NO_EXCHANGE_RATE);
+        }
+
+        if(!currencyFrom.isInterchangeableWith(currencyTo)){
+            return Result.failure( "The currencies are not interchangeable.", ErrorCode.CURRENCIES_NOT_INTERCHANGEABLE);
+        }
+
         if (currencyFrom.equals(currencyTo)) {
             return Result.failure("Cannot exchange the same currency", ErrorCode.CURRENCY_MUST_BE_DIFFERENT);
         }

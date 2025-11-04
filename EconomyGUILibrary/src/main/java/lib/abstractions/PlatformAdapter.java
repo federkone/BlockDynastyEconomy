@@ -18,6 +18,7 @@ package lib.abstractions;
 
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
+import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.scheduler.IScheduler;
 
@@ -40,4 +41,5 @@ public interface PlatformAdapter {
     File getDataFolder();
     boolean isLegacy();
     boolean hasSupportAdventureText();
+    ITextInput getTextInput();
 }

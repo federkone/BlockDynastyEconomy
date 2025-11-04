@@ -3,6 +3,7 @@ package BlockDynasty.Economy.aplication.useCase;
 import BlockDynasty.Economy.aplication.services.ServicesManager;
 import BlockDynasty.Economy.aplication.useCase.account.*;
 import BlockDynasty.Economy.aplication.useCase.account.balance.*;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.*;
 import BlockDynasty.Economy.aplication.useCase.currency.*;
 import BlockDynasty.Economy.aplication.useCase.offer.*;
 import BlockDynasty.Economy.aplication.useCase.transaction.*;
@@ -12,10 +13,10 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 
 public class UseCaseFactory {
-    private ServicesManager servicesManager;
-    private IRepository repository;
-    private Courier courier;
-    private Log log;
+    private final ServicesManager servicesManager;
+    private final IRepository repository;
+    private final Courier courier;
+    private final Log log;
 
     public UseCaseFactory (ServicesManager servicesManager, IRepository repository, Courier courier, Log log){
         this.servicesManager = servicesManager;
@@ -24,6 +25,10 @@ public class UseCaseFactory {
         this.log = log;
     }
 
+    @Deprecated
+    public SearchAccountUseCase searchAccount(){
+        return new SearchAccountUseCase(servicesManager.getAccountService(), repository);
+    }
     public PayUseCase pay(){
         return new PayUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), repository, courier, log, servicesManager.getEventManager());
     }
@@ -36,14 +41,23 @@ public class UseCaseFactory {
     public EditAccountUseCase editAccount(){
         return new EditAccountUseCase(servicesManager.getAccountService(), repository, courier);
     }
-    public SearchAccountUseCase searchAccount(){
-        return new SearchAccountUseCase(servicesManager.getAccountService(), repository);
+    public GetAccountByNameUseCase searchAccountByName(){
+        return new GetAccountByNameUseCase(servicesManager.getAccountService());
+    }
+    public GetAccountByUUIDUseCase searchAccountByUUID(){
+        return new GetAccountByUUIDUseCase(servicesManager.getAccountService());
+    }
+    public GetOfflineAccountsUseCase searchOfflineAccounts(){
+        return new GetOfflineAccountsUseCase(servicesManager.getAccountService());
+    }
+    public GetTopAccountsUseCase topAccounts(){
+        return new GetTopAccountsUseCase(servicesManager.getAccountService(), repository);
     }
     public DeleteAccountUseCase deleteBalance(){
         return new DeleteAccountUseCase(repository, servicesManager.getAccountService());
     }
     public GetBalanceUseCase getBalance(){
-        return new GetBalanceUseCase(searchAccount());
+        return new GetBalanceUseCase(servicesManager.getAccountService());
     }
     public CreateCurrencyUseCase createCurrency(){
         return new CreateCurrencyUseCase(servicesManager.getCurrencyService(), servicesManager.getAccountService(), courier, repository);
@@ -96,7 +110,8 @@ public class UseCaseFactory {
     }
 
     public CreateOfferUseCase createOffer(){
-        return new CreateOfferUseCase( servicesManager.getOfferService(), courier, servicesManager.getEventManager(), searchCurrency(), searchAccount());
+        return new CreateOfferUseCase(servicesManager.getOfferService(), servicesManager.getAccountService(),
+                courier, servicesManager.getEventManager(), servicesManager.getCurrencyService(), repository);
     }
     public CancelOfferUseCase cancelOffer(){
         return new CancelOfferUseCase(  servicesManager.getOfferService(), courier, servicesManager.getEventManager());

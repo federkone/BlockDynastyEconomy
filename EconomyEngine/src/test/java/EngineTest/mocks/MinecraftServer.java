@@ -12,7 +12,7 @@ public class MinecraftServer {
 
     private MinecraftServer(){
         System.out.println("Server Testing Environment Initialized.");
-        economy = Economy.init(new TextInput(), new EngineTest.mocks.Platform());
+        economy = Economy.init( new EngineTest.mocks.Platform());
     }
 
     public static MinecraftServer start(){

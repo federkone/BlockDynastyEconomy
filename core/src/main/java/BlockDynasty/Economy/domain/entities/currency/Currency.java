@@ -19,6 +19,8 @@ package BlockDynasty.Economy.domain.entities.currency;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,6 +35,7 @@ public class Currency implements ICurrency{
     private boolean defaultCurrency ;
     private BigDecimal defaultBalance ;
     private double exchangeRate ;
+    private List<Currency> interchangeableWith;
 
     public Currency(UUID uuid, String singular, String plural) {
         this.defaultBalance = BigDecimal.ZERO;
@@ -45,6 +48,7 @@ public class Currency implements ICurrency{
         this.uuid = uuid.toString();
         this.singular = singular;
         this.plural = plural;
+        this.interchangeableWith = new ArrayList<>();
     }
 
     public Currency() {
@@ -55,9 +59,10 @@ public class Currency implements ICurrency{
         this.decimalSupported = true;
         this.transferable = true;
         this.defaultCurrency = false;
+        this.interchangeableWith = new ArrayList<>();
     }
 
-    public Currency(UUID uuid, String singular, String plural, String symbol, String color, boolean decimalSupported, boolean transferable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate) {
+    public Currency(UUID uuid, String singular, String plural, String symbol, String color, boolean decimalSupported, boolean transferable, boolean defaultCurrency, BigDecimal defaultBalance, double exchangeRate,List<Currency> interchangeableWith) {
         this.uuid = uuid.toString();
         this.singular = singular;
         this.plural = plural;
@@ -68,6 +73,7 @@ public class Currency implements ICurrency{
         this.defaultCurrency = defaultCurrency;
         this.defaultBalance = defaultBalance;
         this.exchangeRate = exchangeRate;
+        this.interchangeableWith = interchangeableWith;
     }
 
     public Currency(Currency currency) {
@@ -81,6 +87,7 @@ public class Currency implements ICurrency{
         this.defaultCurrency = currency.defaultCurrency;
         this.defaultBalance = currency.defaultBalance;
         this.exchangeRate = currency.exchangeRate;
+        this.interchangeableWith = currency.getInterchangeableWith();
     }
 
     public void setUuid(UUID uuid) {
@@ -196,6 +203,28 @@ public class Currency implements ICurrency{
 
     public void setExchangeRate(double exchangeRate) {
         this.exchangeRate = exchangeRate;
+    }
+
+    public void addInterchangeableCurrency(Currency currency) {
+        if (!this.interchangeableWith.contains(currency)) {
+            this.interchangeableWith.add(currency);
+        }
+    }
+
+    public void removeInterchangeableCurrency(Currency currency) {
+        this.interchangeableWith.remove(currency);
+    }
+
+    public void setInterchangeableWith(List<Currency> interchangeableWith) {
+        this.interchangeableWith = interchangeableWith;
+    }
+
+    public List<Currency> getInterchangeableWith() {
+        return interchangeableWith;
+    }
+
+    public boolean isInterchangeableWith(Currency currency) {
+        return interchangeableWith.stream().anyMatch(c -> c.equals(currency));
     }
 
     @Override

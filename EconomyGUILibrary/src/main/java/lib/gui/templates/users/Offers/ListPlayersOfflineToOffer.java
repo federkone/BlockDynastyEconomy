@@ -16,7 +16,8 @@
 
 package lib.gui.templates.users.Offers;
 
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOfflineAccountsUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
@@ -37,13 +38,16 @@ import java.util.stream.Collectors;
 
 public class ListPlayersOfflineToOffer extends ListPlayersFromDb {
     private IEntityGUI sender;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetOfflineAccountsUseCase getOfflineAccountsUseCase;
+    private final GetAccountByNameUseCase getAccountByNameUseCase;
 
-    public ListPlayersOfflineToOffer(IEntityGUI sender, IGUI parent, SearchAccountUseCase searchAccountUseCase , ITextInput textInput) {
-        super( sender, parent, searchAccountUseCase,textInput);
+    public ListPlayersOfflineToOffer(IEntityGUI sender, IGUI parent, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase , ITextInput textInput) {
+        super( sender, parent, getAccountByNameUseCase, getOfflineAccountsUseCase,textInput);
         this.sender = sender;
-        this.searchAccountUseCase = searchAccountUseCase;
-        Result<List<Account>> result = searchAccountUseCase.getOfflineAccounts();
+        this.getOfflineAccountsUseCase = getOfflineAccountsUseCase;
+        this.getAccountByNameUseCase = getAccountByNameUseCase;
+
+        Result<List<Account>> result = getOfflineAccountsUseCase.execute();
         if(result.isSuccess()) {
             List<BlockDynasty.Economy.domain.entities.account.Player> players = result.getValue().stream()
                     .map(Account::getPlayer)
@@ -63,7 +67,7 @@ public class ListPlayersOfflineToOffer extends ListPlayersFromDb {
 
     @Override
     public BlockDynasty.Economy.domain.entities.account.Player findPlayerByName(String playerName) {
-        Result<Account> result = searchAccountUseCase.getAccount(playerName);
+        Result<Account> result = getAccountByNameUseCase.execute(playerName);
         if(result.isSuccess()){
             return result.getValue().getPlayer();
         }else {return null;}

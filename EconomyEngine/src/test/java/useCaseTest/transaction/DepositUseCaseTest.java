@@ -22,7 +22,7 @@ import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -76,7 +76,7 @@ public class DepositUseCaseTest {
         Result<Void> result = depositUseCase.execute(nullplague.getUuid(), "dinero", BigDecimal.valueOf(5000));
 
         assertTrue( result.isSuccess(),"Expected success, but got: " + result.getErrorMessage() + " " + result.getErrorCode());
-        assertEquals(BigDecimal.valueOf(5000).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
+        assertEquals(BigDecimal.valueOf(5000).setScale(2), searchAccountUseCase.execute("nullplague").getValue().getMoney("dinero").getAmount().setScale(2));
     }
 
     /*@Test

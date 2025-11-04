@@ -20,7 +20,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
@@ -118,16 +118,16 @@ public class TradeCurrenciesUseCaseTest {
             fail("Exception"+ e);
         }
 
-        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(dinero).getAmount());
-        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.execute("nullplague").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.execute("cris").getValue().getMoney(coin).getAmount());
     }
 
     @Test
     void TradeCurrencyUseCseTestInsufficientFounds(){
         Result<Void> result = tradeCurrenciesUseCase.execute("nullplague","cris","Coin","dinero",BigDecimal.valueOf(2),BigDecimal.valueOf(30000));
         assertEquals(ErrorCode.INSUFFICIENT_FUNDS, result.getErrorCode());
-        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.getAccount("nullplague").getValue().getMoney(coin).getAmount());
-        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.getAccount("cris").getValue().getMoney(dinero).getAmount());
+        assertEquals(BigDecimal.valueOf(1).setScale(2), searchAccountUseCase.execute("nullplague").getValue().getMoney(coin).getAmount());
+        assertEquals(BigDecimal.valueOf(30000).setScale(2), searchAccountUseCase.execute("cris").getValue().getMoney(dinero).getAmount());
     }
 
 

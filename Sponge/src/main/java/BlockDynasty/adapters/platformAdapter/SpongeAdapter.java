@@ -20,12 +20,14 @@ import BlockDynasty.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.SpongePlugin;
+import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.scheduler.Scheduler;
 import lib.abstractions.IConsole;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
+import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.scheduler.IScheduler;
 import org.spongepowered.api.Sponge;
@@ -106,6 +108,11 @@ public class SpongeAdapter implements PlatformAdapter {
     @Override
     public boolean hasSupportAdventureText() {
         return true;
+    }
+
+    @Override
+    public ITextInput getTextInput() {
+        return new TextInput();
     }
 
     @Override

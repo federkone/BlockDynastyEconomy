@@ -19,15 +19,14 @@ package api;
 import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.*;
 import BlockDynasty.Economy.aplication.useCase.account.balance.GetBalanceUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetTopAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.*;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.*;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.balance.Money;
@@ -46,7 +45,8 @@ public class Api implements IApi {
     private final SearchCurrencyUseCase searchCurrencyUseCase;
     private final GetBalanceUseCase getBalanceUseCase;
     private final CreateAccountUseCase createAccountUseCase;
-    private final SearchAccountUseCase searchAccountUseCase;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
+    private final GetAccountByNameUseCase getAccountByNameUseCase;
     private final IWithdrawUseCase withdrawUseCase;
     private final IDepositUseCase depositUseCase;
     private final ISetBalanceUseCase setBalanceUseCase;
@@ -57,7 +57,7 @@ public class Api implements IApi {
     private final EditAccountUseCase editAccountUseCase;
     private final CreateCurrencyUseCase createCurrencyUseCase;
     private final DeleteCurrencyUseCase deleteCurrencyUseCase;
-    private final SearchAccountUseCase getAccountsUseCase;
+    private final GetTopAccountsUseCase topAccounts;
 
     private final IAccountService accountService;
     private final EventManager eventManager;
@@ -68,12 +68,13 @@ public class Api implements IApi {
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
         createAccountUseCase = factory.createAccount();
-        searchAccountUseCase = factory.searchAccount();
+        getAccountByNameUseCase = factory.searchAccountByName();
+        getAccountByUUIDUseCase = factory.searchAccountByUUID();
         deleteAccountUseCase = factory.deleteAccount();
         editAccountUseCase = factory.editAccount();
         createCurrencyUseCase = factory.createCurrency();
         deleteCurrencyUseCase = factory.deleteCurrency();
-        getAccountsUseCase = factory.searchAccount();
+        topAccounts = factory.topAccounts();
 
         withdrawUseCase = factory.withdraw();
         depositUseCase = factory.deposit();
@@ -91,12 +92,13 @@ public class Api implements IApi {
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
         createAccountUseCase = factory.createAccount();
-        searchAccountUseCase = factory.searchAccount();
+        getAccountByNameUseCase = factory.searchAccountByName();
+        getAccountByUUIDUseCase = factory.searchAccountByUUID();
         deleteAccountUseCase = factory.deleteAccount();
         editAccountUseCase = factory.editAccount();
         createCurrencyUseCase = factory.createCurrency();
         deleteCurrencyUseCase = factory.deleteCurrency();
-        getAccountsUseCase = factory.searchAccount();
+        topAccounts = factory.topAccounts();
 
         withdrawUseCase = factory.withdraw(log);
         depositUseCase = factory.deposit(log);
@@ -281,13 +283,13 @@ public class Api implements IApi {
 
     @Override
     public boolean existAccount(UUID uuid) {
-        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(uuid);
+        Result<Account> accountResult =  getAccountByUUIDUseCase.execute(uuid);
         return accountResult.isSuccess();
     }
 
     @Override
     public boolean existAccount(String name) {
-        Result<Account> accountResult =  this.searchAccountUseCase.getAccount(name);
+        Result<Account> accountResult =  getAccountByNameUseCase.execute(name);
         return accountResult.isSuccess();
     }
 
@@ -410,17 +412,17 @@ public class Api implements IApi {
 
     @Override
     public Account getAccount(UUID uuid) {
-        return this.getAccountsUseCase.getAccount(uuid).getValue();
+        return getAccountByUUIDUseCase.execute(uuid).getValue();
     }
 
     @Override
     public Account getAccount(String name) {
-        return this.getAccountsUseCase.getAccount(name).getValue();
+        return getAccountByNameUseCase.execute(name).getValue();
     }
 
     @Override
     public List<Account> getTopAccounts(int limit, String currency) {
-        return this.searchAccountUseCase.getTopAccounts( currency, limit,0).getValue();
+        return topAccounts.execute( currency, limit,0).getValue();
     }
 
     @Override

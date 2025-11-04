@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.SingleAccountSingleCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
@@ -26,22 +27,30 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public class WithdrawUseCase extends TransactionUseCase implements IWithdrawUseCase {
+public class WithdrawUseCase extends SingleAccountSingleCurrencyOp implements IWithdrawUseCase {
+    private final IRepository dataStore;
+    private final IAccountService accountService;
+    private final Log logger;
+    private final Courier updateForwarder;
+    private final EventManager eventManager;
+
     public WithdrawUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore, Courier updateForwarder, Log logger, EventManager eventManager){
-        super(accountService, currencyService, dataStore, updateForwarder, logger, eventManager);
+        super(accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.accountService = accountService;
+        this.logger = logger;
+        this.updateForwarder = updateForwarder;
+        this.eventManager = eventManager;
     }
 
     @Override
-    protected Result<Void> performTransaction(Account account, Currency currency, BigDecimal amount,Context context) {
+    public Result<Void> execute(Account account, Currency currency, BigDecimal amount, Context context) {
         if (account.isBlocked()){
             return Result.failure("Account is blocked", ErrorCode.ACCOUNT_BLOCKED);
         }

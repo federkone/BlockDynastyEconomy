@@ -1,0 +1,56 @@
+package lib.gui.templates.administrators.subMenus.currencies;
+
+import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
+import BlockDynasty.Economy.domain.entities.currency.Currency;
+import lib.gui.GUIFactory;
+import lib.gui.components.IEntityGUI;
+import lib.gui.components.IGUI;
+import lib.gui.components.IItemStack;
+import lib.gui.components.Materials;
+import lib.gui.components.abstractions.PaginatedPanel;
+import lib.util.colors.ChatColor;
+import lib.util.colors.Message;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class CurrencyListToAddExchange extends PaginatedPanel<Currency> {
+    private final IEntityGUI player;
+    private final EditCurrencyUseCase editCurrencyUseCase;
+    private final SearchCurrencyUseCase searchCurrencyUseCase;
+    private final Currency currency;
+
+    public CurrencyListToAddExchange(IEntityGUI player, SearchCurrencyUseCase searchCurrencyUseCase, EditCurrencyUseCase editCurrencyUseCase, IGUI abstractGUI, Currency currency) {
+        super("Currency List", 5, player, abstractGUI, 21);
+        this.currency = currency;
+        this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.editCurrencyUseCase = editCurrencyUseCase;
+        this.player = player;
+
+        List<Currency> currencies = new ArrayList<>(searchCurrencyUseCase.getCurrencies());
+        currencies = currencies.stream().filter( c -> !c.getSingular().equalsIgnoreCase(currency.getSingular())).collect(Collectors.toList());
+        showItemsPage(currencies);
+    }
+
+    @Override
+    protected IItemStack createItemFor(Currency currency) {
+        String color = ChatColor.stringValueOf(currency.getColor());
+        return createItem(Materials.GOLD_INGOT,
+                Message.process(Map.of("currency",color+currency.getSingular()),"CurrencySelector.button1.nameItem"),
+                "Click to add");
+    }
+
+    @Override
+    protected void functionLeftItemClick(Currency currency) {
+        try {
+            editCurrencyUseCase.addInterchangeableCurrency(this.currency.getSingular(),currency.getSingular());
+            player.sendMessage("Successfully added exchange currency.");
+            GUIFactory.currencyListExchange(player, this.currency,this.getParent().getParent()).open();
+        }catch (Exception e){
+            player.sendMessage("Error");
+        }
+    }
+}

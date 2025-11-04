@@ -16,7 +16,6 @@
 
 package BlockDynasty;
 
-import BlockDynasty.adapters.GUI.adapters.TextInput;
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.platformAdapter.SpongeAdapter;
 import BlockDynasty.adapters.listeners.PlayerJoinListenerOffline;
@@ -60,13 +59,14 @@ public class SpongePlugin {
     private static RawDataChannel channel;
     private final Metrics metrics;
 
+
     @Inject
-    public SpongePlugin(final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir, Metrics.Factory metricsFactory) {
+    public SpongePlugin(Metrics.Factory factory ,final PluginContainer container, final Logger logger,@ConfigDir(sharedRoot = false) final Path configDir) {
         SpongePlugin.container = container;
         SpongePlugin.logger = logger;
         SpongePlugin.configPath = configDir;
 
-        metrics = metricsFactory.make(27472);
+        metrics = factory.make(27472);
     }
 
 
@@ -78,9 +78,10 @@ public class SpongePlugin {
 
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
+        //metrics.startup(event);
         // Perform any one-time setup
         try {
-            economy = Economy.init(new TextInput(), new SpongeAdapter());
+            economy = Economy.init(new SpongeAdapter());
             configuration = economy.getConfiguration();
             Console.log("Plugin constructed...");
         }catch (Exception e){
@@ -102,6 +103,7 @@ public class SpongePlugin {
     @Listener
     public void onServerStopping(final StoppingEngineEvent<Server> event) {
         Economy.shutdown();
+        //metrics.shutdown();
     }
 
     @Listener

@@ -1,5 +1,6 @@
 package EngineTest.mocks;
 
+import EngineTest.mocks.utils.Color;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.ITextInput;
@@ -12,6 +13,8 @@ public class TextInput implements ITextInput {
 
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
+        title= Color.parse(title);
+        initialText= Color.parse(initialText);
         System.out.println("|-------------Input--------------|");
         System.out.println("     === " + title + " ===");
         System.out.print("         User input: " + input + "\n");
@@ -22,6 +25,8 @@ public class TextInput implements ITextInput {
 
     @Override
     public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
+        title= Color.parse(title);
+        initialText= Color.parse(initialText);
         System.out.println("|-------------Input--------------|");
         System.out.println("     === " + title + " ===");
         System.out.print("         User input: " + input + "\n");

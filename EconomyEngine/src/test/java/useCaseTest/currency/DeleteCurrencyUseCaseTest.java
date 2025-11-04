@@ -19,7 +19,7 @@ package useCaseTest.currency;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.aplication.services.AccountService;
@@ -63,13 +63,13 @@ public class DeleteCurrencyUseCaseTest {
 
         deleteCurrencyUseCase.deleteCurrency("dinero");
 
-        Result<Account> account = searchAccountUseCase.getAccount("Nullplague");
+        Result<Account> account = searchAccountUseCase.execute("Nullplague");
 
         for (Money money : account.getValue().getBalances()) {
             System.out.println(money.getCurrency().getSingular());
         }
 
-        assertEquals(1, searchAccountUseCase.getAccount("Nullplague").getValue().getBalances().size());
+        assertEquals(1, searchAccountUseCase.execute("Nullplague").getValue().getBalances().size());
 
 
     }

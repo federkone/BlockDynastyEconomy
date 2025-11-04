@@ -21,7 +21,7 @@ import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.AcceptOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
@@ -96,7 +96,7 @@ public class OfferUserCasesTest {
         tradeCurrenciesUseCase = new TradeCurrenciesUseCase(currencyService, accountService,dataStore,new CourierTest(),new LoggerTest(),eventManager);
         offerService = new OfferService(new CourierTest(),eventManager,1);
 
-        createOfferUseCase = new CreateOfferUseCase( offerService,new CourierTest(),eventManager, searchCurrencyUseCase, searchAccountUseCase);
+        createOfferUseCase = new CreateOfferUseCase( offerService,accountService,new CourierTest(),eventManager, currencyService, dataStore);
         acceptOfferUseCase = new AcceptOfferUseCase( offerService,new CourierTest(),eventManager, tradeCurrenciesUseCase);
         cancelOfferUseCase = new CancelOfferUseCase( offerService,new CourierTest(),eventManager);
     }

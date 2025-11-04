@@ -116,7 +116,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     private void initCoreServices() {
         //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
-        economy = Economy.init(TextInputFactory.getTextInput(),new BukkitAdapter());
+        economy = Economy.init(new BukkitAdapter());
         configuration = economy.getConfiguration();
     }
 

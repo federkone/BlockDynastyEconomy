@@ -20,6 +20,7 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInputFactory;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.BukkitImplementation.utils.Version;
@@ -28,6 +29,7 @@ import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
+import lib.gui.components.ITextInput;
 import lib.gui.components.Materials;
 import lib.scheduler.ContextualTask;
 import lib.scheduler.IScheduler;
@@ -115,5 +117,10 @@ public class BukkitAdapter implements PlatformAdapter {
     @Override
     public List<IPlayer> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
+    }
+
+    @Override
+    public ITextInput getTextInput() {
+        return TextInputFactory.getTextInput();
     }
 }

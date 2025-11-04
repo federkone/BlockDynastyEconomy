@@ -17,8 +17,8 @@
 package BlockDynasty.Economy.aplication.useCase.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.useCase.transaction.genericOperations.MultiAccountMultiCurrencyOp;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ITradeUseCase;
-import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.transactionsEvents.TradeEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -26,25 +26,31 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.useCase.account.SearchAccountUseCase;
 import BlockDynasty.Economy.domain.result.TransferResult;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public class TradeCurrenciesUseCase extends TransactionUseCase implements ITradeUseCase {
+public class TradeCurrenciesUseCase extends MultiAccountMultiCurrencyOp implements ITradeUseCase {
+    private IRepository dataStore;
+    private Courier updateForwarder;
+    private Log logger;
+    private IAccountService accountService;
+    private EventManager eventManager;
 
     public TradeCurrenciesUseCase(ICurrencyService currencyService, IAccountService accountService, IRepository dataStore,
                                   Courier updateForwarder, Log economyLogger, EventManager eventManager) {
-        super( accountService, currencyService, dataStore, updateForwarder, economyLogger, eventManager);
+        super( accountService, currencyService, dataStore);
+        this.dataStore = dataStore;
+        this.updateForwarder = updateForwarder;
+        this.logger = economyLogger;
+        this.accountService = accountService;
+        this.eventManager = eventManager;
     }
 
-    @Override
-    protected Result<Void> performTransaction (Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+    public Result<Void> execute(Account accountFrom, Account accountTo, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
         if(!currencyFrom.isTransferable() || !currencyTo.isTransferable()){
             return Result.failure("Currency not transferable", ErrorCode.CURRENCY_NOT_PAYABLE);
         }

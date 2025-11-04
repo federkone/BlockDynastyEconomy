@@ -16,7 +16,7 @@
 
 package BlockDynasty.Economy.aplication.useCase.account;
 
-import BlockDynasty.Economy.aplication.services.AccountService;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.Result;
@@ -27,17 +27,17 @@ import java.util.UUID;
 
 public class EditAccountUseCase {
     private final IRepository dataStore;
-    private final SearchAccountUseCase searchAccountUseCase;
     private final Courier courier;
+    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
 
     public EditAccountUseCase(IAccountService accountService, IRepository dataStore, Courier courier) {
-        this.searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         this.dataStore = dataStore;
         this.courier = courier;
+        this.getAccountByUUIDUseCase = new GetAccountByUUIDUseCase(accountService);
     }
 
     public Result<Void> blockReceive(UUID uuid){
-        Result<Account> result = searchAccountUseCase.getAccount(uuid);
+        Result<Account> result = getAccountByUUIDUseCase.execute(uuid);
 
         if (result.isSuccess()) {
             result.getValue().setCanReceiveCurrency(false);
@@ -51,7 +51,7 @@ public class EditAccountUseCase {
     }
 
     public Result<Void> allowReceive(UUID uuid) {
-        Result<Account> result = searchAccountUseCase.getAccount(uuid);
+        Result<Account> result = getAccountByUUIDUseCase.execute(uuid);
 
         if (result.isSuccess()) {
             result.getValue().setCanReceiveCurrency(true);
@@ -65,7 +65,7 @@ public class EditAccountUseCase {
     }
 
     public Result<Void> blockAccount(UUID uuid) {
-        Result<Account> result = searchAccountUseCase.getAccount(uuid);
+        Result<Account> result = getAccountByUUIDUseCase.execute(uuid);
 
         if (result.isSuccess()) {
             result.getValue().block();
@@ -79,7 +79,7 @@ public class EditAccountUseCase {
     }
 
     public Result<Void> unblockAccount(UUID uuid) {
-        Result<Account> result = searchAccountUseCase.getAccount(uuid);
+        Result<Account> result = getAccountByUUIDUseCase.execute(uuid);
 
         if (result.isSuccess()) {
             result.getValue().unblock();
