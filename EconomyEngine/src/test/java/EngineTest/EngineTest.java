@@ -92,6 +92,29 @@ public class EngineTest {
     }
 
     @Test
+    public  void testGUIWorkFlowExchangeCurrency(){
+        player.addPermission("BlockDynastyEconomy.economy.superUser");
+        Command command= CommandsFactory.Commands.getCommand("eco");
+        command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
+        System.out.println("Clicked on slot 20 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,20);
+        System.out.println("Clicked on slot 14 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,14);
+        System.out.println("Clicked on slot 10 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        System.out.println("Clicked on slot 10 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,14);
+        System.out.println("Clicked on slot 39 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,39);
+        System.out.println("Clicked on slot 11 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,11);
+        System.out.println("Clicked on slot 10 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        System.out.println("Clicked on slot 40 ->");
+        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,40);
+    }
+
+    @Test
     public void testGUIWorkFlowTransferOffline(){
         IGUI bankPanel= GUIFactory.bankPanel(player);
         GUIFactory.getGuiService().registerGUI(player,bankPanel);

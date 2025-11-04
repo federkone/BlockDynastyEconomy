@@ -56,14 +56,47 @@ public class EditCurrencyUseCase {
     }
 
     public void setCurrencyRate(String currencyName, double rate){
-        if (rate <= 0) {
-            throw new IllegalArgumentException("Exchange rate must be greater than zero");
+        if (rate <= -1) {
+            throw new IllegalArgumentException("Exchange rate must be greater than -1");
         }
         Currency currency = currencyService.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setExchangeRate(rate);
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error creating currency");
+        }
+    }
+
+    public void addInterchangeableCurrency(String currencyName, String currencyToAddName){
+        if (currencyName.equalsIgnoreCase(currencyToAddName)){
+            throw new IllegalArgumentException("Cannot add the same currency as interchangeable");
+        }
+        Currency currency = currencyService.getCurrency(currencyName);
+        Currency currencyToAdd = currencyService.getCurrency(currencyToAddName);
+        if (currency == null || currencyToAdd == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currency.addInterchangeableCurrency(currencyToAdd);
+        try {
+            dataStore.saveCurrency(currency);
+            updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());
+        }catch (TransactionException e){
+            throw new TransactionException("Error creating currency");
+        }
+    }
+
+    public void removeInterchangeableCurrency(String currencyName, String currencyToRemoveName){
+        Currency currency = currencyService.getCurrency(currencyName);
+        Currency currencyToRemove = currencyService.getCurrency(currencyToRemoveName);
+        if (currency == null || currencyToRemove == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currency.removeInterchangeableCurrency(currencyToRemove);
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage("currency", currency.getUuid().toString());

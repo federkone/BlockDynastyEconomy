@@ -147,4 +147,12 @@ public class GUIFactory {
                         textInput
                 );
             }
+
+            public static IGUI currencyListExchange(IEntityGUI player, Currency currency, IGUI parent) {
+                return new CurrencyListExchange(player, useCaseFactory.editCurrency(), parent, currency);
+            }
+
+            public static IGUI currencyListToAddExchange(IEntityGUI player, Currency currency, IGUI parent) {
+                return new CurrencyListToAddExchange(player, useCaseFactory.searchCurrency(), useCaseFactory.editCurrency(), parent, currency);
+            }
 }

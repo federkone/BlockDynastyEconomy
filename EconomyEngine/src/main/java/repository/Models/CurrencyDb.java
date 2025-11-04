@@ -18,6 +18,7 @@ package repository.Models;
 
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import jakarta.persistence.*;
+import repository.Mappers.CurrencyMapper;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -56,6 +57,14 @@ public class CurrencyDb {
 
     @Column(name = "exchange_rate")
     private double exchangeRate;
+
+    @ManyToMany
+    @JoinTable(
+            name = "currency_interchangeable",
+            joinColumns = @JoinColumn(name = "currency_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "interchangeable_uuid")
+    )
+    private List<CurrencyDb> interchangeableWith  = new ArrayList<>();;
 
     //esto se agrega para que hibernate elimine en cascada los balances asociados a esta moneda
     @OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -144,6 +153,20 @@ public class CurrencyDb {
         this.exchangeRate = exchangeRate;
     }
 
+    public void setInterchangeableWith(List<Currency> interchangeableWith) {
+        List<CurrencyDb> mappedInterchangeable = new ArrayList<>();
+        interchangeableWith.forEach(c -> {
+            mappedInterchangeable.add(CurrencyMapper.toEntity(c));
+        });
+        this.interchangeableWith = mappedInterchangeable;
+    }
+    public List<Currency> getInterchangeableWith() {
+        List<Currency> interchangeable= new ArrayList<>();
+        this.interchangeableWith.forEach(c -> {
+            interchangeable.add(CurrencyMapper.toDomain(c));
+        });
+        return interchangeable;
+    }
     // Actualizar campos (excepto ID/UUID)
     public void update(Currency currency) {
         setSingular(currency.getSingular());
@@ -155,5 +178,6 @@ public class CurrencyDb {
         setDefaultBalance(currency.getDefaultBalance());
         setExchangeRate(currency.getExchangeRate());
         setSymbol(currency.getSymbol());
+        setInterchangeableWith(currency.getInterchangeableWith());
     }
 }

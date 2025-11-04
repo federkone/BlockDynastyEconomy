@@ -50,7 +50,21 @@ public class ExchangeUseCase extends SingleAccountMultiCurrencyOp implements IEx
         this.dataStore = dataStore;
     }
 
+    //si solo si los valores de intercambio son mayor a 0 se realiza el intercambio
     public Result<BigDecimal> execute(Account account, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo){
+        //si el amountTo or amountFrom no son nullos y son negativos, error no se puede hacer el exchange entre estas dos monedas
+        if (currencyFrom.getExchangeRate() <=0) {
+            return Result.failure("The "+currencyFrom.getSingular() +" are not interchangeable.", ErrorCode.CURRENCY_HAS_NO_EXCHANGE_RATE);
+        }
+
+        if (currencyTo.getExchangeRate() <= 0){
+            return Result.failure("The "+currencyTo.getSingular() +" are not interchangeable.", ErrorCode.CURRENCY_HAS_NO_EXCHANGE_RATE);
+        }
+
+        if(!currencyFrom.isInterchangeableWith(currencyTo)){
+            return Result.failure( "The currencies are not interchangeable.", ErrorCode.CURRENCIES_NOT_INTERCHANGEABLE);
+        }
+
         if (currencyFrom.equals(currencyTo)) {
             return Result.failure("Cannot exchange the same currency", ErrorCode.CURRENCY_MUST_BE_DIFFERENT);
         }

@@ -19,6 +19,8 @@ package repository.Mappers;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import repository.Models.CurrencyDb;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CurrencyMapper {
@@ -39,6 +41,7 @@ public class CurrencyMapper {
         entity.setDefaultBalance(domain.getDefaultBalance());
         entity.setExchangeRate(domain.getExchangeRate());
         entity.setSymbol(domain.getSymbol()); // Si tu dominio tiene símbolo
+        entity.setInterchangeableWith(domain.getInterchangeableWith());
         return entity;
     }
 
@@ -47,6 +50,7 @@ public class CurrencyMapper {
         if (entity == null) {
             return null; // Manejo de caso nulo
         }
+
         return new Currency(
                 UUID.fromString(entity.getUuid()),
                 entity.getSingular(),
@@ -57,7 +61,8 @@ public class CurrencyMapper {
                 entity.isTransferable(),
                 entity.isDefaultCurrency(),
                 entity.getDefaultBalance(),
-                entity.getExchangeRate()
+                entity.getExchangeRate(),
+                entity.getInterchangeableWith()
         );
     }
 }

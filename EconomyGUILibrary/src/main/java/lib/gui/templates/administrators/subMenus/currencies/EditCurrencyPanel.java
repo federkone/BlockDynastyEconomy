@@ -69,6 +69,10 @@ public class EditCurrencyPanel extends AbstractPanel {
         setItem(13, createItem(Materials.GOLD_NUGGET, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button3.nameItem"),
                 Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button3.lore")), f -> {openExchangeRateInput();});
 
+        setItem(14,createItem(Materials.BOOK, ChatColor.stringValueOf(Colors.GREEN)+ "Whitelist currencies for Exchange", "In this section you can decide which currencies ","you will allow this currency to be exchanged with."), f -> {
+                GUIFactory.currencyListExchange(player,currency,this).open();
+        });
+
         // Edit Color button
         setItem(15, createItem(Materials.LIME_DYE, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button4.nameItem"),
                 Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button4.lore")), f -> {openColorSelectionGUI();});
