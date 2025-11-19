@@ -119,6 +119,7 @@ public class EngineTest {
 
     @Test
     public void testGUIWorkFlowTransferOffline(){
+        MinecraftServer.disconnectPlayer(player2);
         player.addPermission("BlockDynastyEconomy.players.bank");
         Command command= CommandsFactory.Commands.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
