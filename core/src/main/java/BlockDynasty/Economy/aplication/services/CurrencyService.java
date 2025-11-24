@@ -36,15 +36,17 @@ public class CurrencyService implements ICurrencyService {
         this.currencies = repository.loadCurrencies();
 
         if(currencies.isEmpty()){
-            Currency defaultCurrency = new Currency(UUID.randomUUID(), "Money", "Money");
-            defaultCurrency.setColor("GREEN");
-            defaultCurrency.setDefaultCurrency(true);
+            Currency defaultCurrency = Currency.builder()
+                    .setSingular("Money")
+                    .setPlural("Money")
+                    .setColor("GREEN")
+                    .setDefaultCurrency(true)
+                    .build();
             repository.saveCurrency(defaultCurrency);
             currencies.add(defaultCurrency);
         }
 
         updateDefaultCurrency();
-
     }
 
     public void syncCurrency(UUID uuid){

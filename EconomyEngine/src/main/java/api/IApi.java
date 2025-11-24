@@ -134,6 +134,7 @@ public interface IApi {
     String format(BigDecimal amount, String currency);
 
     List<String> getCurrenciesNamesList();
+    List<Currency> getCurrencies();
 
     EconomyResponse createAccount(final UUID accountID, final String name);
 

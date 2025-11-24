@@ -37,7 +37,7 @@ public class Money implements IMoney{
     }
 
     public Money(Money money){
-        this.currency = new Currency(money.getCurrency());
+        this.currency = Currency.builder().copy(money.getCurrency()).build();
         this.amount = money.getAmount();
     }
 

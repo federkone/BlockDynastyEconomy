@@ -55,7 +55,7 @@ public class WithdrawUseCaseTest {
     @BeforeEach
     void setUp() {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
-        dinero= new Currency(UUID.randomUUID(),"dinero","dinero");
+        dinero= Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
         repository = FactoryRepo.getDb();
 
@@ -106,7 +106,7 @@ public class WithdrawUseCaseTest {
 
     @Test
     void withdrawUseCaseTestWithNullBalance(){
-        currencyService.add(new Currency(UUID.randomUUID(),"oro","oro"));
+        currencyService.add(Currency.builder().setSingular("oro").setPlural("oro").build());
         Result<Void> result = withdrawUseCase.execute(nullplague.getUuid(), "oro", BigDecimal.valueOf(10000));
         assertEquals(ErrorCode.ACCOUNT_NOT_HAVE_BALANCE, result.getErrorCode(), result.getErrorMessage() );
     }

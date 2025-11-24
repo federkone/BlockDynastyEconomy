@@ -54,8 +54,8 @@ public class TransferUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        coin = new Currency(UUID.randomUUID(),"Coin","Coins");
-        dinero = new Currency(UUID.randomUUID(),"dinero","dinero");
+        coin = Currency.builder().setSingular("Coin").setPlural("Coins").build();
+        dinero = Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");

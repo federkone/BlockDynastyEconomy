@@ -37,15 +37,15 @@ public class CrudCurrencyTest {
 
         @Test
         public void testCreate() {
-            Currency currency = new Currency(UUID.randomUUID(),"dinero","dinero");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
             this.currencyRepository.create(currency);
         }
 
         @Test
         public void testFindAll() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dineros");
-            Currency currency2 = new Currency(UUID.randomUUID(), "coin", "coins");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
+            Currency currency2 = Currency.builder().setSingular("coin").setPlural("coins").build();
 
             currencyRepository.create(currency);
             currencyRepository.create(currency2);
@@ -55,7 +55,7 @@ public class CrudCurrencyTest {
         @Test
         public void testFindByName() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dineros");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
             currencyRepository.create(currency);
             Currency currencyDb = currencyRepository.findByName(currency.getSingular());
@@ -65,7 +65,7 @@ public class CrudCurrencyTest {
         @Test
         public void testFindByUuid() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dinero");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
             currencyRepository.create(currency);
             Currency currencyDb = currencyRepository.findByUuid(currency.getUuid().toString());
@@ -76,7 +76,7 @@ public class CrudCurrencyTest {
         @Test
         public void testSave() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dinero"); //dos monedas iguales cargadas en memoria = error
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build(); //dos monedas iguales cargadas en memoria = error
 
             currencyRepository.create(currency);
             currency.setSingular("dinerito");
@@ -89,7 +89,7 @@ public class CrudCurrencyTest {
         @Test
         public void testDelete() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dinero");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
            currencyRepository.create(currency);
             currencyRepository.delete(currency);
@@ -99,7 +99,7 @@ public class CrudCurrencyTest {
         @Test
         public void testUpdate() {
             // Create the currency within a transaction
-            Currency currency = new Currency(UUID.randomUUID(), "dinero", "dinero");
+            Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
             currencyRepository.create(currency);
             currency.setSingular("dinerito");
             currencyRepository.update(currency);

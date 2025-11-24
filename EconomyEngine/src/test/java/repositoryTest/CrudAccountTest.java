@@ -37,8 +37,8 @@ public class CrudAccountTest {
 
     @Test
     public void testCreateAccount() {
-        Currency currency = new Currency(UUID.randomUUID(),"dinero","dinero");
-        Currency currency2 = new Currency(UUID.randomUUID(),"coin","coin");
+        Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
+        Currency currency2 = Currency.builder().setSingular("coin").setPlural("coin").build();
         currencyRepository.create(currency2);
        currencyRepository.create(currency);
 
@@ -58,7 +58,7 @@ public class CrudAccountTest {
 
     @Test
     public void testUpdateAccount() {
-        Currency currency = new Currency(UUID.randomUUID(),"dinero","dinero");
+        Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
         currencyRepository.create(currency);
 
         Account account = new Account(UUID.randomUUID(), "nullplague");
@@ -75,7 +75,7 @@ public class CrudAccountTest {
 
     @Test
     public  void testDeleteAccount() {
-        Currency currency = new Currency(UUID.randomUUID(),"dinero","dinero");
+        Currency currency = Currency.builder().setSingular("dinero").setPlural("dinero").build();
         currencyRepository.create(currency);
 
         Account account = new Account(UUID.randomUUID(), "nullplague");

@@ -32,8 +32,8 @@ public class ExchangeEvent extends Event {
 
     public ExchangeEvent(Player player, Currency fromCurrency, Currency toCurrency, BigDecimal amount, double exchangeRate, BigDecimal exchangedAmount) {
         this.player = new Player(player);
-        this.fromCurrency = new Currency(fromCurrency);
-        this.toCurrency = new Currency(toCurrency);
+        this.fromCurrency = Currency.builder().copy(fromCurrency).build();;
+        this.toCurrency = Currency.builder().copy(toCurrency).build();;
         this.amount = amount;
         this.exchangeRate = exchangeRate;
         this.exchangedAmount = exchangedAmount;

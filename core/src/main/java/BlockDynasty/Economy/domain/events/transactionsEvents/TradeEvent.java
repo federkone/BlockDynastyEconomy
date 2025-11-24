@@ -34,8 +34,8 @@ public class TradeEvent extends SerializableEvent {
     public TradeEvent(Player fromPlayer, Player toPlayer, Currency currencyFrom, Currency currencyTo, BigDecimal amountFrom, BigDecimal amountTo) {
         this.fromPlayer = new Player(fromPlayer);
         this.toPlayer = new Player(toPlayer);
-        this.currencyFrom = new Currency( currencyFrom );
-        this.currencyTo = new Currency( currencyTo );
+        this.currencyFrom = Currency.builder().copy(currencyFrom).build();;
+        this.currencyTo = Currency.builder().copy(currencyTo).build();;
         this.amountFrom = amountFrom;
         this.amountTo = amountTo;
     }

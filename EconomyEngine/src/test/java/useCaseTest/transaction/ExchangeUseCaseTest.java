@@ -54,11 +54,11 @@ public class ExchangeUseCaseTest {
     @BeforeEach
     void setUp() {
         // Keep the same currency setup
-        coin = new Currency(UUID.randomUUID(), "Coin", "Coins");
+        coin =Currency.builder().setSingular("Coin").setPlural("Coins").build();
         coin.setExchangeRate(1.0);
         coin.setDecimalSupported(false); // Coins don't support decimals
 
-        dinero = new Currency(UUID.randomUUID(), "dinero", "dinero");
+        dinero = Currency.builder().setSingular("dinero").setPlural("dinero").build();
         dinero.setExchangeRate(30000.0);
 
         // Increase the initial dinero balance to have enough for the test

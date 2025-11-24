@@ -89,7 +89,7 @@ public class SearchAccountUseCaseTest {
 
 */
 
-        Currency defaultCurrency = new Currency(UUID.randomUUID(), "default", "default");
+        Currency defaultCurrency = Currency.builder().setSingular("default").setPlural("default").build();
         Account robert = new Account(UUID.randomUUID(), "robert");
         Account nullplague = new Account(UUID.randomUUID(), "nullplague");
         Account Cris = new Account(UUID.randomUUID(),"Cris");

@@ -17,6 +17,7 @@
 package lib.gui;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.abstractions.IMessages;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.IGUI;
@@ -148,11 +149,11 @@ public class GUIFactory {
                 );
             }
 
-            public static IGUI currencyListExchange(IEntityGUI player, Currency currency, IGUI parent) {
+            public static IGUI currencyListExchange(IEntityGUI player, ICurrency currency, IGUI parent) {
                 return new CurrencyListExchange(player, useCaseFactory.editCurrency(), parent, currency);
             }
 
-            public static IGUI currencyListToAddExchange(IEntityGUI player, Currency currency, IGUI parent) {
+            public static IGUI currencyListToAddExchange(IEntityGUI player, ICurrency currency, IGUI parent) {
                 return new CurrencyListToAddExchange(player, useCaseFactory.searchCurrency(), useCaseFactory.editCurrency(), parent, currency);
             }
 }

@@ -70,8 +70,8 @@ public class OfferUserCasesTest {
         this.currencyService = new CurrencyService(dataStore);  //cargar en cache alguna moneda para las pruebas
         this.accountService = new AccountService(5 ,dataStore, currencyService); //cargar en cache alguna cuenta para las pruebas
 
-        this.coin= new Currency(UUID.randomUUID(),"coin","coins");
-        this.dollar = new Currency(UUID.randomUUID(),"dollar","dollars");
+        this.coin= Currency.builder().setSingular("coin").setPlural("coins").build();
+        this.dollar = Currency.builder().setSingular("dollar").setPlural("dollars").build();
         currencyService.add(dollar);
         currencyService.add(coin);
 

@@ -340,6 +340,11 @@ public class Api implements IApi {
     }
 
     @Override
+    public List<Currency> getCurrencies() {
+        return this.searchCurrencyUseCase.getCurrencies();
+    }
+
+    @Override
     public EconomyResponse createAccount(UUID accountID, String name) {
         Result<Account> result =  this.createAccountUseCase.execute(accountID, name);
         if (result.isSuccess()) {

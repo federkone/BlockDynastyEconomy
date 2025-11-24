@@ -45,7 +45,7 @@ public class EditCurrencyUseCase {
         if (!currency.isDecimalSupported() && startBal % 1 != 0) {
             throw new DecimalNotSupportedException("Currency does not support decimals");
         }
-        currency.setStartBalance(BigDecimal.valueOf(startBal));
+        currency.setDefaultBalance(BigDecimal.valueOf(startBal));
         try {
             dataStore.saveCurrency(currency);
             //actualizar cache no hace falta por que ya traje la referencia de la moneda de currencymanager

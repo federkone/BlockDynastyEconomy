@@ -29,7 +29,7 @@ public class PayEvent  extends Event {
     private final BigDecimal amount;
 
     public PayEvent(Player player, Player received,Currency currency,  BigDecimal amount ) {
-            this.currency = new Currency( currency );
+            this.currency = Currency.builder().copy(currency).build();;
             this.payer = new Player(player);
             this.received = new Player(received);
             this.amount = amount;

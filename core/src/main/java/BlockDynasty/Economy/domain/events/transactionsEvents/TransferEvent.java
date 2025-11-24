@@ -31,7 +31,7 @@ public class TransferEvent extends SerializableEvent {
     public TransferEvent(Player fromPlayer, Player toPlayer, Currency currency, BigDecimal amount) {
         this.fromPlayer = new Player(fromPlayer);
         this.toPlayer = new Player(toPlayer);
-        this.currency = new Currency( currency );
+        this.currency = Currency.builder().copy(currency).build();;
         this.amount = amount;
     }
 

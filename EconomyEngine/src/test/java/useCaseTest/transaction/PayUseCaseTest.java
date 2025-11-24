@@ -58,9 +58,9 @@ public class PayUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        coin = new Currency(UUID.randomUUID(),"Coin","Coins");
-        dinero = new Currency(UUID.randomUUID(),"dinero","dinero");
-        plata = new Currency(UUID.randomUUID(),"plata","plata");
+        coin = Currency.builder().setSingular("Coin").setPlural("Coins").build();
+        dinero = Currency.builder().setSingular("dinero").setPlural("dinero").build();
+        plata = Currency.builder().setSingular("plata").setPlural("plata").build();
 
         nullplague = new Account(UUID.randomUUID(), "nullplague");
         cris = new Account(UUID.randomUUID(), "cris");

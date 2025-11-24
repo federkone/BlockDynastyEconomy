@@ -44,7 +44,7 @@ public class CreateCurrencyUseCase {
         if (currencyService.currencyExist(singular) || currencyService.currencyExist(plural)){
             throw new CurrencyAlreadyExist("Currency already exist");
         }
-        Currency currency = new Currency(UUID.randomUUID(), singular, plural);
+        Currency currency = Currency.builder().setSingular(singular).setPlural(plural).build();
         currency.setExchangeRate(1.0);
         if(currencyService.getCurrencies().isEmpty()) {  //setear por defecto si es la unica moneda en el sistema
             currency.setDefaultCurrency(true);

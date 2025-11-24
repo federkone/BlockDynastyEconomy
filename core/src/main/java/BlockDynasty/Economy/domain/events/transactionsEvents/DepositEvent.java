@@ -30,14 +30,14 @@ public class DepositEvent extends SerializableEvent {
     private final BigDecimal amount;
 
     public DepositEvent(Player player, Currency currency, BigDecimal amount) {
-        this.currency = new Currency(currency);
+        this.currency = Currency.builder().copy(currency).build();
         this.player = new Player(player);
         this.amount = amount;
         this.context = Context.OTHER;
     }
 
     public DepositEvent(Player player, Currency currency, BigDecimal amount,Context context) {
-        this.currency = new Currency(currency);
+        this.currency = Currency.builder().copy(currency).build();
         this.player = new Player(player);
         this.amount = amount;
         this.context = context;

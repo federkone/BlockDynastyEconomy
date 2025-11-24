@@ -55,7 +55,7 @@ public class DepositUseCaseTest {
     @BeforeEach
     void setUp() {
         nullplague = new Account(UUID.randomUUID(), "nullplague");
-        dinero= new Currency(UUID.randomUUID(),"dinero","dinero");
+        dinero= Currency.builder().setSingular("dinero").setPlural("dinero").build();
 
         repository = FactoryRepo.getDb();
         currencyService = new CurrencyService(repository);

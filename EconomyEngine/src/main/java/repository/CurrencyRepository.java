@@ -132,7 +132,7 @@ public class CurrencyRepository implements ICurrencyRepository {
                         .setParameter("singular", currency.getSingular())
                         .getSingleResult();
 
-                currencyDb.update(currency);
+                CurrencyMapper.update(currency,currencyDb);
                 session.merge(currencyDb);
                 tx.commit();
             } catch (NoResultException e) {
@@ -180,7 +180,7 @@ public class CurrencyRepository implements ICurrencyRepository {
                         .setParameter("singular", currency.getSingular())
                         .getSingleResult();
 
-                currencyDb.update(currency);
+                CurrencyMapper.update(currency,currencyDb);
                 session.merge(currencyDb);
                 tx.commit();
             } catch (NoResultException e) {
