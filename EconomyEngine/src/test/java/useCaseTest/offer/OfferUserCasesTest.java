@@ -61,8 +61,8 @@ public class OfferUserCasesTest {
     private Account nullplague;
     private Account cris;
 
-    private ICurrency dollar;
-    private  ICurrency coin;
+    private ICurrency dollar= Currency.builder().setSingular("dollar").setPlural("dollars").build() ;
+    private ICurrency coin= Currency.builder().setSingular("coin").setPlural("coins").build();;
 
     @BeforeEach
     public void setup() {
@@ -71,8 +71,6 @@ public class OfferUserCasesTest {
         this.currencyService = new CurrencyService(dataStore);  //cargar en cache alguna moneda para las pruebas
         this.accountService = new AccountService(5 ,dataStore, currencyService); //cargar en cache alguna cuenta para las pruebas
 
-        this.coin= Currency.builder().setSingular("coin").setPlural("coins").build();
-        this.dollar = Currency.builder().setSingular("dollar").setPlural("dollars").build();
         currencyService.add(dollar);
         currencyService.add(coin);
 
@@ -84,12 +82,13 @@ public class OfferUserCasesTest {
         cris.setMoney(dollar, BigDecimal.valueOf(1000));
         cris.setMoney(coin, BigDecimal.valueOf(1000));
 
-        accountService.addAccountToOnline(nullplague);
-        accountService.addAccountToOnline(cris);
         dataStore.saveCurrency(dollar);
         dataStore.saveCurrency(coin);
         dataStore.saveAccount(nullplague);
         dataStore.saveAccount(cris);
+        accountService.addAccountToOnline(nullplague);
+        accountService.addAccountToOnline(cris);
+
 
         searchAccountUseCase = new SearchAccountUseCase( accountService, dataStore);
         searchCurrencyUseCase = new SearchCurrencyUseCase( currencyService, dataStore);
