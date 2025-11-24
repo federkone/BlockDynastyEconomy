@@ -47,7 +47,7 @@ public class CurrencyMapper {
     }
 
     // De Entidad JPA → Modelo de Dominio
-    public static Currency toDomain(CurrencyDb entity) {
+    public static ICurrency toDomain(CurrencyDb entity) {
         if (entity == null) return null;
         return Currency.builder()
                 .setUuid(UUID.fromString(entity.getUuid()))
@@ -115,7 +115,5 @@ public class CurrencyMapper {
                 .map(CurrencyMapper::toDomainReference)
                 .collect(Collectors.toList());
     }
-
-
 
 }

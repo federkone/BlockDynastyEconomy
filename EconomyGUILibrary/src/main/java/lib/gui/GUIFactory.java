@@ -100,11 +100,11 @@ public class GUIFactory {
                 return new CurrencyListEdit(player, useCaseFactory.searchCurrency(), parent,textInput);
             }
             //submenus for currencyListToEditPanel
-                public static IGUI editCurrencyPanel(IEntityGUI sender, Currency currency, IGUI parent) {
+                public static IGUI editCurrencyPanel(IEntityGUI sender, ICurrency currency, IGUI parent) {
                     return new EditCurrencyPanel(sender, currency,useCaseFactory.editCurrency(), parent,textInput);
                 }
                 //submenus for editCurrencyPanel
-                    public static IGUI colorSelectorPanel(IEntityGUI sender, Currency currency, EditCurrencyPanel parent) {
+                    public static IGUI colorSelectorPanel(IEntityGUI sender, ICurrency currency, EditCurrencyPanel parent) {
                         return new ColorSelectionPanel( sender,currency,useCaseFactory.editCurrency(), parent,textInput);
                     }
     //_-------------------------------------------------------------------------------

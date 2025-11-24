@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.transactionsEvents.PayEvent;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -52,9 +53,9 @@ public class PayUseCaseTest {
     SearchCurrencyUseCase searchCurrencyUseCase;
     EditCurrencyUseCase editCurrencyUseCase;
     PayUseCase payUseCase;
-    Currency coin;
-    Currency dinero;
-    Currency plata;
+    ICurrency coin;
+    ICurrency dinero;
+    ICurrency plata;
 
     @BeforeEach
     void setUp() {

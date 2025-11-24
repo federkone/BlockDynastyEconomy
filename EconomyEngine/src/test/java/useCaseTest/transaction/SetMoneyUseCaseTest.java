@@ -20,6 +20,7 @@ import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
@@ -42,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SetMoneyUseCaseTest {
     Account nullplague;
-    Currency dinero;
+    ICurrency dinero;
     IRepository repository;
     ISetBalanceUseCase setBalanceUseCase;
     Core core;

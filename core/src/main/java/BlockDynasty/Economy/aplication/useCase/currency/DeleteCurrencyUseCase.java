@@ -16,6 +16,7 @@
 
 package BlockDynasty.Economy.aplication.useCase.currency;
 
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
@@ -42,7 +43,7 @@ public class DeleteCurrencyUseCase {
     }
 
     public void deleteCurrency(String currencyName){
-        Currency currency = currencyService.getCurrency(currencyName);
+        ICurrency currency = currencyService.getCurrency(currencyName);
         if (currency == null){
             throw new CurrencyNotFoundException("Currency not found");
         }
@@ -50,8 +51,8 @@ public class DeleteCurrencyUseCase {
             throw new CurrencyNotFoundException(currency.getSingular()+" is default");
         }
         try {
-            List<Currency> allCurrencies = currencyService.getCurrencies();
-            for (Currency curr : allCurrencies){
+            List<ICurrency> allCurrencies = currencyService.getCurrencies();
+            for (ICurrency curr : allCurrencies){
                 if (curr.isInterchangeableWith(currency)){
                     curr.removeInterchangeableCurrency(currency);
                     dataStore.saveCurrency(curr);

@@ -20,6 +20,7 @@ import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -43,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WithdrawUseCaseTest {
     Account nullplague;
-    Currency dinero;
+    ICurrency dinero;
     IRepository repository;
     ICurrencyService currencyService;
     AccountService accountService;

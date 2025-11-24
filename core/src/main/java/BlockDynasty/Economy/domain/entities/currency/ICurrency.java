@@ -32,6 +32,7 @@ public interface ICurrency {
      String format(BigDecimal amount);
      boolean isValidAmount(BigDecimal amount);
      boolean isDefaultCurrency();
+     boolean isInterchangeableWith(ICurrency currency);
      void setDefaultBalance(BigDecimal defaultBalance);
      void setDefaultCurrency(boolean defaultCurrency);
      boolean isTransferable();

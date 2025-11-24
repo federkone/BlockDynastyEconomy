@@ -17,6 +17,7 @@
 package useCaseTest.transaction;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
@@ -49,8 +50,8 @@ public class TransferUseCaseTest {
     SearchAccountUseCase searchAccountUseCase;
     SearchCurrencyUseCase searchCurrencyUseCase;
     TransferFundsUseCase transferFundsUseCase;
-    Currency coin;
-    Currency dinero;
+    ICurrency coin;
+    ICurrency dinero;
 
     @BeforeEach
     void setUp() {

@@ -17,6 +17,7 @@
 package useCaseTest.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import mockClass.CourierTest;
 import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
@@ -60,8 +61,8 @@ public class OfferUserCasesTest {
     private Account nullplague;
     private Account cris;
 
-    private Currency dollar;
-    private  Currency coin;
+    private ICurrency dollar;
+    private  ICurrency coin;
 
     @BeforeEach
     public void setup() {

@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class CurrencyTreasury implements me.lokka30.treasury.api.economy.currency.Currency{
-    BlockDynasty.Economy.domain.entities.currency.Currency currency;
+    BlockDynasty.Economy.domain.entities.currency.ICurrency currency;
 
-    public CurrencyTreasury(BlockDynasty.Economy.domain.entities.currency.Currency currency ) {
+    public CurrencyTreasury(BlockDynasty.Economy.domain.entities.currency.ICurrency currency ) {
         this.currency = currency;
     }
 

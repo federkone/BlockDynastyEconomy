@@ -92,7 +92,7 @@ public class economyHook implements EconomyProvider {
 
     @Override
     public @NotNull Optional<Currency> findCurrency(@NotNull String identifier) {
-        BlockDynasty.Economy.domain.entities.currency.Currency c = api.getCurrency(identifier);
+        BlockDynasty.Economy.domain.entities.currency.ICurrency c = api.getCurrency(identifier);
         if (c == null) {
             return Optional.empty();
         }
@@ -106,10 +106,10 @@ public class economyHook implements EconomyProvider {
 
     @Override
     public @NotNull Set<Currency> getCurrencies() {
-        List<BlockDynasty.Economy.domain.entities.currency.Currency> c= api.getCurrencies();
+        List<BlockDynasty.Economy.domain.entities.currency.ICurrency> c= api.getCurrencies();
         if (c != null) {
             Set<Currency> currencies = new HashSet<>();
-            for (BlockDynasty.Economy.domain.entities.currency.Currency currency : c) {
+            for (BlockDynasty.Economy.domain.entities.currency.ICurrency currency : c) {
                 currencies.add(new CurrencyTreasury(currency));
             }
             return currencies;
