@@ -16,7 +16,6 @@
 
 package lib.gui;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.abstractions.IMessages;
 import lib.abstractions.PlatformAdapter;
@@ -28,10 +27,7 @@ import lib.gui.components.abstractions.AbstractPanel;
 import lib.gui.templates.administrators.mainMenus.AccountSelectorToEdit;
 import lib.gui.templates.administrators.mainMenus.EconomyAdminPanel;
 import lib.gui.templates.administrators.mainMenus.CurrencyAdminPanel;
-import lib.gui.templates.administrators.subMenus.accounts.DepositPanel;
-import lib.gui.templates.administrators.subMenus.accounts.SetBalancePanel;
-import lib.gui.templates.administrators.subMenus.accounts.WithdrawPanel;
-import lib.gui.templates.administrators.subMenus.accounts.EditAccountPanel;
+import lib.gui.templates.administrators.subMenus.accounts.*;
 import lib.gui.templates.administrators.subMenus.currencies.*;
 import lib.gui.templates.users.*;
 import lib.gui.templates.users.Exchange.ExchangeFirstPanel;
@@ -46,8 +42,10 @@ public class GUIFactory {
     private static ITextInput textInput;
     private static final IGUIService guiService = new GUIService();
     private static UseCaseFactory useCaseFactory;
+    private static PlatformAdapter platformAdapter;
 
     public static void init(UseCaseFactory useCaseFactory,PlatformAdapter adapter, IMessages messages) {
+        GUIFactory.platformAdapter = adapter;
         Message.addLang(messages);
         AbstractPanel.setPlatformAdapter(adapter,guiService);
         GUIFactory.useCaseFactory= useCaseFactory;
@@ -77,6 +75,9 @@ public class GUIFactory {
                 }
                 public static IGUI depositPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
                     return new DepositPanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.deposit(),parent,textInput);
+                }
+                public static IGUI sellCommandPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
+                    return new SellCommandPanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.withdraw(),parent,textInput,platformAdapter);
                 }
                 public static IGUI setPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent){
                     return  new SetBalancePanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.setBalance(),parent,textInput);
