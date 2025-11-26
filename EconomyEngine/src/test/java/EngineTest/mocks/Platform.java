@@ -44,7 +44,7 @@ public class Platform implements PlatformAdapter {
 
     @Override
     public ItemStack createItemStack(lib.gui.components.RecipeItem recipeItem) {
-        return new ItemStack(recipeItem.getMaterial());
+        return new ItemStack(recipeItem);
     }
 
     @Override

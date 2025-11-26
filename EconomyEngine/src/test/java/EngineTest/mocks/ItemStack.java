@@ -2,6 +2,7 @@ package EngineTest.mocks;
 
 import EngineTest.mocks.utils.Color;
 import lib.gui.components.IItemStack;
+import lib.gui.components.RecipeItem;
 import lib.util.materials.Materials;
 
 import java.util.ArrayList;
@@ -14,6 +15,12 @@ public class ItemStack implements IItemStack {
 
     public ItemStack(Materials material){
         this.material=material;
+    }
+
+    public ItemStack(RecipeItem recipeItem){
+        this.material=recipeItem.getMaterial();
+        this.name=Color.parse(recipeItem.getName());
+        this.lore= List.of(recipeItem.getLore());
     }
 
     @Override
