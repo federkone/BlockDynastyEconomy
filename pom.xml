@@ -17,7 +17,6 @@
         <module>EconomyEngine</module>
         <module>Velocity</module>
         <module>BungeeCord</module>
-        <module>Minestom</module>
     </modules>
 
     <properties>
