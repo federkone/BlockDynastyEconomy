@@ -127,6 +127,12 @@ public class GUIFactory {
         public static IGUI listPlayersOnline(IEntityGUI sender, IGUI parent) {
         return new ListPlayersOnline(sender, parent, textInput,platformAdapter);
     }
+        public static IGUI listPlayerOnlineToOffer(IEntityGUI sender, IGUI parent) {
+        return new ListPlayerOnlineToOffer(sender, parent, textInput,platformAdapter);
+    }
+        public static IGUI listPlayersOfflineToOffer(IEntityGUI sender, IGUI parent) {
+        return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
+    }
             //submenus for payPanel
             public static IGUI currencyListToPayPanel(IEntityGUI sender, BlockDynasty.Economy.domain.entities.account.Player target, IGUI parent) {
                 return new CurrencyListToPay(
@@ -138,20 +144,12 @@ public class GUIFactory {
                         textInput
                 );
             }
-
             public static IGUI currencyListExchange(IEntityGUI player, ICurrency currency, IGUI parent) {
                 return new CurrencyListExchange(player, useCaseFactory.editCurrency(), parent, currency);
             }
-
             public static IGUI currencyListToAddExchange(IEntityGUI player, ICurrency currency, IGUI parent) {
                 return new CurrencyListToAddExchange(player, useCaseFactory.searchCurrency(), useCaseFactory.editCurrency(), parent, currency);
             }
 
-            public static IGUI listPlayerOnlineToOffer(IEntityGUI sender, IGUI parent) {
-                return new ListPlayerOnlineToOffer(sender, parent, textInput,platformAdapter);
-            }
 
-            public static IGUI listPlayersOfflineToOffer(IEntityGUI sender, IGUI parent) {
-                return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
-            }
 }
