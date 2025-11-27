@@ -22,9 +22,6 @@ public interface IGUI {
     void refresh();
     void handleLeftClick(int slot, IEntityGUI player);
     void handleRightClick(int slot, IEntityGUI player);
-    int getRows();
-    String getTitle();
-    IInventory getInventory();
     boolean hasParent();
     IGUI getParent();
     void openParent();

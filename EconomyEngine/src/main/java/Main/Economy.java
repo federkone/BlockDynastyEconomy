@@ -22,6 +22,7 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
+import lib.gui.GUISystem;
 import platform.files.Configuration;
 import platform.files.Languages;
 import platform.files.logs.EconomyLogger;
@@ -72,7 +73,7 @@ public class Economy {
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
         this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
         CommandsFactory.init(platformAdapter,core.getUseCaseFactory());
-        GUIFactory.init(core.getUseCaseFactory(),platformAdapter,new Message());
+        GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message());
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 

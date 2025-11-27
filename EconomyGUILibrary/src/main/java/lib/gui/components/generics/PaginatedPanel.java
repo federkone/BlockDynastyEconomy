@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package lib.gui.components.abstractions;
+package lib.gui.components.generics;
 
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
@@ -35,13 +37,9 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     public PaginatedPanel(String title, int rows, IEntityGUI player, IGUI parent, int itemsPerPage) {
         super(title, Math.max(3, rows), player, parent);
         this.rows = Math.max(3, rows);
-
-        // Calculate maximum safe items per page based on available slots
-        // Subtract 1 row (9 slots) for navigation buttons
         int availableRows = this.rows - 1;
-        int maxSafeItems = availableRows * 7; // 7 slots per row (avoiding edge columns)
+        int maxSafeItems = availableRows * 7;
 
-        // Ensure itemsPerPage doesn't exceed available space
         this.itemsPerPage = Math.min(itemsPerPage, maxSafeItems);
     }
 
@@ -130,24 +128,39 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     }
 
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button1.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button1.lore"));
+        RecipeItem recipe = RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)), "Paginated.button1.nameItem"))
+                .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "Paginated.button1.lore"))
+                .build();
+        return Item.of(recipe);
     }
 
     protected IItemStack createPreviousButton() {
-        return createItem(Materials.ARROW,  Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button2.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button2.lore"));
+        RecipeItem recipe = RecipeItem.builder()
+                .setMaterial(Materials.ARROW)
+                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button2.nameItem"))
+                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button2.lore"))
+                .build();
+        return Item.of(recipe);
     }
 
     protected IItemStack createNextButton() {
-        return createItem(Materials.ARROW,  Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button3.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button3.lore"));
+        RecipeItem recipe = RecipeItem.builder()
+                .setMaterial(Materials.ARROW)
+                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button3.nameItem"))
+                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button3.lore"))
+                .build();
+        return Item.of(recipe);
     }
 
     protected IItemStack createBackButton() {
-        return createItem(Materials.BARRIER,
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button4.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button4.lore"));
+        RecipeItem recipe = RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button4.nameItem"))
+                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button4.lore"))
+                .build();
+        return Item.of(recipe);
     }
 
     protected void addCustomButtons() {

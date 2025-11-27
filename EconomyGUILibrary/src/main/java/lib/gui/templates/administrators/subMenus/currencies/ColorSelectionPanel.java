@@ -17,11 +17,12 @@
 package lib.gui.templates.administrators.subMenus.currencies;
 
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
-import lib.gui.components.abstractions.AbstractPanel;
+import lib.gui.components.factory.Item;
+import lib.gui.components.generics.AbstractPanel;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.materials.Materials;
@@ -42,7 +43,13 @@ public class ColorSelectionPanel extends AbstractPanel {
     }
 
     private void setupColorGUI() {
-        setItem(4, createItem(Materials.PAPER,"List Vanilla Colors","These colors ensure maximum compatibility between versions","Additionally you can enter Hexadecimal color for modern versions"), null);
+        setItem(4, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.PAPER)
+                .setName("List Vanilla Colors")
+                .setLore("These colors ensure maximum compatibility between versions","Additionally you can enter Hexadecimal color for modern versions")
+                .build()
+        ),
+                null);
         setItem(10, createColorItem(Materials.WHITE_WOOL, ChatColor.stringValueOf("WHITE"), "WHITE"),
                 unused -> handleColorSelection("WHITE"));
         setItem(11, createColorItem(Materials.YELLOW_WOOL, ChatColor.stringValueOf("YELLOW"), "YELLOW"),
@@ -78,21 +85,28 @@ public class ColorSelectionPanel extends AbstractPanel {
         setItem(30, createColorItem(Materials.CYAN_WOOL, ChatColor.stringValueOf("DARK_AQUA"), "DARK_AQUA"),
                 unused -> handleColorSelection("DARK_AQUA"));
 
-        setItem(39, createItem(Materials.NAME_TAG, "Input color Hex (#..)"), unused -> {
-            textInput.open(this, player, "Hexadecimal Color", "#", s -> {
-                try {
-                    editCurrencyUseCase.editColor(currency.getSingular(), s);
-                    player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank] " + ChatColor.stringValueOf(Colors.GRAY) + "Color updated successfully to " + s + ".");
-                    GUIFactory.editCurrencyPanel(player, currency, getParent().getParent()).open();
-                } catch (Exception e) {
-                    player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank]" + ChatColor.stringValueOf(Colors.RED) + " Error: " + ChatColor.stringValueOf(Colors.YELLOW) + e.getMessage());
-                    this.openParent();
-                }
-                return null;
-            });
+        setItem(39, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.NAME_TAG)
+                .setName("Input color Hex (#..)")
+                .build()), unused -> {
+                textInput.open(this, player, "Hexadecimal Color", "#", s -> {
+                    try {
+                        editCurrencyUseCase.editColor(currency.getSingular(), s);
+                        player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank] " + ChatColor.stringValueOf(Colors.GRAY) + "Color updated successfully to " + s + ".");
+                        GUIFactory.editCurrencyPanel(player, currency, getParent().getParent()).open();
+                    } catch (Exception e) {
+                        player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank]" + ChatColor.stringValueOf(Colors.RED) + " Error: " + ChatColor.stringValueOf(Colors.YELLOW) + e.getMessage());
+                        this.openParent();
+                    }
+                    return null;
+                });
         });
 
-        setItem(40, createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED) + "Back", ChatColor.stringValueOf(Colors.GRAY) + "Click to go back"), unused -> {
+        setItem(40, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName(ChatColor.stringValueOf(Colors.RED) + "Back")
+                .setLore(ChatColor.stringValueOf(Colors.GRAY) + "Click to go back")
+                .build()), unused -> {
             this.openParent();
         });
     }
@@ -109,8 +123,11 @@ public class ColorSelectionPanel extends AbstractPanel {
     }
 
     private IItemStack createColorItem(Materials material, String chatColor, String colorName) {
-        return createItem(material, chatColor + colorName,
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to select this color.",
-                chatColor + "Example: " + currency.getSingular());
+        return Item.of(RecipeItem.builder()
+                .setMaterial(material)
+                .setName(chatColor + colorName)
+                .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to select this color.",
+                        chatColor + "Example: " + currency.getSingular())
+                .build());
     }
 }

@@ -18,8 +18,10 @@ package lib.gui.templates.administrators.mainMenus;
 
 import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.AbstractPanel;
+import lib.gui.components.generics.AbstractPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
@@ -37,19 +39,28 @@ public class EconomyAdminPanel extends AbstractPanel {
     }
 
     private void initializeButtons() {
-        setItem(20, createItem(Materials.EMERALD, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button1.nameItem"),
-                        Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button1.lore")),
+        setItem(20, Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.EMERALD)
+                        .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button1.nameItem"))
+                        .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button1.lore"))
+                        .build()),
                 event -> {
             GUIFactory.currencyPanel( sender, this).open();
         });
 
-        setItem(24, createItem(Materials.PLAYER_HEAD, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button2.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button2.lore")), event -> {
+        setItem(24, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.PLAYER_HEAD)
+                .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"EconomyAdminPanel.button2.nameItem"))
+                .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button2.lore"))
+                .build()), event -> {
             GUIFactory.accountSelectorToEdit( sender, this).open();
         });
 
-        setItem(40, createItem(Materials.BARRIER, Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"EconomyAdminPanel.button3.nameItem"),
-                Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button3.lore")), event -> {
+        setItem(40, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"EconomyAdminPanel.button3.nameItem"))
+                .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"EconomyAdminPanel.button3.lore"))
+                .build()), event -> {
             this.close();
         });
 

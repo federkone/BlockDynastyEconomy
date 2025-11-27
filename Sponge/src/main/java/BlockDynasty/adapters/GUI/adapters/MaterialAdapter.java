@@ -16,7 +16,7 @@
 
 package BlockDynasty.adapters.GUI.adapters;
 
-import lib.gui.components.RecipeItem;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
