@@ -6,6 +6,7 @@ import EngineTest.mocks.TextInput;
 import lib.commands.CommandsFactory;
 import lib.commands.abstractions.Command;
 import lib.gui.GUIFactory;
+import lib.gui.GUISystem;
 import lib.gui.components.ClickType;
 import org.junit.jupiter.api.*;
 
@@ -45,18 +46,18 @@ public class EngineGUITest {
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 20 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 20);
+        GUISystem.handleClick(player, ClickType.LEFT, 20);
         System.out.println("Clicked on slot 10 ->");
         TextInput.setInput("Coin");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 10);
+        GUISystem.handleClick(player, ClickType.LEFT, 10);
         System.out.println("Clicked on slot 14 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 14);
+        GUISystem.handleClick(player, ClickType.LEFT, 14);
         System.out.println("Clicked on slot 11 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 11);
+        GUISystem.handleClick(player, ClickType.LEFT, 11);
         System.out.println("Clicked on slot 15 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 15);
+        GUISystem.handleClick(player, ClickType.LEFT, 15);
         System.out.println("Clicked on slot 11 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT, 11);
+        GUISystem.handleClick(player, ClickType.LEFT, 11);
 
 
     }
@@ -69,13 +70,13 @@ public class EngineGUITest {
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 24 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,24);
+        GUISystem.handleClick(player, ClickType.LEFT,24);
         System.out.println("Clicked on slot 10 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         System.out.println("Clicked on slot 29 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,29);
+        GUISystem.handleClick(player, ClickType.LEFT,29);
         TextInput.setInput("1400");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
     }
 
     @Test
@@ -84,10 +85,10 @@ public class EngineGUITest {
         Command command= CommandsFactory.Commands.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
 
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,15);
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,15);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         TextInput.setInput("2000");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
     }
 
     @Test
@@ -96,23 +97,23 @@ public class EngineGUITest {
         Command command= CommandsFactory.Commands.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
         System.out.println("Clicked on slot 20 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,20);
+        GUISystem.handleClick(player, ClickType.LEFT,20);
         System.out.println("Clicked on slot 14 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,14);
+        GUISystem.handleClick(player, ClickType.LEFT,14);
         System.out.println("Clicked on slot 10 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         System.out.println("Clicked on slot 14 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,14);
+        GUISystem.handleClick(player, ClickType.LEFT,14);
         System.out.println("Clicked on slot 39 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,39);
+        GUISystem.handleClick(player, ClickType.LEFT,39);
         System.out.println("Clicked on slot 11 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,11);
+        GUISystem.handleClick(player, ClickType.LEFT,11);
         System.out.println("Clicked on slot 10 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         System.out.println("Clicked on slot 10 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         System.out.println("Clicked on slot 40 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,40);
+        GUISystem.handleClick(player, ClickType.LEFT,40);
     }
 
     @Test
@@ -122,10 +123,10 @@ public class EngineGUITest {
         Command command= CommandsFactory.Commands.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
 
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,16);
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,16);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         TextInput.setInput("1400");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
     }
 
     @Test
@@ -144,13 +145,13 @@ public class EngineGUITest {
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 24 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,24);
+        GUISystem.handleClick(player, ClickType.LEFT,24);
         System.out.println("Clicked on slot 10 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         System.out.println("Clicked on slot 22 ->");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,22);
+        GUISystem.handleClick(player, ClickType.LEFT,22);
         TextInput.setInput("1400");
-        GUIFactory.getGuiService().handleClick(player, ClickType.LEFT,10);
+        GUISystem.handleClick(player, ClickType.LEFT,10);
         TextInput.setInput("give Fede Diamond_sword 1");
     }
 

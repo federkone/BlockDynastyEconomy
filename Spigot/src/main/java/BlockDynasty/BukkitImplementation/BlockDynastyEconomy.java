@@ -35,7 +35,6 @@ import BlockDynasty.BukkitImplementation.utils.Version;
 import Main.Economy;
 import api.IApi;
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.event.HandlerList;
 import platform.files.Configuration;
 import org.bstats.bukkit.Metrics;
@@ -49,11 +48,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
     private Metrics metrics;
 
     @Override
-    public void onLoad() {
-
-    }
-
-    @Override
     public void onEnable() {
         if (Version.isUnsupportedVersion()){
             getLogger().severe("Unsupported Minecraft version detected: " + org.bukkit.Bukkit.getBukkitVersion());
@@ -63,10 +57,10 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
         instance = this;
         try {
-            initCoreServices();
+            registerEconomyCore();
             registerCommands();
             registerEvents();
-            setupIntegrations();
+            registerIntegrations();
             Console.log("§aPlugin enabled successfully!");
         } catch (Exception e) {
             getLogger().severe("An error occurred during plugin initialization: " + e.getMessage());
@@ -87,7 +81,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         ChannelRegister.unhook(this);
         Economy.shutdown();
         try {
-            initCoreServices();
+            registerEconomyCore();
             registerEvents();
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if(configuration.getBoolean("online")) {
@@ -96,7 +90,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
                     economy.getPlayerJoinListener().loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
                 }
             });
-            setupIntegrations();
+            registerIntegrations();
             Console.log("§aPlugin enabled successfully!");
         } catch (Exception e) {
             Console.logError("during plugin initialization: " + e.getMessage());
@@ -114,16 +108,14 @@ public class BlockDynastyEconomy extends JavaPlugin {
         }
     }
 
-    private void initCoreServices() {
+    private void registerEconomyCore() {
         //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
         economy = Economy.init(new BukkitAdapter());
         configuration = economy.getConfiguration();
     }
-
     private void registerCommands(){
         CommandRegister.registerAllEconomySystem();
     }
-
     private void registerEvents() {
         Listener economyListener=new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
         if(configuration.getBoolean("online")) {
@@ -146,7 +138,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CloseListener(),this);
 
     }
-    private void setupIntegrations() {
+    private void registerIntegrations() {
         Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
         PlaceHolder.register(economy.getPlaceHolder());
         TreasuryHook.register();
@@ -156,11 +148,9 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static BlockDynastyEconomy getInstance() {
         return instance;
     }
-
     public static Configuration getConfiguration() {
         return configuration;
     }
-
     public static IApi getApi() {
         return economy.getApi();
     }

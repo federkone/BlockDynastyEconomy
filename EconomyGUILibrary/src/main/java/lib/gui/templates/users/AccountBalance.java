@@ -18,15 +18,15 @@ package lib.gui.templates.users;
 
 import BlockDynasty.Economy.aplication.useCase.account.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.domain.entities.balance.Money;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
-import lib.gui.components.RecipeItem;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.PaginatedPanel;
+import lib.gui.components.generics.PaginatedPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
@@ -74,7 +74,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
     @Override
     protected IItemStack createItemFor(Money money) {
         ICurrency currency = money.getCurrency();
-        return createItem(RecipeItem.builder()
+        return Item.of(RecipeItem.builder()
                 .setMaterial(Materials.GOLD_INGOT)
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
@@ -85,13 +85,19 @@ public class AccountBalance extends PaginatedPanel<Money> {
 
     @Override
     protected IItemStack createEmptyMessage() {
-        return createItem(Materials.BARRIER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.RED)),"AccountBalance.button2.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button2.lore"));
+        return Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.RED)),"AccountBalance.button2.nameItem"))
+                .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button2.lore"))
+                .build());
     }
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, createItem(Materials.BOOK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountBalance.button3.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button3.lore")), null);
+        setItem(4, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BOOK)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountBalance.button3.nameItem"))
+                .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button3.lore"))
+                .build()), null);
     }
 }

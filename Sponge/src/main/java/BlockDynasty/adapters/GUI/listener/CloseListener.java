@@ -17,7 +17,7 @@
 package BlockDynasty.adapters.GUI.listener;
 
 import BlockDynasty.adapters.platformAdapter.EntityPlayerAdapter;
-import lib.gui.GUIFactory;
+import lib.gui.GUISystem;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.event.Cause;
 import org.spongepowered.api.item.inventory.Container;
@@ -28,7 +28,7 @@ public class CloseListener implements CloseHandler {
     @Override
     public void handle(Cause cause, Container container) {
         cause.first(ServerPlayer.class).ifPresent(player -> {
-            GUIFactory.getGuiService().unregisterGUI(EntityPlayerAdapter.of(player));
+            GUISystem.unregisterGUI(EntityPlayerAdapter.of(player));
         });
     }
 }

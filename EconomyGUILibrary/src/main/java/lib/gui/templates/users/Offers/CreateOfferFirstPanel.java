@@ -18,13 +18,14 @@ package lib.gui.templates.users.Offers;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.CreateOfferUseCase;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.CurrencySelectorAndAmount;
+import lib.gui.components.generics.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
@@ -67,8 +68,12 @@ public class CreateOfferFirstPanel extends CurrencySelectorAndAmount {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"OfferListPlayer.button2.nameItem"),
-                        Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"OfferListPlayer.button2.lore")),
+
+        setItem(4, Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.PAPER)
+                        .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"OfferListPlayer.button2.nameItem"))
+                        .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"OfferListPlayer.button2.lore"))
+                        .build()),
                 null);
 
     }

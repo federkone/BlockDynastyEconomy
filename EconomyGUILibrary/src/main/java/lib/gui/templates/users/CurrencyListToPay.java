@@ -18,14 +18,15 @@ package lib.gui.templates.users;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.CurrencySelectorAndAmount;
+import lib.gui.components.generics.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
@@ -56,9 +57,11 @@ public class CurrencyListToPay extends CurrencySelectorAndAmount {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, createItem(Materials.PAPER,
-                        Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"CurrencyListToPay.button1.nameItem"),
-                        Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"CurrencyListToPay.button1.lore")),
+        setItem(4, Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.PAPER)
+                        .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"CurrencyListToPay.button1.nameItem"))
+                        .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"CurrencyListToPay.button1.lore"))
+                        .build()),
                 null);
 
     }

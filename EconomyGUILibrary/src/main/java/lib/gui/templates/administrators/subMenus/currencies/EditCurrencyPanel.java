@@ -17,22 +17,21 @@
 package lib.gui.templates.administrators.subMenus.currencies;
 
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import lib.abstractions.IPlayer;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.AbstractPanel;
+import lib.gui.components.generics.AbstractPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
 
-import java.io.Console;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
@@ -57,7 +56,7 @@ public class EditCurrencyPanel extends AbstractPanel {
     private void setupGUI() {
         // Current currency info
         String color = ChatColor.stringValueOf(currency.getColor());
-        setItem(4,createItem(RecipeItem.builder()
+        setItem(4, Item.of(RecipeItem.builder()
                 .setMaterial(Materials.GOLD_INGOT)
                 .setName(Message.process(Map.of("currency",color + currency.getSingular() + " / " + currency.getPlural()), "EditCurrencyPanel.button1.nameItem"))
                 .setTexture(currency.getTexture())
@@ -72,23 +71,36 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build()), null);
 
         // Edit Start Balance button
-        setItem(11, createItem(Materials.EMERALD_BLOCK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button2.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button2.lore")), f -> {openStartBalanceInput();});
+        setItem(11, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.EMERALD_BLOCK)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button2.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button2.lore"))
+                .build()), f -> {openStartBalanceInput();});
 
         // Set Currency Rate button
-        setItem(13, createItem(Materials.GOLD_NUGGET, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button3.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button3.lore")), f -> {openExchangeRateInput();});
+        setItem(13, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.GOLD_NUGGET)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button3.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button3.lore"))
+                .build()), f -> {openExchangeRateInput();});
 
-        setItem(14,createItem(Materials.BOOK, ChatColor.stringValueOf(Colors.GREEN)+ "Whitelist currencies for Exchange", "In this section you can decide which currencies ","you will allow this currency to be exchanged with."), f -> {
+        setItem(14,Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BOOK)
+                .setName(ChatColor.stringValueOf(Colors.GREEN)+ "Whitelist currencies for Exchange")
+                .setLore("In this section you can decide which currencies ","you will allow this currency to be exchanged with.")
+                .build()), f -> {
                 GUIFactory.currencyListExchange(player,currency,this).open();
         });
 
         // Edit Color button
-        setItem(15, createItem(Materials.LIME_DYE, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button4.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button4.lore")), f -> {openColorSelectionGUI();});
+        setItem(15, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.LIME_DYE)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN )), "EditCurrencyPanel.button4.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE )), "EditCurrencyPanel.button4.lore"))
+                .build()), f -> {openColorSelectionGUI();});
 
         // Edit Texture URL button
-        setItem(16,createItem(RecipeItem.builder().setMaterial(Materials.EMERALD).setName(ChatColor.stringValueOf(Colors.GREEN)+"Add texture URL or Base64").setLore("This option allows you to add custom","heads for this currency","example url: http://textures.minecraft.net/texture/...","You can find them at:"+ ChatColor.stringValueOf(Colors.GREEN)+"https://minecraft-heads.com","For developers").build()), f -> {
+        setItem(16,Item.of(RecipeItem.builder().setMaterial(Materials.EMERALD).setName(ChatColor.stringValueOf(Colors.GREEN)+"Add texture URL or Base64").setLore("This option allows you to add custom","heads for this currency","example url: http://textures.minecraft.net/texture/...","You can find them at:"+ ChatColor.stringValueOf(Colors.GREEN)+"https://minecraft-heads.com","For developers").build()), f -> {
             textInput.asInputChat().open(this,player,"Texture URL or Base64: "+currency.getSingular(),currency.getTexture(), s ->{
                 String stringUrl = "";
                 URL url =null;
@@ -114,12 +126,18 @@ public class EditCurrencyPanel extends AbstractPanel {
 
 
         // Edit Symbol button
-        setItem(20, createItem(Materials.NAME_TAG, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button5.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button5.lore")), f -> {openSymbolInput();});
+        setItem(20, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.NAME_TAG)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button5.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button5.lore"))
+                .build()), f -> {openSymbolInput();});
 
         // Set Default Currency button
-        setItem(22, createItem(Materials.NETHER_STAR, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button6.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button6.lore")), f -> {
+        setItem(22, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.NETHER_STAR)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button6.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button6.lore"))
+                .build()), f -> {
             try {
                 editCurrencyUseCase.setDefaultCurrency(currency.getSingular());
                 player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.GRAY) + currency.getSingular() + " is now the default currency.");
@@ -131,10 +149,11 @@ public class EditCurrencyPanel extends AbstractPanel {
         });
 
         // Toggle Payable button
-        setItem(24, createItem(
-                        currency.isTransferable() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE,
-                        currency.isTransferable() ? "Transferable: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Transferable: "+ChatColor.stringValueOf(Colors.RED)+"Disabled",
-                        ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isTransferable() ? "Disable" : "Enable"),"This option affects:","Transfer","Pay","Trade/Offers"),
+        setItem(24, Item.of(RecipeItem.builder()
+                        .setMaterial(currency.isTransferable() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE)
+                        .setName(currency.isTransferable() ? "Transferable: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Transferable: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
+                        .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isTransferable() ? "Disable" : "Enable"),"This option affects:","Transfer","Pay","Trade/Offers")
+                        .build()),
                 f -> {
                     try {
                         editCurrencyUseCase.togglePayable(currency.getSingular());
@@ -147,18 +166,26 @@ public class EditCurrencyPanel extends AbstractPanel {
                 });
 
         // Edit Singular Name button
-        setItem(29, createItem(Materials.PAPER, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button7.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button7.lore")), f -> {openSingularNameInput();});
+        setItem(29, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.PAPER)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button7.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button7.lore"))
+                .build()), f -> {openSingularNameInput();});
 
         // Edit Plural Name button
-        setItem(31, createItem(Materials.BOOK, Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button8.nameItem"),
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button8.lore")), f -> {openPluralNameInput();});
+
+        setItem(31, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BOOK)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button8.nameItem"))
+                .setLore(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "EditCurrencyPanel.button8.lore"))
+                .build()), f -> {openPluralNameInput();});
 
         // Toggle Decimals button
-        setItem(33, createItem(
-                        currency.isDecimalSupported() ?Materials.LIME_CONCRETE : Materials.RED_CONCRETE,
-                        currency.isDecimalSupported() ? "Decimals support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Decimals support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled",
-                        "Click to " + (currency.isDecimalSupported() ? "Disable" : "Enable") + " decimal support"),
+        setItem(33, Item.of(RecipeItem.builder()
+                        .setMaterial(currency.isDecimalSupported() ? Materials.LIME_CONCRETE : Materials.RED_CONCRETE)
+                        .setName(currency.isDecimalSupported() ? "Decimals support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Decimals support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
+                        .setLore("Click to " + (currency.isDecimalSupported() ? "Disable" : "Enable") + " decimal support")
+                        .build()),
                 f -> {
                     try {
                         editCurrencyUseCase.toggleDecimals(currency.getSingular());
@@ -171,8 +198,11 @@ public class EditCurrencyPanel extends AbstractPanel {
                 });
 
         // Back button
-        setItem(40, createItem(Materials.BARRIER, ChatColor.stringValueOf(Colors.RED)+"Back",
-                ChatColor.stringValueOf(Colors.GRAY)+"Click to go back"), f -> {
+        setItem(40, Item.of(RecipeItem.builder()
+                .setMaterial(Materials.BARRIER)
+                .setName(ChatColor.stringValueOf(Colors.RED)+"Back")
+                .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to go back")
+                .build()), f -> {
             GUIFactory.currencyListToEditPanel(player, this.getParent().getParent()).open();
         });
     }

@@ -17,12 +17,15 @@
 package lib.gui.templates.users;
 
 import BlockDynasty.Economy.domain.entities.account.Player;
+import lib.abstractions.PlatformAdapter;
 import lib.gui.GUIFactory;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
-import lib.gui.components.abstractions.AccountsList;
+import lib.gui.components.generics.AccountsList;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
 import lib.util.colors.Message;
@@ -33,11 +36,12 @@ import java.util.stream.Collectors;
 
 public class ListPlayersOnline extends AccountsList {
     private final IEntityGUI sender;
+    private final PlatformAdapter platformAdapter;
 
-    public ListPlayersOnline(IEntityGUI sender, IGUI parent , ITextInput textInput ) {
+    public ListPlayersOnline(IEntityGUI sender, IGUI parent , ITextInput textInput, PlatformAdapter platformAdapter) {
         super(Message.process("listPlayersOnline.title"), 5,sender,parent, textInput );
         this.sender = sender;
-
+        this.platformAdapter = platformAdapter;
         List<Player> players = platformAdapter.getOnlinePlayers().stream()
                 .map(p -> new Player(p.getUniqueId(), p.getName()))
                 .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
@@ -66,8 +70,10 @@ public class ListPlayersOnline extends AccountsList {
     @Override
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
-        setItem(4, createItem(Materials.PAPER,
-                Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersOnline.button1.nameItem")
-                , Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersOnline.button1.lore")), null);
+        setItem(4, Item.of( RecipeItem.builder()
+                .setMaterial(Materials.PAPER)
+                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersOnline.button1.nameItem"))
+                .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersOnline.button1.lore"))
+                .build()), null);
     }
 }

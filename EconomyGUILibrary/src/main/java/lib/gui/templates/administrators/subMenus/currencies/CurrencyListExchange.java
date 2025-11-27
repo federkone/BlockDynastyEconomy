@@ -4,7 +4,9 @@ import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
-import lib.gui.components.abstractions.PaginatedPanel;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeItem;
+import lib.gui.components.generics.PaginatedPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Message;
 import lib.util.materials.Materials;
@@ -28,7 +30,7 @@ public class CurrencyListExchange extends PaginatedPanel<ICurrency> {
     @Override
     protected IItemStack createItemFor(ICurrency currency) {
         String color = ChatColor.stringValueOf(currency.getColor());
-        return createItem(RecipeItem.builder().setMaterial(Materials.GOLD_INGOT)
+        return Item.of(RecipeItem.builder().setMaterial(Materials.GOLD_INGOT)
                 .setName(Message.process(Map.of("currency",color+currency.getSingular()),"CurrencySelector.button1.nameItem"))
                 .setLore("Click to remove")
                 .setTexture(currency.getTexture())
@@ -49,7 +51,7 @@ public class CurrencyListExchange extends PaginatedPanel<ICurrency> {
 
     @Override
     public void addCustomButtons(){
-        setItem(39, createItem(Materials.NAME_TAG, "Add currency"), unused -> {
+        setItem(39, Item.of(RecipeItem.builder().setMaterial(Materials.NAME_TAG).setName("Add currency").build()), unused -> {
             GUIFactory.currencyListToAddExchange(player,currency,this).open();
         });
     }

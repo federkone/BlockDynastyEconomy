@@ -18,6 +18,7 @@ package BlockDynasty.BukkitImplementation.adapters.GUI.listener;
 
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
 import lib.gui.GUIFactory;
+import lib.gui.GUISystem;
 import lib.gui.components.ClickType;
 import lib.gui.components.IEntityGUI;
 import org.bukkit.entity.Player;
@@ -31,12 +32,12 @@ public class ClickListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         IEntityGUI sender = EntityPlayerAdapter.of((Player) event.getWhoClicked());
         int slot = event.getRawSlot();
-        if (!GUIFactory.getGuiService().hasOpenedGUI(sender)) return;
+        if (!GUISystem.hasOpenedGUI(sender)) return;
         event.setCancelled(true);
         if (event.isLeftClick()) {
-            GUIFactory.getGuiService().handleClick(sender, ClickType.LEFT, slot);
+            GUISystem.handleClick(sender, ClickType.LEFT, slot);
         } else if (event.isRightClick()) {
-            GUIFactory.getGuiService().handleClick(sender, ClickType.RIGHT, slot);
+            GUISystem.handleClick(sender, ClickType.RIGHT, slot);
         }
     }
 }

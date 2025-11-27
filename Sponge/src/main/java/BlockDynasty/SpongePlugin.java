@@ -56,7 +56,7 @@ public class SpongePlugin {
     private static Logger logger;
     private static Economy economy;
     private static Configuration configuration;
-    public static Path configPath;
+    private static Path configPath;
     private static RawDataChannel channel;
     private final Metrics metrics;
 
@@ -69,7 +69,6 @@ public class SpongePlugin {
 
         metrics = factory.make(27472);
     }
-
 
     @Listener
     public void onRegisterChannel(final RegisterChannelEvent event) {
@@ -134,16 +133,14 @@ public class SpongePlugin {
     public static Logger getLogger() {
         return logger;
     }
-
     public static PluginContainer getPlugin() {
         return container;
     }
     public static RawDataChannel getChannel() {
         return channel;
     }
-
-    public static Configuration getConfiguration() {
-        return configuration;
+    public static Path getConfigPath() {
+        return configPath;
     }
 
     public IApi getApi() {

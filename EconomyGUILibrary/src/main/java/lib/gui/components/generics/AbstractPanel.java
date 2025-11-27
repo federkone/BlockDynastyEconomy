@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package lib.gui.components.abstractions;
+package lib.gui.components.generics;
 
+import lib.gui.GUISystem;
+import lib.gui.components.factory.Inventory;
+import lib.gui.components.factory.Item;
+import lib.gui.components.recipes.RecipeInventory;
 import lib.gui.components.IEntityGUI;
-import lib.abstractions.PlatformAdapter;
 import lib.gui.components.*;
+import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class AbstractPanel implements IGUI {
-    protected static PlatformAdapter platformAdapter; //todas las guis van a compartir el mismo adapter
-    protected static IGUIService guiService;
     protected IInventory inventory;
+    protected RecipeInventory recipeInventory;
     protected final IEntityGUI owner;
-    protected IGUI parent;
     protected final Map<Integer, IItemStack> items = new HashMap<>();
     protected final Map<Integer, Consumer<IEntityGUI>> leftClickActions = new HashMap<>();
     protected final Map<Integer, Consumer<IEntityGUI>> rightClickActions = new HashMap<>();
-
-    // Set the platform adapter at startup
-    public static void setPlatformAdapter(PlatformAdapter adapter,IGUIService guiServices) {
-        platformAdapter = adapter;
-        guiService = guiServices;
-    }
+    protected IGUI parent;
 
     public AbstractPanel(String title, int rows, IEntityGUI owner) {
-        createInventory(title, rows);
+        this.recipeInventory = RecipeInventory.builder().setTitle(title).setRows(rows).build();
+        createInventory();
         fill();
         this.owner = owner;
         this.parent = null;
@@ -50,23 +48,10 @@ public class AbstractPanel implements IGUI {
         this(title, rows, owner);
         this.parent = parent;
     }
-    private void createInventory(String title, int rows) {
-        this.inventory =platformAdapter.createInventory(title, rows);
-        this.inventory.setRows(rows);
-        this.inventory.setTitle(title);
+
+    private void createInventory() {
+        this.inventory = Inventory.of(recipeInventory);
         items.forEach((key, value) -> inventory.set(key, value));
-    }
-
-    @Deprecated
-    protected IItemStack createItem(Materials material,String name, String... lore) {
-        IItemStack item =platformAdapter.createItemStack(material);
-        item.setDisplayName(name);
-        item.setLore(Arrays.asList(lore));
-        return item;
-    }
-
-    protected IItemStack createItem(RecipeItem recipe) {
-        return platformAdapter.createItemStack(recipe);
     }
 
     protected void setItem(int slot, IItemStack item, Consumer<IEntityGUI> leftClickAction) {
@@ -88,39 +73,6 @@ public class AbstractPanel implements IGUI {
         }
     }
 
-
-    @Override
-    public void close() {
-        owner.closeInventory();
-        guiService.unregisterGUI(owner);
-    }
-
-    @Override
-    public void open() {
-        createInventory(inventory.getTitle(), inventory.getRows());
-        owner.openInventory(this.inventory);
-        guiService.registerGUI(owner, this);
-    }
-
-    @Override
-    public void openParent() {
-        if (hasParent()) {
-            parent.open();
-        } else {
-            owner.closeInventory();
-        }
-    }
-
-    @Override
-    public boolean hasParent() {
-        return parent != null;
-    }
-
-    @Override
-    public IGUI getParent() {
-        return this.parent;
-    }
-
     @Override
     public void handleRightClick(int slot, IEntityGUI player) {
         Consumer<IEntityGUI> action = rightClickActions.get(slot);
@@ -140,19 +92,45 @@ public class AbstractPanel implements IGUI {
     }
 
     @Override
-    public String getTitle(){
-        return this.inventory.getTitle();
+    public void open() {
+        createInventory();
+        owner.openInventory(this.inventory);
+        GUISystem.registerGUI(owner, this);
     }
 
     @Override
-    public int getRows(){
-        return this.inventory.getRows();
+    public void close() {
+        owner.closeInventory();
+        GUISystem.unregisterGUI(owner);
+    }
+
+    @Override
+    public void openParent() {
+        if (hasParent()) {
+            parent.open();
+        } else {
+            close();
+        }
+    }
+
+    @Override
+    public boolean hasParent() {
+        return parent != null;
+    }
+
+    @Override
+    public IGUI getParent() {
+        return this.parent;
+    }
+
+    private int getRows(){
+        return this.recipeInventory.getRows();
     }
 
     @Override
     public void fill() {
-        IItemStack blueGlass = createItem(Materials.BLUE_STAINED_GLASS_PANE, " " , " " );
-        IItemStack filler = createItem(Materials.GLASS_PANE, " "," " );
+        IItemStack blueGlass = Item.of(RecipeItem.builder().setMaterial(Materials.BLUE_STAINED_GLASS_PANE).build());
+        IItemStack filler = Item.of(RecipeItem.builder().setMaterial(Materials.GLASS_PANE).build());
 
         int rows = (getRows()*9) / 9;
         for (int row = 0; row < rows; row++) {
@@ -165,11 +143,6 @@ public class AbstractPanel implements IGUI {
                 }
             }
         }
-
-    }
-
-    public IInventory getInventory() {
-        return this.inventory;
     }
 
     @Override
