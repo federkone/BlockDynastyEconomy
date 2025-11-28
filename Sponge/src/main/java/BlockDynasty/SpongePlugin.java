@@ -28,7 +28,7 @@ import Main.Economy;
 import api.IApi;
 import com.google.inject.Inject;
 import platform.files.Configuration;
-import lib.commands.CommandsFactory;
+import lib.commands.CommandService;
 
 import org.apache.logging.log4j.Logger;
 
@@ -109,13 +109,13 @@ public class SpongePlugin {
     @Listener
     public void onRegisterCommands(final RegisterCommandEvent<Command.Parameterized> event) {
         //TestEconomyCommand.registerTestCommand( event, container);
-        CommandRegister.registerCommands(event, container, CommandsFactory.Commands.getMainCommands());
+        CommandRegister.registerCommands(event, container, CommandService.getMainCommands());
     }
 
     private void registerEvents(){
         if(configuration.getBoolean("online")){
-            if(!Sponge.server().isOnlineModeEnabled()){
-                Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
+            if(!Sponge.server().isOnlineModeEnabled()){ //SPONGE NOT WORK THIS WAY!!!!!!!! WTF SPONGE
+                //Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
             }
             Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOnline(economy.getPlayerJoinListener()), MethodHandles.lookup());
             Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
@@ -123,7 +123,7 @@ public class SpongePlugin {
 
         if (!configuration.getBoolean("online")) {
             if(Sponge.server().isOnlineModeEnabled()){
-                Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
+                //Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
             }
             Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOffline(economy.getPlayerJoinListener()),MethodHandles.lookup());
             Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");

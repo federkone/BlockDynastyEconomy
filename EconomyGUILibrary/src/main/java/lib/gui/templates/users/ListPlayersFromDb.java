@@ -50,15 +50,6 @@ public class ListPlayersFromDb extends AccountsList {
             List<BlockDynasty.Economy.domain.entities.account.Player> players = result.getValue().stream()
                     .map(Account::getPlayer)
                     .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname())).collect(Collectors.toList());
-
-            //test
-            /*for (int i=0; i < 45 ; i++) {
-               players.add(new Player("empty", "empty"));
-            }
-            players.add(new Player("empty", "Cristian"));
-            players.add(new Player("empty", "Daniel"));
-            players.add(new Player("empty", "Alberto"));
-            */
             showPlayers(players);
         }else {showPlayers(new ArrayList<>());}
     }

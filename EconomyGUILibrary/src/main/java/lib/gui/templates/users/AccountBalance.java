@@ -58,13 +58,6 @@ public class AccountBalance extends PaginatedPanel<Money> {
 
     private void loadBalances() {
         Result<List<Money>> result = getBalanceUseCase.getBalances(targetUUID);
-
-        //TEST
-        //List<Money> monies = new ArrayList<>();
-        //for (int i=0; i < 45; i++) {
-        //    monies.add(new Money(new Currency(UUID.randomUUID(),"test","test")));
-        //}
-
         if (result.isSuccess() && result.getValue() != null) {
             showItemsPage(result.getValue());
 

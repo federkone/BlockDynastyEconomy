@@ -27,9 +27,8 @@ import platform.files.Configuration;
 import platform.files.Languages;
 import platform.files.logs.EconomyLogger;
 import platform.files.logs.VaultLogger;
-import lib.commands.CommandsFactory;
+import lib.commands.CommandService;
 import lib.abstractions.PlatformAdapter;
-import lib.gui.GUIFactory;
 import lib.placeholder.PlaceHolder;
 import lib.util.colors.ChatColor;
 import platform.listeners.EventListener;
@@ -72,7 +71,7 @@ public class Economy {
         this.api = new Api(core);
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
         this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
-        CommandsFactory.init(platformAdapter,core.getUseCaseFactory());
+        CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message());
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }

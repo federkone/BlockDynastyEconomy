@@ -11,7 +11,6 @@ import lib.util.colors.Message;
 import java.util.UUID;
 
 public class GUISystem {
-    private static ITextInput textInput;
     private static final IGUIService guiService = new GUIService();
 
     public static void init(UseCaseFactory useCaseFactory,PlatformAdapter adapter, IMessages messages) {

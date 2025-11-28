@@ -17,7 +17,6 @@
 package BlockDynasty.BukkitImplementation.adapters.GUI.listener;
 
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
-import lib.gui.GUIFactory;
 import lib.gui.GUISystem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

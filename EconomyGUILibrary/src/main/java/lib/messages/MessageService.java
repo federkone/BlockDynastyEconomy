@@ -16,9 +16,7 @@
 
 package lib.messages;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class MessageService {
     private static MessageProvider provider = new DefaultProvider();

@@ -46,7 +46,6 @@ public class CurrencyAdminPanel extends AbstractPanel {
                 .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"CurrencyAdminPanel.button1.lore"))
                 .build()), unused -> {
             GUIFactory.createCurrencyPanel(player,this);
-
         });
 
         // Delete Currency button

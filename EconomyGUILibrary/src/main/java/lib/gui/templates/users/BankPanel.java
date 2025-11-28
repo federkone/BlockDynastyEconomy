@@ -129,7 +129,7 @@ public class BankPanel extends AbstractPanel {
                     GUIFactory.listPlayersOnline(player,this).open();
                 });
 
-        setItem(16,Item.of(        RecipeItem.builder()
+        setItem(16,Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PLAYER_HEAD)
                         .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button9.nameItem"))
                         .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"BankPanel.button9.lore"))

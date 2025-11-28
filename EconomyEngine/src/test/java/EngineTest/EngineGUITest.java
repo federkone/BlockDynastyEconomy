@@ -3,9 +3,8 @@ package EngineTest;
 import EngineTest.mocks.MinecraftServer;
 import EngineTest.mocks.Player;
 import EngineTest.mocks.TextInput;
-import lib.commands.CommandsFactory;
+import lib.commands.CommandService;
 import lib.commands.abstractions.Command;
-import lib.gui.GUIFactory;
 import lib.gui.GUISystem;
 import lib.gui.components.ClickType;
 import org.junit.jupiter.api.*;
@@ -34,7 +33,7 @@ public class EngineGUITest {
 
     @Test
     public void CommandExecutions(){
-        Command command= CommandsFactory.Commands.getCommand("eco");
+        Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"give","Fede","5000","Money"});
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"give","Nullplague","3000","Money"});
     }
@@ -42,7 +41,7 @@ public class EngineGUITest {
     @Test
     public void testCreateCurrencyGui(){
         player.addPermission("BlockDynastyEconomy.economy.superUser");
-        Command command= CommandsFactory.Commands.getCommand("eco");
+        Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 20 ->");
@@ -66,7 +65,7 @@ public class EngineGUITest {
     public void testGUIWorkFlowDepositBalance(){
         //player.setOp(true);
         player.addPermission("BlockDynastyEconomy.economy.superUser");
-        Command command= CommandsFactory.Commands.getCommand("eco");
+        Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 24 ->");
@@ -82,7 +81,7 @@ public class EngineGUITest {
     @Test
     public void testGUIWorkFlowTransferOnline(){
         player.addPermission("BlockDynastyEconomy.players.bank");
-        Command command= CommandsFactory.Commands.getCommand("bank");
+        Command command= CommandService.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
 
         GUISystem.handleClick(player, ClickType.LEFT,15);
@@ -94,7 +93,7 @@ public class EngineGUITest {
     @Test
     public  void testGUIWorkFlowExchangeCurrency(){
         player.addPermission("BlockDynastyEconomy.economy.superUser");
-        Command command= CommandsFactory.Commands.getCommand("eco");
+        Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
         System.out.println("Clicked on slot 20 ->");
         GUISystem.handleClick(player, ClickType.LEFT,20);
@@ -120,7 +119,7 @@ public class EngineGUITest {
     public void testGUIWorkFlowTransferOffline(){
         MinecraftServer.disconnectPlayer(player2);
         player.addPermission("BlockDynastyEconomy.players.bank");
-        Command command= CommandsFactory.Commands.getCommand("bank");
+        Command command= CommandService.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
 
         GUISystem.handleClick(player, ClickType.LEFT,16);
@@ -133,7 +132,7 @@ public class EngineGUITest {
     public void hasPermissions(){
         player.setOp(false);
         player.addPermission("BlockDynastyEconomy.players.bank");
-        Command command= CommandsFactory.Commands.getCommand("bank");
+        Command command= CommandService.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
         assertEquals(true,player.hasPermission("BlockDynastyEconomy.players.bank"));
     }
@@ -141,7 +140,7 @@ public class EngineGUITest {
     @Test
     public void sellCommand(){
         player.addPermission("BlockDynastyEconomy.economy.superUser");
-        Command command= CommandsFactory.Commands.getCommand("eco");
+        Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
 
         System.out.println("Clicked on slot 24 ->");

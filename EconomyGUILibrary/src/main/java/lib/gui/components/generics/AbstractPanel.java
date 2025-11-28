@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 
 public class AbstractPanel implements IGUI {
     protected IInventory inventory;
-    protected RecipeInventory recipeInventory;
+    protected final RecipeInventory recipeInventory;
     protected final IEntityGUI owner;
     protected final Map<Integer, IItemStack> items = new HashMap<>();
     protected final Map<Integer, Consumer<IEntityGUI>> leftClickActions = new HashMap<>();
