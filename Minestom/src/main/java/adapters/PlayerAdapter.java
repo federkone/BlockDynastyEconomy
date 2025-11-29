@@ -9,7 +9,7 @@ import net.minestom.server.entity.Player;
 import java.util.UUID;
 
 public class PlayerAdapter implements IPlayer {
-    private Player player;
+    private final Player player;
 
     public PlayerAdapter(Player player) {
         this.player = player;

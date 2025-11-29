@@ -5,12 +5,12 @@ import lib.abstractions.IPlayer;
 import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
-import lib.gui.components.RecipeItem;
+import lib.gui.components.recipes.RecipeInventory;
 import lib.scheduler.IScheduler;
-import lib.util.materials.Materials;
+import minestom.MinestomInventory;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.InstanceContainer;
+import net.minestom.server.item.ItemStack;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,7 +19,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
-    InstanceContainer instanceContainer;
 
     @Override
     public IPlayer getPlayer(String name) {
@@ -46,20 +45,17 @@ public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
     }
 
     @Override
-    public IItemStack createItemStack(Materials material) {
-        return null;
+    public IItemStack createItemStack(lib.gui.components.recipes.RecipeItem recipeItem) {
+        ItemStack item= MaterialAdapter.createItem(recipeItem);
+        return new ItemStackAdapter(item);
     }
 
     @Override
-    public IItemStack createItemStack(RecipeItem recipeItem) {
-        return null;
+    public IInventory createInventory(RecipeInventory recipeInventory) {
+        return new InventoryAdapter(new MinestomInventory(recipeInventory));
     }
 
-    @Override
-    public IInventory createInventory(String title, int rows) {
-        return null;
-    }
-
+    //enviar un comando a la consola del servidor
     @Override
     public void dispatchCommand(String command) throws Exception {
 //not implemented
@@ -82,11 +78,16 @@ public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
 
     @Override
     public File getDataFolder() {
-        return new File("./src/main/resources/data");
+        return new File("Minestom/src/main/resources/data"); //verificar ruta utilizada por complementos de Minestom
     }
 
     @Override
     public boolean isLegacy() {
+        return false;
+    }
+
+    @Override
+    public boolean isOnlineMode() {
         return false;
     }
 
@@ -97,6 +98,6 @@ public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
 
     @Override
     public ITextInput getTextInput() {
-        return null;
+        return new TextInput();
     }
 }

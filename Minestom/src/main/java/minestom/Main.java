@@ -1,3 +1,6 @@
+package minestom;
+
+import adapters.EconomySystem;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
@@ -27,9 +30,8 @@ public class Main {
             player.setRespawnPoint(new Pos(0, 42, 0));
         });
 
-        //instance plugin economy with dependency injection
-
         // Start the server on port 25565
         minecraftServer.start("0.0.0.0", 25565);
+        EconomySystem.start();
     }
 }
