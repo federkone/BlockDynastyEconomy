@@ -1,4 +1,4 @@
-package minestom.events;
+package adapters.events;
 
 import adapters.PlayerAdapter;
 import net.minestom.server.MinecraftServer;

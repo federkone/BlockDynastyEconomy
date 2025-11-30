@@ -1,4 +1,4 @@
-package minestom.commands;
+package adapters.commands;
 
 import lib.commands.CommandsFactory;
 import lib.commands.abstractions.Command;

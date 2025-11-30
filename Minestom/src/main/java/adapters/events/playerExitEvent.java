@@ -1,4 +1,4 @@
-package minestom.events;
+package adapters.events;
 
 import adapters.PlayerAdapter;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,7 +11,6 @@ import platform.listeners.IPlayerJoin;
 public class playerExitEvent {
 
     public static void register(IPlayerJoin playerJoin) {
-        // No implementation yet
         GlobalEventHandler handler = MinecraftServer.getGlobalEventHandler();
 
         handler.addListener(PlayerDisconnectEvent.class, event -> {

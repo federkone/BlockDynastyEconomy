@@ -1,8 +1,8 @@
-package minestom.events;
+package adapters.events;
 
 import adapters.PlayerAdapter;
 import lib.gui.GUISystem;
-import minestom.MinestomInventory;
+import adapters.inventory.MinestomInventory;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;

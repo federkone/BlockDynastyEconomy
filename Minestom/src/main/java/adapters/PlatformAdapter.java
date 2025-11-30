@@ -7,7 +7,7 @@ import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
 import lib.gui.components.recipes.RecipeInventory;
 import lib.scheduler.IScheduler;
-import minestom.MinestomInventory;
+import adapters.inventory.MinestomInventory;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
@@ -19,7 +19,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
-
+    public static boolean onlineMode = false;
+    public PlatformAdapter(boolean onlineMode) {
+        PlatformAdapter.onlineMode=onlineMode;
+    }
     @Override
     public IPlayer getPlayer(String name) {
         Player p = MinecraftServer.getConnectionManager().getOnlinePlayerByUsername(name);
@@ -78,7 +81,7 @@ public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
 
     @Override
     public File getDataFolder() {
-        return new File("Minestom/src/main/resources/data"); //verificar ruta utilizada por complementos de Minestom
+        return new File("BlockDynastyEconomy"); //verificar ruta utilizada por complementos de Minestom
     }
 
     @Override
@@ -88,7 +91,7 @@ public class PlatformAdapter implements lib.abstractions.PlatformAdapter {
 
     @Override
     public boolean isOnlineMode() {
-        return false;
+        return onlineMode;
     }
 
     @Override

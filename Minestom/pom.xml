@@ -9,15 +9,13 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>Minestom</artifactId>
-
     <properties>
-        <java.version>25</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <artifactId>Minestom</artifactId>
 
     <repositories>
         <repository>
@@ -52,11 +50,11 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.24.2</version>
-            <scope>compile</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
         </dependency>
     </dependencies>
 
@@ -83,7 +81,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.example.Main</mainClass> <!--Change this to your main class-->
+                            <mainClass>minestom.Main</mainClass> <!--Change this to your main class-->
                         </manifest>
                     </archive>
                     <descriptorRefs>
