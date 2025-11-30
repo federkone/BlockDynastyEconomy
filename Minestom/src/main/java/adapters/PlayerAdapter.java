@@ -16,11 +16,6 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
-    public void playNotificationSound() {
-
-    }
-
-    @Override
     public boolean isOnline() {
         return player.isOnline();
     }
@@ -67,6 +62,11 @@ public class PlayerAdapter implements IPlayer {
 
     @Override
     public void playFailureSound() {
+
+    }
+
+    @Override
+    public void playNotificationSound() {
 
     }
 

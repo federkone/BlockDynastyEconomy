@@ -68,7 +68,7 @@ public class TextInput implements ITextInput {
         MinecraftServer.getGlobalEventHandler().removeChild(eventNode);
     }
 
-    public static EventNode<@NotNull PlayerEvent> registerListener(IGUI parent,IEntityGUI owner, Function<String, String> function, String title, EventNode<@NotNull PlayerEvent> eventNode) {
+    private static EventNode<@NotNull PlayerEvent> registerListener(IGUI parent,IEntityGUI owner, Function<String, String> function, String title, EventNode<@NotNull PlayerEvent> eventNode) {
         eventNode.addListener(PlayerChatEvent.class, event -> {
             event.setCancelled(true);
             handleText(event.getRawMessage(),title,event.getPlayer(),owner,parent,function,eventNode);

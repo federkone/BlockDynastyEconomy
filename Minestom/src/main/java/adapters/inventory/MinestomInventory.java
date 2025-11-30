@@ -1,4 +1,4 @@
-package minestom;
+package adapters.inventory;
 
 import lib.gui.components.recipes.RecipeInventory;
 import net.kyori.adventure.text.Component;
