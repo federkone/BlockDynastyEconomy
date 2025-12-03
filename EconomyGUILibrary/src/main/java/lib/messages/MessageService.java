@@ -18,6 +18,7 @@ package lib.messages;
 
 import java.util.Map;
 
+@Deprecated
 public class MessageService {
     private static MessageProvider provider = new DefaultProvider();
 

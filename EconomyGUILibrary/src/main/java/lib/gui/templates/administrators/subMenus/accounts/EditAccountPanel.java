@@ -28,6 +28,7 @@ import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.gui.components.generics.AbstractPanel;
@@ -58,12 +59,13 @@ public class EditAccountPanel extends AbstractPanel {
     }
 
     private void buttons(IEntityGUI sender, Player target) {
-        setItem(15, Item.of(RecipeItem.builder()
+        setButton(15, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.REDSTONE)
                         .setName(ChatColor.stringValueOf(Colors.RED)+"Delete account")
                         .setLore("The player's account is deleted,before a confirmation")
-                        .build()),
-                f -> {
+                        .build()))
+                .setLeftClickAction( f -> {
                     textInput.open(this,sender, "Delete: "+target.getNickname(), "Confirm yes/no", s ->{
                         if(s.equals("yes")){
                             Result<Void> result = deleteAccountUseCase.execute(target.getNickname());
@@ -83,71 +85,74 @@ public class EditAccountPanel extends AbstractPanel {
                             return null;
                         }
                     });
-                });
+                })
+                .build());
 
-        setItem(22,Item.of(RecipeItem.builder()
-                        .setMaterial(Materials.PAPER)
-                        .setName(ChatColor.stringValueOf(Colors.AQUA)+"Sell Command")
-                        .setLore("Sell a command to a player","Example: give <playername> <itemname> [amount]",
-                                ChatColor.stringValueOf(Colors.RED)+"IMPORTANT: Enter the full command",ChatColor.stringValueOf(Colors.RED)+"including any necessary parameters, such as player name.")
-                        .build()),
-                f -> {
-                    GUIFactory.sellCommandPanel(sender , target, this).open();
-                });
+        setButton(22,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                                .setMaterial(Materials.PAPER)
+                                .setName(ChatColor.stringValueOf(Colors.AQUA)+"Sell Command")
+                                .setLore("Sell a command to a player","Example: give <playername> <itemname> [amount]",
+                                        ChatColor.stringValueOf(Colors.RED)+"IMPORTANT: Enter the full command",ChatColor.stringValueOf(Colors.RED)+"including any necessary parameters, such as player name.")
+                                .build()))
+                .setLeftClickAction( f -> {GUIFactory.sellCommandPanel(sender , target, this).open();})
+                .build());
 
-        setItem(40,Item.of(RecipeItem.builder()
-                .setMaterial(Materials.BARRIER)
-                .setName(ChatColor.stringValueOf(Colors.RED)+"Back")
-                .setLore("Click to go back")
-                .build()
-        ),f->{
-            GUIFactory.accountSelectorToEdit(sender,this.getParent().getParent()).open();
-        });
+        setButton(40,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.BARRIER)
+                        .setName(ChatColor.stringValueOf(Colors.RED)+"Back")
+                        .setLore("Click to go back")
+                        .build()
+                ))
+                .setLeftClickAction(f -> {GUIFactory.accountSelectorToEdit(sender,this.getParent().getParent()).open();})
+                .build());
 
-        setItem(29,Item.of(RecipeItem.builder()
+        setButton(29,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(ChatColor.stringValueOf(Colors.AQUA)+"Deposit Currency")
                         .setLore("Deposit currency into the player's account")
-                        .build()),
-                f -> {
-                    GUIFactory.depositPanel(sender , target, this).open();
-                });
+                        .build()))
+                .setLeftClickAction(f -> {GUIFactory.depositPanel(sender , target, this).open();})
+                .build());
 
-        setItem(31,Item.of(RecipeItem.builder()
+        setButton(31,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(ChatColor.stringValueOf(Colors.AQUA)+"Set balance currency")
                         .setLore("Set the balance of a currency in the player's account")
-                        .build()),
-                f -> {
-                    GUIFactory.setPanel(sender , target, this).open();
-                });
+                        .build()))
+                .setLeftClickAction( f -> {GUIFactory.setPanel(sender , target, this).open();})
+                .build());
 
-        setItem(33,Item.of(RecipeItem.builder()
+        setButton(33,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(ChatColor.stringValueOf(Colors.AQUA)+"Withdraw Currency")
                         .setLore("Withdraw currency from the player's account")
-                        .build()),
-                f -> {
-                    GUIFactory.withdrawPanel(sender , target, this).open();
-                });
+                        .build()))
+                .setLeftClickAction(f -> {GUIFactory.withdrawPanel(sender , target, this).open();})
+                .build());
 
-        setItem(11,Item.of(RecipeItem.builder()
+        setButton(11,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.BOOK)
                         .setName(ChatColor.stringValueOf(Colors.YELLOW)+"See Balance")
                         .setLore("See the balance of the player's account")
-                        .build()),
-                f -> {
-                    GUIFactory.balancePanel( sender, target.getUuid(), this).open();
-                });
+                        .build()))
+                .setLeftClickAction(f -> {GUIFactory.balancePanel( sender, target.getUuid(), this).open();})
+                .build());
 
         boolean isBlocked = getAccountByUUIDUseCase.execute(target.getUuid()).getValue().isBlocked();
         if (isBlocked) {
-            setItem(13, Item.of(RecipeItem.builder()
+            setButton(13, Button.builder()
+                    .setItemStack(Item.of(RecipeItem.builder()
                             .setMaterial(Materials.RED_CONCRETE)
                             .setName(ChatColor.stringValueOf(Colors.RED)+"Account is blocked")
                             .setLore("Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
-                            .build()),
-                    f -> {
+                            .build()))
+                    .setLeftClickAction(  f -> {
                         Result<Void>result= editAccountUseCase.unblockAccount(target.getUuid());
                         if (result.isSuccess()){
                             GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
@@ -155,14 +160,16 @@ public class EditAccountPanel extends AbstractPanel {
                         else {
                             sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
                         }
-                    });
+                    })
+                    .build());
         } else {
-            setItem(13, Item.of(RecipeItem.builder()
-                            .setMaterial(Materials.LIME_CONCRETE)
-                            .setName(ChatColor.stringValueOf(Colors.GREEN)+"Account is enabled")
-                            .setLore("Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
-                            .build()),
-                    f -> {
+            setButton(13, Button.builder()
+                    .setItemStack(Item.of(RecipeItem.builder()
+                                    .setMaterial(Materials.LIME_CONCRETE)
+                                    .setName(ChatColor.stringValueOf(Colors.GREEN)+"Account is enabled")
+                                    .setLore("Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
+                                    .build()))
+                    .setLeftClickAction(f -> {
                         Result<Void>result= editAccountUseCase.blockAccount(target.getUuid());
                         if (result.isSuccess()){
                             GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
@@ -170,7 +177,8 @@ public class EditAccountPanel extends AbstractPanel {
                         else {
                             sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
                         }
-                    });
+                    })
+                    .build());
         }
 
 

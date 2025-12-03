@@ -24,12 +24,13 @@ import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.gui.components.generics.PaginatedPanel;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +88,12 @@ public class AccountBalance extends PaginatedPanel<Money> {
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, Item.of(RecipeItem.builder()
-                .setMaterial(Materials.BOOK)
-                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountBalance.button3.nameItem"))
-                .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button3.lore"))
-                .build()), null);
+        setButton(4, Button.builder()
+                .setItemStack( Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.BOOK)
+                        .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountBalance.button3.nameItem"))
+                        .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"AccountBalance.button3.lore"))
+                        .build()))
+                .build());
     }
 }

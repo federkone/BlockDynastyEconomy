@@ -26,12 +26,13 @@ import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.gui.components.generics.AccountsList;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,10 +71,12 @@ public class ListPlayersFromDb extends AccountsList {
     @Override
     public void addCustomButtons(){
         super.addCustomButtons(); // Call the parent method to add the default buttons accountList
-        setItem(4, Item.of(RecipeItem.builder()
-                .setMaterial(Materials.PAPER)
-                .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersFromDb.button1.nameItem"))
-                .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersFromDb.button1.lore"))
-                .build()), null);
+        setButton(4, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.PAPER)
+                        .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "listPlayersFromDb.button1.nameItem"))
+                        .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)), "listPlayersFromDb.button1.lore"))
+                        .build()))
+                .build());
     }
 }

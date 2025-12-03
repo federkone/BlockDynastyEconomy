@@ -28,13 +28,11 @@ import lib.util.materials.Materials;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class AbstractPanel implements IGUI {
+public abstract class AbstractPanel implements IGUI {
     protected IInventory inventory;
     protected final RecipeInventory recipeInventory;
     protected final IEntityGUI owner;
-    protected final Map<Integer, IItemStack> items = new HashMap<>();
-    protected final Map<Integer, Consumer<IEntityGUI>> leftClickActions = new HashMap<>();
-    protected final Map<Integer, Consumer<IEntityGUI>> rightClickActions = new HashMap<>();
+    protected final Map<Integer, IButton> buttons = new HashMap<>();
     protected IGUI parent;
 
     public AbstractPanel(String title, int rows, IEntityGUI owner) {
@@ -51,44 +49,40 @@ public class AbstractPanel implements IGUI {
 
     private void createInventory() {
         this.inventory = Inventory.of(recipeInventory);
-        items.forEach((key, value) -> inventory.set(key, value));
+        buttons.forEach((key, value) -> inventory.set(key, value.getItemStack()));
     }
 
-    protected void setItem(int slot, IItemStack item, Consumer<IEntityGUI> leftClickAction) {
-        items.put(slot, item);
-        inventory.set(slot, item);
-        if (item == null || leftClickAction == null) {
-            leftClickActions.remove(slot);
-        } else {
-            leftClickActions.put(slot, leftClickAction);
-        }
-    }
-    protected void setItem(int slot, IItemStack item, Consumer<IEntityGUI> leftClickAction, Consumer<IEntityGUI> rightClickAction) {
-        setItem(slot, item, leftClickAction);
-
-        if (item == null || rightClickAction == null) {
-            rightClickActions.remove(slot);
-        } else {
-            rightClickActions.put(slot, rightClickAction);
-        }
+    protected void setButton(int slot, IButton button) {// Consumer<IEntityGUI> leftClickAction
+        buttons.put(slot, button);
+        inventory.set(slot, button.getItemStack());
     }
 
     @Override
-    public void handleRightClick(int slot, IEntityGUI player) {
-        Consumer<IEntityGUI> action = rightClickActions.get(slot);
+    public void handleRightClick(int slot) {
+        IButton button = buttons.get(slot);
+        if (button == null) {
+            owner.playFailureSound();
+            return;
+        }
+        Consumer<IEntityGUI> action =button.getRightClickAction();
         if (action != null) {
-            action.accept(player);
-            player.playSuccessSound();
-        }else {player.playFailureSound();}
+            action.accept(owner);
+            owner.playSuccessSound();
+        }else {owner.playFailureSound();}
     }
 
     @Override
-    public void handleLeftClick(int slot, IEntityGUI player) {
-        Consumer<IEntityGUI> action = leftClickActions.get(slot);
+    public void handleLeftClick(int slot) {
+        IButton button = buttons.get(slot);
+        if (button == null) {
+            owner.playFailureSound();
+            return;
+        }
+        Consumer<IEntityGUI> action = button.getLeftClickAction();
         if (action != null) {
-            action.accept(player);
-            player.playSuccessSound();
-        }else{player.playFailureSound();}
+            action.accept(owner);
+            owner.playSuccessSound();
+        }else{owner.playFailureSound();}
     }
 
     @Override
@@ -129,17 +123,21 @@ public class AbstractPanel implements IGUI {
 
     @Override
     public void fill() {
-        IItemStack blueGlass = Item.of(RecipeItem.builder().setMaterial(Materials.BLUE_STAINED_GLASS_PANE).build());
-        IItemStack filler = Item.of(RecipeItem.builder().setMaterial(Materials.GLASS_PANE).build());
+        IButton fillBlueGlass = Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BLUE_STAINED_GLASS_PANE).build()))
+                .build();
+        IButton fillGlass = Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.GLASS_PANE).build()))
+                .build();
 
         int rows = (getRows()*9) / 9;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < 9; col++) {
                 int slot = row * 9 + col;
                 if (row == 0 || row == rows - 1 || col == 0 || col == 8) {
-                    items.put(slot, blueGlass);
+                    buttons.put(slot, fillBlueGlass);
                 } else {
-                    items.put(slot, filler);
+                    buttons.put(slot, fillGlass);
                 }
             }
         }

@@ -24,7 +24,7 @@ import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 
 import java.util.List;
 import java.util.Map;
@@ -49,8 +49,8 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     protected void showItemsPage(List<T> items) {
         fill();
         if (items.isEmpty()) {
-            setItem(getEmptyMessageSlot(), createEmptyMessage(), null);
-            setItem(getBackButtonSlot(), createBackButton(), unused -> this.openParent());
+            setButton(getEmptyMessageSlot(), Button.builder().setItemStack(createEmptyMessage()).build());
+            setButton(getBackButtonSlot(), Button.builder().setItemStack(createBackButton()).setLeftClickAction(unused -> this.openParent()).build());
             addCustomButtons();
             return;
         }
@@ -63,27 +63,30 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
         for (int i = startIndex; i < endIndex; i++) {
             T item = items.get(i);
             final T finalItem = item; // Make final for lambda
-            setItem(slot, createItemFor(item), unused -> functionLeftItemClick(finalItem), unused -> functionRightItemClick(finalItem));
+            setButton(slot, Button.builder()
+                    .setItemStack(createItemFor(item))
+                    .setLeftClickAction(unused -> functionLeftItemClick(finalItem))
+                    .setRightClickAction(unused -> functionRightItemClick(finalItem)).build());
             slot = getNextSlot(slot);
         }
 
         // Navigation buttons
         if (currentPage > 0) {
-            setItem(getPreviousButtonSlot(), createPreviousButton(), unused -> {
+            setButton(getPreviousButtonSlot(),Button.builder().setItemStack(createPreviousButton()).setLeftClickAction(unused -> {
                 currentPage--;
                 showItemsPage(items);
-            });
+            }).build());
         }
 
         if (endIndex < items.size()) {
-            setItem(getNextButtonSlot(), createNextButton(), unused -> {
+            setButton(getNextButtonSlot(), Button.builder().setItemStack(createNextButton()).setLeftClickAction(unused -> {
                 currentPage++;
                 showItemsPage(items);
-            });
+            }).build());
         }
 
         // Back button
-        setItem(getBackButtonSlot(), createBackButton(), unused -> this.openParent());
+        setButton(getBackButtonSlot(), Button.builder().setItemStack(createBackButton()).setLeftClickAction(unused -> this.openParent()).build()); createBackButton();
 
         // Add additional custom buttons
         addCustomButtons();

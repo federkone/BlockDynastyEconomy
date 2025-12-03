@@ -23,7 +23,7 @@ import lib.gui.components.factory.Item;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 import lib.util.materials.Materials;
 
 import java.util.List;
@@ -57,14 +57,14 @@ public abstract class AccountsList extends PaginatedPanel<Player> {
     @Override
     protected void addCustomButtons() {
 
-        setItem(39, Item.of(
-                RecipeItem.builder()
-                    .setMaterial(Materials.NAME_TAG)
-                    .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountList.button1.nameItem"))
-                    .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"AccountList.button1.lore"))
-                    .build()
-                ),
-                unused -> openAnvilSearch(unused));
+        setButton(39, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                                        .setMaterial(Materials.NAME_TAG)
+                                        .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GOLD)),"AccountList.button1.nameItem"))
+                                        .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"AccountList.button1.lore"))
+                                        .build()))
+                .setLeftClickAction(this::openAnvilSearch)
+                .build());
     }
 
     protected void openAnvilSearch(IEntityGUI sender) {

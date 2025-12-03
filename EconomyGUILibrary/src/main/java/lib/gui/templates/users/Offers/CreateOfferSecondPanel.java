@@ -24,12 +24,13 @@ import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.gui.components.generics.CurrencySelectorAndAmount;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 
 import java.util.Map;
 
@@ -69,12 +70,12 @@ public class CreateOfferSecondPanel extends CurrencySelectorAndAmount {
 
     @Override
     public void addCustomButtons() {
-        setItem(4, Item.of(RecipeItem.builder()
+        setButton(4, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)),"OfferListPlayer.button3.nameItem"))
                         .setLore(Message.processLines(Map.of("color",ChatColor.stringValueOf(Colors.WHITE)),"OfferListPlayer.button3.lore"))
-                        .build()),
-                null);
-
+                        .build()))
+                .build());
     }
 }

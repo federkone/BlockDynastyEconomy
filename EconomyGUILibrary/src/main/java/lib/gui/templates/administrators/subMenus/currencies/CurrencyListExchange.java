@@ -5,10 +5,11 @@ import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.gui.components.generics.PaginatedPanel;
 import lib.util.colors.ChatColor;
-import lib.util.colors.Message;
+import lib.messages.Message;
 import lib.util.materials.Materials;
 
 import java.util.Map;
@@ -51,9 +52,9 @@ public class CurrencyListExchange extends PaginatedPanel<ICurrency> {
 
     @Override
     public void addCustomButtons(){
-        setItem(39, Item.of(RecipeItem.builder().setMaterial(Materials.NAME_TAG).setName("Add currency").build()), unused -> {
-            GUIFactory.currencyListToAddExchange(player,currency,this).open();
-        });
+        setButton(39, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.NAME_TAG).setName("Add currency").build()))
+                .setLeftClickAction(unused -> {GUIFactory.currencyListToAddExchange(player,currency,this).open();})
+                .build());
     }
-
 }

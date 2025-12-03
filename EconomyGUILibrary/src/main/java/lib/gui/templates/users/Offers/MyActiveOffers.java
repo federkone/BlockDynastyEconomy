@@ -26,13 +26,14 @@ import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import lib.gui.components.generics.PaginatedPanel;
 import lib.gui.GUIFactory;
 import lib.util.colors.ChatColor;
 import lib.util.colors.Colors;
-import lib.util.colors.Message;
+import lib.messages.Message;
 
 import java.util.List;
 import java.util.Map;
@@ -97,13 +98,13 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
 
     @Override
     protected void addCustomButtons() {
-        setItem(4, Item.of(RecipeItem.builder()
+        setButton(4, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(Message.process("MyActiveOffers.button2.nameItem"))
                         .setLore(Message.processLines("MyActiveOffers.button2.lore"))
-                        .build()),
-                unused -> {
-                    refresh();
-                });
+                        .build()))
+                .setLeftClickAction(unused -> {refresh();})
+                .build());
     }
 }
