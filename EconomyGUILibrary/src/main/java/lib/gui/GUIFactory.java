@@ -18,6 +18,7 @@ package lib.gui;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import lib.abstractions.IConfiguration;
 import lib.abstractions.PlatformAdapter;
 import lib.gui.components.*;
 import lib.gui.templates.administrators.mainMenus.AccountSelectorToEdit;
@@ -25,6 +26,7 @@ import lib.gui.templates.administrators.mainMenus.EconomyAdminPanel;
 import lib.gui.templates.administrators.mainMenus.CurrencyAdminPanel;
 import lib.gui.templates.administrators.subMenus.accounts.*;
 import lib.gui.templates.administrators.subMenus.currencies.*;
+import lib.gui.templates.administrators.subMenus.gui.BankPanelEditor;
 import lib.gui.templates.users.*;
 import lib.gui.templates.users.Exchange.ExchangeFirstPanel;
 import lib.gui.templates.users.Offers.*;
@@ -33,13 +35,16 @@ import java.util.UUID;
 
 public class GUIFactory {
     private static ITextInput textInput;
+    private static IConfiguration config;
     private static UseCaseFactory useCaseFactory;
     private static PlatformAdapter platformAdapter;
 
-    public static void init(UseCaseFactory useCaseFactory,PlatformAdapter adapter) {
+    public static void init(UseCaseFactory useCaseFactory,PlatformAdapter adapter, IConfiguration configuration) {
         GUIFactory.platformAdapter = adapter;
+        GUIFactory.config = configuration;
         GUIFactory.textInput = adapter.getTextInput();
         GUIFactory.useCaseFactory= useCaseFactory;
+        BankPanel.setButtonsState(config.getButtonsConfig());
     }
 
     public static IGUI economyAdminPanel(IEntityGUI sender){
@@ -125,5 +130,8 @@ public class GUIFactory {
     }
     public static IGUI currencyListToAddExchange(IEntityGUI player,ICurrency currency,IGUI parent) {
         return new CurrencyListToAddExchange(player, useCaseFactory.searchCurrency(), useCaseFactory.editCurrency(), parent, currency);
+    }
+    public static IGUI bankPanelEditor(IEntityGUI player,IGUI parent) {
+        return new BankPanelEditor(player,parent,config);
     }
 }
