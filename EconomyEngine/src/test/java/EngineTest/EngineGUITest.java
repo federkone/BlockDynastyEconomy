@@ -81,6 +81,7 @@ public class EngineGUITest {
     @Test
     public void testGUIWorkFlowTransferOnline(){
         player.addPermission("BlockDynastyEconomy.players.bank");
+        player.addPermission("BlockDynastyEconomy.players.pay");
         Command command= CommandService.getCommand("bank");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{});
 
@@ -93,6 +94,7 @@ public class EngineGUITest {
     @Test
     public  void testGUIWorkFlowExchangeCurrency(){
         player.addPermission("BlockDynastyEconomy.economy.superUser");
+        player.addPermission("BlockDynastyEconomy.players.pay");
         Command command= CommandService.getCommand("eco");
         command.execute(MinecraftServer.getPlayer("Nullplague"), new String[]{"menu"});
         System.out.println("Clicked on slot 20 ->");

@@ -80,7 +80,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button2.nameItem"))
                             .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"BankPanel.button2.lore"))
                             .build()))
-                    .setLeftClickAction( unused -> {GUIFactory.exchangeFirstPanel(player,this).open();})
+                    .setLeftClickAction( unused -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.exchange")){
+                            GUIFactory.exchangeFirstPanel(player,this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -91,7 +97,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button3.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button3.lore"))
                             .build()))
-                    .setLeftClickAction(f -> {GUIFactory.listPlayerOnlineToOffer(player, this).open();})
+                    .setLeftClickAction(f -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.offer")){
+                            GUIFactory.listPlayerOnlineToOffer(player, this).open();
+                        }else {
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -102,7 +114,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button4.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button4.lore"))
                             .build()))
-                    .setLeftClickAction(f -> {GUIFactory.listPlayersOfflineToOffer(player, this).open();})
+                    .setLeftClickAction(f -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.offer")) {
+                            GUIFactory.listPlayersOfflineToOffer(player, this).open();
+                        }else {
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -113,7 +131,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button5.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button5.lore"))
                             .build()))
-                    .setLeftClickAction(f -> {GUIFactory.myActiveOffers(player, this).open();})
+                    .setLeftClickAction(f -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.offer")) {
+                            GUIFactory.myActiveOffers(player, this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -124,7 +148,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button6.nameItem"))
                             .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button6.lore"))
                             .build()))
-                    .setLeftClickAction(unused -> {GUIFactory.balancePanel(player, this).open();})
+                    .setLeftClickAction(unused -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.balance")){
+                        GUIFactory.balancePanel(player, this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -135,7 +165,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button7.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button7.lore"))
                             .build()))
-                    .setLeftClickAction(f -> {GUIFactory.receivedOffers(player, this).open();})
+                    .setLeftClickAction(f -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.offer")) {
+                            GUIFactory.receivedOffers(player, this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
         if (isButtonEnabled(15)) {
@@ -145,7 +181,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button8.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button8.lore"))
                             .build()))
-                    .setLeftClickAction(unused -> {GUIFactory.listPlayersOnline(player, this).open();})
+                    .setLeftClickAction(unused -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.pay")){
+                        GUIFactory.listPlayersOnline(player, this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
@@ -156,7 +198,13 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)), "BankPanel.button9.nameItem"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "BankPanel.button9.lore"))
                             .build()))
-                    .setLeftClickAction(f -> {GUIFactory.listPlayersFromDb(player, this).open();})
+                    .setLeftClickAction(f -> {
+                        if(player.hasPermission("BlockDynastyEconomy.players.pay")) {
+                            GUIFactory.listPlayersFromDb(player, this).open();
+                        }else{
+                            player.sendMessage(ChatColor.stringValueOf(Colors.RED)+"You don't have permission");
+                        }
+                    })
                     .build());
         }
 
