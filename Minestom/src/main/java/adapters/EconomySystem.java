@@ -27,8 +27,13 @@ import adapters.events.playerJoinEvent;
 public class EconomySystem {
     private static Economy economy;
 
-    public static void start(boolean onlineMode){
-        EconomySystem.economy= Economy.init(new PlatformAdapter(onlineMode));
+    /*
+    * Start the economy system
+    * @param onlineModeServer whether the server is in online mode or not "AuthMode"
+    * @return void
+    * */
+    public static void start(boolean onlineModeServer){
+        EconomySystem.economy= Economy.init(new PlatformAdapter(onlineModeServer));
         playerJoinEvent.register(economy.getPlayerJoinListener());
         playerExitEvent.register(economy.getPlayerJoinListener());
         Commands.register();

@@ -22,7 +22,13 @@ import lib.gui.components.IEntityGUI;
 import lib.gui.components.IInventory;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.sound.Sound;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.advancements.FrameType;
+import net.minestom.server.advancements.Notification;
 import net.minestom.server.entity.Player;
+import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 
 import java.util.UUID;
 
@@ -76,6 +82,10 @@ public class PlayerAdapter implements IPlayer {
     @Override
     public void playNotificationSound() {
         player.playSound(Sound.sound().type(Key.key("minecraft:entity.experience_orb.pickup")).pitch(1.0f).volume(1.0f).source(Sound.Source.PLAYER).build());
+        player.sendNotification(new Notification(
+                Component.text("Transaction received", NamedTextColor.GREEN),
+                FrameType.GOAL,
+                ItemStack.of(Material.GOLD_INGOT)));
     }
     @Override
     public void playSuccessSound() {
