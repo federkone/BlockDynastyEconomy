@@ -26,8 +26,7 @@ import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
-import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOffline;
-import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListenerOnline;
+import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListener;
 
 import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.BukkitImplementation.utils.Updater;
@@ -38,7 +37,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import platform.files.Configuration;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BlockDynastyEconomy extends JavaPlugin {
@@ -83,13 +81,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         try {
             registerEconomyCore();
             registerEvents();
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                if(configuration.getBoolean("online")) {
-                    economy.getPlayerJoinListener().loadOnlinePlayerAccount(EntityPlayerAdapter.of(player));
-                }else{
-                    economy.getPlayerJoinListener().loadOfflinePlayerAccount(EntityPlayerAdapter.of(player));
-                }
-            });
+            Bukkit.getOnlinePlayers().forEach(player -> {economy.getPlayerJoinListener().loadPlayerAccount(EntityPlayerAdapter.of(player));});
             registerIntegrations();
             Console.log("§aPlugin enabled successfully!");
         } catch (Exception e) {
@@ -117,23 +109,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         CommandRegister.registerAllEconomySystem();
     }
     private void registerEvents() {
-        Listener economyListener=new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
-        if(configuration.getBoolean("online")) {
-            if(!getServer().getOnlineMode()){
-                Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
-            }
-            economyListener = new PlayerJoinListenerOnline(economy.getPlayerJoinListener());
-            Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
-        }
-        if (!configuration.getBoolean("online")){
-            if(getServer().getOnlineMode()){
-                Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
-            }
-            economyListener = new PlayerJoinListenerOffline(economy.getPlayerJoinListener());
-            Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
-        }
-
-        getServer().getPluginManager().registerEvents(economyListener, this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(economy.getPlayerJoinListener()), this);
         getServer().getPluginManager().registerEvents(new ClickListener(),this);
         getServer().getPluginManager().registerEvents(new CloseListener(),this);
 

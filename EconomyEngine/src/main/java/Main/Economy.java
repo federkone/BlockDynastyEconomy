@@ -70,7 +70,7 @@ public class Economy {
         this.createListener(configuration,platformAdapter);
         this.api = new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
-        this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
+        this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);

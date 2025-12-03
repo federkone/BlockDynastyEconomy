@@ -18,7 +18,7 @@ package platform.listeners;
 
 import lib.commands.abstractions.IEntityCommands;
 
-public interface IPlayerJoin {
-    void loadPlayerAccount(IEntityCommands player);
-    void offLoadPlayerAccount(IEntityCommands player);
+public interface LoadAccount {
+
+    void loadAccount(IEntityCommands player);
 }

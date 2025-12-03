@@ -18,8 +18,7 @@ package BlockDynasty;
 
 import BlockDynasty.adapters.commands.CommandRegister;
 import BlockDynasty.adapters.platformAdapter.SpongeAdapter;
-import BlockDynasty.adapters.listeners.PlayerJoinListenerOffline;
-import BlockDynasty.adapters.listeners.PlayerJoinListenerOnline;
+import BlockDynasty.adapters.listeners.PlayerJoinListener;
 import BlockDynasty.adapters.proxy.ProxyReceiverImp;
 import BlockDynasty.adapters.integrations.spongeEconomyApi.EconomyServiceAdapter;
 import BlockDynasty.adapters.integrations.spongeEconomyApi.MultiCurrencyService;
@@ -110,21 +109,7 @@ public class SpongePlugin {
     }
 
     private void registerEvents(){
-        if(configuration.getBoolean("online")){
-            if(!Sponge.server().isOnlineModeEnabled()){ //SPONGE NOT WORK THIS WAY!!!!!!!! WTF SPONGE
-                //Console.logError("THE SERVER IS IN OFFLINE MODE but the plugin is configured to work in ONLINE mode, please change the configuration to avoid issues.");
-            }
-            Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOnline(economy.getPlayerJoinListener()), MethodHandles.lookup());
-            Console.log("Online mode is enabled. The plugin will use UUID to identify players.");
-        }
-
-        if (!configuration.getBoolean("online")) {
-            if(Sponge.server().isOnlineModeEnabled()){
-                //Console.logError("THE SERVER IS IN ONLINE MODE but the plugin is configured to work in OFFLINE mode, please change the configuration to avoid issues.");
-            }
-            Sponge.eventManager().registerListeners(container, new PlayerJoinListenerOffline(economy.getPlayerJoinListener()),MethodHandles.lookup());
-            Console.log("Online mode is disabled, The plugin will use NICKNAME to identify players.");
-        }
+        Sponge.eventManager().registerListeners(container, new PlayerJoinListener(economy.getPlayerJoinListener()), MethodHandles.lookup());
     }
 
     public static Logger getLogger() {
