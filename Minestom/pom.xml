@@ -10,8 +10,8 @@
     </parent>
 
     <properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -29,14 +29,8 @@
         <dependency>
             <groupId>net.minestom</groupId>
             <artifactId>minestom</artifactId>
-            <version>2025.10.31-1.21.10</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.BlockDynasty</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>2025.07.08-1.21.5</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -49,12 +43,6 @@
             <artifactId>EconomyGUILibrary</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
         </dependency>
     </dependencies>
 
@@ -81,7 +69,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>minestom.Main</mainClass> <!--Change this to your main class-->
+                            <mainClass>minestom.MainTest</mainClass> <!--Change this to your main class-->
                         </manifest>
                     </archive>
                     <descriptorRefs>

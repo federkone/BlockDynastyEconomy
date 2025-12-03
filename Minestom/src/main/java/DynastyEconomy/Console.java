@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package adapters.events;
+package DynastyEconomy;
 
-import adapters.PlayerAdapter;
+import lib.abstractions.IConsole;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.entity.Player;
-import net.minestom.server.event.GlobalEventHandler;
-import net.minestom.server.event.player.PlayerLoadedEvent;
-import platform.listeners.IPlayerJoin;
+import org.slf4j.Logger;
 
-public class playerJoinEvent {
+public class Console implements IConsole {
+    private static final Logger LOGGER = MinecraftServer.LOGGER;
 
-    public static void register(IPlayerJoin playerJoin){
-        GlobalEventHandler handler = MinecraftServer.getGlobalEventHandler();
+    @Override
+    public void debug(String message) {
+        LOGGER.info(message);
+    }
 
-        handler.addListener(PlayerLoadedEvent.class, event -> {
-            final Player player = event.getPlayer();
-            playerJoin.loadOnlinePlayerAccount(new PlayerAdapter(player));
-        });
+    @Override
+    public void log(String message) {
+        LOGGER.info(message);
+    }
+
+    @Override
+    public void logError(String message) {
+        LOGGER.info(message);
     }
 }

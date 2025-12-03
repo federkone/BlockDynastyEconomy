@@ -1,12 +1,31 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package adapters;
 
 import lib.gui.components.recipes.RecipeItem;
 import lib.util.materials.Materials;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.component.DataComponents;
+import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.item.component.HeadProfile;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +35,7 @@ import java.util.stream.Stream;
 public class MaterialAdapter {
     //map of materials between lib and minestom
     private static Map<Materials, Material> materialMap = new HashMap<>();
+    private static Map<String,HeadProfile> profileCacheHeadsTextures = new HashMap<>();
 
     static {
         //initialize material map here
@@ -64,16 +84,38 @@ public class MaterialAdapter {
     }
 
     public static ItemStack createItem(RecipeItem recipeItem) {
-        // Creation logic here
         List<Component> loreComponents = Stream.of(recipeItem.getLore())
                 .map(line -> Component.text(line))
                 .collect(Collectors.toList());
 
-        ItemStack item = ItemStack.builder(convertMaterial(recipeItem.getMaterial()))
+        String textureURL = recipeItem.getTexture();
+        if(textureURL != null && !textureURL.isEmpty()) {
+            HeadProfile profile = HeadProfileFromURL(recipeItem.getTexture());
+            return ItemStack.builder(Material.PLAYER_HEAD)
+                    .set(DataComponents.CUSTOM_NAME, Component.text(recipeItem.getName()))
+                    .set(DataComponents.LORE,loreComponents)
+                    .set(DataComponents.PROFILE, profile)
+                    .build();
+        }
+
+        return ItemStack.builder(convertMaterial(recipeItem.getMaterial()))
                 .set(DataComponents.CUSTOM_NAME, Component.text(recipeItem.getName()))
                 .set(DataComponents.LORE, loreComponents)
                 .build();
+    }
 
-        return item;
+    private static HeadProfile HeadProfileFromURL(String textureURL) {
+        return profileCacheHeadsTextures.computeIfAbsent(textureURL, url -> {
+            PlayerSkin playerSkin = new PlayerSkin(jsonTextureData(textureURL)," ");
+            return new HeadProfile(playerSkin);
+        });
+    }
+
+    private static String jsonTextureData(String textureURL) {
+        String jsonTexture = String.format(
+                "{\"textures\":{\"SKIN\":{\"url\":\"%s\"}}}",
+                textureURL
+        );
+        return Base64.getEncoder().encodeToString(jsonTexture.getBytes());
     }
 }

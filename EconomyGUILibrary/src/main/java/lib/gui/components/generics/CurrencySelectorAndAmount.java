@@ -23,7 +23,7 @@ import lib.gui.components.recipes.RecipeItem;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.*;
 import lib.util.colors.ChatColor;
-import lib.util.colors.Message;
+import lib.messages.Message;
 import lib.util.materials.Materials;
 
 import java.math.BigDecimal;

@@ -32,7 +32,6 @@ import lib.commands.templates.users.OfferSubCommand.DenyOfferCommand;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CommandService {
     private static final List<Command> MainCommands = new ArrayList<>();
     private static UseCaseFactory useCaseFactory;
@@ -44,7 +43,7 @@ public class CommandService {
         CommandService.platformAdapter = platformAdapter;
         CommandService.registerCommands();
     }
-
+    //tree structure of commands
     private static void registerCommands(){
         OfferCommand offerCommand = new OfferCommand();//main
         EconomyCommand economyCommand = new EconomyCommand();//main

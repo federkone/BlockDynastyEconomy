@@ -78,8 +78,6 @@ public class SpongePlugin {
 
     @Listener
     public void onConstructPlugin(final ConstructPluginEvent event) {
-        //metrics.startup(event);
-        // Perform any one-time setup
         try {
             economy = Economy.init(new SpongeAdapter());
             configuration = economy.getConfiguration();
@@ -103,7 +101,6 @@ public class SpongePlugin {
     @Listener
     public void onServerStopping(final StoppingEngineEvent<Server> event) {
         Economy.shutdown();
-        //metrics.shutdown();
     }
 
     @Listener

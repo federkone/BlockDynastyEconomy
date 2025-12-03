@@ -16,24 +16,22 @@
 
 package adapters;
 
-import lib.gui.components.IInventory;
-import lib.gui.components.IItemStack;
-import net.minestom.server.inventory.Inventory;
+import lib.scheduler.ContextualTask;
+import lib.scheduler.IScheduler;
 
-public class InventoryAdapter implements IInventory {
-    private Inventory inventory;
-
-    public InventoryAdapter(Inventory inventory) {
-        this.inventory = inventory;
+public class SchedulerAdapter implements IScheduler {
+    @Override
+    public void runLater(long delay, ContextualTask contextualTask) {
+        contextualTask.getRunnable().run();
     }
 
     @Override
-    public void set(int slot, IItemStack item) {
-        this.inventory.setItemStack(slot, (net.minestom.server.item.ItemStack) item.getHandle());
+    public void runAsync(ContextualTask contextualTask) {
+        contextualTask.getRunnable().run();
     }
 
     @Override
-    public Object getHandle() {
-        return this.inventory;
+    public void run(ContextualTask contextualTask) {
+        contextualTask.getRunnable().run();
     }
 }
