@@ -18,6 +18,7 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.Integrations.vaultUnloked.VaultUnlockedHandler;
+import BlockDynasty.BukkitImplementation.Integrations.vault2.Vault2Handler;
 import BlockDynasty.BukkitImplementation.utils.JavaUtil;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import api.IApi;
@@ -38,13 +39,23 @@ public class Vault {
             return;
         }
 
-        if(JavaUtil.classExists("net.milkbowl.vault2.economy.Economy")){  //if is present vault 2/vault Unlocked plugin
-            vaultHandler = new VaultUnlockedHandler(plugin,api);
-        }else {
-            vaultHandler = new VaultHandler(plugin,api);
+        //VAULT 2.0 CHECK
+        if(JavaUtil.classExists("net.milkbowl.vault.economy.EconomyMultiCurrency")) {
+            Console.log("Vault 2.0 detected.");
+            vaultHandler = new Vault2Handler(plugin, api);
+            vaultHandler.hook();
+            return;
         }
 
-        vaultHandler.hook();
+        //VAULT UNLOCKED CHECK
+        if(JavaUtil.classExists("net.milkbowl.vault2.economy.Economy")){
+            vaultHandler = new VaultUnlockedHandler(plugin,api);
+            vaultHandler.hook();
+        }else {
+            //DEFAULT VAULT V1.7
+            vaultHandler = new VaultHandler(plugin,api);
+            vaultHandler.hook();
+        }
     }
 
     public static void unhook(){
