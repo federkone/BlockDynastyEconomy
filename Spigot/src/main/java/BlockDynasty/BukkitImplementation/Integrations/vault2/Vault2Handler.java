@@ -42,7 +42,6 @@ public class Vault2Handler implements IVaultHandler {
             }
 
             ServicesManager sm = Bukkit.getServicesManager();
-            sm.register(net.milkbowl.vault.economy.Economy.class, this.economy, plugin, ServicePriority.Highest);
             sm.register(net.milkbowl.vault.economy.EconomyMultiCurrency.class, this.economy, plugin, ServicePriority.Highest);
 
             Console.log("Vault 2.0 link enabled.");
@@ -56,7 +55,6 @@ public class Vault2Handler implements IVaultHandler {
         ServicesManager sm = Bukkit.getServicesManager();
         if(this.economy != null){
             sm.unregister(net.milkbowl.vault.economy.EconomyMultiCurrency.class, this.economy);
-            sm.unregister(net.milkbowl.vault.economy.Economy.class, this.economy);
             this.economy = null;
         }
     }

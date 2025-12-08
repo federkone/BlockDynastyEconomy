@@ -17,13 +17,14 @@
 package BlockDynasty.BukkitImplementation.Integrations.vault2;
 
 import BlockDynasty.BukkitImplementation.Integrations.vault.VaultHook;
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import api.IApi;
-import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyMultiCurrency;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Vault2Hook extends VaultHook implements EconomyMultiCurrency {
     private final IApi api;
@@ -31,6 +32,11 @@ public class Vault2Hook extends VaultHook implements EconomyMultiCurrency {
     public Vault2Hook(IApi api) {
         super(api);
         this.api = api;
+    }
+
+    @Override
+    public List<String> getCurrencies() {
+        return api.getCurrencies().stream().map(ICurrency::getSingular).toList();
     }
 
     @Override
