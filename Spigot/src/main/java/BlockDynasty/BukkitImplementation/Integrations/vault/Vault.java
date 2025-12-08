@@ -24,9 +24,13 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 import api.IApi;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Vault {
     private static final BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
     private static IVaultHandler vaultHandler;
+    private static final List<IVaultHandler> vaultsInjected = new ArrayList<>();
 
     public static void init(IApi api) {
         if (!BlockDynastyEconomy.getConfiguration().getBoolean("vault")) {
@@ -41,24 +45,21 @@ public class Vault {
 
         //VAULT 2.0 CHECK
         if(JavaUtil.classExists("net.milkbowl.vault.economy.EconomyMultiCurrency")) {
-            Console.log("Vault 2.0 detected.");
-            vaultHandler = new Vault2Handler(plugin, api);
-            vaultHandler.hook();
-            return;
+            vaultsInjected.add(new Vault2Handler(plugin, api));
+        }else{
+            //DEFAULT VAULT V1.7
+            vaultsInjected.add(new VaultHandler(plugin,api));
         }
 
         //VAULT UNLOCKED CHECK
         if(JavaUtil.classExists("net.milkbowl.vault2.economy.Economy")){
-            vaultHandler = new VaultUnlockedHandler(plugin,api);
-            vaultHandler.hook();
-        }else {
-            //DEFAULT VAULT V1.7
-            vaultHandler = new VaultHandler(plugin,api);
-            vaultHandler.hook();
+            vaultsInjected.add(new VaultUnlockedHandler(plugin,api));
         }
+
+        vaultsInjected.forEach(IVaultHandler::hook);
     }
 
     public static void unhook(){
-        if (vaultHandler != null) vaultHandler.unhook();
+        vaultsInjected.forEach(IVaultHandler::unhook);
     }
 }
