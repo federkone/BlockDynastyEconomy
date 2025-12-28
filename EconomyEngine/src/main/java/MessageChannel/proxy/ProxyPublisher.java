@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package mockClass;
+package MessageChannel.proxy;
 
-import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.courier.Message;
+import MessageChannel.Publisher;
+import utils.Console;
+import lib.abstractions.PlatformAdapter;
 
-public class CourierTest implements Courier {
+import java.io.IOException;
 
-    @Override
-    public void sendUpdateMessage(Message message) {
+public class ProxyPublisher extends Publisher {
+    private final PlatformAdapter platformAdapter;
 
-        if(!message.isSameOrigin()){
-            System.out.println("Message from channel is from same instance origin server, skipping...");
-        }else {
-            System.out.println("[BUNGEE CHANNEL SEND] " +message.toJsonString());
-        }
+    public ProxyPublisher(PlatformAdapter platformAdapter) {
+        super(platformAdapter);
+        this.platformAdapter = platformAdapter;
     }
 
-
+    @Override
+    protected void sendMessage(Message message) {
+        try {
+            platformAdapter.sendPluginMessage(ProxyData.getChannelName(), message.toJsonBytes());
+        } catch (IOException e) {
+            Console.logError("Proxy channel error :" + e.getMessage());
+        }
+    }
 }

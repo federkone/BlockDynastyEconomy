@@ -25,11 +25,11 @@ import BlockDynasty.Economy.domain.events.transactionsEvents.WithdrawEvent;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
+import BlockDynasty.Economy.domain.services.courier.Message;
 import BlockDynasty.Economy.domain.services.log.Log;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 
 import java.math.BigDecimal;
@@ -71,7 +71,12 @@ public class WithdrawUseCase extends SingleAccountSingleCurrencyOp implements IW
         }
 
         this.accountService.syncOnlineAccount(result.getValue());
-        this.updateForwarder.sendUpdateMessage("event",new WithdrawEvent(account.getPlayer(), currency, amount,context).toJson() ,account.getUuid().toString());
+
+        this.updateForwarder.sendUpdateMessage( Message.builder()
+                .setType(Message.Type.EVENT)
+                .setData(new WithdrawEvent(account.getPlayer(), currency, amount,context).toJson())
+                .setTarget(account.getUuid())
+                .build());
         this.logger.log("[WITHDRAW] Account: " + account.getNickname() + " has made a withdrawal of " + currency.format(amount) + " " + currency.getSingular());
         this.eventManager.emit(new WithdrawEvent(account.getPlayer(), currency, amount,context));
 

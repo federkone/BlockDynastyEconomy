@@ -22,10 +22,10 @@ import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.transaction.TradeCurrenciesUseCase;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
+import BlockDynasty.Economy.domain.services.courier.Message;
 
 import java.util.UUID;
 
@@ -51,12 +51,20 @@ public class AcceptOfferUseCase {
         if (!tradeResult.isSuccess()) {
             offerService.cancelOffer(playerAccept);
             eventManager.emit(new OfferCanceled(offer));
-            courier.sendUpdateMessage("event", new OfferCanceled( offer).toJson(),playerOffer.toString());
+            courier.sendUpdateMessage(Message.builder()
+                    .setType(Message.Type.EVENT)
+                    .setData(new OfferCanceled(offer).toJson())
+                    .setTarget(playerOffer)
+                    .build());
             return Result.failure(tradeResult.getErrorMessage(), tradeResult.getErrorCode());
         }
         offerService.acceptOffer(playerAccept,playerOffer);
         eventManager.emit(new OfferAccepted(offer));
-        courier.sendUpdateMessage("event", new OfferAccepted( offer).toJson(),playerOffer.toString());
+        courier.sendUpdateMessage(Message.builder()
+                .setType(Message.Type.EVENT)
+                .setData(new OfferAccepted(offer).toJson())
+                .setTarget(playerOffer)
+                .build());
         return Result.success();
     }
 }
