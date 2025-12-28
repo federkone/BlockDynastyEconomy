@@ -19,7 +19,7 @@ package repository;
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountAlreadyExist;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.persistence.Exceptions.RepositoryException;
@@ -30,11 +30,13 @@ import BlockDynasty.Economy.domain.persistence.transaction.ITransactions;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import BlockDynasty.Economy.domain.result.TransferResult;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.SessionFactory;
 import repository.ConnectionHandler.Hibernate.Connection;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class Repository implements IRepository {
     private Connection connection;
@@ -118,13 +120,15 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public Result<Account> loadAccountByUuid(String uuid) {
+    public Result<Account> loadAccountByUuid(UUID uuid) {
         try{
             Account account =accountRepository.findByUuid(uuid);
             return Result.success(account);
         }catch (AccountNotFoundException e) {
             return Result.failure("Account with UUID " + uuid + " not found.",ErrorCode.ACCOUNT_NOT_FOUND);
-        } catch (Exception e) {
+        }catch (NonUniqueResultException e) {
+            return Result.failure("Multiple accounts found with UUID " + uuid + ".",ErrorCode.ACCOUNT_DUPLICATED);
+        } catch (RepositoryException e) {
             return Result.failure("Error loading account: " + e.getMessage(),ErrorCode.DATA_BASE_ERROR);
         }
     }
@@ -136,7 +140,23 @@ public class Repository implements IRepository {
             return Result.success(account);
         }catch (AccountNotFoundException e) {
             return Result.failure("Account with name " + name + " not found.", ErrorCode.ACCOUNT_NOT_FOUND);
-        } catch (Exception e) {
+        }catch (NonUniqueResultException e) {
+            return Result.failure("Multiple accounts found with name " + name + ".", ErrorCode.ACCOUNT_DUPLICATED);
+        }catch (RepositoryException e) {
+            return Result.failure("Error loading account: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
+        }
+    }
+
+    @Override
+    public Result<Account> loadAccountByPlayer(Player player) {
+        try{
+            Account account = accountRepository.findByPlayer(player);
+            return Result.success(account);
+        }catch (AccountNotFoundException e) {
+            return Result.failure("Account for player " + player.getNickname() + " not found.", ErrorCode.ACCOUNT_NOT_FOUND);
+        }catch (NonUniqueResultException e) {
+            return Result.failure("Multiple accounts found for player " + player.getNickname() + ".", ErrorCode.ACCOUNT_DUPLICATED);
+        }catch (RepositoryException e) {
             return Result.failure("Error loading account: " + e.getMessage(), ErrorCode.DATA_BASE_ERROR);
         }
     }
@@ -165,7 +185,18 @@ public class Repository implements IRepository {
     }
 
     @Override
-    public Result<Void> deleteAccount(Account account) {
+    public void saveAccount(Player player, Account account) {
+        try {
+            accountRepository.save(player,account);
+        }catch (AccountNotFoundException e) {
+            accountRepository.create(account);
+        }catch (Exception e) {
+            throw new RepositoryException( "Error saving account: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Result<Void> deleteAccount(Player account) {
         try {
             accountRepository.delete(account);
             return Result.success(null);
