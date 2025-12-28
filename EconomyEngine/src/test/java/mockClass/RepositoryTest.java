@@ -17,7 +17,7 @@
 package mockClass;
 
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
+import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -74,9 +74,9 @@ public class RepositoryTest implements IRepository {
     }
 
     @Override
-    public Result<Account> loadAccountByUuid(String uuid) {
+    public Result<Account> loadAccountByUuid(UUID uuid) {
         return accounts.stream()
-                .filter(account -> account.getUuid().toString().equals(uuid))
+                .filter(account -> account.getUuid().equals(uuid))
                 .findFirst()
                 .map(Result::success)
                 .orElseGet(() -> Result.failure("Account not found", ErrorCode.ACCOUNT_NOT_FOUND));
@@ -92,18 +92,28 @@ public class RepositoryTest implements IRepository {
     }
 
     @Override
+    public Result<Account> loadAccountByPlayer(Player player) {
+        return null;
+    }
+
+    @Override
     public void createAccount(Account account) {
         this.accounts.add(account);
     }
 
     @Override
-    public void saveAccount(Account account) {
+    public void saveAccount(Player player, Account account) {
         this.accounts.removeIf(a -> a.getUuid().equals(account.getUuid()));
         this.accounts.add(account);
     }
 
     @Override
-    public Result<Void> deleteAccount(Account account) {
+    public void saveAccount(Account account) {
+        saveAccount(account.getPlayer(),account);
+    }
+
+    @Override
+    public Result<Void> deleteAccount(Player account) {
         return null;
     }
 
