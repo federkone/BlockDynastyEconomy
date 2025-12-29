@@ -38,19 +38,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public class Repository implements IRepository {
+public class Repository extends TransactionRepository implements IRepository {
     private Connection connection;
     private final SessionFactory sessionFactory;
     private IAccountRepository accountRepository;
     private ICurrencyRepository currencyRepository;
-    private ITransactions transactionsRepository;
 
     public Repository(Connection connection) {
+        super(connection.getSession());
         this.connection = connection;
         this.sessionFactory = connection.getSession();
         this.accountRepository = new AccountRepository(sessionFactory);
         this.currencyRepository = new CurrencyRepository(sessionFactory);
-        this.transactionsRepository = new TransactionRepository(sessionFactory);
     }
 
     @Override
@@ -252,35 +251,5 @@ public class Repository implements IRepository {
                 throw new RepositoryException("Error clearing database: " + e.getMessage(), e);
             }
         }
-    }
-
-    @Override
-    public Result<TransferResult> transfer(String fromUuid, String toUuid, ICurrency currency, BigDecimal amount) {
-        return transactionsRepository.transfer(fromUuid, toUuid, currency, amount);
-    }
-
-    @Override
-    public Result<Account> withdraw(String accountUuid, ICurrency currency, BigDecimal amount) {
-        return transactionsRepository.withdraw( accountUuid, currency, amount);
-    }
-
-    @Override
-    public Result<Account> deposit(String accountUuid, ICurrency currency, BigDecimal amount) {
-        return transactionsRepository.deposit( accountUuid, currency, amount);
-    }
-
-    @Override
-    public Result<Account> exchange(String fromUuid, ICurrency fromCurrency, BigDecimal amountFrom, ICurrency toCurrency, BigDecimal amountTo) {
-        return transactionsRepository.exchange(fromUuid, fromCurrency, amountFrom, toCurrency, amountTo);
-    }
-
-    @Override
-    public Result<TransferResult> trade(String fromUuid, String toUuid, ICurrency fromCurrency, ICurrency toCurrency, BigDecimal amountFrom, BigDecimal amountTo) {
-        return transactionsRepository.trade(fromUuid, toUuid, fromCurrency, toCurrency, amountFrom, amountTo);
-    }
-
-    @Override
-    public Result<Account> setBalance(String accountUuid, ICurrency currency, BigDecimal amount) {
-        return transactionsRepository.setBalance(accountUuid, currency, amount);
     }
 }

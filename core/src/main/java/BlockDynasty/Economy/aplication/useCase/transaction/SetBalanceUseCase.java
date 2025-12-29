@@ -62,7 +62,7 @@ public class SetBalanceUseCase extends SingleAccountSingleCurrencyOp implements 
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<Account> result =  this.dataStore.setBalance(account.getUuid().toString(), currency, amount);
+        Result<Account> result =  this.dataStore.setBalance(account.getPlayer(), currency, amount);
         if (!result.isSuccess()) {
             this.logger.log("[BALANCE SET failed] Account: " + account.getNickname() + " were set to: " + currency.format(amount) + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

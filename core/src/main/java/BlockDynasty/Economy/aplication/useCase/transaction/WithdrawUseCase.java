@@ -64,7 +64,7 @@ public class WithdrawUseCase extends SingleAccountSingleCurrencyOp implements IW
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<Account> result = this.dataStore.withdraw(account.getUuid().toString(), currency, amount);
+        Result<Account> result = this.dataStore.withdraw(account.getPlayer(), currency, amount);
         if(!result.isSuccess()){
             this.logger.log("[WITHDRAW Failure] Account: " + account.getNickname() + " extrajo " + currency.format(amount) + " de " + currency.getSingular()+ " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
             return Result.failure( result.getErrorMessage(), result.getErrorCode());

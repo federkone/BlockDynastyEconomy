@@ -70,7 +70,7 @@ public class DepositUseCase extends SingleAccountSingleCurrencyOp implements IDe
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<Account> result = this.dataStore.deposit(account.getUuid().toString(), currency, amount);
+        Result<Account> result = this.dataStore.deposit(account.getPlayer(), currency, amount);
         if(!result.isSuccess()){
             this.logger.log("[DEPOSIT failed] Account: " + account.getNickname() + " recibió un deposito de " + currency.format(amount) + " de " + currency.getSingular() + " pero falló: " + result.getErrorMessage() + " (" + result.getErrorCode() + ")");
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

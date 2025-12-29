@@ -87,7 +87,7 @@ public class TradeCurrenciesUseCase extends MultiAccountMultiCurrencyOp implemen
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<TransferResult> result = this.dataStore.trade( accountFrom.getUuid().toString(), accountTo.getUuid().toString(), currencyFrom, currencyTo, amountFrom, amountTo);
+        Result<TransferResult> result = this.dataStore.trade( accountFrom.getPlayer(), accountTo.getPlayer(), currencyFrom, currencyTo, amountFrom, amountTo);
         if(!result.isSuccess()){
             this.logger.log("[TRADE failed] Account: " + accountFrom.getNickname() + " traded " + currencyFrom.format(amountFrom) + " to " + accountTo.getNickname() + " for " + currencyTo.format(amountTo) + " - Error: " + result.getErrorMessage() + " - Code: " + result.getErrorCode());
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

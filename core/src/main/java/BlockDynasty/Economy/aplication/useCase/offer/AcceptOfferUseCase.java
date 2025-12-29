@@ -47,7 +47,7 @@ public class AcceptOfferUseCase {
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
         }
-        Result<Void> tradeResult = tradeCurrenciesUseCase.execute(offer.getVendedor().getUuid(), offer.getComprador().getUuid(),  offer.getTipoCantidad().getSingular(), offer.getTipoMonto().getSingular(),offer.getCantidad(), offer.getMonto());
+        Result<Void> tradeResult = tradeCurrenciesUseCase.execute(offer.getVendedor(), offer.getComprador(),  offer.getTipoCantidad().getSingular(), offer.getTipoMonto().getSingular(),offer.getCantidad(), offer.getMonto());
         if (!tradeResult.isSuccess()) {
             offerService.cancelOffer(playerAccept);
             eventManager.emit(new OfferCanceled(offer));

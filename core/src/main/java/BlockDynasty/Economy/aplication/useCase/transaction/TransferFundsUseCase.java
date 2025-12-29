@@ -73,7 +73,7 @@ public class TransferFundsUseCase extends MultiAccountSingleCurrencyOp implement
             return Result.failure("Decimal not supported", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<TransferResult> result = this.dataStore.transfer(accountFrom.getUuid().toString(), accountTo.getUuid().toString(), currency, amount);
+        Result<TransferResult> result = this.dataStore.transfer(accountFrom.getPlayer(), accountTo.getPlayer(), currency, amount);
         if (!result.isSuccess()) {
             logFailure(accountFrom, accountTo, currency, amount, result);
             return Result.failure(result.getErrorMessage(), result.getErrorCode());

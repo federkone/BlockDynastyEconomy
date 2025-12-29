@@ -91,7 +91,7 @@ public class ExchangeUseCase extends SingleAccountMultiCurrencyOp implements IEx
             return Result.failure("Decimal not supported for currency ", ErrorCode.DECIMAL_NOT_SUPPORTED);
         }
 
-        Result<Account>  result =this.dataStore.exchange(account.getUuid().toString(),currencyFrom,amountFrom,currencyTo,amountTo);
+        Result<Account>  result =this.dataStore.exchange(account.getPlayer(),currencyFrom,amountFrom,currencyTo,amountTo);
 
         if(!result.isSuccess()){
             this.logger.log("[EXCHANGE failed] Account: " + account.getNickname() + " exchanged " + currencyFrom.format(amountFrom) + " to " + currencyTo.format(amountTo) + " Error: " + result.getErrorMessage() + " Code: " + result.getErrorCode());
