@@ -4,7 +4,7 @@ import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
-import BlockDynasty.Economy.domain.services.courier.Message;
+import BlockDynasty.Economy.domain.services.courier.PlayerTargetMessage;
 import lib.abstractions.IPlayer;
 import lib.abstractions.PlatformAdapter;
 import lib.scheduler.ContextualTask;
@@ -29,7 +29,9 @@ public abstract class Subscriber {
     }
 
     public void processMessage(String messageString) {
-        Message message = Message.builder().fromJson(messageString).build();
+        PlayerTargetMessage message = PlayerTargetMessage.builder()
+                .fromJson(messageString)
+                .build();
         if(message.isSameOrigin()){
             return;
         }
@@ -39,14 +41,25 @@ public abstract class Subscriber {
                 if(shouldSkipProcessing(message.getTarget())){
                     break;
                 }
-                platformAdapter.getScheduler().runAsync(ContextualTask.build(() -> accountService.syncOnlineAccount(message.getTarget())));
-                eventManager.processNetworkEvent(message.getData());
-                break;
+                if(message.getTargetPlayer() != null){
+                    platformAdapter.getScheduler().runAsync(
+                            ContextualTask.build(
+                                    () -> accountService.syncOnlineAccount(message.getTargetPlayer())
+                            )
+                    );
+                }
+                eventManager.processNetworkEvent(message.getData());break;
             case ACCOUNT:
                 if(shouldSkipProcessing(message.getTarget())){
                     break;
                 }
-                platformAdapter.getScheduler().runAsync(ContextualTask.build(() -> accountService.syncOnlineAccount(message.getTarget())));
+                if(message.getTargetPlayer() != null){
+                    platformAdapter.getScheduler().runAsync(
+                            ContextualTask.build(
+                                    () -> accountService.syncOnlineAccount(message.getTargetPlayer())
+                            )
+                    );
+                }
                 break;
             case CURRENCY:
                 currencyService.syncCurrency(message.getTarget());
