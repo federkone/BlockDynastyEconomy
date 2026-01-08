@@ -22,16 +22,16 @@ import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
-import lib.abstractions.IProxySubscriber;
+import abstractions.platform.IProxySubscriber;
 import lib.gui.GUISystem;
+import platform.IPlatform;
 import platform.files.Configuration;
 import platform.files.Languages;
 import platform.files.logs.EconomyLogger;
 import platform.files.logs.VaultLogger;
 import lib.commands.CommandService;
-import lib.abstractions.PlatformAdapter;
 import lib.placeholder.PlaceHolder;
-import lib.util.colors.ChatColor;
+import util.colors.ChatColor;
 import platform.listeners.EventListener;
 import platform.listeners.IPlayerJoin;
 import platform.listeners.PlayerJoinListener;
@@ -54,9 +54,9 @@ public class Economy {
     private static RedisSubscriber subscriber;
     private Configuration configuration;
     private Languages languages;
-    private PlatformAdapter platformAdapter;
+    private IPlatform platformAdapter;
 
-    private Economy(PlatformAdapter platformAdapter){
+    private Economy(IPlatform platformAdapter){
         this.platformAdapter=platformAdapter;
         this.configuration= new Configuration(platformAdapter.getDataFolder());
         ChatColor.setupSystem(platformAdapter.hasSupportAdventureText(),configuration.getBoolean("forceVanillaColorsSystem") );
@@ -77,7 +77,7 @@ public class Economy {
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
     }
 
-    public static Economy init( PlatformAdapter platformAdapter){
+    public static Economy init( IPlatform platformAdapter){
         return new Economy(platformAdapter);
     }
 
@@ -106,7 +106,7 @@ public class Economy {
         }
     }
 
-    private Courier createPublisher(Configuration configuration, PlatformAdapter platformAdapter){
+    private Courier createPublisher(Configuration configuration, IPlatform platformAdapter){
         if(configuration.getBoolean("redis.enabled")){
             Console.log("Redis Enabled");
             return new RedisPublisher( new RedisData(configuration),platformAdapter);
@@ -115,7 +115,7 @@ public class Economy {
             return new ProxyPublisher(platformAdapter);
         }
     }
-    private void createSubscriber(Configuration configuration, PlatformAdapter platformAdapter){
+    private void createSubscriber(Configuration configuration, IPlatform platformAdapter){
         if(configuration.getBoolean("redis.enabled")){
             subscriber = new RedisSubscriber(new RedisData(configuration),platformAdapter,
                     core.getServicesManager().getOfferService(),

@@ -121,7 +121,13 @@
 
         <dependency>
             <groupId>com.BlockDynasty</groupId>
-            <artifactId>EconomyGUILibrary</artifactId>
+            <artifactId>EconomyGUI</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.BlockDynasty</groupId>
+            <artifactId>EconomyLibrary</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

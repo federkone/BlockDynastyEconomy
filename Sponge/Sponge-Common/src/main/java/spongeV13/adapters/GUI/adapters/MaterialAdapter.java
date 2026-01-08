@@ -16,8 +16,8 @@
 
 package spongeV13.adapters.GUI.adapters;
 
-import lib.gui.components.recipes.RecipeItem;
-import lib.util.materials.Materials;
+import abstractions.platform.materials.Materials;
+import abstractions.platform.recipes.RecipeItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.spongepowered.api.Sponge;

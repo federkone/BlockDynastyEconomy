@@ -21,10 +21,11 @@ import MessageChannelTest.mock.PublisherMock;
 import MessageChannelTest.mock.SubscriberMock;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lib.abstractions.PlatformAdapter;
+import lib.gui.components.PlatformGUI;
 import mockClass.CourierTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import platform.IPlatform;
 import repositoryTest.FactoryRepo;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +36,7 @@ import java.util.UUID;
 
 public class SubscriberTest {
     private Subscriber subscriber;
-    private PlatformAdapter platformAdapter;
+    private IPlatform platformAdapter;
     private IOfferService offerService;
     private ICurrencyService currencyService;
     private IAccountService accountService;

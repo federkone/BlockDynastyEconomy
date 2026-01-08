@@ -18,7 +18,7 @@ package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture;
 
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.utils.Console;
-import lib.util.materials.Materials;
+import abstractions.platform.materials.Materials;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;

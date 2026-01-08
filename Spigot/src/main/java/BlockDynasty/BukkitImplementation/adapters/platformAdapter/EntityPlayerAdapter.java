@@ -19,14 +19,17 @@ package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
 import BlockDynasty.BukkitImplementation.utils.Version;
+import domain.entity.currency.ItemStackCurrency;
+import domain.entity.player.IEntityHardCash;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.components.IEntityGUI;
-import lib.abstractions.IPlayer;
 import lib.gui.components.IInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import platform.IPlayer;
 
 import java.util.UUID;
 
@@ -122,4 +125,44 @@ public class EntityPlayerAdapter implements IPlayer {
         return this;
     }
 
+    @Override
+    public IEntityHardCash asEntityHardCash() {
+        return this;
+    }
+
+    @Override
+    public void giveItem(ItemStackCurrency item) {
+        //dar el itemStack al jugador
+        this.player.getInventory().addItem((ItemStack) item.getRoot());
+    }
+
+    @Override
+    public ItemStackCurrency takeHandItem() {
+        //quitar el itemStack que tiene en la mano y devolverlo
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        return new ItemStackCurrencyAdapter(itemStack);
+    }
+
+    @Override
+    public boolean hasItem(ItemStackCurrency itemCurrency) {
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+            if (itemStack != null && itemStack.isSimilar((ItemStack) itemCurrency.getRoot())) {
+                if (itemStack.getAmount() < 64) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasEmptySlot() {
+        return player.getInventory().firstEmpty() != -1;
+    }
+
+    @Override
+    public void removeItem(ItemStackCurrency itemCurrency) {
+        //eliminar el itemStack del inventario del jugador
+        player.getInventory().removeItem((ItemStack) itemCurrency.getRoot());
+    }
 }

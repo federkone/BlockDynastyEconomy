@@ -16,14 +16,16 @@
 
 package spongeV13.adapters.platformAdapter;
 
+import abstractions.platform.recipes.RecipeInventory;
+import domain.entity.currency.ItemStackCurrency;
+import domain.entity.player.IEntityHardCash;
+import platform.IPlayer;
 import spongeV13.adapters.GUI.adapters.InventoryAdapter;
 import spongeV13.adapters.GUI.listener.ClickListener;
 import spongeV13.adapters.GUI.listener.CloseListener;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.components.IEntityGUI;
-import lib.abstractions.IPlayer;
 import lib.gui.components.IInventory;
-import lib.gui.components.recipes.RecipeInventory;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -34,7 +36,7 @@ import org.spongepowered.api.item.inventory.type.ViewableInventory;
 import java.util.UUID;
 
 public class EntityPlayerAdapter implements IPlayer {
-    ServerPlayer player;
+    private ServerPlayer player;
 
     private EntityPlayerAdapter(ServerPlayer player) {
         this.player = player;
@@ -139,6 +141,12 @@ public class EntityPlayerAdapter implements IPlayer {
     public IEntityCommands asEntityCommands() {
         return this;
     }
+
+    @Override
+    public IEntityHardCash asEntityHardCash() {
+        return this;
+    }
+
     @Override
     public IEntityGUI asEntityGUI() {
         return this;
@@ -147,5 +155,30 @@ public class EntityPlayerAdapter implements IPlayer {
     @Override
     public Object getRoot() {
         return player;
+    }
+
+    @Override
+    public void giveItem(ItemStackCurrency item) {
+
+    }
+
+    @Override
+    public ItemStackCurrency takeHandItem() {
+        return null;
+    }
+
+    @Override
+    public boolean hasItem(ItemStackCurrency itemCurrency) {
+        return false;
+    }
+
+    @Override
+    public boolean hasEmptySlot() {
+        return false;
+    }
+
+    @Override
+    public void removeItem(ItemStackCurrency itemCurrency) {
+
     }
 }

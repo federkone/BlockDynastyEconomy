@@ -19,7 +19,7 @@ package platform.files.logs;
 import BlockDynasty.Economy.domain.services.log.Log;
 import utils.Console;
 import platform.files.Configuration;
-import lib.scheduler.IScheduler;
+import abstractions.platform.scheduler.IScheduler;
 
 public class EconomyLogger extends AbstractLogger{
     private boolean enable = true;

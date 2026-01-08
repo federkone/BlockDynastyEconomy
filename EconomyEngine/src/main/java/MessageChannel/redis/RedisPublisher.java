@@ -18,15 +18,16 @@ package MessageChannel.redis;
 
 import BlockDynasty.Economy.domain.services.courier.Message;
 import MessageChannel.Publisher;
+import platform.IPlatform;
 import utils.Console;
-import lib.abstractions.PlatformAdapter;
+import lib.gui.components.PlatformGUI;
 import redis.clients.jedis.*;
 
 public class RedisPublisher extends Publisher{
     private final String channelName;private final HostAndPort hostAndPort;
     private final JedisClientConfig config;
 
-    public RedisPublisher(RedisData redisData, PlatformAdapter platformAdapter) {
+    public RedisPublisher(RedisData redisData, IPlatform platformAdapter) {
         super(platformAdapter);
         this.channelName = redisData.getChannelName();
 

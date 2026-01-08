@@ -166,12 +166,7 @@
             <artifactId>EconomyEngine</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
+
         </dependency>
 
         <dependency>

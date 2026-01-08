@@ -21,16 +21,17 @@ import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import MessageChannel.Subscriber;
-import lib.abstractions.IProxySubscriber;
+import abstractions.platform.IProxySubscriber;
+import platform.IPlatform;
 import utils.Console;
-import lib.abstractions.PlatformAdapter;
+import lib.gui.components.PlatformGUI;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
 public class ProxySubscriber extends Subscriber implements IProxySubscriber {
-    public ProxySubscriber(PlatformAdapter platformAdapter, IOfferService offerService, ICurrencyService currencyService, IAccountService accountService, EventManager eventManager) {
+    public ProxySubscriber(IPlatform platformAdapter, IOfferService offerService, ICurrencyService currencyService, IAccountService accountService, EventManager eventManager) {
         super(platformAdapter, offerService, currencyService, accountService, eventManager);
         platformAdapter.registerMessageChannel(this);
     }

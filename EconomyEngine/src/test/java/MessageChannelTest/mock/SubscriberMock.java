@@ -6,18 +6,19 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.PlayerTargetMessage;
 import MessageChannel.Subscriber;
-import lib.abstractions.PlatformAdapter;
+import lib.gui.components.PlatformGUI;
 import lib.gui.GUISystem;
-import lib.scheduler.ContextualTask;
+import abstractions.platform.scheduler.ContextualTask;
+import platform.IPlatform;
 
 public class SubscriberMock extends Subscriber {
     private ICurrencyService currencyService;
     private IAccountService accountService;
     private IOfferService offerService;
-    private PlatformAdapter platformAdapter;
+    private IPlatform platformAdapter;
     private EventManager eventManager;
 
-    public SubscriberMock(PlatformAdapter platformAdapter, IOfferService offerService, ICurrencyService currencyService, IAccountService accountService, EventManager eventManager) {
+    public SubscriberMock(IPlatform platformAdapter, IOfferService offerService, ICurrencyService currencyService, IAccountService accountService, EventManager eventManager) {
         super(platformAdapter, offerService, currencyService, accountService, eventManager);
         this.currencyService = currencyService;
         this.accountService = accountService;

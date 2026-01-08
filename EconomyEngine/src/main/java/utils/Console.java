@@ -16,7 +16,7 @@
 
 package utils;
 
-import lib.abstractions.IConsole;
+import abstractions.platform.IConsole;
 import platform.files.Configuration;
 
 public class Console {

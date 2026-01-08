@@ -18,9 +18,9 @@ package platform.files.logs;
 
 import BlockDynasty.Economy.domain.services.log.Log;
 import platform.files.Configuration;
-import lib.scheduler.ContextualTask;
+import abstractions.platform.scheduler.ContextualTask;
 import utils.Console;
-import lib.scheduler.IScheduler;
+import abstractions.platform.scheduler.IScheduler;
 import utils.UtilTime;
 
 import java.io.*;

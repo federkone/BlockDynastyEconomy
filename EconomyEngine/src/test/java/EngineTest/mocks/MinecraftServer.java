@@ -21,7 +21,7 @@ public class MinecraftServer {
     }
 
     public static void stop(){
-        Economy.shutdown();
+        //Economy.shutdown();
         System.out.println("Server Testing Environment Stopped.");
     }
 

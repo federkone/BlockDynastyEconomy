@@ -20,16 +20,21 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture.*;
 import BlockDynasty.BukkitImplementation.utils.Version;
 
-import lib.gui.components.recipes.RecipeItem;
-import lib.util.materials.Materials;
+import abstractions.platform.materials.Materials;
+import abstractions.platform.recipes.RecipeItem;
+import domain.entity.currency.NbtData;
+import domain.entity.currency.RecipeItemCurrency;
+import lib.gui.components.factory.Item;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -163,6 +168,26 @@ public class MaterialAdapter {
         applyItemLore(itemStack ,List.of(recipeItem.getLore()));
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
+    }
+
+    public static ItemStack createItemStackCurrency(RecipeItemCurrency recipeItem) {
+        ItemStack itemStack = createItemStack(recipeItem);
+        applyNBTData(itemStack, recipeItem.getNbtData());
+        return itemStack;
+    }
+
+    public static void applyNBTData(ItemStack itemStack,NbtData nbtData){
+        Map<String ,String> nbtMap = nbtData.getNbtMap();
+        ItemMeta meta = itemStack.getItemMeta();
+        for (Map.Entry<String, String> entry : nbtMap.entrySet()) {
+            NamespacedKey key = new NamespacedKey(BlockDynastyEconomy.getInstance(), entry.getKey());
+            meta.getPersistentDataContainer().set(
+                    key,
+                    PersistentDataType.STRING,
+                    entry.getValue()
+            );
+        }
+        itemStack.setItemMeta(meta);
     }
 
     private static boolean isValidPlayerName(String name) {
