@@ -9,7 +9,7 @@ import BlockDynasty.Economy.domain.services.IAccountService;
 import lib.commands.abstractions.IEntityCommands;
 import util.colors.ChatColor;
 import util.colors.Colors;
-import utils.Console;
+import services.Console;
 
 public class PlayerJoinListenerOffline implements LoadAccount{
     private final GetAccountByNameUseCase getAccountByNameUseCase;

@@ -17,7 +17,7 @@
 package lib.gui;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import lib.abstractions.IConfiguration;
+import lib.abstractions.IConfigurationGUI;
 import services.messages.IMessages;
 import lib.gui.components.PlatformGUI;
 import lib.gui.components.*;
@@ -30,7 +30,14 @@ import java.util.UUID;
 public class GUISystem {
     private static final IGUIService guiService = new GUIService();
 
-    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IMessages messages, IConfiguration config) {
+    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IMessages messages, IConfigurationGUI config) {
+        Item.init(adapter);
+        Inventory.init(adapter);
+        Message.addLang(messages);
+        GUIFactory.init(useCaseFactory, adapter, config);
+    }
+
+    public static void initWithHardCashSupport(UseCaseFactory useCaseFactory, PlatformGUI adapter, IMessages messages, IConfigurationGUI config){
         Item.init(adapter);
         Inventory.init(adapter);
         Message.addLang(messages);

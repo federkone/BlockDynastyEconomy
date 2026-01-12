@@ -22,25 +22,31 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawU
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import aplication.HardCashService;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import domain.entity.currency.RecipeItemCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import abstractions.platform.materials.Materials;
+import domain.service.ItemCreator;
+import domain.service.ItemCreatorFactory;
 import util.colors.ChatColor;
+import util.colors.Colors;
 
 import java.math.BigDecimal;
 
-public class ExtractItemUseCase {
+public class ExtractItemUseCase implements IExtractItemUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
+    private ItemCreator itemCreator;
 
     public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
+        this.itemCreator = ItemCreatorFactory.getItemCreator(platform);
     }
 
     public void execute(IEntityHardCash player, BigDecimal amount, String currency){
@@ -49,18 +55,8 @@ public class ExtractItemUseCase {
             player.sendMessage("Error."+ currencyResult.getErrorMessage());
             return;
         }
-
         ICurrency currencyData = currencyResult.getValue();
-        NbtData nbtData = new NbtData(currency,amount.toString());
-        String color = ChatColor.stringValueOf(currencyData.getColor());
-        RecipeItemCurrency recipe = RecipeItemCurrency.builder()
-                .setNbtData(nbtData)
-                .setLore(color + "Value: " + currencyData.format(amount))
-                .setName(color + currency)
-                .setTexture(currencyData.getTexture())
-                .setMaterial(Materials.GOLD_INGOT)
-                .build();
-        ItemStackCurrency item = platform.createItemStackCurrency(recipe);
+        ItemStackCurrency item = itemCreator.create(currencyData, amount);
         if (player.hasItem(item) || player.hasEmptySlot() ){
             var withdrawResult = withdrawUseCase.execute(player.getUniqueId(),currency, amount, Context.COMMAND);
             if (withdrawResult.isSuccess()){

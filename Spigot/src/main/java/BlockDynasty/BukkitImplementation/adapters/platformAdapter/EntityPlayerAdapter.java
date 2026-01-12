@@ -17,7 +17,7 @@
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialProvider;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
@@ -97,12 +97,12 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void playNotificationSound() {
-        player.playSound(player.getLocation(), MaterialAdapter.getPickupSound(), 1.0f, 1.0f);
+        player.playSound(player.getLocation(), MaterialProvider.getPickupSound(), 1.0f, 1.0f);
     }
 
     @Override
     public void playSuccessSound() {
-        player.playSound(player.getLocation(),  MaterialAdapter.getClickSound(), 0.3f, 1.0f);
+        player.playSound(player.getLocation(),  MaterialProvider.getClickSound(), 0.3f, 1.0f);
     }
 
     @Override
@@ -132,14 +132,12 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void giveItem(ItemStackCurrency item) {
-        //dar el itemStack al jugador
         this.player.getInventory().addItem((ItemStack) item.getRoot());
     }
 
     @Override
     public ItemStackCurrency takeHandItem() {
-        //quitar el itemStack que tiene en la mano y devolverlo
-        ItemStack itemStack = player.getInventory().getItemInMainHand();
+        ItemStack itemStack = player.getItemInHand();
         return new ItemStackCurrencyAdapter(itemStack);
     }
 
@@ -162,7 +160,6 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void removeItem(ItemStackCurrency itemCurrency) {
-        //eliminar el itemStack del inventario del jugador
         player.getInventory().removeItem((ItemStack) itemCurrency.getRoot());
     }
 }

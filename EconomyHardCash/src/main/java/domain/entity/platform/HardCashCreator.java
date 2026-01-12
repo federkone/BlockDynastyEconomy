@@ -21,4 +21,5 @@ import domain.entity.currency.RecipeItemCurrency;
 
 public interface HardCashCreator {
     ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe);
+    boolean hasSupportHardCash();
 }

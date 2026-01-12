@@ -19,8 +19,7 @@ package MessageChannel.redis;
 import BlockDynasty.Economy.domain.services.courier.Message;
 import MessageChannel.Publisher;
 import platform.IPlatform;
-import utils.Console;
-import lib.gui.components.PlatformGUI;
+import services.Console;
 import redis.clients.jedis.*;
 
 public class RedisPublisher extends Publisher{

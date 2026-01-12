@@ -28,6 +28,7 @@ import lib.gui.components.generics.Button;
 import abstractions.platform.recipes.RecipeItem;
 import abstractions.platform.materials.Materials;
 import lib.gui.components.generics.AbstractPanel;
+import lib.gui.templates.users.Cashmachine.MachinePanel;
 import util.colors.ChatColor;
 import util.colors.Colors;
 import services.messages.Message;
@@ -71,6 +72,21 @@ public class BankPanel extends AbstractPanel {
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)),"BankPanel.button1.nameItem2"))
                             .setLore(Message.processLines(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"BankPanel.button1.lore"))
                             .build()))
+                    .build());
+        }
+
+        if (isButtonEnabled(10)){
+            setButton(10,
+                    Button.builder()
+                    .setItemStack(
+                            Item.of(RecipeItem.builder()
+                                    .setMaterial(Materials.EMERALD)
+                                    .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button11.nameItem"))
+                                    .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"BankPanel.button11.lore"))
+                            .build()))
+                    .setLeftClickAction( sender -> {
+                        new MachinePanel(sender,this).open();
+                    })
                     .build());
         }
 

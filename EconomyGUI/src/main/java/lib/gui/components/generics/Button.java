@@ -1,8 +1,11 @@
 package lib.gui.components.generics;
 
+import abstractions.platform.materials.Materials;
+import abstractions.platform.recipes.RecipeItem;
 import lib.gui.components.IButton;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IItemStack;
+import lib.gui.components.factory.Item;
 
 import java.util.function.Consumer;
 
@@ -58,6 +61,12 @@ public class Button implements IButton {
         }
 
         public Button build() {
+            if(itemStack == null) {
+                itemStack= Item.of(RecipeItem.builder()
+                                .setMaterial(Materials.STONE)
+                                .setName("Default Button")
+                        .build());
+            }
             return new Button(itemStack, leftClickAction, rightClickAction);
         }
     }

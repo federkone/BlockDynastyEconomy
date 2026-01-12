@@ -18,7 +18,8 @@ package lib.gui;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import lib.abstractions.IConfiguration;
+
+import lib.abstractions.IConfigurationGUI;
 import lib.commands.PlatformCommand;
 import lib.gui.components.PlatformGUI;
 import lib.gui.components.*;
@@ -29,16 +30,17 @@ import lib.gui.templates.administrators.subMenus.accounts.*;
 import lib.gui.templates.administrators.subMenus.currencies.*;
 import lib.gui.templates.administrators.subMenus.gui.BankPanelEditor;
 import lib.gui.templates.users.*;
+import lib.gui.templates.users.Cashmachine.ExtractorPanel;
 import lib.gui.templates.users.Exchange.ExchangeFirstPanel;
 import lib.gui.templates.users.Offers.*;
 
 public class GUIFactory {
     private static ITextInput textInput;
-    private static IConfiguration config;
+    private static IConfigurationGUI config;
     private static UseCaseFactory useCaseFactory;
     private static PlatformGUI platformAdapter;
 
-    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IConfiguration configuration) {
+    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IConfigurationGUI configuration) {
         GUIFactory.platformAdapter = adapter;
         GUIFactory.config = configuration;
         GUIFactory.textInput = adapter.getTextInput();
@@ -132,5 +134,9 @@ public class GUIFactory {
     }
     public static IGUI bankPanelEditor(IEntityGUI player,IGUI parent) {
         return new BankPanelEditor(player,parent,config);
+    }
+
+    public static IGUI extractorPanel(IEntityGUI player,IGUI parent) {
+        return new ExtractorPanel(player, useCaseFactory.searchCurrency(), parent, textInput);
     }
 }

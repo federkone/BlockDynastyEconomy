@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package utils;
+package aplication.listener;
 
-import abstractions.platform.IConsole;
-import platform.files.Configuration;
+import domain.entity.currency.ItemStackCurrency;
+import domain.entity.currency.NbtData;
 
-public class Console {
-    private static boolean debug ;
-    private static IConsole console;
+public class CustomHeadValidator {
 
-    public static void setConsole(IConsole console, Configuration configuration) {
-       debug = configuration.getBoolean("debug");
-       Console.console = console;
-    }
-
-    public static void debug(String message) {
-        if(debug)console.debug(message);
-    }
-
-    public static void log(String message) {
-        console.log(message);
-    }
-
-    public static void logError(String message) {
-        console.logError(message);
+    public static boolean isACurrency(ItemStackCurrency itemCustomHead) {
+        NbtData nbtData = itemCustomHead.getNbtData();
+        String itemType = nbtData.getUuidCurrency();
+        return itemType != null && !itemType.isEmpty();
     }
 }

@@ -17,7 +17,6 @@
 package aplication.useCase;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
@@ -26,10 +25,12 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import aplication.HardCashService;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
-public class DepositItemUseCase {
+public class DepositItemUseCase implements IDepositItemUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
@@ -47,7 +48,7 @@ public class DepositItemUseCase {
             return;
         }
         NbtData nbtData = item.getNbtData();
-        if (nbtData.getItemType() == null) {
+        if (nbtData.getItemType() == null || nbtData.getUuidCurrency() == null) {
             player.sendMessage("Not have a valid currency item in hand.");
             return;
         }
@@ -56,12 +57,17 @@ public class DepositItemUseCase {
             player.sendMessage("Currency type not found: " + nbtData.getItemType());
             return;
         }
+        ICurrency currency = result.getValue();
+        if(!currency.getUuid().equals(UUID.fromString(nbtData.getUuidCurrency()))) {
+            player.sendMessage("Not have a valid currency item in hand.");
+            return;
+        }
         player.removeItem(item);
 
         BigDecimal value = new BigDecimal(nbtData.getValue());
         BigDecimal cant = new BigDecimal(item.getCantity());
         value = value.multiply(cant);
-        ICurrency currency = result.getValue();
+
         Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), value, Context.COMMAND);
         if (!depositResult.isSuccess()) {
             player.giveItem(item);

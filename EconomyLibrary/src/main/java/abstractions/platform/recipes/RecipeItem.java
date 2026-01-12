@@ -53,7 +53,7 @@ public class RecipeItem {
 
 
     public static class Builder {
-        private Materials material = Materials.GLASS_PANE;
+        private Materials material = Materials.STONE;
         private String name = "";
         private String texture = "";
         private String[] lore = new String[0];

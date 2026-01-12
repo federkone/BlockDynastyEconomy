@@ -19,7 +19,7 @@ package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.MaterialAdapter;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialProvider;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInputFactory;
 import BlockDynasty.BukkitImplementation.adapters.proxy.ProxySubscriberImp;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
@@ -109,14 +109,19 @@ public class BukkitAdapter implements IPlatform {
 
     @Override
     public IItemStack createItemStack(RecipeItem recipeItem) {
-        ItemStack itemStack = MaterialAdapter.createItemStack(recipeItem);
+        ItemStack itemStack = MaterialProvider.createItemStack(recipeItem);
         return new ItemStackAdapter(itemStack);
     }
 
     @Override
     public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        ItemStack itemStack = MaterialAdapter.createItemStackCurrency(recipe);
+        ItemStack itemStack = MaterialProvider.createItemStackCurrency(recipe);
         return new ItemStackCurrencyAdapter(itemStack);
+    }
+
+    @Override
+    public boolean hasSupportHardCash() {
+        return Version.hasSupportHardCash();
     }
 
     @Override
@@ -148,6 +153,4 @@ public class BukkitAdapter implements IPlatform {
     public HardCashCreator asPlatformHardCash() {
         return this;
     }
-
-
 }

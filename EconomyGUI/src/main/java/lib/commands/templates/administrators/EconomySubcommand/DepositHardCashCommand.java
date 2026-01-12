@@ -1,16 +1,15 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
-import aplication.useCase.DepositItemUseCase;
+import aplication.useCase.HardCashUseCaseFactory;
+import aplication.useCase.IDepositItemUseCase;
 import lib.commands.abstractions.AbstractCommand;
 
-import java.util.List;
-
 public class DepositHardCashCommand extends AbstractCommand {
-    private final DepositItemUseCase depositItemUseCase;
+    private final IDepositItemUseCase depositItemUseCase;
 
-    public DepositHardCashCommand(DepositItemUseCase depositItemUseCase) {
+    public DepositHardCashCommand() {
         super("depositItem", "");
-        this.depositItemUseCase = depositItemUseCase;
+        this.depositItemUseCase = HardCashUseCaseFactory.getDepositItemUseCase();
     }
 
     @Override

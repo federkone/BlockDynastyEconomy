@@ -6,6 +6,7 @@ import api.EconomyResponse;
 import api.IApi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -19,8 +20,8 @@ public class ApiTest {
     private static Player nullplague = new Player(UUID.fromString("55e72bac-6481-3abe-9c9b-94cefed85271"), "Nullplague");
     private static Player fede = new Player(UUID.fromString("51a888b7-5a59-3f3d-9922-08746bcd8cd6"), "Fede");
 
-    @BeforeAll
-    public static void setup(){
+    @BeforeEach
+    public void setup(){
         MinecraftServer.start();
         api = MinecraftServer.getApi();
         MinecraftServer.connectPlayer(nullplague);
@@ -72,10 +73,5 @@ public class ApiTest {
         assertTrue(response.isSuccess());
         assertEquals(balanceNew1, balanceAct1.add(BigDecimal.valueOf(2000)));
         assertEquals(balanceNew2, balanceAct2.subtract(BigDecimal.valueOf(2000)));
-    }
-
-    @AfterAll
-    public static void tearDown(){
-        MinecraftServer.stop();
     }
 }

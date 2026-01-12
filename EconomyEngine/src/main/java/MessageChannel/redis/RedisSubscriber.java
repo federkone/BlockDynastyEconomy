@@ -21,10 +21,8 @@ import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import MessageChannel.Subscriber;
-import abstractions.platform.PlatformAdapter;
 import platform.IPlatform;
-import utils.Console;
-import lib.gui.components.PlatformGUI;
+import services.Console;
 import redis.clients.jedis.*;
 
 public class RedisSubscriber extends Subscriber {

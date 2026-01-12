@@ -126,4 +126,9 @@ public class Platform implements IPlatform {
     public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
         return null;
     }
+
+    @Override
+    public boolean hasSupportHardCash() {
+        return false;
+    }
 }

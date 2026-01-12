@@ -17,7 +17,10 @@
 package lib.commands;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
+import aplication.HardCashService;
+import aplication.useCase.DepositItemUseCase;
 import aplication.useCase.ExtractItemUseCase;
+import aplication.useCase.HardCashUseCaseFactory;
 import lib.gui.components.PlatformGUI;
 import lib.commands.abstractions.Command;
 import lib.commands.templates.administrators.EconomyGUICommand;
@@ -34,16 +37,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandService {
-    private static final List<Command> MainCommands = new ArrayList<>();
+    private static List<Command> MainCommands;
     private static UseCaseFactory useCaseFactory;
     private static PlatformCommand platformAdapter;
 
     public static void init(PlatformCommand platformAdapter, UseCaseFactory useCaseFactory) {
         //MessageService.setProvider(messageProvider);
+        CommandService.MainCommands = new ArrayList<>();
         CommandService.useCaseFactory = useCaseFactory;
         CommandService.platformAdapter = platformAdapter;
         CommandService.registerCommands();
     }
+
     //tree structure of commands
     private static void registerCommands(){
         OfferCommand offerCommand = new OfferCommand();//main
@@ -53,8 +58,6 @@ public class CommandService {
         DepositCommand depositCommand = new DepositCommand(useCaseFactory.deposit());
         SetCommand setCommand = new SetCommand(useCaseFactory.setBalance());
         ExchangeCommand exchangeCommand = new ExchangeCommand(useCaseFactory.exchange());
-        ExtractHardCashCommand extractHardCashCommand = new ExtractHardCashCommand(new ExtractItemUseCase(platformAdapter.asPlatformHardCash(), useCaseFactory.withdraw(), useCaseFactory.searchCurrency()));
-        DepositHardCashCommand depositHardCashCommand = new DepositHardCashCommand(new aplication.useCase.DepositItemUseCase(platformAdapter.asPlatformHardCash(), useCaseFactory.deposit(), useCaseFactory.searchCurrency()));
 
         BuyCommand buyCommand = new BuyCommand(useCaseFactory.withdraw(),platformAdapter);
 
@@ -90,8 +93,13 @@ public class CommandService {
         economyCommand.registerSubCommand(buyCommand);
         economyCommand.registerSubCommand(currencyCommand);
         economyCommand.registerSubCommand(economyGUICommand);
-        economyCommand.registerSubCommand(extractHardCashCommand);
-        economyCommand.registerSubCommand(depositHardCashCommand);
+
+        //hard cash commands test
+        //ExtractHardCashCommand extractHardCashCommand = new ExtractHardCashCommand();
+        //DepositHardCashCommand depositHardCashCommand = new DepositHardCashCommand();
+        //economyCommand.registerSubCommand(extractHardCashCommand);
+        //economyCommand.registerSubCommand(depositHardCashCommand);
+        //-----
 
         currencyCommand.registerSubCommand(createCurrencyCommand);
         currencyCommand.registerSubCommand(deleteCurrencyCommand);

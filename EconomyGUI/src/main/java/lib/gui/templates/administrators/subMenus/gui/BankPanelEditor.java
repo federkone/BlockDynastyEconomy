@@ -1,6 +1,6 @@
 package lib.gui.templates.administrators.subMenus.gui;
 
-import lib.abstractions.IConfiguration;
+import lib.abstractions.IConfigurationGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.factory.Item;
@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class BankPanelEditor extends AbstractPanel {
     private final IEntityGUI player;
-    private final IConfiguration config;
+    private final IConfigurationGUI config;
 
-    public BankPanelEditor(IEntityGUI player, IGUI parent, IConfiguration config) {
+    public BankPanelEditor(IEntityGUI player, IGUI parent, IConfigurationGUI config) {
         super("Switch buttons", 4, player,parent);
         this.config = config;
         this.player = player;
@@ -36,7 +36,21 @@ public class BankPanelEditor extends AbstractPanel {
                             .build()))
                     .build());
 
-            setButton(11,Button.builder()
+        setButton(10,Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                        .setMaterial(Materials.EMERALD)
+                        .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button11.nameItem"))
+                        .setLore(BankPanel.isButtonEnabled(10) ? ChatColor.stringValueOf(Colors.GREEN)+"Enabled" : ChatColor.stringValueOf(Colors.RED)+"Disabled")
+                        .build()))
+                .setLeftClickAction( f -> {
+                    BankPanel.switchButtonState(10);
+                    this.refresh();
+                    config.saveButtonConfig(10,BankPanel.isButtonEnabled(10));
+                })
+                .build());
+
+
+        setButton(11,Button.builder()
                     .setItemStack(Item.of(RecipeItem.builder()
                             .setMaterial(Materials.DIAMOND)
                             .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GOLD)),"BankPanel.button2.nameItem"))

@@ -23,14 +23,17 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
 import api.IApi;
 import abstractions.platform.IProxySubscriber;
+import aplication.HardCashService;
 import lib.gui.GUISystem;
 import platform.IPlatform;
 import platform.files.Configuration;
+import platform.files.IConfigurationEngine;
 import platform.files.Languages;
 import platform.files.logs.EconomyLogger;
 import platform.files.logs.VaultLogger;
 import lib.commands.CommandService;
 import lib.placeholder.PlaceHolder;
+import services.configuration.IConfiguration;
 import util.colors.ChatColor;
 import platform.listeners.EventListener;
 import platform.listeners.IPlayerJoin;
@@ -43,7 +46,7 @@ import MessageChannel.redis.RedisSubscriber;
 import repository.ConnectionHandler.Hibernate.*;
 import repository.Repository;
 import services.Message;
-import utils.Console;
+import services.Console;
 
 public class Economy {
     private Core core;
@@ -52,7 +55,7 @@ public class Economy {
     private IApi api;
     private PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
-    private Configuration configuration;
+    private IConfigurationEngine configuration;
     private Languages languages;
     private IPlatform platformAdapter;
 
@@ -72,6 +75,8 @@ public class Economy {
         this.api = new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
         this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
+
+        HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().searchCurrency());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
@@ -81,7 +86,7 @@ public class Economy {
         return new Economy(platformAdapter);
     }
 
-    private void initDatabase(Configuration configuration){
+    private void initDatabase(IConfigurationEngine configuration){
         try{
             Connection connection = getConnectionDatabase(configuration);
             repository = new Repository(connection);
@@ -91,7 +96,7 @@ public class Economy {
             throw new RuntimeException(e.getMessage());
         }
     }
-    private Connection getConnectionDatabase(Configuration configuration){
+    private Connection getConnectionDatabase(IConfigurationEngine configuration){
         switch (configuration.getString("sql.type")){
             case "mysql":
                 return new ConnectionHibernateMysql(configuration.getString("sql.host"), configuration.getInt("sql.port"), configuration.getString("sql.database"), configuration.getString("sql.username"), configuration.getString("sql.password"));
@@ -106,7 +111,7 @@ public class Economy {
         }
     }
 
-    private Courier createPublisher(Configuration configuration, IPlatform platformAdapter){
+    private Courier createPublisher(IConfiguration configuration, IPlatform platformAdapter){
         if(configuration.getBoolean("redis.enabled")){
             Console.log("Redis Enabled");
             return new RedisPublisher( new RedisData(configuration),platformAdapter);
@@ -115,7 +120,7 @@ public class Economy {
             return new ProxyPublisher(platformAdapter);
         }
     }
-    private void createSubscriber(Configuration configuration, IPlatform platformAdapter){
+    private void createSubscriber(IConfiguration configuration, IPlatform platformAdapter){
         if(configuration.getBoolean("redis.enabled")){
             subscriber = new RedisSubscriber(new RedisData(configuration),platformAdapter,
                     core.getServicesManager().getOfferService(),
@@ -146,7 +151,7 @@ public class Economy {
         return new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), log);
     }
 
-    public Configuration getConfiguration(){
+    public IConfiguration getConfiguration(){
         return configuration;
     }
 

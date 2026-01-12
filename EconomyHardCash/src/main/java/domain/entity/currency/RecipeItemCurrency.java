@@ -22,10 +22,6 @@ import abstractions.platform.materials.Materials;
 public class RecipeItemCurrency extends RecipeItem {
     private NbtData nbtData;
 
-    protected RecipeItemCurrency(Materials material, String name, String texture, String... lore) {
-        super(material, name, texture, lore);
-    }
-
     protected RecipeItemCurrency(RecipeItem recipeItem, NbtData nbtData) {
         super(recipeItem.getMaterial(), recipeItem.getName(), recipeItem.getTexture(), recipeItem.getLore());
         this.nbtData = nbtData;
