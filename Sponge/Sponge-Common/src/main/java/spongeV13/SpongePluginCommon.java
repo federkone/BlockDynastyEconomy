@@ -16,7 +16,16 @@
 
 package spongeV13;
 
+import aplication.listener.CustomHeadValidator;
+import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.block.InteractBlockEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import spongeV13.adapters.commands.CommandRegister;
+import spongeV13.adapters.platformAdapter.ItemStackCurrencyAdapter;
+import spongeV13.adapters.platformAdapter.NBTApi.CustomKeys;
 import spongeV13.adapters.platformAdapter.SpongeAdapter;
 import spongeV13.adapters.listeners.PlayerJoinListener;
 import spongeV13.adapters.integrations.spongeEconomyApi.EconomyServiceAdapter;
@@ -83,6 +92,23 @@ public class SpongePluginCommon {
 
     public void registerEconomyService(ProvideServiceEvent.EngineScoped<EconomyService> event) {
         event.suggest(EconomyServiceAdapter::new);
+    }
+
+    public void onRegisterData(RegisterDataEvent event) {
+        event.register(DataRegistration.of(CustomKeys.NAME_CURRENCY, ItemStack.class));
+        event.register(DataRegistration.of(CustomKeys.VALUE, ItemStack.class));
+        event.register(DataRegistration.of(CustomKeys.UUID_CURRENCY, ItemStack.class));
+    }
+
+    /*Prevent place currency*/
+    public void onBlockPlace(InteractBlockEvent.Secondary event){
+        event.cause().first(Player.class).ifPresent(player -> {
+            ItemStack item = player.itemInHand(HandTypes.MAIN_HAND);
+            if(item == null) return;
+            if(item.type() != ItemTypes.PLAYER_HEAD.get()) return;
+            if(!CustomHeadValidator.isACurrency(new ItemStackCurrencyAdapter(item))) return;
+            event.setCancelled(true);
+        });
     }
 
     public void onServerStopping(final StoppingEngineEvent<Server> event) {

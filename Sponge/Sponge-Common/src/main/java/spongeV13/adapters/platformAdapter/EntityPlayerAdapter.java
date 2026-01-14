@@ -19,6 +19,13 @@ package spongeV13.adapters.platformAdapter;
 import abstractions.platform.recipes.RecipeInventory;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
+import org.spongepowered.api.data.type.HandType;
+import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.entity.Item;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.item.inventory.query.Query;
 import platform.IPlayer;
 import spongeV13.adapters.GUI.adapters.InventoryAdapter;
 import spongeV13.adapters.GUI.listener.ClickListener;
@@ -159,26 +166,34 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void giveItem(ItemStackCurrency item) {
-
+        player.inventory().primary().offer((ItemStack)item.getRoot());
     }
 
     @Override
     public ItemStackCurrency takeHandItem() {
-        return null;
+        return new ItemStackCurrencyAdapter(player.itemInHand(HandTypes.MAIN_HAND));
     }
 
     @Override
     public boolean hasItem(ItemStackCurrency itemCurrency) {
-        return false;
+        ItemStack item = (ItemStack) itemCurrency.getRoot();
+        return player.inventory().primary().contains(item);
     }
 
     @Override
     public boolean hasEmptySlot() {
-        return false;
+        return player.inventory().primary().freeCapacity() > 0;
     }
 
     @Override
     public void removeItem(ItemStackCurrency itemCurrency) {
-
+        ItemStack item = (ItemStack) itemCurrency.getRoot();
+        Inventory inv = player.inventory().primary();
+        for (Slot slot : inv.slots()) {
+           if (slot.peek().equalTo(item)) {
+                slot.clear();
+                break;
+           }
+        }
     }
 }

@@ -178,11 +178,11 @@ public class SpongeAdapter implements IPlatform {
 
     @Override
     public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        return null;
+        return new ItemStackCurrencyAdapter(MaterialAdapter.createItemStackCurrency(recipe));
     }
 
     @Override
     public boolean hasSupportHardCash() {
-        return false;
+        return true;
     }
 }
