@@ -21,9 +21,11 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import api.Api;
-import api.IApi;
+import com.BlockDynasty.api.DynastyEconomy;
 import abstractions.platform.IProxySubscriber;
 import aplication.HardCashService;
+import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
+import com.BlockDynasty.api.ServiceProvider;
 import lib.gui.GUISystem;
 import platform.IPlatform;
 import platform.files.Configuration;
@@ -52,7 +54,7 @@ public class Economy {
     private Core core;
     private static IRepository repository;
     private PlayerJoinListener playerJoinListener;
-    private IApi api;
+    private DynastyEconomy api;
     private PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
     private IConfigurationEngine configuration;
@@ -73,9 +75,13 @@ public class Economy {
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
         this.createSubscriber(configuration,platformAdapter);
         this.api = new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
+
+
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
         this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
 
+        ServiceProvider.register(DynastyEconomy.class, this.api);
+        ServiceProvider.register(DynastyEconomyWithoutLogger.class, new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger()));
         HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().searchCurrency());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
@@ -140,15 +146,11 @@ public class Economy {
         return playerJoinListener;
     }
 
-    public IApi getApi(){
+    public DynastyEconomy getApi(){
         return api;
     }
     public PlaceHolder getPlaceHolder(){
         return placeHolder;
-    }
-
-    public IApi getApiWithLog(Log log){
-        return new Api(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), log);
     }
 
     public IConfiguration getConfiguration(){

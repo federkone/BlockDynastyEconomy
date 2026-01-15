@@ -20,6 +20,7 @@
         <module>Minestom</module>
         <module>EconomyHardCash</module>
         <module>EconomyLibrary</module>
+        <module>EconomyApi</module>
     </modules>
 
 </project>

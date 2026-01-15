@@ -31,7 +31,7 @@ import spongeV13.adapters.listeners.PlayerJoinListener;
 import spongeV13.adapters.integrations.spongeEconomyApi.EconomyServiceAdapter;
 import spongeV13.utils.Console;
 import Main.Economy;
-import api.IApi;
+import com.BlockDynasty.api.DynastyEconomy;
 
 import lib.commands.CommandService;
 import org.apache.logging.log4j.Logger;
@@ -79,7 +79,7 @@ public class SpongePluginCommon {
         }
         Sponge.eventManager().registerListeners(container, new PlayerJoinListener(economy.getPlayerJoinListener()), MethodHandles.lookup());
         CommandRegister.registerCommands(container, CommandService.getMainCommands());
-        EconomyServiceAdapter.init(economy.getApi());
+        EconomyServiceAdapter.init();
     }
 
     protected void registerTestEconomyCommand(){
@@ -126,10 +126,6 @@ public class SpongePluginCommon {
     }
     public static Path getConfigPath() {
         return configPath;
-    }
-
-    public IApi getApi() {
-        return economy.getApi();
     }
 }
 

@@ -17,9 +17,9 @@ package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy;
 
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts.AccountTreasury;
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.currency.CurrencyTreasury;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import api.EconomyResponse;
-import api.IApi;
+import com.BlockDynasty.api.EconomyResponse;
+import com.BlockDynasty.api.DynastyEconomy;
+import com.BlockDynasty.api.entity.Account;
 import me.lokka30.treasury.api.common.NamespacedKey;
 import me.lokka30.treasury.api.common.misc.TriState;
 import me.lokka30.treasury.api.economy.EconomyProvider;
@@ -34,12 +34,11 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class economyHook implements EconomyProvider {
-    IApi api;
+    DynastyEconomy api;
 
-    public economyHook(IApi api) {
+    public economyHook(DynastyEconomy api) {
         this.api = api;
     }
 
@@ -71,7 +70,7 @@ public class economyHook implements EconomyProvider {
     @Override
     public @NotNull CompletableFuture<Collection<NamespacedKey>> retrieveNonPlayerAccountIds() {
         List<Account> accounts = api.getAccountsOffline();
-        List<String> list = accounts.stream().map(Account::getNickname).toList();
+        List<String> list = accounts.stream().map(Account::getName).toList();
         return CompletableFuture.completedFuture(list.stream().map(name -> NamespacedKey.of("blockdynasty",name)).toList());
     }
 
@@ -92,7 +91,7 @@ public class economyHook implements EconomyProvider {
 
     @Override
     public @NotNull Optional<Currency> findCurrency(@NotNull String identifier) {
-        BlockDynasty.Economy.domain.entities.currency.ICurrency c = api.getCurrency(identifier);
+        com.BlockDynasty.api.entity.Currency c = api.getCurrency(identifier);
         if (c == null) {
             return Optional.empty();
         }
@@ -106,10 +105,10 @@ public class economyHook implements EconomyProvider {
 
     @Override
     public @NotNull Set<Currency> getCurrencies() {
-        List<BlockDynasty.Economy.domain.entities.currency.ICurrency> c= api.getCurrencies();
+        List< com.BlockDynasty.api.entity.Currency> c= api.getCurrencies();
         if (c != null) {
             Set<Currency> currencies = new HashSet<>();
-            for (BlockDynasty.Economy.domain.entities.currency.ICurrency currency : c) {
+            for ( com.BlockDynasty.api.entity.Currency currency : c) {
                 currencies.add(new CurrencyTreasury(currency));
             }
             return currencies;

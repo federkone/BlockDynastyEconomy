@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api;
+package com.BlockDynasty.api;
 
 /**
  * Indicates a typical Return for an Economy method.

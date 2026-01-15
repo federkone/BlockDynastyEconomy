@@ -1,7 +1,7 @@
 package EngineTest.mocks;
 
 import Main.Economy;
-import api.IApi;
+import com.BlockDynasty.api.DynastyEconomy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class MinecraftServer {
         System.out.println("Server Testing Environment Stopped.");
     }
 
-    public static IApi getApi(){
+    public static DynastyEconomy getApi(){
         return economy.getApi();
     }
 

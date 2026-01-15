@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package api;
+package com.BlockDynasty.api;
 
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import com.BlockDynasty.api.entity.Account;
+import com.BlockDynasty.api.entity.Currency;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public interface IApi {
+public interface DynastyEconomy {
 
     /**
      *
@@ -33,7 +33,7 @@ public interface IApi {
     EconomyResponse deposit(UUID uuid, BigDecimal amount);
     EconomyResponse deposit(String name, BigDecimal amount);
 
-    ICurrency getDefaultCurrency();
+    Currency getDefaultCurrency();
     List<Account> getAccountsOffline();
 
     /**
@@ -132,7 +132,7 @@ public interface IApi {
     String format(BigDecimal amount, String currency);
 
     List<String> getCurrenciesNamesList();
-    List<ICurrency> getCurrencies();
+    List<Currency> getCurrencies();
 
     EconomyResponse createAccount(final UUID accountID, final String name);
 
@@ -158,5 +158,5 @@ public interface IApi {
     EconomyResponse setPluralName(String currentName, String newName);
     EconomyResponse setPayable(String currencyName, boolean isPayable);
 
-    ICurrency getCurrency(String name );
+    Currency getCurrency(String name );
 }

@@ -33,10 +33,9 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.BukkitImplementation.utils.Updater;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import Main.Economy;
-import api.IApi;
+import com.BlockDynasty.api.DynastyEconomy;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import platform.files.Configuration;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import services.configuration.IConfiguration;
@@ -119,7 +118,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
 
     }
     private void registerIntegrations() {
-        Vault.init(economy.getApiWithLog(economy.getVaultLogger()));
+        Vault.init();
         PlaceHolder.register(economy.getPlaceHolder());
         TreasuryHook.register();
     }
@@ -130,7 +129,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static IConfiguration getConfiguration() {
         return configuration;
     }
-    public static IApi getApi() {
+    public static DynastyEconomy getApi() {
         return economy.getApi();
     }
 }

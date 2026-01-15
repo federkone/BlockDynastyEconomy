@@ -37,12 +37,6 @@ public class GUISystem {
         GUIFactory.init(useCaseFactory, adapter, config);
     }
 
-    public static void initWithHardCashSupport(UseCaseFactory useCaseFactory, PlatformGUI adapter, IMessages messages, IConfigurationGUI config){
-        Item.init(adapter);
-        Inventory.init(adapter);
-        Message.addLang(messages);
-        GUIFactory.init(useCaseFactory, adapter, config);
-    }
 
     public static void registerGUI(IEntityGUI entity,IGUI gui){
         GUISystem.guiService.registerGUI(entity,gui);
