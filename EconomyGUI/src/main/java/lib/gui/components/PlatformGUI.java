@@ -29,4 +29,5 @@ public interface PlatformGUI  {
     IPlayer getPlayer( String name);
     void dispatchCommand( String command) throws Exception;
     List<IPlayer> getOnlinePlayers();
+    boolean hasSupportGui();
 }

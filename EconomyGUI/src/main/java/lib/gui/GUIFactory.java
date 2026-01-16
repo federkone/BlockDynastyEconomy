@@ -26,6 +26,7 @@ import lib.gui.components.*;
 import lib.gui.templates.administrators.mainMenus.AccountSelectorToEdit;
 import lib.gui.templates.administrators.mainMenus.EconomyAdminPanel;
 import lib.gui.templates.administrators.mainMenus.CurrencyAdminPanel;
+import lib.gui.templates.administrators.mainMenus.EconomyAdminPanelDisabled;
 import lib.gui.templates.administrators.subMenus.accounts.*;
 import lib.gui.templates.administrators.subMenus.currencies.*;
 import lib.gui.templates.administrators.subMenus.gui.BankPanelEditor;
@@ -49,7 +50,10 @@ public class GUIFactory {
     }
 
     public static IGUI economyAdminPanel(IEntityGUI sender){
-        return new EconomyAdminPanel(sender);
+        if(platformAdapter.hasSupportGui()){
+            return new EconomyAdminPanel(sender);
+        }
+        return new EconomyAdminPanelDisabled(sender);
     }
     public static IGUI accountSelectorToEdit(IEntityGUI sender,IGUI parent){
         return new AccountSelectorToEdit(sender,useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),parent,textInput);
@@ -91,7 +95,12 @@ public class GUIFactory {
         return new ColorSelectionPanel( sender,currency,useCaseFactory.editCurrency(), parent,textInput);
     }
     public static IGUI bankPanel(IEntityGUI sender) {
-        return new BankPanel(sender, useCaseFactory.searchAccountByPlayer(),textInput);
+        if(platformAdapter.hasSupportGui()){
+            return new BankPanel(sender, useCaseFactory.searchAccountByPlayer(),textInput);
+        }else {
+            return new BankPanelDisabled(sender);
+        }
+
     }
     public static IGUI createOfferFirstPanel(IEntityGUI sender,Player target,IGUI parent ){
         return new CreateOfferFirstPanel(sender,target,useCaseFactory.searchCurrency(),useCaseFactory.createOffer(), parent, textInput);

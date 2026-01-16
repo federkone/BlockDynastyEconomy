@@ -45,6 +45,11 @@ public class Platform implements IPlatform {
     }
 
     @Override
+    public boolean hasSupportGui() {
+        return true;
+    }
+
+    @Override
     public IItemStack createItemStack(RecipeItem recipeItem) {
         return new ItemStack(recipeItem);
     }

@@ -153,4 +153,9 @@ public class BukkitAdapter implements IPlatform {
     public HardCashCreator asPlatformHardCash() {
         return this;
     }
+
+    @Override
+    public boolean hasSupportGui() {
+        return true;
+    }
 }

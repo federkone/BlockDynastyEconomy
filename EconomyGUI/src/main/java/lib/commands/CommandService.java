@@ -120,6 +120,8 @@ public class CommandService {
         offerCommand.registerSubCommand(acceptOfferCommand);
         offerCommand.registerSubCommand(denyOfferCommand);
 
+        Deposit deposit = new Deposit(platformAdapter,useCaseFactory.transferFunds());
+        MainCommands.add(deposit);
         MainCommands.add(economyCommand);
         MainCommands.add(offerCommand);
         MainCommands.add(payCommand);

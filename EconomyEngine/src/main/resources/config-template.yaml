@@ -23,7 +23,7 @@ online: true
 # when disabled, players will have a virtual balance that is not represented by any item.
 #Disclaimer: this system its objected to vulnerabilities and exploits related to the game engine or another plugins: example item duplication's, be careful and Test.
 HardCash:
-  enable: false
+  enable: true
   customHeadTexture: true
 
 #Console log some information for debugging.

@@ -48,7 +48,7 @@ public class BalanceCommand extends AbstractCommand {
         }else{
             for (Money entry : resultBalances.getValue()) {
                 ICurrency currency = entry.getCurrency();
-                sender.sendMessage(MessageService.getMessage("Messages.balance.list", Map.of("currencycolor", ChatColor.stringValueOf(currency.getColor()),"format",entry.format()) ));
+                sender.sendMessage(MessageService.getMessage("balance.list", Map.of("currencycolor", ChatColor.stringValueOf(currency.getColor()),"format",entry.format()) ));
             }
         }
         return true;

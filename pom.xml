@@ -21,6 +21,7 @@
         <module>EconomyHardCash</module>
         <module>EconomyLibrary</module>
         <module>EconomyApi</module>
+        <module>Hytale</module>
     </modules>
 
 </project>

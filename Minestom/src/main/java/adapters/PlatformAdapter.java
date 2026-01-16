@@ -146,4 +146,9 @@ public class PlatformAdapter implements IPlatform {
     public boolean hasSupportHardCash() {
         return false;
     }
+
+    @Override
+    public boolean hasSupportGui() {
+        return true;
+    }
 }

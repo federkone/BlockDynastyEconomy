@@ -185,4 +185,9 @@ public class SpongeAdapter implements IPlatform {
     public boolean hasSupportHardCash() {
         return true;
     }
+
+    @Override
+    public boolean hasSupportGui() {
+        return true;
+    }
 }
