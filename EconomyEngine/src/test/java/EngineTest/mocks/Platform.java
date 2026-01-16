@@ -4,7 +4,6 @@ import EngineTest.mocks.utils.Color;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import abstractions.platform.IConsole;
-import abstractions.platform.entity.IPlayer;
 import abstractions.platform.IProxySubscriber;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.RecipeItemCurrency;
@@ -18,6 +17,7 @@ import lib.gui.components.ITextInput;
 import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.scheduler.IScheduler;
 import platform.IPlatform;
+import platform.IPlayer;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -29,6 +29,7 @@ import java.util.UUID;
 
 public class Platform implements IPlatform {
     IProxySubscriber subscriber;
+
     @Override
     public IPlayer getPlayer(String name) {
         return MinecraftServer.getOnlinePlayers().stream().filter(p -> p.getName().equals(name)).findFirst().orElse(null);
@@ -40,7 +41,7 @@ public class Platform implements IPlatform {
     }
 
     @Override
-    public List<IPlayer> getOnlinePlayers() {
+    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         return new ArrayList<>(MinecraftServer.getOnlinePlayers());
     }
 

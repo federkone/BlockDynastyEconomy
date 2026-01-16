@@ -27,7 +27,6 @@ import BlockDynasty.BukkitImplementation.scheduler.SchedulerFactory;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import abstractions.platform.IConsole;
 import abstractions.platform.IProxySubscriber;
-import abstractions.platform.entity.IPlayer;
 import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.recipes.RecipeItem;
 import abstractions.platform.scheduler.ContextualTask;
@@ -43,6 +42,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import MessageChannel.proxy.ProxyData;
 import platform.IPlatform;
+import platform.IPlayer;
 
 import java.io.File;
 import java.util.List;
@@ -140,7 +140,7 @@ public class BukkitAdapter implements IPlatform {
     }
 
     @Override
-    public List<IPlayer> getOnlinePlayers() {
+    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         return Bukkit.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
     }
 

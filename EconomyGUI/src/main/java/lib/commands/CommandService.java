@@ -86,7 +86,9 @@ public class CommandService {
 
         BankGUICommand bankGUICommand = new BankGUICommand();
         EconomyGUICommand economyGUICommand = new EconomyGUICommand();
+        DepositItemCommand depositItemCommand = new DepositItemCommand();
 
+        economyCommand.registerSubCommand(depositItemCommand);
         economyCommand.registerSubCommand(withdrawCommand);
         economyCommand.registerSubCommand(depositCommand);
         economyCommand.registerSubCommand(setCommand);

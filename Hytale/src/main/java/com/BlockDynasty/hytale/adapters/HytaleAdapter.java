@@ -2,7 +2,6 @@ package com.BlockDynasty.hytale.adapters;
 
 import abstractions.platform.IConsole;
 import abstractions.platform.IProxySubscriber;
-import abstractions.platform.entity.IPlayer;
 import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.recipes.RecipeItem;
 import abstractions.platform.scheduler.IScheduler;
@@ -20,6 +19,7 @@ import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
 import platform.IPlatform;
+import platform.IPlayer;
 
 import java.io.File;
 import java.util.List;
@@ -116,7 +116,7 @@ public class HytaleAdapter implements IPlatform {
     }
 
     @Override
-    public List<IPlayer> getOnlinePlayers() {
+    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         //obtener todos los jugadores en linea
         List<PlayerRef> playerRefs = universe.getPlayers();
         return playerRefs.stream().map(PlayerAdapter::new).collect(Collectors.toList());

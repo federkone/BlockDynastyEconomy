@@ -18,8 +18,10 @@ package domain.entity.platform;
 
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.RecipeItemCurrency;
+import domain.entity.player.IEntityHardCash;
 
 public interface HardCashCreator {
+    IEntityHardCash getPlayer(String playerName);
     ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe);
     boolean hasSupportHardCash();
 }

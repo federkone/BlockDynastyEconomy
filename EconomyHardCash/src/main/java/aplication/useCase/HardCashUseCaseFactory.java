@@ -32,4 +32,11 @@ public class HardCashUseCaseFactory {
         }
         return new ExtractItemUseCaseDisable();
     }
+
+    public static IGiveItemUseCase getGiveItemUseCase() {
+        if (HardCashService.isEnabled()) {
+            return new GiveItemUseCase(searchCurrencyUseCase,hardCashCreator);
+        }
+        return new GiveItemUseCaseDisable();
+    }
 }

@@ -16,7 +16,6 @@
 
 package adapters;
 
-import abstractions.platform.entity.IPlayer;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
 import lib.commands.abstractions.IEntityCommands;
@@ -31,10 +30,11 @@ import net.minestom.server.advancements.Notification;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import platform.IPlayer;
 
 import java.util.UUID;
 
-public class PlayerAdapter implements IEntityGUI, IEntityCommands, IEntityHardCash {
+public class PlayerAdapter implements IPlayer {
     private final Player player;
 
     public PlayerAdapter(Player player) {

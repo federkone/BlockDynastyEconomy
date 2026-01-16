@@ -17,6 +17,7 @@
 package lib.commands.abstractions;
 
 import abstractions.platform.entity.IPlayer;
+import domain.entity.player.IEntityHardCash;
 import lib.gui.components.IEntityGUI;
 
 public interface IEntityCommands extends IPlayer {

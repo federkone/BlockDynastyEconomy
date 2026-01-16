@@ -24,6 +24,7 @@ import lib.gui.components.IInventory;
 import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
 import platform.IPlatform;
+import platform.IPlayer;
 import spongeV13.adapters.GUI.adapters.InventoryAdapter;
 import spongeV13.adapters.GUI.adapters.ItemStackAdapter;
 import spongeV13.adapters.GUI.adapters.MaterialAdapter;
@@ -44,7 +45,6 @@ import spongeV13.utils.Version;
 
 import abstractions.platform.IConsole;
 import abstractions.platform.IProxySubscriber;
-import abstractions.platform.entity.IPlayer;
 import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.recipes.RecipeItem;
 import abstractions.platform.scheduler.IScheduler;
@@ -69,7 +69,7 @@ public class SpongeAdapter implements IPlatform {
     }
 
     @Override
-    public List<IPlayer> getOnlinePlayers() {
+    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         return Sponge.server().onlinePlayers().stream()
                 .map(EntityPlayerAdapter::of)
                 .collect(Collectors.toList());

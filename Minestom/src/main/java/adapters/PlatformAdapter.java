@@ -18,7 +18,6 @@ package adapters;
 
 import DynastyEconomy.Console;
 import abstractions.platform.IConsole;
-import abstractions.platform.entity.IPlayer;
 import abstractions.platform.IProxySubscriber;
 import abstractions.platform.recipes.RecipeItem;
 import domain.entity.currency.ItemStackCurrency;
@@ -34,6 +33,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
 import platform.IPlatform;
+import platform.IPlayer;
 
 import java.io.File;
 import java.util.Collection;
@@ -65,7 +65,7 @@ public class PlatformAdapter implements IPlatform {
     }
 
     @Override
-    public List<IPlayer> getOnlinePlayers() {
+    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         Collection<Player> players = MinecraftServer.getConnectionManager().getOnlinePlayers();
         return players.stream().map(PlayerAdapter::new).collect(Collectors.toUnmodifiableList());
     }
