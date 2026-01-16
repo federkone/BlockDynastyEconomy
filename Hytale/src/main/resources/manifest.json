@@ -14,7 +14,7 @@
   "ServerVersion": "*",
   "Dependencies": {},
   "OptionalDependencies": {
-    "VaultUnlocked": "*"
+    "TheNewEconomy:VaultUnlocked": "*"
   },
   "DisabledByDefault": false,
   "Main": "com.BlockDynasty.hytale.BlockDynastyEconomy"
