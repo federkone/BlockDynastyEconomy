@@ -29,10 +29,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class Vault2Hook extends VaultHook implements EconomyMultiCurrency {
-    private final DynastyEconomyWithoutLogger api;
+    private static DynastyEconomyWithoutLogger api;
 
     public Vault2Hook() {
-        this.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
+        Vault2Hook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
     }
 
     @Override

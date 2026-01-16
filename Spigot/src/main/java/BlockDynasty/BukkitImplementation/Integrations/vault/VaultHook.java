@@ -30,11 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VaultHook extends AbstractEconomy {
-    private DynastyEconomyWithoutLogger api;
+    private static DynastyEconomyWithoutLogger api;
 
 
     public VaultHook() {
-        this.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
+        VaultHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
     }
 
     @Override

@@ -17,8 +17,10 @@ package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy;
 
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts.AccountTreasury;
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.currency.CurrencyTreasury;
+import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
 import com.BlockDynasty.api.EconomyResponse;
 import com.BlockDynasty.api.DynastyEconomy;
+import com.BlockDynasty.api.ServiceProvider;
 import com.BlockDynasty.api.entity.Account;
 import me.lokka30.treasury.api.common.NamespacedKey;
 import me.lokka30.treasury.api.common.misc.TriState;
@@ -36,10 +38,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class economyHook implements EconomyProvider {
-    DynastyEconomy api;
+    private static DynastyEconomy api;
 
-    public economyHook(DynastyEconomy api) {
-        this.api = api;
+    public economyHook() {
+        economyHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
     }
 
     @Override
@@ -52,7 +54,6 @@ public class economyHook implements EconomyProvider {
         Optional<UUID> optional =accountData.getPlayerIdentifier();
         if (optional.isPresent()) {
             UUID playerId = optional.get();
-            //use api
             Account a = api.getAccount(playerId);
             if (a != null) {
                 return CompletableFuture.completedFuture(true);

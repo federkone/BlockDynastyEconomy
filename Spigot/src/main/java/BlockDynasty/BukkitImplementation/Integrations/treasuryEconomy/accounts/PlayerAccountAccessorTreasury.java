@@ -31,8 +31,6 @@ public class PlayerAccountAccessorTreasury extends PlayerAccountAccessor {
 
     @Override
     protected @NotNull CompletableFuture<PlayerAccount> getOrCreate(@NotNull PlayerAccountCreateContext context) {
-        //busca o crea una cuenta de jugador si no existe bajo una UUID
-        //EL PROBLEMA ES QUE NO TENEMOS NOMBRE DE JUGADOR AQUI...... WTF TREASURE?
         return CompletableFuture.completedFuture(new PlayerAccountTreasury(api, context.getUniqueId()));
     }
 }

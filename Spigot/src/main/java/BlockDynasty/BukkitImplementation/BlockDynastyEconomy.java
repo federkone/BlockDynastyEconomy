@@ -129,7 +129,4 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public static IConfiguration getConfiguration() {
         return configuration;
     }
-    public static DynastyEconomy getApi() {
-        return economy.getApi();
-    }
 }

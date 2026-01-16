@@ -28,10 +28,10 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class VaultUnlockedHook implements Economy {
-    private DynastyEconomyWithoutLogger api;
+    private static DynastyEconomyWithoutLogger api;
 
     public VaultUnlockedHook() {
-        this.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
+        VaultUnlockedHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
     }
 
     @Override

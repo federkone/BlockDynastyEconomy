@@ -162,6 +162,8 @@ public class Economy {
     }
 
     public static void shutdown(){
+        ServiceProvider.unregister(DynastyEconomyWithoutLogger.class);
+        ServiceProvider.unregister(DynastyEconomyWithoutLogger.class);
         if (repository != null) {
             repository.close();
         }
