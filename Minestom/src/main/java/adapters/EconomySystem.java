@@ -16,7 +16,7 @@
 
 package adapters;
 
-import Main.Economy;
+import com.blockdynasty.economy.Economy;
 import com.BlockDynasty.api.DynastyEconomy;
 import adapters.commands.Commands;
 import adapters.events.ClickInventoryEvent;

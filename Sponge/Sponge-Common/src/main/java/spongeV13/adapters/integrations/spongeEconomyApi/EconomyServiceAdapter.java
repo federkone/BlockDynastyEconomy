@@ -18,7 +18,7 @@ package spongeV13.adapters.integrations.spongeEconomyApi;
 
 import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
-import com.BlockDynasty.api.ServiceProvider;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.AccountDeletionResultType;

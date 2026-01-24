@@ -17,7 +17,7 @@
 package BlockDynasty.BukkitImplementation.Integrations.vaultUnloked;
 
 import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
-import com.BlockDynasty.api.ServiceProvider;
+import net.blockdynasty.providers.services.ServiceProvider;
 import net.milkbowl.vault2.economy.AccountPermission;
 import net.milkbowl.vault2.economy.Economy;
 import net.milkbowl.vault2.economy.EconomyResponse;
@@ -31,7 +31,7 @@ public class VaultUnlockedHook implements Economy {
     private static DynastyEconomyWithoutLogger api;
 
     public VaultUnlockedHook() {
-        VaultUnlockedHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class);
+        VaultUnlockedHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class, service -> service.getId().equals(com.blockdynasty.economy.Economy.getApiId()));
     }
 
     @Override
