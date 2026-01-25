@@ -26,9 +26,6 @@ public class MinecraftServer {
         System.out.println("Server Testing Environment Stopped.");
     }
 
-    public static DynastyEconomy getApi(){
-        return economy.getApi();
-    }
 
     public static Economy getEconomy(){
         return economy;

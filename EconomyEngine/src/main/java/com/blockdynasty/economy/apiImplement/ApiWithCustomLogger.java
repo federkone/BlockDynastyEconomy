@@ -19,9 +19,8 @@ package com.blockdynasty.economy.apiImplement;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
-import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
 
-public class ApiWithCustomLogger extends DynastyEconomyApi implements DynastyEconomyWithoutLogger {
+public class ApiWithCustomLogger extends DynastyEconomyApi  {
     public ApiWithCustomLogger(UseCaseFactory factory, IAccountService accountService,Log log) {
         super(factory, accountService,log);
     }

@@ -17,9 +17,8 @@ package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy;
 
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts.AccountTreasury;
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.currency.CurrencyTreasury;
-import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
-import com.BlockDynasty.api.EconomyResponse;
 import com.BlockDynasty.api.DynastyEconomy;
+import com.BlockDynasty.api.EconomyResponse;
 import com.blockdynasty.economy.Economy;
 import net.blockdynasty.providers.services.ServiceProvider;
 import com.BlockDynasty.api.entity.Account;
@@ -42,7 +41,7 @@ public class economyHook implements EconomyProvider {
     private static DynastyEconomy api;
 
     public economyHook() {
-        economyHook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class, service -> service.getId().equals(Economy.getApiId()));
+        economyHook.api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
     }
 
     @Override

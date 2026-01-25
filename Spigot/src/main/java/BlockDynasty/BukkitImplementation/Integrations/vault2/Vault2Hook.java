@@ -18,7 +18,7 @@ package BlockDynasty.BukkitImplementation.Integrations.vault2;
 
 import BlockDynasty.BukkitImplementation.Integrations.vault.VaultHook;
 import com.blockdynasty.economy.Economy;
-import com.BlockDynasty.api.DynastyEconomyWithoutLogger;
+import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 import com.BlockDynasty.api.entity.Currency;
 import net.milkbowl.vault.economy.EconomyMultiCurrency;
@@ -29,10 +29,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class Vault2Hook extends VaultHook implements EconomyMultiCurrency {
-    private static DynastyEconomyWithoutLogger api;
+    private static DynastyEconomy api;
 
     public Vault2Hook() {
-        Vault2Hook.api = ServiceProvider.get(DynastyEconomyWithoutLogger.class, service -> service.getId().equals(Economy.getApiId()));
+        Vault2Hook.api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
     }
 
     @Override

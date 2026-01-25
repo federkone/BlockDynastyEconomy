@@ -50,7 +50,4 @@ public class EconomySystem {
         return EconomySystem.economy!=null;
     }
 
-    public static DynastyEconomy getApi(){
-        return EconomySystem.economy.getApi();
-    }
 }
