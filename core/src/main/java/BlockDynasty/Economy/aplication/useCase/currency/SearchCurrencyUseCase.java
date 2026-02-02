@@ -45,7 +45,7 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(Currency.builder().copy(currency).build());
+        return Result.success(currency);
     }
 
     public Result<ICurrency>  getDefaultCurrency() {
@@ -58,7 +58,7 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(Currency.builder().copy(defaultCurrency).build());
+        return Result.success(defaultCurrency);
     }
 
     public List<ICurrency> getCurrencies(){

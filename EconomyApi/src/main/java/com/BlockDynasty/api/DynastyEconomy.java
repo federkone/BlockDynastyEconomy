@@ -158,6 +158,7 @@ public interface DynastyEconomy extends Service<UUID> {
     EconomyResponse setSingularName(String currentName, String newName);
     EconomyResponse setPluralName(String currentName, String newName);
     EconomyResponse setPayable(String currencyName, boolean isPayable);
+    EconomyResponse saveCurrency(Currency currency);
 
     Currency getCurrency(String name );
 }

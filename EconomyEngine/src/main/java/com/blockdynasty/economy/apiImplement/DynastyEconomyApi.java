@@ -9,6 +9,7 @@ import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAcco
 import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetTopAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
+import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.balance.GetBalanceUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.*;
@@ -47,9 +48,11 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
     private DeleteCurrencyUseCase deleteCurrencyUseCase;
     private GetTopAccountsUseCase topAccounts;
     private IAccountService accountService;
+    private EditCurrencyUseCase editCurrencyUseCase;
 
     public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService) {
         id = UUID.randomUUID();
+        editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
         createAccountUseCase = factory.createAccount();
@@ -71,6 +74,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
     }
     public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService, Log log) {
         id = UUID.randomUUID();
+        editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
         createAccountUseCase = factory.createAccount();
@@ -122,6 +126,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                 currency.getPlural(),
                 currency.getSingular(),
                 currency.getSymbol(),
+                currency.getColor(),
                 currency.getDefaultBalance(),
                 currency.getExchangeRate(),
                 currency.isDefaultCurrency()
@@ -141,6 +146,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                                         coreMoney.getCurrency().getPlural(),
                                         coreMoney.getCurrency().getSingular(),
                                         coreMoney.getCurrency().getSymbol(),
+                                        coreMoney.getCurrency().getColor(),
                                         coreMoney.getCurrency().getDefaultBalance(),
                                         coreMoney.getCurrency().getExchangeRate(),
                                         coreMoney.getCurrency().isDefaultCurrency()
@@ -388,6 +394,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                     coreCurrency.getPlural(),
                     coreCurrency.getSingular(),
                     coreCurrency.getSymbol(),
+                    coreCurrency.getColor(),
                     coreCurrency.getDefaultBalance(),
                     coreCurrency.getExchangeRate(),
                     coreCurrency.isDefaultCurrency()
@@ -480,6 +487,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                                                 coreMoney.getCurrency().getPlural(),
                                                 coreMoney.getCurrency().getSingular(),
                                                 coreMoney.getCurrency().getSymbol(),
+                                                coreMoney.getCurrency().getColor(),
                                                 coreMoney.getCurrency().getDefaultBalance(),
                                                 coreMoney.getCurrency().getExchangeRate(),
                                                 coreMoney.getCurrency().isDefaultCurrency()
@@ -506,6 +514,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                                                 coreMoney.getCurrency().getPlural(),
                                                 coreMoney.getCurrency().getSingular(),
                                                 coreMoney.getCurrency().getSymbol(),
+                                                coreMoney.getCurrency().getColor(),
                                                 coreMoney.getCurrency().getDefaultBalance(),
                                                 coreMoney.getCurrency().getExchangeRate(),
                                                 coreMoney.getCurrency().isDefaultCurrency()
@@ -530,6 +539,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                                         coreMoney.getCurrency().getPlural(),
                                         coreMoney.getCurrency().getSingular(),
                                         coreMoney.getCurrency().getSymbol(),
+                                        coreMoney.getCurrency().getColor(),
                                         coreMoney.getCurrency().getDefaultBalance(),
                                         coreMoney.getCurrency().getExchangeRate(),
                                         coreMoney.getCurrency().isDefaultCurrency()
@@ -549,47 +559,126 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
 
     @Override
     public EconomyResponse setCurrencyStartBalance(String name, BigDecimal startBal) {
-        return EconomyResponse.notImplemented();
+        try {
+            editCurrencyUseCase.editStartBal(name, startBal.doubleValue());
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setCurrencyColor(String currencyName, String colorString) {
-        return EconomyResponse.notImplemented();
+        try {
+            editCurrencyUseCase.editColor(currencyName, colorString);
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setCurrencyRate(String currencyName, BigDecimal rate) {
-        return EconomyResponse.notImplemented();
-    }
+        try {
+            editCurrencyUseCase.setCurrencyRate(currencyName, rate.doubleValue());
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }}
 
     @Override
     public EconomyResponse setCurrencyDecimalSupport(String currencyName, boolean supportDecimals) {
-        return EconomyResponse.notImplemented();
+        try {
+            Result<ICurrency> currency =searchCurrencyUseCase.getCurrency(currencyName);
+            if (!currency.isSuccess()) {
+                throw new IllegalStateException( "Currency not found: " + currency.getErrorMessage());
+            }
+            ICurrency curr = currency.getValue();
+            if (curr.isDecimalSupported() != supportDecimals) {
+                editCurrencyUseCase.toggleDecimals(currencyName);
+            }
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setCurrencySymbol(String currencyName, String symbol) {
-        return null;
+        try {
+            editCurrencyUseCase.editSymbol(currencyName, symbol);
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setDefaultCurrency(String currencyName) {
-        return EconomyResponse.notImplemented();
+        try {
+            editCurrencyUseCase.setDefaultCurrency(currencyName);
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setSingularName(String currentName, String newName) {
-        return null;
+        try {
+            editCurrencyUseCase.setSingularName(currentName, newName);
+            return EconomyResponse.success();
+        } catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setPluralName(String currentName, String newName) {
-        return null;
+        try {
+            editCurrencyUseCase.setPluralName(currentName, newName);
+            return EconomyResponse.success();
+        } catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     @Override
     public EconomyResponse setPayable(String currencyName, boolean isPayable) {
-        return EconomyResponse.notImplemented();
+        try {
+            Result<ICurrency> currency =searchCurrencyUseCase.getCurrency(currencyName);
+            if (!currency.isSuccess()) {
+                throw new IllegalStateException( "Currency not found: " + currency.getErrorMessage());
+            }
+            ICurrency curr = currency.getValue();
+            if (curr.isTransferable() != isPayable) {
+                editCurrencyUseCase.togglePayable(currencyName);
+            }
+            return EconomyResponse.success();
+        }catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
+    }
+
+    public EconomyResponse saveCurrency(Currency currency) {
+        Result<ICurrency> result =  this.searchCurrencyUseCase.getCurrency(currency.getPlural());
+        if (!result.isSuccess()) {
+            return EconomyResponse.failure("Currency not found: " + result.getErrorMessage());
+        }
+        ICurrency coreCurrency = result.getValue();
+        coreCurrency.setPlural(currency.getPlural());
+        coreCurrency.setSingular(currency.getSingular());
+        coreCurrency.setSymbol(currency.getSymbol());
+        coreCurrency.setColor(currency.getColor());
+        coreCurrency.setDefaultBalance(currency.getDefaultBalance());
+        coreCurrency.setExchangeRate(currency.getExchangeRate());
+        coreCurrency.setDefaultCurrency(currency.isDefaultCurrency());
+        try {
+            editCurrencyUseCase.saveCurrency(coreCurrency);
+            return EconomyResponse.success();
+        } catch (Exception e){
+            return EconomyResponse.failure(e.getMessage());
+        }
     }
 
     public Currency getCurrency(String name){
@@ -599,6 +688,7 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
                 currency.getPlural(),
                 currency.getSingular(),
                 currency.getSymbol(),
+                currency.getColor(),
                 currency.getDefaultBalance(),
                 currency.getExchangeRate(),
                 currency.isDefaultCurrency()
