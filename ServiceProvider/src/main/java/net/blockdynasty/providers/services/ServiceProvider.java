@@ -16,12 +16,12 @@
 
 package net.blockdynasty.providers.services;
 
-import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /** ServiceProvider is a utility class for registering, retrieving, and unregistering service implementations.
  * It supports multiple implementations for the same service interface/class and allows selection based on predicates.
@@ -30,93 +30,100 @@ import java.util.function.Predicate;
  *   <li>Multiple implementations can be registered for the same service interface/class.</li>
  *   <li>When retrieving a service, the first registered implementation is returned by default.</li>
  *   <li>A predicate can be provided to select a specific implementation when retrieving a service.</li>
- *   <li>Services are returned as dynamic proxies to prevent direct access to the original implementation.</li>
- *   <li>Unregistering a service removes only the exact instance provided.</li>
+ *   <li>Services are returned by Supplier implementation to prevent direct access to the original Service.</li>
+ *   <li>Unregistering a service removes only the exact instance of Supplier provided.</li>
  * </ul>
  *
  * @version 1.0
  */
 public class ServiceProvider {
-    private static final Map<Class<?>, Queue<Object>> SERVICES = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Queue<Supplier<?>>> SERVICES = new ConcurrentHashMap<>();
 
     /** Registers a service implementation for the specified interface/class.
      *
-     * @param clazz class/interface type of the service "ex: EconomyService.class"
-     * @param service implementation of the service
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
+     * @param supplier service Supplier of implementation of the service
      * @param <T> type of the service
      */
-    public static <T> void register(Class<T> clazz, T service) {
+    public static <T extends Service<?>> void register(Class<T> clazz, Supplier<T> supplier) {
         synchronized (SERVICES) {
-            SERVICES.computeIfAbsent(clazz, k -> new LinkedList<>()).add(service);
+            SERVICES.computeIfAbsent(clazz, k -> new LinkedList<>()).add(supplier);
         }
     }
 
     /** Retrieves a service implementation for the specified interface/class.
      *
-     * @param clazz class/interface type of the service "ex: EconomyService.class"
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @param <T> type of the service
      * @return implementation of the service or null if not found
+     * NOTE: If multiple implementations are registered, the first one registered is returned.
      */
-    public static <T> T get(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Service<?>> T get(Class<T> clazz) {
         synchronized (SERVICES) {
-            Queue<Object> services = SERVICES.get(clazz);
+            Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services == null || services.isEmpty()) {
                 return null;
             }
-            Object service= services.peek();
-            if (service == null) {
+            return (T) services.peek().get();
+        }
+    }
+
+    /** Retrieves a service implementation for the specified interface/class that matches the given ID.
+     *
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
+     * @param id identifier to select the desired service implementation
+     * @param <T> type of the service
+     * @param <I> type of the service ID
+     * @return implementation of the service or null if not found
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Service<I>,I> T getWithId(Class<T> clazz, I id) {
+        synchronized (SERVICES) {
+            Queue<Supplier<?>> services = SERVICES.get(clazz);
+            if (services == null || services.isEmpty()) {
                 return null;
             }
-
-            return createProxy(clazz, service);
+            return services.stream()
+                    .map(s -> (T) s.get())
+                    .filter(service -> service.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
         }
     }
 
     /** Retrieves a service implementation for the specified interface/class that matches the given selector.
      *
-     * @param clazz class/interface type of the service "ex: EconomyService.class"
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @param selector predicate to select the desired service implementation
      * @param <T> type of the service
      * @return implementation of the service or null if not found
      */
-    public static <T> T get(Class<T> clazz, Predicate<T> selector) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Service<?>> T get(Class<T> clazz, Predicate<T> selector) {
         synchronized (SERVICES) {
-            Queue<Object> services = SERVICES.get(clazz);
+            Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services == null || services.isEmpty()) {
                 return null;
             }
-
-            for (Object service : services) {
-                @SuppressWarnings("unchecked")
-                T typedService = (T) service;
-                if (selector.test(typedService)) {
-                    return createProxy(clazz, service);
-                }
-            }
-            return null;
+            return services.stream()
+                    .map(s -> (T) s.get())
+                    .filter(selector)
+                    .findFirst()
+                    .orElse(null);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T> T createProxy(Class<T> clazz, Object service) {
-        return (T) Proxy.newProxyInstance(
-                clazz.getClassLoader(),
-                new Class<?>[]{clazz},
-                (proxy, method, args) -> method.invoke(service, args)
-        );
     }
 
     /** Unregisters a service implementation for the specified interface/class.
      * Only removes the exact instance provided as the service.
-     * @param clazz class/interface type of the service "ex: EconomyService.class"
-     * @param service original implementation of the service to be unregistered
-     * @param <T> type of the service
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
+     * @param supplier original of the service to be unregistered
      */
-    public static <T> void unregister(Class<?> clazz, T service) {
+    public static <T extends Service<?>> void unregister(Class<T> clazz, Supplier<T> supplier) {
         synchronized (SERVICES) {
-            Queue<Object> services = SERVICES.get(clazz);
+            Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services != null && !services.isEmpty()) {
-                services.removeIf(s -> s == service);
+                services.removeIf(s -> s == supplier);
                 if (services.isEmpty()) {
                     SERVICES.remove(clazz);
                 }

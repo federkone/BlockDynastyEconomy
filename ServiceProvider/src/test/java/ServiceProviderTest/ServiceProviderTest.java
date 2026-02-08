@@ -13,57 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 package ServiceProviderTest;
 
+import ServiceProviderTest.Mocks.MockService;
+import ServiceProviderTest.Mocks.MockServiceSecondary;
+import ServiceProviderTest.Mocks.SecondServiceSupplier;
+import ServiceProviderTest.Mocks.ServiceSupplier;
 import net.blockdynasty.providers.services.ServiceProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Supplier;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ServiceProviderTest {
-    private MockService mockService2 = new MockService() {
-        @Override
-        public String getId() {
-            return "Service1";
-        }
-    };
-    private  MockService mockService3 = new MockService() {
-        @Override
-        public String getId() {
-            return "Service2";
-        }
-    };
-    private  MockService mockService4 = new MockService() {
-        @Override
-        public String getId() {
-            return "Service3";
-        }
-    };
-
-    private MockServiceSecondary mockServiceSecondary = new MockServiceSecondary() {};
+    private Supplier<MockService> mockService1 = new ServiceSupplier("Service1");
+    private Supplier<MockService> mockService2 = new ServiceSupplier("Service2");
+    private Supplier<MockService> mockService3 = new ServiceSupplier("Service3");
+    private Supplier<MockServiceSecondary> mockServiceSecondary = new SecondServiceSupplier("Secondary");
 
     @BeforeEach
     public void setup() {
         ServiceProvider.register(MockServiceSecondary.class, mockServiceSecondary);
+        ServiceProvider.register(MockService.class, mockService1);
         ServiceProvider.register(MockService.class, mockService2);
         ServiceProvider.register(MockService.class, mockService3);
-        ServiceProvider.register(MockService.class, mockService4);
     }
 
     @AfterEach
     public void tearDown() {
         ServiceProvider.unregister(MockServiceSecondary.class, mockServiceSecondary);
+        ServiceProvider.unregister(MockService.class, mockService1);
         ServiceProvider.unregister(MockService.class, mockService2);
         ServiceProvider.unregister(MockService.class, mockService3);
-        ServiceProvider.unregister(MockService.class, mockService4);
     }
+
     @Test
     public void testRegisteredServices() {
-        assertNotNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service1")));
-        assertNotNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service2")));
-        assertNotNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service3")));
+        assertNotNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service1")));
+        assertNotNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2")));
+        assertNotNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service3")));
     }
 
     @Test
@@ -75,28 +72,36 @@ public class ServiceProviderTest {
 
     @Test
     public void testGetServiceWithPredicate() {
-        assertNotNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service2")));
+        assertNotNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2")));
     }
 
     @Test
     public void testRemoveServiceWithReference() {
-        ServiceProvider.unregister(MockService.class, mockService3);
-        assertNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service2")));
+        ServiceProvider.unregister(MockService.class, mockService2);
+        assertNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2")));
     }
 
     @Test
     public void testRemoveServiceWithoutReference() {
-        MockService fakeService = new MockService() {
-            @Override
-            public String getId() {
-                return "Service1";
-            }
-        };
+        Supplier<MockService> fakeService = new ServiceSupplier("Service1");
+        ServiceProvider.register(MockService.class, fakeService);
 
-        MockService proxyService = ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service1"));
+        MockService service = ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service1"));
+        Supplier<MockService> serviceSupplier = () -> service;
 
+        ServiceProvider.unregister(MockService.class, serviceSupplier);
         ServiceProvider.unregister(MockService.class, fakeService);
-        ServiceProvider.unregister(MockService.class, proxyService);
-        assertNotNull(ServiceProvider.get(MockService.class, mockService -> mockService.getId().equals("Service1")));
+        assertNotNull(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service1")));
+    }
+
+    @Test
+    public void getWithIdTest(){
+        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service1"));
+        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service2"));
+        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service3"));
     }
 }

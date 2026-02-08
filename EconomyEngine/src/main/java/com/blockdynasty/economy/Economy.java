@@ -20,8 +20,8 @@ import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
-import com.blockdynasty.economy.apiImplement.ApiWithCustomLogger;
-import com.blockdynasty.economy.apiImplement.ApiWithDefaultLogger;
+import com.blockdynasty.economy.apiImplement.ApiCustomSupplier;
+import com.blockdynasty.economy.apiImplement.ApiDefaultSupplier;
 import com.BlockDynasty.api.DynastyEconomy;
 import abstractions.platform.IProxySubscriber;
 import aplication.HardCashService;
@@ -56,8 +56,8 @@ public class Economy {
     private Core core;
     private static IRepository repository;
     private PlayerJoinListener playerJoinListener;
-    private static ApiWithDefaultLogger api;
-    private static ApiWithCustomLogger apiWithVaultLogger;
+    private static ApiDefaultSupplier api;
+    private static ApiCustomSupplier apiWithVaultLogger;
     private PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
     private IConfigurationEngine configuration;
@@ -77,8 +77,8 @@ public class Economy {
 
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
         this.createSubscriber(configuration,platformAdapter);
-        api = new ApiWithDefaultLogger(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
-        apiWithVaultLogger =new ApiWithCustomLogger(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
+        api = new ApiDefaultSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
+        apiWithVaultLogger = new ApiCustomSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
 
         this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
         this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());

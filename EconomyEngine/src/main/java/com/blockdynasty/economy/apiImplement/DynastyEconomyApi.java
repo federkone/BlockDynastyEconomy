@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class DynastyEconomyApi implements DynastyEconomy {
-    private final UUID id;
+public class DynastyEconomyApi implements DynastyEconomy {
+    private UUID id;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private GetBalanceUseCase getBalanceUseCase;
     private CreateAccountUseCase createAccountUseCase;
@@ -50,8 +50,8 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
     private IAccountService accountService;
     private EditCurrencyUseCase editCurrencyUseCase;
 
-    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService) {
-        id = UUID.randomUUID();
+    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService,UUID id) {
+        this.id = id;
         editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
@@ -72,8 +72,8 @@ public abstract class DynastyEconomyApi implements DynastyEconomy {
         exchangeUseCase = factory.exchange();
         this.accountService = accountService;
     }
-    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService, Log log) {
-        id = UUID.randomUUID();
+    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService, Log log,UUID id) {
+        this.id = id;
         editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
         getBalanceUseCase = factory.getBalance();
