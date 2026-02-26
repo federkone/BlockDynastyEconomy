@@ -8,6 +8,7 @@
 Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
 
 Wiki: https://wiki.blockdynasty.net
+Documentation: https://deepwiki.com/federkone/BlockDynastyEconomy
 
 Spigot: https://www.spigotmc.org/resources/dynastyeconomy.129308
 
