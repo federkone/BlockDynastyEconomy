@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +23,7 @@ public class ApiTest {
     @BeforeEach
     public void setup(){
         MinecraftServer.start();
-        api = ServiceProvider.get(DynastyEconomy.class);
+        api = ServiceProvider.get(DynastyEconomy.class).get();
         MinecraftServer.connectPlayer(nullplague);
         MinecraftServer.connectPlayer(fede);
     }

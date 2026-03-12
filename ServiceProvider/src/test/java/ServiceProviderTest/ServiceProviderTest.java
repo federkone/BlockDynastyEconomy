@@ -26,6 +26,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,32 +56,33 @@ public class ServiceProviderTest {
 
     @Test
     public void testRegisteredServices() {
-        assertNotNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service1")));
-        assertNotNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service2")));
-        assertNotNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service3")));
+        assertTrue(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service1")).isPresent());
+        assertTrue(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2")).isPresent());
+        assertTrue(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service3")).isPresent());
     }
 
     @Test
     public void testGetFirstServiceRegistered() {
-        MockService service = ServiceProvider.get(MockService.class);
-        assertNotNull(service);
-        assertEquals("Service1", service.getId());
+        Optional<MockService> service = ServiceProvider.get(MockService.class);
+        assertTrue(service.isPresent());
+        assertEquals("Service1", service.get().getId());
     }
 
     @Test
     public void testGetServiceWithPredicate() {
-        assertNotNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service2")));
+        assertFalse(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2")).isEmpty());
     }
 
     @Test
     public void testRemoveServiceWithReference() {
         ServiceProvider.unregister(MockService.class, mockService2);
-        assertNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service2")));
+        Optional<MockService> service = ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service2"));
+        assertTrue(service.isEmpty());
     }
 
     @Test
@@ -88,20 +90,20 @@ public class ServiceProviderTest {
         Supplier<MockService> fakeService = new ServiceSupplier("Service1");
         ServiceProvider.register(MockService.class, fakeService);
 
-        MockService service = ServiceProvider.get(MockService.class,
+        Optional<MockService> service = ServiceProvider.get(MockService.class,
                 mockService -> mockService.getId().equals("Service1"));
-        Supplier<MockService> serviceSupplier = () -> service;
+        Supplier<MockService> serviceSupplier = service::get;
 
         ServiceProvider.unregister(MockService.class, serviceSupplier);
         ServiceProvider.unregister(MockService.class, fakeService);
-        assertNotNull(ServiceProvider.get(MockService.class,
-                mockService -> mockService.getId().equals("Service1")));
+        assertTrue(ServiceProvider.get(MockService.class,
+                mockService -> mockService.getId().equals("Service1")).isPresent());
     }
 
     @Test
     public void getWithIdTest(){
-        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service1"));
-        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service2"));
-        assertNotNull(ServiceProvider.getWithId(MockService.class, "Service3"));
+        assertTrue(ServiceProvider.getWithId(MockService.class, "Service1").isPresent());
+        assertTrue(ServiceProvider.getWithId(MockService.class, "Service2").isPresent());
+        assertTrue(ServiceProvider.getWithId(MockService.class, "Service3").isPresent());
     }
 }

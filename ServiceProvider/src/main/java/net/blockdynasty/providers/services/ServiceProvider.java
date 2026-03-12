@@ -18,6 +18,7 @@ package net.blockdynasty.providers.services;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
@@ -59,13 +60,13 @@ public class ServiceProvider {
      * NOTE: If multiple implementations are registered, the first one registered is returned.
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Service<?>> T get(Class<T> clazz) {
+    public static <T extends Service<?>> Optional<T> get(Class<T> clazz) {
         synchronized (SERVICES) {
             Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services == null || services.isEmpty()) {
-                return null;
+                return Optional.empty();
             }
-            return (T) services.peek().get();
+            return Optional.of((T) services.peek().get());
         }
     }
 
@@ -78,17 +79,16 @@ public class ServiceProvider {
      * @return implementation of the service or null if not found
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Service<I>,I> T getWithId(Class<T> clazz, I id) {
+    public static <T extends Service<I>,I> Optional<T> getWithId(Class<T> clazz, I id) {
         synchronized (SERVICES) {
             Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services == null || services.isEmpty()) {
-                return null;
+                return Optional.empty();
             }
             return services.stream()
                     .map(s -> (T) s.get())
                     .filter(service -> service.getId().equals(id))
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst();
         }
     }
 
@@ -100,17 +100,16 @@ public class ServiceProvider {
      * @return implementation of the service or null if not found
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Service<?>> T get(Class<T> clazz, Predicate<T> selector) {
+    public static <T extends Service<?>> Optional<T> get(Class<T> clazz, Predicate<T> selector) {
         synchronized (SERVICES) {
             Queue<Supplier<?>> services = SERVICES.get(clazz);
             if (services == null || services.isEmpty()) {
-                return null;
+                return Optional.empty();
             }
             return services.stream()
                     .map(s -> (T) s.get())
                     .filter(selector)
-                    .findFirst()
-                    .orElse(null);
+                    .findFirst();
         }
     }
 

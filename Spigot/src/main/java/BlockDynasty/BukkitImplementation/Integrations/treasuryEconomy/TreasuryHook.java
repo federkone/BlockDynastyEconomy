@@ -17,15 +17,25 @@
 package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy;
 
 import BlockDynasty.BukkitImplementation.utils.Console;
+import com.BlockDynasty.api.DynastyEconomy;
+import com.blockdynasty.economy.Economy;
 import me.lokka30.treasury.api.common.service.ServicePriority;
 import me.lokka30.treasury.api.common.service.ServiceRegistry;
 import me.lokka30.treasury.api.economy.EconomyProvider;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.bukkit.Bukkit;
+
+import java.util.Optional;
 
 public class TreasuryHook {
     public static void register(){
         if(Bukkit.getPluginManager().isPluginEnabled("Treasury")) {
-            EconomyProvider econProvider = new economyHook();
+            Optional<DynastyEconomy> api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+            if (api.isEmpty()){
+                Console.log("No economy API found. Treasury integration will not be enabled.");
+                return;
+            }
+            EconomyProvider econProvider = new EconomyHook(api.get());
             ServiceRegistry.INSTANCE.registerService(
                     EconomyProvider.class,
                     econProvider,

@@ -26,9 +26,10 @@ import org.bukkit.plugin.ServicesManager;
 public class Vault2Handler implements IVaultHandler {
     private Vault2Hook economy = null;
     private final BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin;
+    private final DynastyEconomy api;
 
-    public Vault2Handler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin) {
-
+    public Vault2Handler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin, DynastyEconomy api) {
+        this.api = api;
         this.plugin = plugin;
     }
 
@@ -36,7 +37,7 @@ public class Vault2Handler implements IVaultHandler {
     public void hook() {
         try {
             if (this.economy == null) {
-                this.economy = new Vault2Hook();
+                this.economy = new Vault2Hook(api);
             }
 
             ServicesManager sm = Bukkit.getServicesManager();

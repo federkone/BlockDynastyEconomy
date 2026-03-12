@@ -17,6 +17,8 @@
 package spongeV13;
 
 import aplication.listener.CustomHeadValidator;
+import com.BlockDynasty.api.DynastyEconomy;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
@@ -48,6 +50,7 @@ import spongeV13.utils.TestEconomyCommand;
 
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.util.Optional;
 
 
 public class SpongePluginCommon {
@@ -78,7 +81,9 @@ public class SpongePluginCommon {
         }
         Sponge.eventManager().registerListeners(container, new PlayerJoinListener(economy.getPlayerJoinListener()), MethodHandles.lookup());
         CommandRegister.registerCommands(container, CommandService.getMainCommands());
-        EconomyServiceAdapter.init();
+
+        Optional<DynastyEconomy> api = ServiceProvider.get(DynastyEconomy.class);
+        api.ifPresent(EconomyServiceAdapter::init);
     }
 
     protected void registerTestEconomyCommand(){

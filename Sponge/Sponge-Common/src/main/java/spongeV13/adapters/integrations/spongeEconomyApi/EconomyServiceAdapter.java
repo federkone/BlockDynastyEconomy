@@ -33,9 +33,9 @@ import java.util.stream.Stream;
 public class EconomyServiceAdapter implements MultiCurrencyService {
     private static DynastyEconomy api;
 
-    public static void init()
+    public static void init(DynastyEconomy api)
     {
-        EconomyServiceAdapter.api = ServiceProvider.get(DynastyEconomy.class);
+        EconomyServiceAdapter.api = api;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EconomyServiceAdapter implements MultiCurrencyService {
     public Optional<UniqueAccount> findOrCreateAccount(UUID uuid) {
         com.BlockDynasty.api.entity.Account response = api.getAccount(uuid);
         if (response != null) {
-            return Optional.of(new UniqueAccountAdapter(response));
+            return Optional.of(new UniqueAccountAdapter(response,api));
         }
         return Optional.empty();
     }
@@ -66,7 +66,7 @@ public class EconomyServiceAdapter implements MultiCurrencyService {
     public Optional<Account> findOrCreateAccount(String identifier) {
         com.BlockDynasty.api.entity.Account response = api.getAccount(identifier);
         if (response != null) {
-            return Optional.of(new UniqueAccountAdapter(response));
+            return Optional.of(new UniqueAccountAdapter(response,api));
         }
         return Optional.empty();
     }
