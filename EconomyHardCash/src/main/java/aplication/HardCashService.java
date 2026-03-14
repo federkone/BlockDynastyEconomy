@@ -25,6 +25,7 @@ import services.Console;
 import services.configuration.IConfiguration;
 
 public class HardCashService {
+    private static boolean itemBasedEconomyEnabled = false;
     private static boolean enabled = false;
     private static boolean enableCustomHead = false;
 
@@ -38,6 +39,8 @@ public class HardCashService {
         if (enabled){
             Console.log("Hard Cash/item based economy System Enabled");
         }else { Console.log("Hard Cash/item based economy System Disabled");}
+
+        itemBasedEconomyEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");
         HardCashUseCaseFactory.init(hardCashCreator,depositUseCase,withdrawUseCase,searchCurrencyUseCase);
     }
 
@@ -47,6 +50,9 @@ public class HardCashService {
 
     public static boolean isEnabled() {
         return enabled;
+    }
+    public static boolean isItemBasedEconomyEnabled() {
+        return itemBasedEconomyEnabled;
     }
 
 }

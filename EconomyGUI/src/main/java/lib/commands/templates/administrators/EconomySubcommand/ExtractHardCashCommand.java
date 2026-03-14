@@ -1,7 +1,7 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.IExtractItemUseCase;
+import aplication.useCase.nbtItems.IExtractItemNBTUseCase;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.abstractions.IEntityCommands;
 
@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class ExtractHardCashCommand extends AbstractCommand {
-    private final IExtractItemUseCase extractItemUseCase;
+    private final IExtractItemNBTUseCase extractItemUseCase;
 
     public ExtractHardCashCommand() {
         super("extract", "", List.of("currency","amount"));
-        this.extractItemUseCase = HardCashUseCaseFactory.getExtractItemUseCase();
+        this.extractItemUseCase = HardCashUseCaseFactory.getExtractItemNBTUseCase();
     }
 
     @Override

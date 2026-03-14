@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase;
+package aplication.useCase.items;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
@@ -25,53 +25,47 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
-import aplication.HardCashService;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
-public class DepositItemUseCase implements IDepositItemUseCase {
+public class DepositAllItemUseCase implements IDepositItemUseCase{
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public DepositItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public DepositAllItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.platformHardCash = platformHardCash;
         this.depositUseCase = depositUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 
+    @Override
     public void execute(IEntityHardCash player) {
         ItemStackCurrency item = player.takeHandItem();
         if(item == null){
             player.sendMessage("You must hold a currency item to deposit.");
             return;
         }
+
+        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+        if (!resultC.isSuccess()) {
+            player.sendMessage("Not have a valid currency item in hand.");
+            return;
+        }
         NbtData nbtData = item.getNbtData();
-        if (nbtData.getItemType() == null || nbtData.getUuidCurrency() == null) {
+        if (nbtData.getItemType() != null || nbtData.getUuidCurrency() != null) {
             player.sendMessage("Not have a valid currency item in hand.");
             return;
         }
-        Result<ICurrency> result = searchCurrencyUseCase.getCurrency(nbtData.getItemType());
-        if (!result.isSuccess()) {
-            player.sendMessage("Currency type not found: " + nbtData.getItemType());
-            return;
-        }
-        ICurrency currency = result.getValue();
-        if(!currency.getUuid().equals(UUID.fromString(nbtData.getUuidCurrency()))) {
-            player.sendMessage("Not have a valid currency item in hand.");
-            return;
-        }
-        player.removeItem(item);
 
-        BigDecimal value = new BigDecimal(nbtData.getValue());
-        BigDecimal cant = new BigDecimal(item.getCantity());
-        value = value.multiply(cant);
+        int cantItems = player.removeAllItems(item);
+        BigDecimal cant = new BigDecimal(cantItems);
+        ICurrency currency = resultC.getValue();
 
-        Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), value, Context.COMMAND);
+        Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
         if (!depositResult.isSuccess()) {
+            item.setCantity(cantItems);
             player.giveItem(item);
         }
     }
 }
-

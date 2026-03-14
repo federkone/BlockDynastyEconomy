@@ -19,5 +19,7 @@ package domain.entity.currency;
 public interface ItemStackCurrency {
     NbtData getNbtData();
     int getCantity();
+    void setCantity(int amount);
+    String getMaterial();
     Object getRoot();
 }

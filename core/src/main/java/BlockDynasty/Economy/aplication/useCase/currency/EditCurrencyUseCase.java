@@ -104,6 +104,20 @@ public class EditCurrencyUseCase {
         saveCurrency(currency);
     }
 
+    public void editMaterial(String nameCurrency,String material){
+        ICurrency currency = currencyService.getCurrency(nameCurrency);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currencyService.getCurrencies().stream()
+                .filter(c -> c.getMaterial() != null && c.getMaterial().equalsIgnoreCase(material))
+                .findFirst().ifPresent(c -> {
+                    throw new IllegalArgumentException("Material already in use by currency: " + c.getSingular());
+                });
+        currency.setMaterial(material);
+        saveCurrency(currency);
+    }
+
     public void editTexture(String nameCurrency,String texture){
         ICurrency currency = currencyService.getCurrency(nameCurrency);
         if (currency == null){

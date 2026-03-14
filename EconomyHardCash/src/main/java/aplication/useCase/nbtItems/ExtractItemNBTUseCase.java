@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package aplication.useCase;
+package aplication.useCase.nbtItems;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.WithdrawUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import aplication.HardCashService;
 import domain.entity.currency.ItemStackCurrency;
-import domain.entity.currency.NbtData;
-import domain.entity.currency.RecipeItemCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
-import abstractions.platform.materials.Materials;
 import domain.service.ItemCreator;
 import domain.service.ItemCreatorFactory;
-import util.colors.ChatColor;
-import util.colors.Colors;
 
 import java.math.BigDecimal;
 
-public class ExtractItemUseCase implements IExtractItemUseCase {
+public class ExtractItemNBTUseCase implements IExtractItemNBTUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private ItemCreator itemCreator;
 
-    public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public ExtractItemNBTUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
@@ -58,6 +51,7 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
         ICurrency currencyData = currencyResult.getValue();
         ItemStackCurrency item = itemCreator.create(currencyData, amount);
         if (player.hasItem(item) || player.hasEmptySlot() ){
+            //si tiene el item validar que la canidad q tiene es < a 64 para agregarlo al stack, de lo contrario de debe agregarlo como un nuevo item
             var withdrawResult = withdrawUseCase.execute(player.getUniqueId(),currency, amount, Context.COMMAND);
             if (withdrawResult.isSuccess()){
                 player.giveItem(item);

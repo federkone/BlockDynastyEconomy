@@ -1,6 +1,5 @@
-package aplication.useCase;
+package aplication.useCase.nbtItems;
 
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
@@ -12,12 +11,12 @@ import domain.service.ItemCreatorFactory;
 
 import java.math.BigDecimal;
 
-public class GiveItemUseCase implements IGiveItemUseCase{
+public class GiveItemNBTUseCase implements IGiveItemNBTUseCase {
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private HardCashCreator hardCashCreator;
     private ItemCreator itemCreator;
 
-    public GiveItemUseCase(SearchCurrencyUseCase searchCurrencyUseCase, HardCashCreator platform) {
+    public GiveItemNBTUseCase(SearchCurrencyUseCase searchCurrencyUseCase, HardCashCreator platform) {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.hardCashCreator= platform;
         this.itemCreator = ItemCreatorFactory.getItemCreator(platform);

@@ -40,7 +40,7 @@ public class CurrencyListToAddExchange extends PaginatedPanel<ICurrency> {
     @Override
     protected IItemStack createItemFor(ICurrency currency) {
         String color = ChatColor.stringValueOf(currency.getColor());
-        return Item.of(RecipeItem.builder().setMaterial(Materials.GOLD_INGOT)
+        return Item.of(RecipeItem.builder().setMaterial(Materials.match(currency.getMaterial()))
                 .setName(Message.process(Map.of("currency",color+currency.getSingular()),"CurrencySelector.button1.nameItem"))
                 .setLore("Click to add")
                 .setTexture(currency.getTexture())

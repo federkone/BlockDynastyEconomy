@@ -72,7 +72,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
     protected IItemStack createItemFor(Money money) {
         ICurrency currency = money.getCurrency();
         return Item.of(RecipeItem.builder()
-                .setMaterial(Materials.GOLD_INGOT)
+                .setMaterial(Materials.match(currency.getMaterial()))
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
                         "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"))

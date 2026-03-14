@@ -26,6 +26,7 @@ import lib.gui.components.IEntityGUI;
 import lib.gui.components.IInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -151,6 +152,36 @@ public class EntityPlayerAdapter implements IPlayer {
             }
         }
         return false;
+    }
+
+    public int emptySlots() {
+        int emptySlots = 0;
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (int i = 0; i < 36; i++) {
+            ItemStack itemStack = contents[i];
+
+            if (itemStack == null || itemStack.getType() == Material.AIR) {
+                emptySlots++;
+            }
+        }
+        return emptySlots;
+    }
+
+    @Override
+    public int removeAllItems(ItemStackCurrency itemCurrency) {
+        int totalRemoved = 0;
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            ItemStack itemStack = contents[i];
+
+            if (itemStack != null && itemStack.isSimilar((ItemStack) itemCurrency.getRoot())) {
+                totalRemoved += itemStack.getAmount();
+                player.getInventory().setItem(i, null);
+            }
+        }
+        return totalRemoved;
     }
 
     @Override
