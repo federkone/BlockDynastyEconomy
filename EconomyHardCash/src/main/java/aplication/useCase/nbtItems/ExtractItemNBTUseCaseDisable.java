@@ -1,10 +1,10 @@
-package aplication.useCase;
+package aplication.useCase.nbtItems;
 
 import domain.entity.player.IEntityHardCash;
 
 import java.math.BigDecimal;
 
-public class ExtractItemUseCaseDisable implements IExtractItemUseCase{
+public class ExtractItemNBTUseCaseDisable implements IExtractItemNBTUseCase {
 
     @Override
     public void execute(IEntityHardCash player, BigDecimal amount, String currency) {

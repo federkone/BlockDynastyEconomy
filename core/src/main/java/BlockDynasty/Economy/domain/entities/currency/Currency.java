@@ -29,6 +29,7 @@ public class Currency implements ICurrency{
     private String singular;
     private String plural;
     private String symbol ;
+    private String material;
     private String texture;
     private String color ;
     private boolean decimalSupported ;
@@ -139,6 +140,8 @@ public class Currency implements ICurrency{
         return this.symbol;
     }
 
+    public String getMaterial() {return this.material;}
+
     public String getTexture() {
         return this.texture;
     }
@@ -146,6 +149,12 @@ public class Currency implements ICurrency{
     public void setTexture(String texture) {
         this.texture = texture;
     }
+
+    @Override
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
@@ -186,6 +195,8 @@ public class Currency implements ICurrency{
                 "uuid='" + uuid + '\'' +
                 ", singular='" + singular + '\'' +
                 ", plural='" + plural + '\'' +
+                ", material='" + material + '\'' +
+                ", texture='" + texture + '\'' +
                 ", symbol='" + symbol + '\'' +
                 ", color='" + color + '\'' +
                 ", decimalSupported=" + decimalSupported +
@@ -217,6 +228,7 @@ public class Currency implements ICurrency{
         private String singular = "";
         private String plural = "";
         private String symbol= "";
+        private String material= "";
         private String texture = "";
         private String color= "WHITE";
         private boolean decimalSupported= true;
@@ -238,6 +250,11 @@ public class Currency implements ICurrency{
 
         public Builder setPlural(String plural) {
             this.plural = plural;
+            return this;
+        }
+
+        public Builder setMaterial(String material) {
+            this.material = material;
             return this;
         }
 
@@ -289,6 +306,7 @@ public class Currency implements ICurrency{
             this.plural = currency.getPlural();
             this.symbol = currency.getSymbol();
             this.texture = currency.getTexture();
+            this.material = currency.getMaterial();
             this.color = currency.getColor();
             this.decimalSupported = currency.isDecimalSupported();
             this.transferable = currency.isTransferable();
@@ -304,6 +322,7 @@ public class Currency implements ICurrency{
             currency.singular = this.singular;
             currency.plural = this.plural;
             currency.symbol = this.symbol;
+            currency.material = this.material;
             currency.texture = this.texture;
             currency.color = this.color;
             currency.decimalSupported = this.decimalSupported;

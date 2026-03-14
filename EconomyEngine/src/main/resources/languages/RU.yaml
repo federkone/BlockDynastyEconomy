@@ -217,7 +217,7 @@ EditCurrencyPanel:
   title: "Редактирование валюты: {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "Символ: {symbol},Цвет: {color},Начальный баланс: {balance},Курс обмена: {rate},Переводимая: {transferable},Валюта по умолчанию: {default},Поддерживает десятичные: {decimals}"
+    lore: "Символ: {symbol},материал: {material},Цвет: {color},Начальный баланс: {balance},Курс обмена: {rate},Переводимая: {transferable},Валюта по умолчанию: {default},Поддерживает десятичные: {decimals}"
   button2:
     nameItem: "{color}Редактировать начальный баланс"
     lore: "{color}Нажмите чтобы изменить начальный баланс"

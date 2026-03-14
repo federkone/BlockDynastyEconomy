@@ -53,11 +53,12 @@ public class EditCurrencyPanel extends AbstractPanel {
         String color = ChatColor.stringValueOf(currency.getColor());
         setButton(4, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
-                        .setMaterial(Materials.GOLD_INGOT)
+                        .setMaterial(Materials.match(currency.getMaterial()))
                         .setName(Message.process(Map.of("currency", color + currency.getSingular() + " / " + currency.getPlural()), "EditCurrencyPanel.button1.nameItem"))
                         .setTexture(currency.getTexture())
                         .setLore(Message.processLines(Map.of(
                                 "symbol", color + currency.getSymbol(),
+                                "material", color + currency.getMaterial(),
                                 "color", color + currency.getColor(),
                                 "balance", color + currency.getDefaultBalance(),
                                 "rate", color + currency.getExchangeRate(),
@@ -226,6 +227,17 @@ public class EditCurrencyPanel extends AbstractPanel {
                         openEditCurrencyGUI();
                     }
                 }).build());
+
+        setButton(25, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                        .setName("Select Material")
+                        .setLore("Select Material to represent this currency")
+                        .setMaterial(Materials.LAPIS_LAZULI).build()))
+                .setLeftClickAction(f -> {
+                    GUIFactory.materialSelectorPanel(player,this,currency).open();
+                })
+                .build()
+        );
 
         // Back button
         setButton(40, Button.builder()

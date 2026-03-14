@@ -92,6 +92,14 @@ public class CurrencyService implements ICurrencyService {
                 .orElse(null);
     }
 
+    @Override
+    public ICurrency getCurrencyByMaterial(String material) {
+        return currencies.stream()
+                .filter(currency -> currency.getMaterial() != null && currency.getMaterial().equalsIgnoreCase(material))
+                .findFirst()
+                .orElse(null);
+    }
+
     public ICurrency getDefaultCurrency() {
         return this.defaultCurrency;
     }

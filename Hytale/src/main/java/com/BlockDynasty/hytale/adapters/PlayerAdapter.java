@@ -121,8 +121,20 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
+    public int emptySlots() {
+        //hardcash no implementar
+        return 0;
+    }
+
+    @Override
     public void removeItem(ItemStackCurrency itemStackCurrency) {
         //hardcash no implementar
+    }
+
+    @Override
+    public int removeAllItems(ItemStackCurrency itemStackCurrency) {
+        //hardcash no implementar
+        return 0;
     }
 
     @Override

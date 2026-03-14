@@ -49,7 +49,7 @@ public class MaterialAdapter {
         materialMap.put(Materials.LIME_DYE, Material.LIME_DYE);
         materialMap.put(Materials.NETHER_STAR, Material.NETHER_STAR);
         materialMap.put(Materials.STONE, Material.STONE);
-        materialMap.put(Materials.AIR, Material.AIR);
+        //materialMap.put(Materials.AIR, Material.AIR);
         materialMap.put(Materials.PAPER, Material.PAPER);
         materialMap.put(Materials.BOOK, Material.BOOK);
         materialMap.put(Materials.WRITABLE_BOOK, Material.WRITABLE_BOOK);

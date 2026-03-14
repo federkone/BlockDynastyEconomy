@@ -34,6 +34,7 @@ public class CurrencyMapper {
         entityDb.setUuid(domain.getUuid().toString());
         entityDb.setSingular(domain.getSingular());
         entityDb.setPlural(domain.getPlural());
+        entityDb.setMaterial(domain.getMaterial());
         entityDb.setColor(domain.getColor());
         entityDb.setDecimalSupported(domain.isDecimalSupported());
         entityDb.setTransferable(domain.isTransferable());
@@ -55,6 +56,7 @@ public class CurrencyMapper {
                 .setPlural(entity.getPlural())
                 .setSymbol(entity.getSymbol())
                 .setTexture(entity.getTexture())
+                .setMaterial(entity.getMaterial())
                 .setColor(entity.getColor())
                 .setDecimalSupported(entity.isDecimalSupported())
                 .setTransferable(entity.isTransferable())
@@ -69,6 +71,7 @@ public class CurrencyMapper {
     public static void update(ICurrency currency,CurrencyDb currencyDb) {
         currencyDb.setSingular(currency.getSingular());
         currencyDb.setPlural(currency.getPlural());
+        currencyDb.setMaterial(currency.getMaterial());
         currencyDb.setColor(currency.getColor());
         currencyDb.setDecimalSupported(currency.isDecimalSupported());
         currencyDb.setTransferable(currency.isTransferable());
@@ -89,6 +92,7 @@ public class CurrencyMapper {
                 .setPlural(entity.getPlural())
                 .setSymbol(entity.getSymbol())
                 .setTexture(entity.getTexture())
+                .setMaterial(entity.getMaterial())
                 .setColor(entity.getColor())
                 .setDecimalSupported(entity.isDecimalSupported())
                 .setTransferable(entity.isTransferable())

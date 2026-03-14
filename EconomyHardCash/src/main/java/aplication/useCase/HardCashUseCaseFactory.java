@@ -4,6 +4,8 @@ import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import aplication.HardCashService;
+import aplication.useCase.items.*;
+import aplication.useCase.nbtItems.*;
 import domain.entity.platform.HardCashCreator;
 
 public class HardCashUseCaseFactory {
@@ -19,24 +21,45 @@ public class HardCashUseCaseFactory {
         HardCashUseCaseFactory.searchCurrencyUseCase = searchCurrencyUseCase;
     }
 
-    public static IDepositItemUseCase getDepositItemUseCase() {
+    public static IDepositItemNBTUseCase getDepositItemNBTUseCase() {
         if(HardCashService.isEnabled()){
+            return new DepositItemNBTUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase);
+        }
+        return new DepositItemNBTUseCaseDisable();
+    }
+
+    public static IExtractItemNBTUseCase getExtractItemNBTUseCase() {
+        if (HardCashService.isEnabled()) {
+            return new ExtractItemNBTUseCase( hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
+        }
+        return new ExtractItemNBTUseCaseDisable();
+    }
+
+    public static IGiveItemNBTUseCase getGiveItemNBTUseCase() {
+        if (HardCashService.isEnabled()) {
+            return new GiveItemNBTUseCase(searchCurrencyUseCase,hardCashCreator);
+        }
+        return new GiveItemNBTUseCaseDisable();
+    }
+
+    public static IDepositItemUseCase getDepositItemUseCase() {
+        if (HardCashService.isItemBasedEconomyEnabled()) {
             return new DepositItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase);
         }
-        return new DepositItemUseCaseDisable();
+        return new DepositItemDisableUseCase();
     }
 
     public static IExtractItemUseCase getExtractItemUseCase() {
-        if (HardCashService.isEnabled()) {
-            return new ExtractItemUseCase( hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
+        if (HardCashService.isItemBasedEconomyEnabled()) {
+            return new ExtractItemUseCase(hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
         }
-        return new ExtractItemUseCaseDisable();
+        return new ExtractItemDisableUseCase();
     }
 
-    public static IGiveItemUseCase getGiveItemUseCase() {
-        if (HardCashService.isEnabled()) {
-            return new GiveItemUseCase(searchCurrencyUseCase,hardCashCreator);
+    public static IDepositItemUseCase getDepositAllItemUseCase() {
+        if (HardCashService.isItemBasedEconomyEnabled()) {
+            return new DepositAllItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase);
         }
-        return new GiveItemUseCaseDisable();
+        return new DepositItemDisableUseCase();
     }
 }

@@ -216,7 +216,7 @@ EditCurrencyPanel:
   title: "Editar Moneda: {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "Símbolo: {symbol},Color: {color},Balance inicial: {balance},Ratio de intercambio: {rate},Transferible: {transferable},Moneda por defecto: {default},Soporte de decimales: {decimals}"
+    lore: "Símbolo: {symbol},Material: {material},Color: {color},Balance inicial: {balance},Ratio de intercambio: {rate},Transferible: {transferable},Moneda por defecto: {default},Soporte de decimales: {decimals}"
   button2:
     nameItem: "{color}Editar Balance Inicial"
     lore: "{color}Click para establecer el balance inicial"

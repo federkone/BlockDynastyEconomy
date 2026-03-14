@@ -20,7 +20,6 @@ import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 
 import lib.abstractions.IConfigurationGUI;
-import lib.commands.PlatformCommand;
 import lib.gui.components.PlatformGUI;
 import lib.gui.components.*;
 import lib.gui.templates.administrators.mainMenus.AccountSelectorToEdit;
@@ -31,7 +30,8 @@ import lib.gui.templates.administrators.subMenus.accounts.*;
 import lib.gui.templates.administrators.subMenus.currencies.*;
 import lib.gui.templates.administrators.subMenus.gui.BankPanelEditor;
 import lib.gui.templates.users.*;
-import lib.gui.templates.users.Cashmachine.ExtractorPanel;
+import lib.gui.templates.users.Cashmachine.ExtractorItemPanel;
+import lib.gui.templates.users.Cashmachine.ExtractorNBTPanel;
 import lib.gui.templates.users.Exchange.ExchangeFirstPanel;
 import lib.gui.templates.users.Offers.*;
 
@@ -145,7 +145,15 @@ public class GUIFactory {
         return new BankPanelEditor(player,parent,config);
     }
 
-    public static IGUI extractorPanel(IEntityGUI player,IGUI parent) {
-        return new ExtractorPanel(player, useCaseFactory.searchCurrency(), parent, textInput);
+    public static IGUI extractorNBTPanel(IEntityGUI player, IGUI parent) {
+        return new ExtractorNBTPanel(player, useCaseFactory.searchCurrency(), parent, textInput);
+    }
+
+    public static IGUI extractorItemPanel(IEntityGUI player, IGUI parent) {
+        return new ExtractorItemPanel(player, useCaseFactory.searchCurrency(), parent, textInput);
+    }
+
+    public static IGUI materialSelectorPanel(IEntityGUI owner, IGUI parent,ICurrency currency){
+        return new MaterialSelectionPanel(owner, parent, currency, useCaseFactory.editCurrency());
     }
 }
