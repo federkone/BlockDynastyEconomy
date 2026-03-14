@@ -16,7 +16,6 @@
 
 package BlockDynasty.Economy.domain.services;
 
-import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 
 import java.util.List;
@@ -29,6 +28,7 @@ public interface ICurrencyService {
     List<ICurrency> getCurrencies();
     ICurrency getCurrency(String name);
     ICurrency getCurrency(UUID uuid);
+    ICurrency getCurrencyByMaterial(String material);
     ICurrency getDefaultCurrency();
     boolean currencyExist(String name);
     void updateDefaultCurrency();

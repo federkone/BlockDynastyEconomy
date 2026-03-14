@@ -18,32 +18,37 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import BlockDynasty.BukkitImplementation.utils.Console;
 import com.BlockDynasty.api.DynastyEconomy;
+import com.blockdynasty.economy.Economy;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 
+import java.util.Optional;
+
 public class VaultHandler implements  IVaultHandler {
     private VaultHook economy = null;
     private final BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin;
+    private final DynastyEconomy api;
 
-
-    public VaultHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin) {
+    public VaultHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin, DynastyEconomy api) {
         this.plugin = plugin;
+        this.api = api;
     }
 
     public void hook() {
-        try {
-            if (this.economy == null) {
-                this.economy = new VaultHook();
+            try {
+                if (this.economy == null) {
+                    this.economy = new VaultHook(api);
+                }
+
+                ServicesManager sm = Bukkit.getServicesManager();
+                sm.register(net.milkbowl.vault.economy.Economy.class, this.economy, plugin, ServicePriority.Highest);
+
+                Console.log("Vault link enabled.");
+            } catch (Exception e) {
+                Console.logError(e.getMessage());
             }
-
-            ServicesManager sm = Bukkit.getServicesManager();
-            sm.register(net.milkbowl.vault.economy.Economy.class, this.economy, plugin, ServicePriority.Highest);
-
-            Console.log("Vault link enabled.");
-        } catch (Exception e) {
-            Console.logError(e.getMessage());
-        }
     }
 
     public void unhook() {

@@ -35,6 +35,9 @@ public class CurrencyDb {
     @Column(name = "name_plural")
     private String plural;
 
+    @Column(name= "material")
+    private String material;
+
     @Column(name = "symbol")
     private String symbol;
 
@@ -92,6 +95,10 @@ public class CurrencyDb {
     public String getPlural() {
         return plural;
     }
+    public String getMaterial() {
+        return material;
+    }
+    public void setMaterial(String material) {this.material = material;}
     public void setPlural(String plural) {
         this.plural = plural;
 

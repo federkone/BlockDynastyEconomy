@@ -1,8 +1,8 @@
-package aplication.useCase;
+package aplication.useCase.nbtItems;
 
 import domain.entity.player.IEntityHardCash;
 
-public class DepositItemUseCaseDisable implements IDepositItemUseCase{
+public class DepositItemNBTUseCaseDisable implements IDepositItemNBTUseCase {
 
     @Override
     public void execute(IEntityHardCash player) {

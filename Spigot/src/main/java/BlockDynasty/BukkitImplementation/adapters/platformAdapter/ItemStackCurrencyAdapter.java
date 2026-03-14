@@ -26,6 +26,16 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     }
 
     @Override
+    public void setCantity(int amount) {
+        itemStack.setAmount(amount);
+    }
+
+    @Override
+    public  String getMaterial() {
+        return itemStack.getType().toString();
+    }
+
+    @Override
     public Object getRoot() {
         return itemStack;
     }

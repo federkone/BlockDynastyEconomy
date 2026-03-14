@@ -1,10 +1,8 @@
-package aplication.useCase;
-
-import domain.entity.player.IEntityHardCash;
+package aplication.useCase.nbtItems;
 
 import java.math.BigDecimal;
 
-public class GiveItemUseCaseDisable implements IGiveItemUseCase {
+public class GiveItemNBTUseCaseDisable implements IGiveItemNBTUseCase {
 
 
     @Override

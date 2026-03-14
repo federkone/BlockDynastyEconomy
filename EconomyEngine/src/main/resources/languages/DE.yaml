@@ -215,7 +215,7 @@ EditCurrencyPanel:
   title: "Währung bearbeiten: {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "Symbol: {symbol},Farbe: {color},Anfangssaldo: {balance},Wechselkurs: {rate},Übertragbar: {transferable},Standardwährung: {default},Unterstützt Dezimalzahlen: {decimals}"
+    lore: "Symbol: {symbol},Material: {material},Farbe: {color},Anfangssaldo: {balance},Wechselkurs: {rate},Übertragbar: {transferable},Standardwährung: {default},Unterstützt Dezimalzahlen: {decimals}"
   button2:
     nameItem: "{color}Anfangssaldo bearbeiten"
     lore: "{color}Klicken, um den Anfangssaldo zu ändern"

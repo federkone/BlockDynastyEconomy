@@ -215,7 +215,7 @@ EditCurrencyPanel:
   title: "Modifier la devise : {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "Symbole : {symbol},Couleur : {color},Solde initial : {balance},Taux de change : {rate},Transférable : {transferable},Devise par défaut : {default},Supporte les décimales : {decimals}"
+    lore: "Symbole : {symbol},Matériel: {material},Couleur : {color},Solde initial : {balance},Taux de change : {rate},Transférable : {transferable},Devise par défaut : {default},Supporte les décimales : {decimals}"
   button2:
     nameItem: "{color}Modifier le solde initial"
     lore: "{color}Cliquez pour modifier le solde initial"

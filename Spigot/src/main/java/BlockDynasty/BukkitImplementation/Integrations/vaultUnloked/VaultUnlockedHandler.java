@@ -20,26 +20,31 @@ import BlockDynasty.BukkitImplementation.Integrations.vault.IVaultHandler;
 import BlockDynasty.BukkitImplementation.Integrations.vault.VaultHook;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import com.BlockDynasty.api.DynastyEconomy;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 
+import java.util.Optional;
+
 public class VaultUnlockedHandler implements IVaultHandler {
     private VaultUnlockedHook vaultUnlockedHook=null;
     private final BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin;
+    private final DynastyEconomy api;
 
-    public VaultUnlockedHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin) {
+    public VaultUnlockedHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin,DynastyEconomy api) {
         this.plugin = plugin;
+        this.api = api;
     }
 
     public void hook() {
         try {
             if (this.vaultUnlockedHook == null) {
-                this.vaultUnlockedHook = new VaultUnlockedHook();
+                this.vaultUnlockedHook = new VaultUnlockedHook(api);
             }
 
             ServicesManager sm = Bukkit.getServicesManager();
-            sm.register(net.milkbowl.vault.economy.Economy.class, new VaultHook(), plugin, ServicePriority.Highest);
+            sm.register(net.milkbowl.vault.economy.Economy.class, new VaultHook(api), plugin, ServicePriority.Highest);
             sm.register(net.milkbowl.vault2.economy.Economy.class, this.vaultUnlockedHook, plugin, ServicePriority.Highest);
 
             Console.log("Vault Unlocked detect, link enabled.");

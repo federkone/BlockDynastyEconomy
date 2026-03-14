@@ -38,10 +38,11 @@ import java.util.UUID;
 
 public class UniqueAccountAdapter implements UniqueAccount{
     private com.BlockDynasty.api.entity.Account account;
-    private static DynastyEconomy api = ServiceProvider.get(DynastyEconomy.class);
+    private DynastyEconomy api;
 
-    public UniqueAccountAdapter( com.BlockDynasty.api.entity.Account account) {
+    public UniqueAccountAdapter( com.BlockDynasty.api.entity.Account account,DynastyEconomy api) {
         this.account = account;
+        this.api = api;
     }
 
     @Override

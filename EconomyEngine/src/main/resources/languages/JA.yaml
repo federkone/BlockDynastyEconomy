@@ -216,7 +216,7 @@ EditCurrencyPanel:
   title: "通貨の編集: {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "シンボル: {symbol},色: {color},初期残高: {balance},為替レート: {rate},送金可能: {transferable},デフォルト通貨: {default},小数点対応: {decimals}"
+    lore: "シンボル: {symbol},材料: {material},色: {color},初期残高: {balance},為替レート: {rate},送金可能: {transferable},デフォルト通貨: {default},小数点対応: {decimals}"
   button2:
     nameItem: "{color}初期残高を編集"
     lore: "{color}クリックして初期残高を変更します"

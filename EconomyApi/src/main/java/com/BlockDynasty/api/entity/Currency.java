@@ -9,17 +9,21 @@ public class Currency {
     private String singular;
     private String plural;
     private String symbol;
+    private String color;
     private BigDecimal defaultBalance;
     private boolean defaultCurrency ;
     private double exchangeRate;
 
+    public Currency() {}
+
     public Currency(UUID uuid, String singular,
-                    String plural,String symbol,BigDecimal defaultBalance,
+                    String plural,String symbol,String color,BigDecimal defaultBalance,
                     double exchangeRate,
                     boolean defaultCurrency) {
         this.uuid = uuid;
         this.singular = singular;
         this.plural = plural;
+        this.color = color;
         this.defaultCurrency = defaultCurrency;
         this.symbol = symbol;
         this.defaultBalance = defaultBalance;
@@ -35,6 +39,9 @@ public class Currency {
     public String getPlural() {
         return plural;
     }
+    public String getColor() {
+        return color;
+    }
     public boolean isDefaultCurrency() {
         return defaultCurrency;
     }
@@ -47,7 +54,7 @@ public class Currency {
     }
 
     public String format(BigDecimal amount) {
-        return "";
+        return amount.toString();
 
     }
 

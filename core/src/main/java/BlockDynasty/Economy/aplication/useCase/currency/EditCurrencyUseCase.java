@@ -47,7 +47,7 @@ public class EditCurrencyUseCase {
             throw new DecimalNotSupportedException("Currency does not support decimals");
         }
         currency.setDefaultBalance(BigDecimal.valueOf(startBal));
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void setCurrencyRate(String currencyName, double rate){
@@ -59,7 +59,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setExchangeRate(rate);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void addInterchangeableCurrency(String currencyName, String currencyToAddName){
@@ -72,7 +72,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.addInterchangeableCurrency(currencyToAdd);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void removeInterchangeableCurrency(String currencyName, String currencyToRemoveName){
@@ -82,7 +82,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.removeInterchangeableCurrency(currencyToRemove);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void editColor(String nameCurrency, String colorString){
@@ -92,7 +92,7 @@ public class EditCurrencyUseCase {
         }
 
         currency.setColor(colorString);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void editSymbol(String nameCurrency,String symbol){
@@ -101,7 +101,21 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setSymbol(symbol);
-        saveChanges(currency);
+        saveCurrency(currency);
+    }
+
+    public void editMaterial(String nameCurrency,String material){
+        ICurrency currency = currencyService.getCurrency(nameCurrency);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currencyService.getCurrencies().stream()
+                .filter(c -> c.getMaterial() != null && c.getMaterial().equalsIgnoreCase(material))
+                .findFirst().ifPresent(c -> {
+                    throw new IllegalArgumentException("Material already in use by currency: " + c.getSingular());
+                });
+        currency.setMaterial(material);
+        saveCurrency(currency);
     }
 
     public void editTexture(String nameCurrency,String texture){
@@ -110,7 +124,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setTexture(texture);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void setDefaultCurrency(String currencyName){
@@ -121,12 +135,12 @@ public class EditCurrencyUseCase {
         currencyService.getCurrencies().forEach(c -> {
             if (c.isDefaultCurrency()){
                 c.setDefaultCurrency(false);
-                saveChanges(c);
+                saveCurrency(c);
             }
         });
         currency.setDefaultCurrency(true);
         currencyService.updateDefaultCurrency();
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void setSingularName(String actualName, String newName){
@@ -136,7 +150,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setSingular(newName);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void setPluralName(String actualName, String newName){
@@ -145,7 +159,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setPlural(newName);
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void togglePayable(String currencyName){
@@ -154,7 +168,7 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setTransferable(!currency.isTransferable());
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
     public void toggleDecimals(String currencyName){
@@ -163,10 +177,10 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currency.setDecimalSupported(!currency.isDecimalSupported());
-        saveChanges(currency);
+        saveCurrency(currency);
     }
 
-    private void saveChanges(ICurrency currency){
+    public void saveCurrency(ICurrency currency){
         try {
             dataStore.saveCurrency(currency);
             updateForwarder.sendUpdateMessage(Message.builder()

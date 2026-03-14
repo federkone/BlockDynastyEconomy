@@ -28,6 +28,7 @@ public interface ICurrency {
      UUID getUuid();
      String getSingular();
      String getPlural();
+     String getMaterial();
      BigDecimal getDefaultBalance() ;
      String format(BigDecimal amount);
      boolean isValidAmount(BigDecimal amount);
@@ -44,6 +45,7 @@ public interface ICurrency {
      String getSymbol();
      String getTexture();
      void setTexture(String texture);
+     void setMaterial(String material);
      void setSymbol(String symbol);
      double getExchangeRate();
      void setExchangeRate(double exchangeRate);

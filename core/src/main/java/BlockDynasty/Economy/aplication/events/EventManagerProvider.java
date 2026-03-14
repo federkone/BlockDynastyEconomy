@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.apiImplement;
+package BlockDynasty.Economy.aplication.events;
 
-import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
+public class EventManagerProvider {
+    private static EventManager eventManager;
 
-import BlockDynasty.Economy.domain.services.IAccountService;
-import com.BlockDynasty.api.DynastyEconomy;
-
-public class ApiWithDefaultLogger extends DynastyEconomyApi implements DynastyEconomy {
-    public ApiWithDefaultLogger(UseCaseFactory factory, IAccountService accountService) {
-        super(factory, accountService);
+    public static EventManager get() {
+        if (eventManager == null) {
+            eventManager = new EventManager();
+        }
+        return eventManager;
     }
 }

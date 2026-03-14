@@ -216,7 +216,7 @@ EditCurrencyPanel:
   title: "编辑货币: {currency}"
   button1:
     nameItem: "{currency}"
-    lore: "符号: {symbol},颜色: {color},初始余额: {balance},汇率: {rate},可转账: {transferable},默认货币: {default},支持小数: {decimals}"
+    lore: "符号: {symbol},材料: {material},颜色: {color},初始余额: {balance},汇率: {rate},可转账: {transferable},默认货币: {default},支持小数: {decimals}"
   button2:
     nameItem: "{color}编辑初始余额"
     lore: "{color}点击修改初始余额"

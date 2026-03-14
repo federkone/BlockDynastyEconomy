@@ -68,9 +68,9 @@ public class RecipeItemCurrency extends RecipeItem {
         }
 
         public RecipeItemCurrency build() {
-            if (nbtData == null) {
-                throw new IllegalArgumentException("nbtData is null");
-            }
+            //if (nbtData == null) {
+            //    throw new IllegalArgumentException("nbtData is null");
+            //}
             return new RecipeItemCurrency(super.build(), nbtData);
         }
     }

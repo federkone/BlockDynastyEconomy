@@ -65,6 +65,7 @@ public class MaterialProvider {
     }
 
     public static void applyItemName(ItemStack item, String displayName){
+        if (displayName == null) return;
         ItemMeta meta;
 
         if (isPlayerHead(item.getType())) {
@@ -77,30 +78,29 @@ public class MaterialProvider {
             meta = item.getItemMeta();
         }
 
-        if (displayName != null) {
-            if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
-                meta.setDisplayName(displayName);
-            }else {
-                meta.displayName(MiniMessage.miniMessage().deserialize(displayName));
-            }
+        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+            meta.setDisplayName(displayName);
+        }else {
+            meta.displayName(MiniMessage.miniMessage().deserialize(displayName));
         }
 
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
     }
 
-    public static void applyItemLore(ItemStack item, List<String> lore){
+    public static void applyItemLore(ItemStack item, String[] loreArray){
+        if (loreArray == null || loreArray.length == 0) return;
+
+        List<String> lore = List.of(loreArray);
         ItemMeta meta= item.getItemMeta();
 
-        if (lore != null) {
-            if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
                 meta.setLore(lore);
-            }else {
-                List<Component> loreComponents = lore.stream()
-                        .map(m ->  MiniMessage.miniMessage().deserialize(m))
-                        .collect(Collectors.toList());
-                meta.lore(loreComponents);
-            }
+        }else {
+            List<Component> loreComponents = lore.stream()
+                    .map(m ->  MiniMessage.miniMessage().deserialize(m))
+                    .collect(Collectors.toList());
+            meta.lore(loreComponents);
         }
 
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -114,7 +114,7 @@ public class MaterialProvider {
     public static ItemStack createItemStack(RecipeItem recipeItem) {
         ItemStack itemStack = materialService.createItemStack(recipeItem.getMaterial());
         applyItemName(itemStack, recipeItem.getName());
-        applyItemLore(itemStack ,List.of(recipeItem.getLore()));
+        applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
     }
@@ -123,12 +123,13 @@ public class MaterialProvider {
         ItemStack itemStack = materialService.createItemStack(recipeItem.getMaterial());
         applyNBTData(itemStack, recipeItem.getNbtData());
         applyItemName(itemStack, recipeItem.getName());
-        applyItemLore(itemStack ,List.of(recipeItem.getLore()));
+        applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
     }
 
     public static void applyNBTData(ItemStack itemStack,NbtData nbtData){
+        if (nbtData == null) return;
         nbtService.applyNBTData(itemStack, nbtData);
     }
 

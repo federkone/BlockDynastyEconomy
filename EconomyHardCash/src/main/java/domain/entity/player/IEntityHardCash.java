@@ -24,5 +24,7 @@ public interface IEntityHardCash extends IPlayer {
     ItemStackCurrency takeHandItem();
     boolean hasItem(ItemStackCurrency itemCurrency);
     boolean hasEmptySlot();
+    int emptySlots();
     void removeItem(ItemStackCurrency itemCurrency);
+    int removeAllItems(ItemStackCurrency itemCurrency);
 }

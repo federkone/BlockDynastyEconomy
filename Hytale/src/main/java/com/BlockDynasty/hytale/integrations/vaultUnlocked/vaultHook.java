@@ -14,10 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class vaultHook implements Economy {
-    private static DynastyEconomy api;
+    private final DynastyEconomy api;
 
-    public vaultHook() {
-        vaultHook.api = ServiceProvider.get(DynastyEconomy.class,service -> service.getId().equals(com.blockdynasty.economy.Economy.getApiWithVaultLoggerId()));
+    public vaultHook(DynastyEconomy api) {
+        this.api = api;
     }
 
     @Override

@@ -18,10 +18,8 @@ package BlockDynasty.Economy.aplication.events;
 
 import BlockDynasty.Economy.domain.events.Event;
 import BlockDynasty.Economy.domain.events.EventHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 public class EventManager {
     private final Map<Class<? extends Event>, List<EventHandler<?>>> handlers = new HashMap<>();
@@ -33,7 +31,8 @@ public class EventManager {
     public <T extends Event> void unsubscribe(Class<T> eventType, EventHandler<T> handler) {
         List<EventHandler<?>> eventHandlers = handlers.get(eventType);
         if (eventHandlers != null) {
-            eventHandlers.remove(handler);
+            Optional<EventHandler<?>> event = eventHandlers.stream().filter(e -> e==handler).findFirst();
+            event.ifPresent(eventHandlers::remove);
         }
     }
 

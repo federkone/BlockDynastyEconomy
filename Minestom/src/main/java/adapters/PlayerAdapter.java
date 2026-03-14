@@ -140,7 +140,17 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
+    public int emptySlots() {
+        return 0;
+    }
+
+    @Override
     public void removeItem(ItemStackCurrency itemCurrency) {
 
+    }
+
+    @Override
+    public int removeAllItems(ItemStackCurrency itemCurrency) {
+        return 0;
     }
 }

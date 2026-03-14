@@ -19,8 +19,6 @@ import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts.A
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.currency.CurrencyTreasury;
 import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.EconomyResponse;
-import com.blockdynasty.economy.Economy;
-import net.blockdynasty.providers.services.ServiceProvider;
 import com.BlockDynasty.api.entity.Account;
 import me.lokka30.treasury.api.common.NamespacedKey;
 import me.lokka30.treasury.api.common.misc.TriState;
@@ -37,11 +35,11 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class economyHook implements EconomyProvider {
-    private static DynastyEconomy api;
+public class EconomyHook implements EconomyProvider {
+    private final DynastyEconomy api;
 
-    public economyHook() {
-        economyHook.api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+    public EconomyHook(DynastyEconomy api) {
+       this.api = api;
     }
 
     @Override

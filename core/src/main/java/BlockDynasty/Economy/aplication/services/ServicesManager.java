@@ -17,6 +17,7 @@
 package BlockDynasty.Economy.aplication.services;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.events.EventManagerProvider;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.ICurrencyService;
@@ -32,7 +33,7 @@ public class ServicesManager {
     public ServicesManager(IRepository repository, int cacheTopMinutes, Courier courier) {
         this.currencyService = new CurrencyService(repository);
         this.accountService = new AccountService(cacheTopMinutes,repository,currencyService);
-        this.eventManager = new EventManager();
+        this.eventManager = EventManagerProvider.get();
         this.offerService = new OfferService(courier,eventManager);
     }
 

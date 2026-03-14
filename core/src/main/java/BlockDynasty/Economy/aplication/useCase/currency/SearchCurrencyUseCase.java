@@ -25,6 +25,7 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SearchCurrencyUseCase {
     private final ICurrencyService currencyService;
@@ -45,7 +46,20 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(Currency.builder().copy(currency).build());
+        return Result.success(currency);
+    }
+
+    public Result<ICurrency> getCurrencyByMaterial(String Material) {
+        ICurrency currency = currencyService.getCurrencyByMaterial(Material);
+        if (currency == null) {
+           // Result<ICurrency> result = datastore.loadCurrencyByMaterial(Material);
+            //if(result.isSuccess()){
+             //   currency = result.getValue();
+            //}else {
+                return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
+            //}
+        }
+        return Result.success(currency);
     }
 
     public Result<ICurrency>  getDefaultCurrency() {
@@ -58,7 +72,7 @@ public class SearchCurrencyUseCase {
                 return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
             }
         }
-        return Result.success(Currency.builder().copy(defaultCurrency).build());
+        return Result.success(defaultCurrency);
     }
 
     public List<ICurrency> getCurrencies(){

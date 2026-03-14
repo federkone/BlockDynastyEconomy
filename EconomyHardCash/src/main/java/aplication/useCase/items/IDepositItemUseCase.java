@@ -1,8 +1,7 @@
-package aplication.useCase;
+package aplication.useCase.items;
 
 import domain.entity.player.IEntityHardCash;
 
 public interface IDepositItemUseCase {
-
-     void execute(IEntityHardCash player);
+    void execute(IEntityHardCash player);
 }

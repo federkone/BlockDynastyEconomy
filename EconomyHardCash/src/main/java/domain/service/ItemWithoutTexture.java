@@ -28,7 +28,7 @@ public class ItemWithoutTexture implements ItemCreator {
                         ChatColor.stringValueOf(Colors.GOLD)+"Trade it or store it safely!","",
                         ChatColor.stringValueOf(Colors.GRAY)+"[Valid for Dynasty Economy System]")
                 .setName(color + currency.getSingular())
-                .setMaterial(Materials.GOLD_INGOT)
+                .setMaterial(Materials.valueOf(currency.getMaterial()))
                 .build();
         return platform.createItemStackCurrency(recipe);
     }

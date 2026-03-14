@@ -183,6 +183,11 @@ public class EntityPlayerAdapter implements IPlayer {
     }
 
     @Override
+    public int emptySlots() {
+        return player.inventory().primary().freeCapacity();
+    }
+
+    @Override
     public void removeItem(ItemStackCurrency itemCurrency) {
         ItemStack item = (ItemStack) itemCurrency.getRoot();
         Inventory inv = player.inventory().primary();
@@ -192,5 +197,20 @@ public class EntityPlayerAdapter implements IPlayer {
                 break;
            }
         }
+    }
+
+    @Override
+    public int removeAllItems(ItemStackCurrency itemStackCurrency) {
+        ItemStack item = (ItemStack) itemStackCurrency.getRoot();
+        Inventory inv = player.inventory().primary();
+        int totalRemoved = 0;
+
+        for (Slot slot : inv.slots()) {
+            if (slot.peek().equalTo(item)) {
+                totalRemoved += slot.peek().quantity();
+                slot.clear();
+            }
+        }
+        return totalRemoved;
     }
 }

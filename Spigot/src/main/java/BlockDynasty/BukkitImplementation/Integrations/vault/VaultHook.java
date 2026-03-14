@@ -18,6 +18,7 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import com.BlockDynasty.api.DynastyEconomy;
 import com.blockdynasty.economy.Economy;
+import com.blockdynasty.economy.apiImplement.DynastyEconomyApi;
 import net.blockdynasty.providers.services.ServiceProvider;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -30,11 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VaultHook extends AbstractEconomy {
-    private static DynastyEconomy api;
+    private final DynastyEconomy api;
 
-
-    public VaultHook() {
-        VaultHook.api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+    public VaultHook(DynastyEconomy api) {
+       this.api = api;
     }
 
     @Override
