@@ -18,10 +18,7 @@ package aplication.useCase.items;
 
 import domain.entity.player.IEntityHardCash;
 
-public class DepositItemDisableUseCase implements IDepositItemUseCase{
+public interface IGetItemsBalanceUseCase {
 
-    @Override
-    public void execute(IEntityHardCash player) {
-        player.sendMessage("Economy Item Based system is disabled." );
-    }
+    int execute(IEntityHardCash player, String currencyName);
 }

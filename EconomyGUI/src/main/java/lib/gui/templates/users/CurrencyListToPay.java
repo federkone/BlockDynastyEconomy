@@ -21,6 +21,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.PayUseCase;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
+import aplication.useCase.HardCashUseCaseFactory;
+import aplication.useCase.items.IPayWithItemsUseCase;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
@@ -38,6 +40,7 @@ import java.util.Map;
 
 public class CurrencyListToPay extends CurrencySelectorAndAmount {
     private final PayUseCase payUseCase;
+
     private final BlockDynasty.Economy.domain.entities.account.Player targetPlayer;
 
     public CurrencyListToPay(IEntityGUI player, BlockDynasty.Economy.domain.entities.account.Player targetPlayer,

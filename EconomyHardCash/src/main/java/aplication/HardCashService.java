@@ -18,6 +18,7 @@ package aplication;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
+import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IPayUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import aplication.useCase.HardCashUseCaseFactory;
 import domain.entity.platform.HardCashCreator;
@@ -29,7 +30,7 @@ public class HardCashService {
     private static boolean enabled = false;
     private static boolean enableCustomHead = false;
 
-    public static void init(IConfiguration configuration, HardCashCreator hardCashCreator, IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase){
+    public static void init(IConfiguration configuration, HardCashCreator hardCashCreator, IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase, IPayUseCase payUseCase,SearchCurrencyUseCase searchCurrencyUseCase){
         enabled = configuration.getBoolean("HardCash.enable");
         enableCustomHead = configuration.getBoolean("HardCash.customHeadTexture");
         if(!hardCashCreator.hasSupportHardCash()){
@@ -41,7 +42,7 @@ public class HardCashService {
         }else { Console.log("Hard Cash/item based economy System Disabled");}
 
         itemBasedEconomyEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");
-        HardCashUseCaseFactory.init(hardCashCreator,depositUseCase,withdrawUseCase,searchCurrencyUseCase);
+        HardCashUseCaseFactory.init(hardCashCreator,depositUseCase,withdrawUseCase,payUseCase,searchCurrencyUseCase);
     }
 
     public static boolean isEnableCustomHead() {

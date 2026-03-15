@@ -27,10 +27,12 @@ import lib.gui.components.IInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import com.blockdynasty.economy.platform.IPlayer;
+import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.UUID;
 
@@ -169,19 +171,144 @@ public class EntityPlayerAdapter implements IPlayer {
     }
 
     @Override
-    public int removeAllItems(ItemStackCurrency itemCurrency) {
-        int totalRemoved = 0;
-        ItemStack[] contents = player.getInventory().getContents();
+    public int takeAllItems(ItemStackCurrency targetItem) {
+        int totalExtracted = 0;
+        ItemStack itemStack = (ItemStack) targetItem.getRoot();
+        Inventory playerInventory = player.getInventory();
+        for (int i = 0; i < playerInventory.getSize(); i++) {
+            ItemStack currentItem = playerInventory.getItem(i);
 
-        for (int i = 0; i < contents.length; i++) {
-            ItemStack itemStack = contents[i];
+            if (currentItem == null || currentItem.getType() == Material.AIR) {
+                continue;
+            }
 
-            if (itemStack != null && itemStack.isSimilar((ItemStack) itemCurrency.getRoot())) {
-                totalRemoved += itemStack.getAmount();
-                player.getInventory().setItem(i, null);
+            if (currentItem.isSimilar(itemStack)) {
+                totalExtracted += currentItem.getAmount();
+                playerInventory.setItem(i, null);
+                continue;
+            }
+
+            if (currentItem.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta meta = (BlockStateMeta) currentItem.getItemMeta();
+
+                if (meta.getBlockState() instanceof ShulkerBox) {
+                    ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+                    Inventory shulkerInventory = shulker.getInventory();
+                    boolean modified = false;
+                    for (int j = 0; j < shulkerInventory.getSize(); j++) {
+                        ItemStack shulkerSlotItem = shulkerInventory.getItem(j);
+
+                        if (shulkerSlotItem != null && shulkerSlotItem.isSimilar(itemStack)) {
+                            totalExtracted += shulkerSlotItem.getAmount();
+                            shulkerInventory.setItem(j, null); // Vaciamos el slot interno
+                            modified = true;
+                        }
+                    }
+                    if (modified) {
+                        meta.setBlockState(shulker);
+                        currentItem.setItemMeta(meta);
+                    }
+                }
             }
         }
-        return totalRemoved;
+        return totalExtracted;
+    }
+
+    @Override
+    public int countItems(ItemStackCurrency targetItem) {
+        int total = 0;
+        Inventory playerInventory = player.getInventory();
+        ItemStack targetItemStack = (ItemStack) targetItem.getRoot();
+
+        for (ItemStack currentItem : playerInventory.getContents()) {
+            if (currentItem == null || currentItem.getType() == Material.AIR) {
+                continue;
+            }
+
+            if (currentItem.isSimilar(targetItemStack)) {
+                total += currentItem.getAmount();
+            }
+            else if (currentItem.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta meta = (BlockStateMeta) currentItem.getItemMeta();
+
+                if (meta.getBlockState() instanceof ShulkerBox) {
+                    ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+                    for (ItemStack shulkerItem : shulker.getInventory().getContents()) {
+                        if (shulkerItem != null && shulkerItem.isSimilar(targetItemStack)) {
+                            total += shulkerItem.getAmount();
+                        }
+                    }
+                }
+            }
+        }
+
+        return total;
+    }
+
+    @Override
+    public boolean takeItems(ItemStackCurrency itemCurrency, int amount){
+        if (countItems(itemCurrency) < amount) {
+            return false;
+        }
+
+        int remainingToExtract = amount;
+        Inventory playerInventory = player.getInventory();
+        ItemStack targetItem = (ItemStack) itemCurrency.getRoot();
+
+        for (int i = 0; i < playerInventory.getSize(); i++) {
+            if (remainingToExtract <= 0) break;
+
+            ItemStack currentItem = playerInventory.getItem(i);
+            if (currentItem == null || currentItem.getType() == Material.AIR) continue;
+
+            if (currentItem.isSimilar(targetItem)) {
+                int stackAmount = currentItem.getAmount();
+
+                if (stackAmount <= remainingToExtract) {
+                    remainingToExtract -= stackAmount;
+                    playerInventory.setItem(i, null);
+                } else {
+                    currentItem.setAmount(stackAmount - remainingToExtract);
+                    remainingToExtract = 0;
+                }
+                continue;
+            }
+
+            if (currentItem.getItemMeta() instanceof BlockStateMeta) {
+                BlockStateMeta meta = (BlockStateMeta) currentItem.getItemMeta();
+
+                if (meta.getBlockState() instanceof ShulkerBox) {
+                    ShulkerBox shulker = (ShulkerBox) meta.getBlockState();
+                    Inventory shulkerInventory = shulker.getInventory();
+                    boolean modified = false;
+
+                    for (int j = 0; j < shulkerInventory.getSize(); j++) {
+                        if (remainingToExtract <= 0) break;
+
+                        ItemStack shulkerSlotItem = shulkerInventory.getItem(j);
+                        if (shulkerSlotItem != null && shulkerSlotItem.isSimilar(targetItem)) {
+                            int shulkerStackAmount = shulkerSlotItem.getAmount();
+
+                            if (shulkerStackAmount <= remainingToExtract) {
+                                remainingToExtract -= shulkerStackAmount;
+                                shulkerInventory.setItem(j, null);
+                            } else {
+                                shulkerSlotItem.setAmount(shulkerStackAmount - remainingToExtract);
+                                remainingToExtract = 0;
+                            }
+                            modified = true;
+                        }
+                    }
+
+                    if (modified) {
+                        meta.setBlockState(shulker);
+                        currentItem.setItemMeta(meta);
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override

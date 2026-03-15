@@ -156,4 +156,8 @@ public class GUIFactory {
     public static IGUI materialSelectorPanel(IEntityGUI owner, IGUI parent,ICurrency currency){
         return new MaterialSelectionPanel(owner, parent, currency, useCaseFactory.editCurrency());
     }
+
+    public static IGUI currencyListToPayItemsPanel(IEntityGUI sender,Player target,IGUI parent){
+        return new CurrencyItemListPay(sender, target, useCaseFactory.searchCurrency(), useCaseFactory.pay(), parent, textInput);
+    }
 }
