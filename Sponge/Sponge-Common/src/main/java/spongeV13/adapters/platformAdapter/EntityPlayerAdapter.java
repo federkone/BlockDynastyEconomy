@@ -200,7 +200,7 @@ public class EntityPlayerAdapter implements IPlayer {
     }
 
     @Override
-    public int removeAllItems(ItemStackCurrency itemStackCurrency) {
+    public int takeAllItems(ItemStackCurrency itemStackCurrency) {
         ItemStack item = (ItemStack) itemStackCurrency.getRoot();
         Inventory inv = player.inventory().primary();
         int totalRemoved = 0;
@@ -212,5 +212,17 @@ public class EntityPlayerAdapter implements IPlayer {
             }
         }
         return totalRemoved;
+    }
+
+    @Override
+    public boolean takeItems(ItemStackCurrency itemStackCurrency, int i) {
+        //inventory and shulkers
+        return false;
+    }
+
+    @Override
+    public int countItems(ItemStackCurrency itemStackCurrency) {
+        //inventory and shulkers
+        return 0;
     }
 }

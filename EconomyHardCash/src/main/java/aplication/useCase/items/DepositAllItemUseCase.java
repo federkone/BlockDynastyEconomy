@@ -58,7 +58,7 @@ public class DepositAllItemUseCase implements IDepositItemUseCase{
             return;
         }
 
-        int cantItems = player.removeAllItems(item);
+        int cantItems = player.takeAllItems(item);
         BigDecimal cant = new BigDecimal(cantItems);
         ICurrency currency = resultC.getValue();
 

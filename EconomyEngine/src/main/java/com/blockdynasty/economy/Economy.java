@@ -85,7 +85,7 @@ public class Economy {
 
         ServiceProvider.register(DynastyEconomy.class,api);
         ServiceProvider.register(DynastyEconomy.class, apiWithVaultLogger);
-        HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().searchCurrency());
+        HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().pay(),core.getUseCaseFactory().searchCurrency());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
