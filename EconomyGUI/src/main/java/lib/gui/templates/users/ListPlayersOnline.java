@@ -47,6 +47,7 @@ public class ListPlayersOnline extends AccountsList {
         List<Player> players = platformAdapter.getOnlinePlayers().stream()
                 .map(p -> new Player(p.getUniqueId(), p.getName()))
                 .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
+                .filter(player -> !player.getUuid().equals(sender.getUniqueId()))
                 .collect(Collectors.toList());
 
         showPlayers(players);
@@ -67,7 +68,8 @@ public class ListPlayersOnline extends AccountsList {
 
     @Override
     public void openNextSection(Player target) {
-        GUIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
+        //UIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
+        new WalletSelector(sender,target,this).open();
     }
     @Override
     public void addCustomButtons(){

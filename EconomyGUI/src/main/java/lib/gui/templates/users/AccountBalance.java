@@ -21,6 +21,9 @@ import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
+import aplication.useCase.HardCashUseCaseFactory;
+import aplication.useCase.items.GetItemsBalanceUseCase;
+import aplication.useCase.items.IGetItemsBalanceUseCase;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
@@ -41,12 +44,14 @@ public class AccountBalance extends PaginatedPanel<Money> {
     private final GetBalanceUseCase getBalanceUseCase;
     private final Player targetPlayer;
     private final IEntityGUI sender;
+    private final IGetItemsBalanceUseCase getItemsBalanceUseCase;
 
     public AccountBalance(IEntityGUI player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
         super(Message.process("AccountBalance.title"), 3, player, parent, 7); // 7 currencies per page
         this.getBalanceUseCase = getBalanceUseCase;
         this.sender = player;
         this.targetPlayer = new Player(player.getUniqueId(), player.getName());
+        this.getItemsBalanceUseCase = HardCashUseCaseFactory.getItemsBalanceUseCase();
 
         loadBalances();
     }
@@ -56,6 +61,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetPlayer = target;
         this.sender = sender;
+        this.getItemsBalanceUseCase = HardCashUseCaseFactory.getItemsBalanceUseCase();
 
         loadBalances();
     }
@@ -75,7 +81,8 @@ public class AccountBalance extends PaginatedPanel<Money> {
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
-                        "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"))
+                        "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"),
+                        ChatColor.stringValueOf(Colors.WHITE)+"Inventory: "+ ChatColor.stringValueOf(currency.getColor())+getItemsBalanceUseCase.execute(sender.asEntityHardCash(), currency.getSingular()))
                 .setTexture(currency.getTexture())
                 .build());
     }

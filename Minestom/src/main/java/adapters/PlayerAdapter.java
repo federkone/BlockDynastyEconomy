@@ -150,7 +150,17 @@ public class PlayerAdapter implements IPlayer {
     }
 
     @Override
-    public int removeAllItems(ItemStackCurrency itemCurrency) {
+    public int takeAllItems(ItemStackCurrency itemCurrency) {
+        return 0;
+    }
+
+    @Override
+    public boolean takeItems(ItemStackCurrency itemCurrency, int amount) {
+        return false;
+    }
+
+    @Override
+    public int countItems(ItemStackCurrency itemCurrency) {
         return 0;
     }
 }
