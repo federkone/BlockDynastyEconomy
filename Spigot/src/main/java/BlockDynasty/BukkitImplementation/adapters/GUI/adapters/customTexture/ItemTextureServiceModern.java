@@ -16,7 +16,7 @@
 
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture;
 
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import abstractions.platform.materials.Materials;
 import org.bukkit.Bukkit;
@@ -43,7 +43,7 @@ public class ItemTextureServiceModern implements ItemTextureService {
 
             ItemStack clone = item.clone();
 
-            clone.setType(MaterialProvider.toBukkitMaterial(Materials.PLAYER_HEAD));
+            clone.setType(ItemStackProvider.toBukkitMaterial(Materials.PLAYER_HEAD));
             SkullMeta meta = (SkullMeta) clone.getItemMeta();
 
             org.bukkit.profile.PlayerProfile profile = getCustomHeadProfile(texture);

@@ -36,6 +36,8 @@ public class CurrencyMapper {
         entityDb.setPlural(domain.getPlural());
         entityDb.setMaterial(domain.getMaterial());
         entityDb.setColor(domain.getColor());
+        entityDb.setBase64Item(domain.getBase64Item());
+        entityDb.setPhysicalItemSupported(domain.isPhysicalItemSupported());
         entityDb.setDecimalSupported(domain.isDecimalSupported());
         entityDb.setTransferable(domain.isTransferable());
         entityDb.setDefaultCurrency(domain.isDefaultCurrency());
@@ -57,6 +59,8 @@ public class CurrencyMapper {
                 .setSymbol(entity.getSymbol())
                 .setTexture(entity.getTexture())
                 .setMaterial(entity.getMaterial())
+                .setBase64Item(entity.getBase64Item())
+                .setPhysicalItemSupported(entity.getPhysicalItemSupported())
                 .setColor(entity.getColor())
                 .setDecimalSupported(entity.isDecimalSupported())
                 .setTransferable(entity.isTransferable())
@@ -74,6 +78,8 @@ public class CurrencyMapper {
         currencyDb.setMaterial(currency.getMaterial());
         currencyDb.setColor(currency.getColor());
         currencyDb.setDecimalSupported(currency.isDecimalSupported());
+        currencyDb.setPhysicalItemSupported(currency.isPhysicalItemSupported());
+        currencyDb.setBase64Item(currency.getBase64Item());
         currencyDb.setTransferable(currency.isTransferable());
         currencyDb.setDefaultCurrency(currency.isDefaultCurrency());
         currencyDb.setDefaultBalance(currency.getDefaultBalance());
@@ -92,6 +98,8 @@ public class CurrencyMapper {
                 .setPlural(entity.getPlural())
                 .setSymbol(entity.getSymbol())
                 .setTexture(entity.getTexture())
+                .setPhysicalItemSupported(entity.getPhysicalItemSupported())
+                .setBase64Item(entity.getBase64Item())
                 .setMaterial(entity.getMaterial())
                 .setColor(entity.getColor())
                 .setDecimalSupported(entity.isDecimalSupported())

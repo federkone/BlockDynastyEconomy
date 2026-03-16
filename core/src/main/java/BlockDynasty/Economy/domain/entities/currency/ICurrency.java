@@ -29,6 +29,10 @@ public interface ICurrency {
      String getSingular();
      String getPlural();
      String getMaterial();
+     String getBase64Item();
+     void setBase64Item(String base64Item);
+     void setPhysicalItemSupported(boolean phisicalItemSupported);
+     boolean isPhysicalItemSupported();
      BigDecimal getDefaultBalance() ;
      String format(BigDecimal amount);
      boolean isValidAmount(BigDecimal amount);

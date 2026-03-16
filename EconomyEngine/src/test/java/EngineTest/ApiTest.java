@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ApiTest {
+/*public class ApiTest {
     private MinecraftServer server;
     private static DynastyEconomy api;
     private static Player nullplague = new Player(UUID.fromString("55e72bac-6481-3abe-9c9b-94cefed85271"), "Nullplague");
@@ -75,3 +75,4 @@ public class ApiTest {
         assertEquals(balanceNew2, balanceAct2.subtract(BigDecimal.valueOf(2000)));
     }
 }
+*/

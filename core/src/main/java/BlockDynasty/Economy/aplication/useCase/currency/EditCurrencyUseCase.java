@@ -118,6 +118,29 @@ public class EditCurrencyUseCase {
         saveCurrency(currency);
     }
 
+    public void editBase64Item(String nameCurrency,String base64Item){
+        ICurrency currency = currencyService.getCurrency(nameCurrency);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currencyService.getCurrencies().stream()
+                .filter(c -> c.getBase64Item() != null && c.getBase64Item().equalsIgnoreCase(base64Item))
+                .findFirst().ifPresent(c -> {
+                    throw new IllegalArgumentException("Base64 item already in use by currency: " + c.getSingular());
+                });
+        currency.setBase64Item(base64Item);
+        saveCurrency(currency);
+    }
+
+    public void editPhysicalItemSupported(String nameCurrency, boolean physicalItemSupported){
+        ICurrency currency = currencyService.getCurrency(nameCurrency);
+        if (currency == null){
+            throw new CurrencyNotFoundException("Currency not found");
+        }
+        currency.setPhysicalItemSupported(physicalItemSupported);
+        saveCurrency(currency);
+    }
+
     public void editTexture(String nameCurrency,String texture){
         ICurrency currency = currencyService.getCurrency(nameCurrency);
         if (currency == null){

@@ -20,6 +20,7 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.NBTData.NBTService;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.NBTData.NBTServiceFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture.*;
+import BlockDynasty.BukkitImplementation.utils.ItemSerialization;
 import BlockDynasty.BukkitImplementation.utils.Version;
 
 import abstractions.platform.materials.Materials;
@@ -39,7 +40,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings( "deprecation")
-public class MaterialProvider {
+public class ItemStackProvider {
     private static ItemTextureService itemTextureService = new ItemTextureServiceNull();
     private static NBTService nbtService = NBTServiceFactory.get();
     private static MaterialService materialService;
@@ -112,7 +113,12 @@ public class MaterialProvider {
     }
 
     public static ItemStack createItemStack(RecipeItem recipeItem) {
-        ItemStack itemStack = materialService.createItemStack(recipeItem.getMaterial());
+        ItemStack itemStack;
+        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
+            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+        }else{
+            itemStack = materialService.createItemStack(recipeItem.getMaterial());
+        }
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
@@ -120,7 +126,12 @@ public class MaterialProvider {
     }
 
     public static ItemStack createItemStackCurrency(RecipeItemCurrency recipeItem) {
-        ItemStack itemStack = materialService.createItemStack(recipeItem.getMaterial());
+        ItemStack itemStack;
+        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
+            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+        }else {
+            itemStack = materialService.createItemStack(recipeItem.getMaterial());
+        }
         applyNBTData(itemStack, recipeItem.getNbtData());
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());

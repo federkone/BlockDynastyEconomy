@@ -4,11 +4,13 @@ import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import abstractions.platform.materials.Materials;
 import abstractions.platform.recipes.RecipeItem;
+import domain.entity.currency.ItemStackCurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.factory.Item;
+import lib.gui.components.generics.Button;
 import lib.gui.components.generics.PaginatedPanel;
 
 import java.util.List;
@@ -38,9 +40,29 @@ public class MaterialSelectionPanel extends PaginatedPanel<Materials> {
     }
 
     @Override
+    public void addCustomButtons() {
+       setButton(44, Button.builder()
+               .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.NAME_TAG).setName("Use Item in Hand").build()))
+               .setLeftClickAction(
+                       e ->{
+                           try {
+                               ItemStackCurrency item = e.asEntityHardCash().takeHandItem();
+                               if (item == null) {return;}
+                               editCurrencyUseCase.editBase64Item(currency.getSingular(), item.asBase64());
+                               entityGUI.sendMessage("Material updated successfully.");
+                               GUIFactory.editCurrencyPanel(entityGUI,currency, parent.getParent()).open();
+                           }catch (Exception ex){
+                               entityGUI.sendMessage("Error: "+ ex.getMessage());
+                               this.parent.open();
+                           }
+                       })
+               .build());
+    }
+
+    @Override
     public void functionLeftItemClick(Materials material){
         try {
-            editCurrencyUseCase.editMaterial(currency.getSingular(), material.name());
+            editCurrencyUseCase.editMaterial(currency.getSingular(),material.name());
             entityGUI.sendMessage("Material updated successfully.");
             GUIFactory.editCurrencyPanel(entityGUI,currency, parent.getParent()).open();
         }catch (Exception e){

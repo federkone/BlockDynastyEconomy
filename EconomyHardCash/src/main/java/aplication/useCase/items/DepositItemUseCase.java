@@ -47,10 +47,13 @@ public class DepositItemUseCase implements IDepositItemUseCase{
             return;
         }
 
-        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByBase64(item.asBase64());
         if (!resultC.isSuccess()) {
-            player.sendMessage("Not have a valid currency item in hand.");
-            return;
+            //resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+            //if (!resultC.isSuccess()) {
+                player.sendMessage("Not have a valid currency item in hand.");
+                return;
+            //}
         }
         NbtData nbtData = item.getNbtData();
         if (nbtData.getItemType() != null || nbtData.getUuidCurrency() != null) {

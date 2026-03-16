@@ -17,7 +17,7 @@
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
@@ -100,12 +100,12 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void playNotificationSound() {
-        player.playSound(player.getLocation(), MaterialProvider.getPickupSound(), 1.0f, 1.0f);
+        player.playSound(player.getLocation(), ItemStackProvider.getPickupSound(), 1.0f, 1.0f);
     }
 
     @Override
     public void playSuccessSound() {
-        player.playSound(player.getLocation(),  MaterialProvider.getClickSound(), 0.3f, 1.0f);
+        player.playSound(player.getLocation(),  ItemStackProvider.getClickSound(), 0.3f, 1.0f);
     }
 
     @Override

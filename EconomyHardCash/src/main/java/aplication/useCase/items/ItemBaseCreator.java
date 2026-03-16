@@ -35,6 +35,7 @@ public class ItemBaseCreator implements ItemCreator {
     public ItemStackCurrency create(ICurrency currency, BigDecimal amount) {
         return platform.createItemStackCurrency(RecipeItemCurrency.builder()
                 .setMaterial(Materials.match(currency.getMaterial()))
+                .setBase64ITEM(currency.getBase64Item())
                 .setNbtData(null)
                 .setName(null)
                 .setLore(null)

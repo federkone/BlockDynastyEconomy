@@ -53,6 +53,7 @@ public class EditCurrencyPanel extends AbstractPanel {
         String color = ChatColor.stringValueOf(currency.getColor());
         setButton(4, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
+                        .setBase64Item(currency.getBase64Item())
                         .setMaterial(Materials.match(currency.getMaterial()))
                         .setName(Message.process(Map.of("currency", color + currency.getSingular() + " / " + currency.getPlural()), "EditCurrencyPanel.button1.nameItem"))
                         .setTexture(currency.getTexture())

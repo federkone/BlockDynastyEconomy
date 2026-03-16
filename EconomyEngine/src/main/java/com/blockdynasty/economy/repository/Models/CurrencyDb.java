@@ -38,6 +38,9 @@ public class CurrencyDb {
     @Column(name= "material")
     private String material;
 
+    @Column(name = "base64_item",columnDefinition = "TEXT")
+    private String base64Item;
+
     @Column(name = "symbol")
     private String symbol;
 
@@ -61,6 +64,9 @@ public class CurrencyDb {
 
     @Column(name = "exchange_rate")
     private double exchangeRate;
+
+    @Column(name = "physical_item_supported", nullable = true)
+    private boolean physicalItemSupported = false;
 
     //@OnDelete(action = OnDeleteAction.CASCADE)
     //@OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -98,6 +104,10 @@ public class CurrencyDb {
     public String getMaterial() {
         return material;
     }
+    public  String getBase64Item() {return this.base64Item;}
+    public void setBase64Item(String base64Item) {this.base64Item = base64Item;}
+    public boolean getPhysicalItemSupported() {return physicalItemSupported;}
+    public void setPhysicalItemSupported(boolean physicalItemSupported) {this.physicalItemSupported = physicalItemSupported;}
     public void setMaterial(String material) {this.material = material;}
     public void setPlural(String plural) {
         this.plural = plural;

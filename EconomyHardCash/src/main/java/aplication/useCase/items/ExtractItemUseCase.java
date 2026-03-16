@@ -53,13 +53,14 @@ public class ExtractItemUseCase implements IExtractItemUseCase{
         }
 
         ICurrency currency = currencyResult.getValue();
-        if (currency.getMaterial() == null || currency.getMaterial().isEmpty()) {
+        if (currency.getBase64Item() == null || currency.getMaterial().isEmpty()) {
             player.sendMessage("Currency does not have a valid material.");
             return;
         }
 
         int emptySlots = player.emptySlots();
-        int maxWithdrawable = emptySlots * 64;
+        var item = itemCreator.create(currency, BigDecimal.ONE);
+        int maxWithdrawable = emptySlots * item.maxStackSize();
 
         if (maxWithdrawable <= 0) {
             player.sendMessage("Error. Not enough space in inventory.");
@@ -82,7 +83,7 @@ public class ExtractItemUseCase implements IExtractItemUseCase{
             return;
         }
 
-        var item = itemCreator.create(currency, amountToWithdraw);
+
         item.setCantity(amountToWithdraw.intValue());
         player.giveItem(item);
 

@@ -78,6 +78,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
     protected IItemStack createItemFor(Money money) {
         ICurrency currency = money.getCurrency();
         return Item.of(RecipeItem.builder()
+                .setBase64Item(currency.getBase64Item())
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
