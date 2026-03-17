@@ -23,7 +23,7 @@ public class RecipeItemCurrency extends RecipeItem {
     private NbtData nbtData;
 
     protected RecipeItemCurrency(RecipeItem recipeItem, NbtData nbtData) {
-        super(recipeItem.getMaterial(), recipeItem.getName(), recipeItem.getTexture(), recipeItem.getLore());
+        super(recipeItem.getMaterial(), recipeItem.getName(), recipeItem.getBase64ITEM(),recipeItem.getTexture(), recipeItem.getLore());
         this.nbtData = nbtData;
     }
 
@@ -64,6 +64,11 @@ public class RecipeItemCurrency extends RecipeItem {
 
         public Builder setNbtData(NbtData nbtData) {
             this.nbtData = nbtData;
+            return this;
+        }
+
+        public Builder setBase64ITEM(String base64ITEM) {
+            super.setBase64Item(base64ITEM);
             return this;
         }
 

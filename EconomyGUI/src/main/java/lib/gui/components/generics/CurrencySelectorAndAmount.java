@@ -65,6 +65,7 @@ public abstract class CurrencySelectorAndAmount extends PaginatedPanel<ICurrency
     protected IItemStack createItemFor(ICurrency currency) {
         String color = ChatColor.stringValueOf(currency.getColor());
         return Item.of(RecipeItem.builder()
+                .setBase64Item(currency.getBase64Item())
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setName(Message.process(Map.of("currency",color+currency.getSingular()),"CurrencySelector.button1.nameItem"))
                 .setTexture(currency.getTexture())

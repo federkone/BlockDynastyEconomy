@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.payment;
 
 import domain.entity.player.IEntityHardCash;
 
-public class DepositItemDisableUseCase implements IDepositItemUseCase{
+public interface IPayWithItemsUseCase {
 
-    @Override
-    public void execute(IEntityHardCash player) {
-        player.sendMessage("Economy Item Based system is disabled." );
-    }
+    void execute(IEntityHardCash player, String targetPlayerName, String currencyName, int cantItems);
 }

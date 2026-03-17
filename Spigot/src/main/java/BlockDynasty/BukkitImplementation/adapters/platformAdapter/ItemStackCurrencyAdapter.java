@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
+import BlockDynasty.BukkitImplementation.utils.ItemSerialization;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +18,7 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
         if (itemStack == null) {
             return new NbtData();
         }
-        return MaterialProvider.getNBTData(itemStack);
+        return ItemStackProvider.getNBTData(itemStack);
     }
 
     @Override
@@ -33,6 +34,21 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     @Override
     public  String getMaterial() {
         return itemStack.getType().toString();
+    }
+
+    @Override
+    public String asBase64() {
+        return ItemSerialization.toBase64(itemStack);
+    }
+
+    @Override
+    public int maxStackSize() {
+        return itemStack.getType().getMaxStackSize();
+    }
+
+    @Override
+    public boolean isNull() {
+        return itemStack == null || itemStack.getType().isAir();
     }
 
     @Override

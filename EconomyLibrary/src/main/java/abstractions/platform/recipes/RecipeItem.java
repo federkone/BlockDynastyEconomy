@@ -23,20 +23,23 @@ import abstractions.platform.materials.Materials;
  **/
 public class RecipeItem {
     private final Materials material;
+    private final String base64Item;
     private final String name;
     private final String texture;
     private final String[] lore;
 
-    protected RecipeItem(Materials material, String name, String texture, String... lore) {
+    protected RecipeItem(Materials material, String name,String base64Item, String texture, String... lore) {
         this.material = material;
         this.name = name;
         this.texture = texture;
         this.lore = lore;
+        this.base64Item = base64Item;
     }
 
     public Materials getMaterial() {
         return material;
     }
+    public String getBase64ITEM() {return base64Item;}
     public String getName() {
         return name;
     }
@@ -56,10 +59,16 @@ public class RecipeItem {
         private Materials material = Materials.STONE;
         private String name = "";
         private String texture = "";
+        private String base64Item = "";
         private String[] lore = new String[0];
 
         public Builder setMaterial(Materials material) {
             this.material = material;
+            return this;
+        }
+
+        public Builder setBase64Item(String base64Item) {
+            this.base64Item = base64Item;
             return this;
         }
 
@@ -79,7 +88,7 @@ public class RecipeItem {
         }
 
         public RecipeItem build() {
-            return new RecipeItem(material, name, texture, lore);
+            return new RecipeItem(material, name, base64Item, texture, lore);
         }
     }
 

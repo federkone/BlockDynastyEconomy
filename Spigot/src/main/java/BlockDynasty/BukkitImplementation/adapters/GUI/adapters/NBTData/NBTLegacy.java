@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 
 //with NMS implementation for legacy versions
+//unused
 public class NBTLegacy implements NBTService{
 
     @Override

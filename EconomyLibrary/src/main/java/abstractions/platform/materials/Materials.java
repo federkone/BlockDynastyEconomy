@@ -172,12 +172,12 @@ public enum Materials {
     DRAGON_EGG;
 
     public static Materials match(String value) {
-       if (value==null) return BARRIER;
+       if (value==null) return GOLD_INGOT;
        for (Materials m : Materials.values()){
               if(m.name().equalsIgnoreCase(value)){
                 return m;
               }
        }
-       return BARRIER;
+       return GOLD_INGOT;
     }
 }

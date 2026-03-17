@@ -30,8 +30,10 @@ public class Currency implements ICurrency{
     private String plural;
     private String symbol ;
     private String material;
+    private transient String base64Item;
     private String texture;
     private String color ;
+    private boolean physicalItemSupported;
     private boolean decimalSupported ;
     private boolean transferable;
     private boolean defaultCurrency ;
@@ -49,6 +51,10 @@ public class Currency implements ICurrency{
         this.singular = singular;
     }
 
+    public void setBase64Item(String base64Item) {
+        this.base64Item = base64Item;
+    }
+
     public void setPlural(String plural) {
         this.plural = plural;
     }
@@ -63,6 +69,10 @@ public class Currency implements ICurrency{
 
     public String getPlural() {
         return this.plural;
+    }
+
+    public boolean isPhysicalItemSupported() {
+        return this.physicalItemSupported;
     }
 
     public BigDecimal getDefaultBalance() {
@@ -112,6 +122,10 @@ public class Currency implements ICurrency{
         this.defaultCurrency = defaultCurrency;
     }
 
+    public void setPhysicalItemSupported(boolean physicalItemSupported) {
+        this.physicalItemSupported = physicalItemSupported;
+    }
+
     public boolean isTransferable() {
         return this.transferable;
     }
@@ -141,6 +155,8 @@ public class Currency implements ICurrency{
     }
 
     public String getMaterial() {return this.material;}
+
+    public String getBase64Item() {return this.base64Item;}
 
     public String getTexture() {
         return this.texture;
@@ -229,8 +245,10 @@ public class Currency implements ICurrency{
         private String plural = "";
         private String symbol= "";
         private String material= "";
+        private String base64Item;
         private String texture = "";
         private String color= "WHITE";
+        private boolean physicalItemSupported= false;
         private boolean decimalSupported= true;
         private boolean transferable= true;
         private boolean defaultCurrency= false;
@@ -255,6 +273,15 @@ public class Currency implements ICurrency{
 
         public Builder setMaterial(String material) {
             this.material = material;
+            return this;
+        }
+
+        public Builder setBase64Item(String base64Item) {
+            this.base64Item = base64Item;
+            return this;
+        }
+        public Builder setPhysicalItemSupported(boolean physicalItemSupported) {
+            this.physicalItemSupported = physicalItemSupported;
             return this;
         }
 
@@ -307,6 +334,8 @@ public class Currency implements ICurrency{
             this.symbol = currency.getSymbol();
             this.texture = currency.getTexture();
             this.material = currency.getMaterial();
+            this.physicalItemSupported = currency.isPhysicalItemSupported();
+            this.base64Item = currency.getBase64Item();
             this.color = currency.getColor();
             this.decimalSupported = currency.isDecimalSupported();
             this.transferable = currency.isTransferable();
@@ -323,6 +352,8 @@ public class Currency implements ICurrency{
             currency.plural = this.plural;
             currency.symbol = this.symbol;
             currency.material = this.material;
+            currency.base64Item = this.base64Item;
+            currency.physicalItemSupported = this.physicalItemSupported;
             currency.texture = this.texture;
             currency.color = this.color;
             currency.decimalSupported = this.decimalSupported;

@@ -29,6 +29,7 @@ public interface ICurrencyService {
     ICurrency getCurrency(String name);
     ICurrency getCurrency(UUID uuid);
     ICurrency getCurrencyByMaterial(String material);
+    ICurrency getCurrencyByBase64Item(String base64Item);
     ICurrency getDefaultCurrency();
     boolean currencyExist(String name);
     void updateDefaultCurrency();

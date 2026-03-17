@@ -30,6 +30,7 @@ public class ItemWithTexture implements  ItemCreator {
                 .setName(color + currency.getSingular())
                 .setTexture(currency.getTexture())
                 .setMaterial(Materials.valueOf(currency.getMaterial()))
+                .setBase64ITEM(currency.getBase64Item())
                 .build();
 
         return platform.createItemStackCurrency(recipe);

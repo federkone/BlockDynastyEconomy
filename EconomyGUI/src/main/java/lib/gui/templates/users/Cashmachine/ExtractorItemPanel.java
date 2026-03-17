@@ -18,7 +18,7 @@ package lib.gui.templates.users.Cashmachine;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.items.IExtractItemUseCase;
+import aplication.useCase.items.withdraw.IExtractItemUseCase;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.ITextInput;

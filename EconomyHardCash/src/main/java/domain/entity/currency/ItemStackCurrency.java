@@ -21,5 +21,8 @@ public interface ItemStackCurrency {
     int getCantity();
     void setCantity(int amount);
     String getMaterial();
+    String asBase64();
+    int maxStackSize();
+    boolean isNull();
     Object getRoot();
 }

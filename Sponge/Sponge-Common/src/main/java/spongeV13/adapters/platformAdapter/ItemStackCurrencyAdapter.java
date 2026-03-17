@@ -69,6 +69,21 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     }
 
     @Override
+    public String asBase64() {
+        return "Undefined";
+    }
+
+    @Override
+    public int maxStackSize() {
+        return item.type().maxStackQuantity();
+    }
+
+    @Override
+    public boolean isNull() {
+        return item == null || item.isEmpty();
+    }
+
+    @Override
     public Object getRoot() {
         return item;
     }
