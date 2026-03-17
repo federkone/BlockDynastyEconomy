@@ -44,7 +44,7 @@ public class ItemStackProvider {
     private static ItemTextureService itemTextureService = new ItemTextureServiceNull();
     private static NBTService nbtService = NBTServiceFactory.get();
     private static MaterialService materialService;
-    private static boolean isOldSoundSys = Version.match("1.8", "1.9", "1.10","1.11");
+
 
     static {
         if(Version.hasSupportCustomProfile()){
@@ -113,15 +113,7 @@ public class ItemStackProvider {
     }
 
     public static ItemStack createItemStack(RecipeItem recipeItem) {
-        ItemStack itemStack;
-        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
-            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
-            if (itemStack.getType() == Material.AIR) {
-                itemStack = materialService.createItemStack(recipeItem.getMaterial());
-            }
-        }else{
-            itemStack = materialService.createItemStack(recipeItem.getMaterial());
-        }
+        ItemStack itemStack = createItem(recipeItem);
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
@@ -129,20 +121,24 @@ public class ItemStackProvider {
     }
 
     public static ItemStack createItemStackCurrency(RecipeItemCurrency recipeItem) {
-        ItemStack itemStack;
-        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
-            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
-            if (itemStack.getType() == Material.AIR) {
-                itemStack = materialService.createItemStack(recipeItem.getMaterial());
-            }
-        }else{
-            itemStack = materialService.createItemStack(recipeItem.getMaterial());
-        }
+        ItemStack itemStack = createItem(recipeItem);
         applyNBTData(itemStack, recipeItem.getNbtData());
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
+    }
+
+    private static ItemStack createItem(RecipeItem recipeItem) {
+        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
+            ItemStack itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+            if (itemStack.getType() == Material.AIR) {
+                return materialService.createItemStack(recipeItem.getMaterial());
+            }
+            return itemStack;
+        }else{
+            return materialService.createItemStack(recipeItem.getMaterial());
+        }
     }
 
     public static void applyNBTData(ItemStack itemStack,NbtData nbtData){
@@ -160,21 +156,5 @@ public class ItemStackProvider {
     }
     public static boolean isPlayerHead(Material material) {
        return materialService.isPlayerHead(material);
-    }
-
-    public static Sound getClickSound() {
-        if (isOldSoundSys) {
-            return Sound.valueOf("CLICK");
-        } else {
-            return Sound.UI_BUTTON_CLICK;
-        }
-    }
-
-    public static Sound getPickupSound() {
-        if (isOldSoundSys) {
-            return Sound.valueOf("ORB_PICKUP");
-        } else {
-            return Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        }
     }
 }
