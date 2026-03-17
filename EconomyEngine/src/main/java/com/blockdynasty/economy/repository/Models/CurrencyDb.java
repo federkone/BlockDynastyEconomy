@@ -65,8 +65,9 @@ public class CurrencyDb {
     @Column(name = "exchange_rate")
     private double exchangeRate;
 
-    @Column(name = "physical_item_supported", nullable = true)
-    private boolean physicalItemSupported = false;
+    @Column(name = "physical_item_supported")
+    //@org.hibernate.annotations.ColumnDefault("false")
+    private Boolean physicalItemSupported=false;
 
     //@OnDelete(action = OnDeleteAction.CASCADE)
     //@OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -106,7 +107,9 @@ public class CurrencyDb {
     }
     public  String getBase64Item() {return this.base64Item;}
     public void setBase64Item(String base64Item) {this.base64Item = base64Item;}
-    public boolean getPhysicalItemSupported() {return physicalItemSupported;}
+    public boolean getPhysicalItemSupported() {
+        return physicalItemSupported != null && physicalItemSupported;
+    }
     public void setPhysicalItemSupported(boolean physicalItemSupported) {this.physicalItemSupported = physicalItemSupported;}
     public void setMaterial(String material) {this.material = material;}
     public void setPlural(String plural) {
