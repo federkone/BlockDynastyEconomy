@@ -22,6 +22,8 @@ import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
 import aplication.useCase.items.ItemBaseCreator;
+import domain.entity.currency.ItemStackCurrency;
+import domain.entity.currency.RecipeItemCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import domain.service.ItemCreator;
@@ -54,13 +56,20 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
         }
 
         ICurrency currency = currencyResult.getValue();
-        if (currency.getBase64Item() == null || currency.getMaterial().isEmpty()) {
+        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
             player.sendMessage("Currency does not have a valid material.");
             return;
         }
 
         if (!currency.isPhysicalItemSupported()){
             player.sendMessage("This currency does not support physical item withdrawal.");
+            return;
+        }
+
+        //si el base 64 del item no es igual al que se genera con el item creator, no se puede retirar
+        ItemStackCurrency sentinel = itemCreator.create(currency, amount);
+        if(!currency.getBase64Item().equals(sentinel.asBase64())){
+            player.sendMessage("Currency does not have a valid item representation.");
             return;
         }
 

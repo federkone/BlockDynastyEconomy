@@ -57,7 +57,7 @@ public class DepositItemUseCase implements IDepositItemUseCase {
         }
 
         NbtData nbtData = item.getNbtData();
-        if (nbtData.getItemType() != null || nbtData.getUuidCurrency() != null) {
+        if (nbtData.getItemType() != null && !nbtData.getItemType().isEmpty()|| nbtData.getUuidCurrency() != null && !nbtData.getUuidCurrency().isEmpty()) {
             player.sendMessage("Not have a valid currency item in hand.");
             return;
         }

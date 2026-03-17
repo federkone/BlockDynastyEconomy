@@ -116,6 +116,9 @@ public class ItemStackProvider {
         ItemStack itemStack;
         if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
             itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+            if (itemStack.getType() == Material.AIR) {
+                itemStack = materialService.createItemStack(recipeItem.getMaterial());
+            }
         }else{
             itemStack = materialService.createItemStack(recipeItem.getMaterial());
         }
@@ -129,7 +132,10 @@ public class ItemStackProvider {
         ItemStack itemStack;
         if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
             itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
-        }else {
+            if (itemStack.getType() == Material.AIR) {
+                itemStack = materialService.createItemStack(recipeItem.getMaterial());
+            }
+        }else{
             itemStack = materialService.createItemStack(recipeItem.getMaterial());
         }
         applyNBTData(itemStack, recipeItem.getNbtData());

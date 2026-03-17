@@ -33,15 +33,15 @@ public class HardCashService {
     public static void init(IConfiguration configuration, HardCashCreator hardCashCreator, IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase, IPayUseCase payUseCase,SearchCurrencyUseCase searchCurrencyUseCase){
         enabled = configuration.getBoolean("HardCash.enable");
         enableCustomHead = configuration.getBoolean("HardCash.customHeadTexture");
+        itemBasedEconomyEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");
         if(!hardCashCreator.hasSupportHardCash()){
-            Console.log("Hard Cash/item based economy not supported by the platform.");
+            Console.log("Hard Cash/item based economy not supported by the platform, available in 1.8.8+");
             enabled = false;
+            itemBasedEconomyEnabled = false;
         }
         if (enabled){
             Console.log("Hard Cash/item based economy System Enabled");
         }else { Console.log("Hard Cash/item based economy System Disabled");}
-
-        itemBasedEconomyEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");
         HardCashUseCaseFactory.init(hardCashCreator,depositUseCase,withdrawUseCase,payUseCase,searchCurrencyUseCase);
     }
 

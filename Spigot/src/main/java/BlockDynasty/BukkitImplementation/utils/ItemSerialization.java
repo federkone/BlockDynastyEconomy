@@ -1,6 +1,7 @@
 package BlockDynasty.BukkitImplementation.utils;
 
 import com.BlockDynasty.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -35,7 +36,7 @@ public class ItemSerialization {
 
     // Convierte el String Base64 de vuelta a un ItemStack funcional
     public static ItemStack fromBase64(String data) {
-        ItemStack cacheItem=  cache.computeIfAbsent(data, key ->{
+        return cache.computeIfAbsent(data, key ->{
             try {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
                 BukkitObjectInputStream dataStream = new BukkitObjectInputStream(inputStream);
@@ -43,12 +44,8 @@ public class ItemSerialization {
                 dataStream.close();
                 return item;
             } catch (Exception e) {
-                return null;
+                return new ItemStack(Material.AIR);
             }
-        });
-        if(cacheItem!=null){
-            return cacheItem.clone();
-        }
-        return null;
+        }).clone();
     }
 }

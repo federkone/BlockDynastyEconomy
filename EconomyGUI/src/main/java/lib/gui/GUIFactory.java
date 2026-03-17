@@ -19,6 +19,7 @@ import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 
+import aplication.HardCashService;
 import lib.abstractions.IConfigurationGUI;
 import lib.gui.components.PlatformGUI;
 import lib.gui.components.*;
@@ -133,7 +134,7 @@ public class GUIFactory {
         return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
     }
     public static IGUI walletSelector(IEntityGUI sender,Player target,IGUI parent) {
-        if(config.getBoolean("ItemsBasedEconomy.enable")){
+        if(HardCashService.isItemBasedEconomyEnabled()){
            return new WalletSelector(sender,target,parent);
         }else{
            return currencyListToPayPanel(sender,target,parent);

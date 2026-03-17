@@ -50,7 +50,7 @@ public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
             return -1;
         }
 
-        if (currency.getMaterial() == null || currency.getMaterial().isEmpty()) {
+        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
             //player.sendMessage("Currency does not have a valid material.");
             return -1;
         }
