@@ -1,4 +1,4 @@
-package aplication.useCase.items;
+package aplication.useCase.items.payment;
 
 import domain.entity.player.IEntityHardCash;
 

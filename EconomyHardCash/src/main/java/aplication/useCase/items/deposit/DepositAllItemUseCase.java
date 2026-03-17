@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.deposit;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
@@ -28,7 +28,7 @@ import domain.entity.player.IEntityHardCash;
 
 import java.math.BigDecimal;
 
-public class DepositAllItemUseCase implements IDepositItemUseCase{
+public class DepositAllItemUseCase implements IDepositItemUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
@@ -47,20 +47,29 @@ public class DepositAllItemUseCase implements IDepositItemUseCase{
             return;
         }
 
-        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByBase64(item.asBase64());
         if (!resultC.isSuccess()) {
-            player.sendMessage("Not have a valid currency item in hand.");
-            return;
+           // resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+            //if (!resultC.isSuccess()) {
+                player.sendMessage("Not have a valid currency item in hand.");
+                return;
+            //}
         }
+
         NbtData nbtData = item.getNbtData();
         if (nbtData.getItemType() != null || nbtData.getUuidCurrency() != null) {
             player.sendMessage("Not have a valid currency item in hand.");
             return;
         }
 
+        ICurrency currency = resultC.getValue();
+        if (!currency.isPhysicalItemSupported()){
+            player.sendMessage("This currency does not support physical item deposit.");
+            return;
+        }
+
         int cantItems = player.takeAllItems(item);
         BigDecimal cant = new BigDecimal(cantItems);
-        ICurrency currency = resultC.getValue();
 
         Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
         if (!depositResult.isSuccess()) {

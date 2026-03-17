@@ -18,7 +18,7 @@ package lib.gui.templates.users.Cashmachine;
 import abstractions.platform.materials.Materials;
 import abstractions.platform.recipes.RecipeItem;
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.items.IDepositItemUseCase;
+import aplication.useCase.items.deposit.IDepositItemUseCase;
 import aplication.useCase.nbtItems.IDepositItemNBTUseCase;
 import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;

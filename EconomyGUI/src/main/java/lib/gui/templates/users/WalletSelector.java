@@ -9,6 +9,8 @@ import lib.gui.components.IGUI;
 import lib.gui.components.factory.Item;
 import lib.gui.components.generics.AbstractPanel;
 import lib.gui.components.generics.Button;
+import util.colors.ChatColor;
+import util.colors.Colors;
 
 public class WalletSelector extends AbstractPanel {
     private Player target;
@@ -23,14 +25,24 @@ public class WalletSelector extends AbstractPanel {
 
     private void setupButtons(){
         setButton(12, Button.builder()
-                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BOOK).setName("From Wallet").build()))
-                .setLeftClickAction(event -> {GUIFactory.currencyListToPayPanel(sender,target,this).open();})
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BOOK)
+                        .setName(ChatColor.stringValueOf(Colors.GREEN)+"From Wallet")
+                        .setLore(ChatColor.stringValueOf(Colors.WHITE)+"Use your account balance to pay.")
+                        .build()))
+                .setLeftClickAction(event -> {
+                    GUIFactory.currencyListToPayPanel(sender,target,this).open();
+                })
                 .build()
         );
 
         setButton(14, Button.builder()
-                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.CHEST).setName("From Inventory").build()))
-                .setLeftClickAction(event -> {GUIFactory.currencyListToPayItemsPanel(sender,target,this).open();})
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.CHEST)
+                        .setName(ChatColor.stringValueOf(Colors.YELLOW)+"From Inventory")
+                        .setLore(ChatColor.stringValueOf(Colors.WHITE)+"Use items from your inventory to pay.")
+                        .build()))
+                .setLeftClickAction(event -> {
+                    GUIFactory.currencyListToPayItemsPanel(sender,target,this).open();
+                })
                 .build()
         );
         //4 lore button

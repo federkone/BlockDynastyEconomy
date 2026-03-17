@@ -68,8 +68,7 @@ public class ListPlayersOnline extends AccountsList {
 
     @Override
     public void openNextSection(Player target) {
-        //UIFactory.currencyListToPayPanel(sender,target,this.getParent()).open();
-        new WalletSelector(sender,target,this).open();
+        GUIFactory.walletSelector(sender,target,this.getParent()).open();
     }
     @Override
     public void addCustomButtons(){

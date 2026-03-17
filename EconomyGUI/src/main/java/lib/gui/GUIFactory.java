@@ -132,7 +132,14 @@ public class GUIFactory {
     public static IGUI listPlayersOfflineToOffer(IEntityGUI sender,IGUI parent) {
         return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
     }
-    public static IGUI currencyListToPayPanel(IEntityGUI sender,Player target,IGUI parent) {
+    public static IGUI walletSelector(IEntityGUI sender,Player target,IGUI parent) {
+        if(config.getBoolean("ItemsBasedEconomy.enable")){
+           return new WalletSelector(sender,target,parent);
+        }else{
+           return currencyListToPayPanel(sender,target,parent);
+        }
+    }
+    public static IGUI currencyListToPayPanel(IEntityGUI sender,Player target,IGUI parent){
         return new CurrencyListToPay(sender, target, useCaseFactory.searchCurrency(), useCaseFactory.pay(), parent, textInput);
     }
     public static IGUI currencyListExchange(IEntityGUI player,ICurrency currency,IGUI parent) {

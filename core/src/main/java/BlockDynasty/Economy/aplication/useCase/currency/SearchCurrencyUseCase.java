@@ -62,6 +62,19 @@ public class SearchCurrencyUseCase {
         return Result.success(currency);
     }
 
+    public Result<ICurrency> getCurrencyByBase64(String base64) {
+        ICurrency currency = currencyService.getCurrencyByBase64Item(base64);
+        if (currency == null) {
+            //Result<ICurrency> result = datastore.loadCurrencyByBase64(base64);
+            //if(result.isSuccess()){
+             //   currency = result.getValue();
+            //}else {
+                return Result.failure("Currency not found", ErrorCode.CURRENCY_NOT_FOUND);
+            //}
+        }
+        return Result.success(currency);
+    }
+
     public Result<ICurrency>  getDefaultCurrency() {
         ICurrency defaultCurrency = currencyService.getDefaultCurrency();
         if(defaultCurrency == null){

@@ -66,6 +66,7 @@ public class CurrencyService implements ICurrencyService {
         currencies.add(currency);
     }
 
+
     public void add(List<ICurrency> currencyList) {
         currencies.addAll(currencyList);
     }
@@ -95,7 +96,15 @@ public class CurrencyService implements ICurrencyService {
     @Override
     public ICurrency getCurrencyByMaterial(String material) {
         return currencies.stream()
-                .filter(currency -> currency.getMaterial() != null && currency.getMaterial().equalsIgnoreCase(material))
+                .filter(currency -> currency.getMaterial() != null && currency.getMaterial().equals(material))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public ICurrency getCurrencyByBase64Item(String base64Item) {
+        return currencies.stream()
+                .filter(currency -> currency.getBase64Item() != null && currency.getBase64Item().equals(base64Item))
                 .findFirst()
                 .orElse(null);
     }
@@ -106,7 +115,7 @@ public class CurrencyService implements ICurrencyService {
 
     public boolean currencyExist(String name) {
         return currencies.stream()
-                .anyMatch(currency -> currency.getSingular().equalsIgnoreCase(name) || currency.getPlural().equalsIgnoreCase(name));
+                .anyMatch(currency -> currency.getSingular().equals(name) || currency.getPlural().equals(name));
     }
 
     public void updateDefaultCurrency() {
