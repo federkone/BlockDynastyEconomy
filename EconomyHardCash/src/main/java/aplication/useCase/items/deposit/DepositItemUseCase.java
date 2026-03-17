@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.deposit;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
@@ -28,12 +28,12 @@ import domain.entity.player.IEntityHardCash;
 
 import java.math.BigDecimal;
 
-public class DepositAllItemUseCase implements IDepositItemUseCase{
+public class DepositItemUseCase implements IDepositItemUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public DepositAllItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public DepositItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.platformHardCash = platformHardCash;
         this.depositUseCase = depositUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
@@ -49,25 +49,31 @@ public class DepositAllItemUseCase implements IDepositItemUseCase{
 
         Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByBase64(item.asBase64());
         if (!resultC.isSuccess()) {
-           // resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
+            //resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
             //if (!resultC.isSuccess()) {
                 player.sendMessage("Not have a valid currency item in hand.");
                 return;
             //}
         }
+
         NbtData nbtData = item.getNbtData();
         if (nbtData.getItemType() != null || nbtData.getUuidCurrency() != null) {
             player.sendMessage("Not have a valid currency item in hand.");
             return;
         }
 
-        int cantItems = player.takeAllItems(item);
-        BigDecimal cant = new BigDecimal(cantItems);
         ICurrency currency = resultC.getValue();
+        if(!currency.isPhysicalItemSupported()){
+            player.sendMessage("This currency does not support physical items.");
+            return;
+        }
+
+        player.removeItem(item);
+        BigDecimal cant = new BigDecimal(item.getCantity());
+
 
         Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
         if (!depositResult.isSuccess()) {
-            item.setCantity(cantItems);
             player.giveItem(item);
         }
     }

@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.withdraw;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import aplication.useCase.items.ItemBaseCreator;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import domain.service.ItemCreator;
 
 import java.math.BigDecimal;
 
-public class ExtractItemUseCase implements IExtractItemUseCase{
+public class ExtractItemUseCase implements IExtractItemUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
@@ -55,6 +56,11 @@ public class ExtractItemUseCase implements IExtractItemUseCase{
         ICurrency currency = currencyResult.getValue();
         if (currency.getBase64Item() == null || currency.getMaterial().isEmpty()) {
             player.sendMessage("Currency does not have a valid material.");
+            return;
+        }
+
+        if (!currency.isPhysicalItemSupported()){
+            player.sendMessage("This currency does not support physical item withdrawal.");
             return;
         }
 

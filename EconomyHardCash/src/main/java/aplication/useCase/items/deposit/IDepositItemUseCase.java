@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.deposit;
 
 import domain.entity.player.IEntityHardCash;
 
-public interface IPayWithItemsUseCase {
-
-    void execute(IEntityHardCash player, String targetPlayerName, String currencyName, int cantItems);
+public interface IDepositItemUseCase {
+    void execute(IEntityHardCash player);
 }

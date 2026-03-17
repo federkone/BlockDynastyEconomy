@@ -47,6 +47,11 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     }
 
     @Override
+    public boolean isNull() {
+        return itemStack == null || itemStack.getType().isAir();
+    }
+
+    @Override
     public Object getRoot() {
         return itemStack;
     }

@@ -38,27 +38,6 @@ public class MaterialSelectionPanel extends PaginatedPanel<Materials> {
                 .build();
         return Item.of(recipe);
     }
-
-    @Override
-    public void addCustomButtons() {
-       setButton(44, Button.builder()
-               .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.NAME_TAG).setName("Use Item in Hand").build()))
-               .setLeftClickAction(
-                       e ->{
-                           try {
-                               ItemStackCurrency item = e.asEntityHardCash().takeHandItem();
-                               if (item == null) {return;}
-                               editCurrencyUseCase.editBase64Item(currency.getSingular(), item.asBase64());
-                               entityGUI.sendMessage("Material updated successfully.");
-                               GUIFactory.editCurrencyPanel(entityGUI,currency, parent.getParent()).open();
-                           }catch (Exception ex){
-                               entityGUI.sendMessage("Error: "+ ex.getMessage());
-                               this.parent.open();
-                           }
-                       })
-               .build());
-    }
-
     @Override
     public void functionLeftItemClick(Materials material){
         try {

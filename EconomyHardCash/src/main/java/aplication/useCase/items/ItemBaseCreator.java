@@ -33,6 +33,7 @@ public class ItemBaseCreator implements ItemCreator {
 
     @Override
     public ItemStackCurrency create(ICurrency currency, BigDecimal amount) {
+        //podemos decidir si renderizar le item con material o solo base64 desde aqui
         return platform.createItemStackCurrency(RecipeItemCurrency.builder()
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setBase64ITEM(currency.getBase64Item())

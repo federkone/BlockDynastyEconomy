@@ -18,6 +18,7 @@ package lib.gui.templates.administrators.subMenus.currencies;
 
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import domain.entity.currency.ItemStackCurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
 import lib.gui.components.factory.Item;
@@ -173,6 +174,24 @@ public class EditCurrencyPanel extends AbstractPanel {
                     }
                 }).build());
 
+        setButton(23, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder()
+                        .setMaterial(currency.isPhysicalItemSupported() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE)
+                        .setName(currency.isPhysicalItemSupported() ? "Physical item support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Physical item support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
+                        .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isPhysicalItemSupported() ? "Disable" : "Enable"),"This option enable or disable the possibility ","of using physical items to represent this currency")
+                        .build()))
+                .setLeftClickAction( f -> {
+                    try {
+                        editCurrencyUseCase.editPhysicalItemSupported(currency.getSingular(), !currency.isPhysicalItemSupported());
+                        player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] Physical item support option changed.");
+                        openEditCurrencyGUI();
+                    } catch (Exception e) {
+                        player.sendMessage(ChatColor.stringValueOf(Colors.GREEN)+"[Bank] "+ChatColor.stringValueOf(Colors.RED)+"Error: " + e.getMessage());
+                        openEditCurrencyGUI();
+                    }
+                })
+                .build());
+
         // Toggle Payable button
         setButton(24, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
@@ -229,9 +248,35 @@ public class EditCurrencyPanel extends AbstractPanel {
                     }
                 }).build());
 
+        setButton(34, Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BEDROCK)
+                        .setName("Select item to represent ItemStack currency")
+                        .setLore("Click to select an item that will represent",
+                                "this currency when using the ItemStack based system",
+                                ChatColor.stringValueOf(Colors.GREEN)+"#Use the item in your hand")
+                        .build()))
+                .setLeftClickAction(
+                        e ->{
+                            try {
+                                ItemStackCurrency item = e.asEntityHardCash().takeHandItem();
+                                if (item.isNull()) {
+                                    editCurrencyUseCase.editBase64Item(currency.getSingular(), "");
+                                    player.sendMessage("Material cleared successfully.");
+                                    GUIFactory.editCurrencyPanel(player,currency, parent.getParent()).open();
+                                    return;
+                                }
+                                editCurrencyUseCase.editBase64Item(currency.getSingular(), item.asBase64());
+                                player.sendMessage("Material updated successfully.");
+                                GUIFactory.editCurrencyPanel(player,currency, parent.getParent()).open();
+                            }catch (Exception ex){
+                                player.sendMessage("Error: "+ ex.getMessage());
+                            }
+                        })
+                .build());
+
         setButton(25, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
-                        .setName("Select Material")
+                        .setName("Select ICON Material")
                         .setLore("Select Material to represent this currency")
                         .setMaterial(Materials.LAPIS_LAZULI).build()))
                 .setLeftClickAction(f -> {

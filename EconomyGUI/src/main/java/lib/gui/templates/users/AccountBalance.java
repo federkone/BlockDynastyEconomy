@@ -22,8 +22,7 @@ import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.items.GetItemsBalanceUseCase;
-import aplication.useCase.items.IGetItemsBalanceUseCase;
+import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
@@ -83,7 +82,7 @@ public class AccountBalance extends PaginatedPanel<Money> {
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
                         "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"),
-                        ChatColor.stringValueOf(Colors.WHITE)+"Inventory: "+ ChatColor.stringValueOf(currency.getColor())+getItemsBalanceUseCase.execute(sender.asEntityHardCash(), currency.getSingular()))
+                        currency.isPhysicalItemSupported() ? ChatColor.stringValueOf(Colors.WHITE)+"Inventory: "+ ChatColor.stringValueOf(currency.getColor())+getItemsBalanceUseCase.execute(sender.asEntityHardCash(), currency.getSingular()):"")
                 .setTexture(currency.getTexture())
                 .build());
     }

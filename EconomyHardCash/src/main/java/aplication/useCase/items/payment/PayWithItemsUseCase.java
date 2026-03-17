@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.payment;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;
@@ -22,6 +22,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IPayUseCas
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
@@ -64,6 +66,15 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
             return;
         }
         ICurrency currency = result.getValue();
+        if(!currency.isTransferable()){
+            player.sendMessage("This currency is not transferable.");
+            return;
+        }
+        if (!currency.isPhysicalItemSupported()){
+            player.sendMessage("This currency does not support physical item transactions.");
+            return;
+        }
+
         ItemStackCurrency itemCurrency = itemCreator.create(currency, BigDecimal.ONE);
         if(player.takeItems(itemCurrency,cantItems)){
             Result<Void> resultDeposit= depositUseCase.execute(player.getUniqueId(),currencyName, BigDecimal.valueOf(cantItems), Context.SYSTEM);

@@ -23,5 +23,6 @@ public interface ItemStackCurrency {
     String getMaterial();
     String asBase64();
     int maxStackSize();
+    boolean isNull();
     Object getRoot();
 }

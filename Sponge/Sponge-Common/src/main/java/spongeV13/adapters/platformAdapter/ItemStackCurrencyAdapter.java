@@ -79,6 +79,11 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     }
 
     @Override
+    public boolean isNull() {
+        return item == null || item.isEmpty();
+    }
+
+    @Override
     public Object getRoot() {
         return item;
     }

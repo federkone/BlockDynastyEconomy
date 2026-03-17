@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.balance;
 
 import domain.entity.player.IEntityHardCash;
 
-import java.math.BigDecimal;
+public interface IGetItemsBalanceUseCase {
 
-public interface IExtractItemUseCase {
-    void execute(IEntityHardCash player, BigDecimal amount, String currency);
-
+    int execute(IEntityHardCash player, String currencyName);
 }
