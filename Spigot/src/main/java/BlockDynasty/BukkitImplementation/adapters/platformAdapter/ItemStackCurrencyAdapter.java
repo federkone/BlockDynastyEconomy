@@ -1,7 +1,7 @@
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
-import BlockDynasty.BukkitImplementation.utils.ItemSerialization;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemSerialization;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import org.bukkit.inventory.ItemStack;

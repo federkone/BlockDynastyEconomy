@@ -1,8 +1,7 @@
-package BlockDynasty.BukkitImplementation.utils;
+package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials;
 
 import com.BlockDynasty.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;

@@ -29,7 +29,7 @@ public class ItemWithTexture implements  ItemCreator {
                         ChatColor.stringValueOf(Colors.GRAY)+"[Valid for Dynasty Economy System]")
                 .setName(color + currency.getSingular())
                 .setTexture(currency.getTexture())
-                .setMaterial(Materials.valueOf(currency.getMaterial()))
+                .setMaterial(Materials.match(currency.getMaterial()))
                 .setBase64ITEM(currency.getBase64Item())
                 .build();
 

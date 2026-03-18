@@ -122,13 +122,15 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.EMERALD)
                         .setName(ChatColor.stringValueOf(Colors.GREEN) + "Add texture URL or Base64")
-                        .setLore("This option allows you to add custom", "heads for this currency", "example url: http://textures.minecraft.net/texture/...", "You can find them at:" + ChatColor.stringValueOf(Colors.GREEN) + "https://minecraft-heads.com", "For developers")
+                        .setLore("This option allows you to add custom",
+                                "heads for this currency",
+                                "example url: http://textures.minecraft.net/texture/...",
+                                "You can find them at:" + ChatColor.stringValueOf(Colors.GREEN) + "https://minecraft-heads.com", "For developers")
                         .build()))
                 .setLeftClickAction(f -> {
-                    textInput.asInputChat().open(this, player, "Texture URL or Base64: " + currency.getSingular(), currency.getTexture(), s -> {
+                    textInput.asInputChat().open(this, player, "Texture URL or Base64: " + currency.getSingular(), currency.getTexture()+ChatColor.stringValueOf(Colors.WHITE)+" Type: "+ChatColor.stringValueOf(Colors.RED)+"clear"+ChatColor.stringValueOf(Colors.WHITE)+" to clear texture.", s -> {
                         String stringUrl = TextureValidator.validateInput(s);
-
-                        if(!stringUrl.isEmpty()){
+                        if(stringUrl != null){
                             try {
                                 editCurrencyUseCase.editTexture(currency.getSingular(), stringUrl);
                                 player.sendMessage(ChatColor.stringValueOf(Colors.GREEN) + "[Bank] " + ChatColor.stringValueOf(Colors.GRAY) + "Texture updated successfully.");
@@ -178,7 +180,9 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(currency.isPhysicalItemSupported() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE)
                         .setName(currency.isPhysicalItemSupported() ? "Physical item support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Physical item support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
-                        .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isPhysicalItemSupported() ? "Disable" : "Enable"),"This option enable or disable the possibility ","of using physical items to represent this currency")
+                        .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isPhysicalItemSupported() ? "Disable" : "Enable"),
+                                "This option enable or disable the possibility ",
+                                "of using physical items to Withdraw this currency")
                         .build()))
                 .setLeftClickAction( f -> {
                     try {
@@ -253,7 +257,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                         .setName("Select item to represent ItemStack currency")
                         .setLore("Click to select an item that will represent",
                                 "this currency when using the ItemStack based system",
-                                ChatColor.stringValueOf(Colors.GREEN)+"#Use the item in your hand")
+                                ChatColor.stringValueOf(Colors.GREEN)+"#Use the item in your hand, item or Empty to clear")
                         .build()))
                 .setLeftClickAction(
                         e ->{
@@ -277,7 +281,8 @@ public class EditCurrencyPanel extends AbstractPanel {
         setButton(25, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setName("Select ICON Material")
-                        .setLore("Select Material to represent this currency")
+                        .setLore("Select Material to represent this currency",
+                                "this is only representative")
                         .setMaterial(Materials.LAPIS_LAZULI).build()))
                 .setLeftClickAction(f -> {
                     GUIFactory.materialSelectorPanel(player,this,currency).open();
