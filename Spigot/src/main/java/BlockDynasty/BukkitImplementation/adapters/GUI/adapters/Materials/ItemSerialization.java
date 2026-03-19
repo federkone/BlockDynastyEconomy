@@ -17,9 +17,8 @@ public class ItemSerialization {
     // Convierte un ItemStack (con todo su NBT) a un String Base64
     public static String toBase64(ItemStack item) {
         try {
-            // Hacemos una copia para no modificar el ítem real en el inventario del admin
             ItemStack clone = item.clone();
-            clone.setAmount(1); // Normalizamos a 1 para la DB
+            clone.setAmount(1);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream dataStream = new BukkitObjectOutputStream(outputStream);
@@ -33,7 +32,6 @@ public class ItemSerialization {
         }
     }
 
-    // Convierte el String Base64 de vuelta a un ItemStack funcional
     public static ItemStack fromBase64(String data) {
         return cache.computeIfAbsent(data, key ->{
             try {

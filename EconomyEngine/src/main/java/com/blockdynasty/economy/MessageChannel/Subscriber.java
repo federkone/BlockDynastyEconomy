@@ -6,6 +6,8 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.PlayerTargetMessage;
 import abstractions.platform.entity.IPlayer;
+import aplication.HardCashService;
+import aplication.useCase.HardCashUseCaseFactory;
 import lib.gui.GUISystem;
 import abstractions.platform.scheduler.ContextualTask;
 import com.blockdynasty.economy.platform.IPlatform;
@@ -73,6 +75,7 @@ public abstract class Subscriber {
                 break;
             case CURRENCY:
                 currencyService.syncCurrency(message.getTarget());
+                HardCashUseCaseFactory.getCacheCurrencyItems().updateCurrencies();
                 break;
         }
     }

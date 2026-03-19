@@ -84,6 +84,11 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
     }
 
     @Override
+    public boolean isSimilar(ItemStackCurrency itemStackCurrency) {
+        return this.item.equalTo((ItemStack) itemStackCurrency.getRoot());
+    }
+
+    @Override
     public Object getRoot() {
         return item;
     }

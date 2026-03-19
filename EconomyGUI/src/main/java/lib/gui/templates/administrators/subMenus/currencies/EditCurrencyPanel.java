@@ -18,6 +18,7 @@ package lib.gui.templates.administrators.subMenus.currencies;
 
 import BlockDynasty.Economy.aplication.useCase.currency.EditCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import aplication.useCase.HardCashUseCaseFactory;
 import domain.entity.currency.ItemStackCurrency;
 import lib.gui.GUIFactory;
 import lib.gui.components.*;
@@ -265,11 +266,10 @@ public class EditCurrencyPanel extends AbstractPanel {
                                 ItemStackCurrency item = e.asEntityHardCash().takeHandItem();
                                 if (item.isNull()) {
                                     editCurrencyUseCase.editBase64Item(currency.getSingular(), "");
-                                    player.sendMessage("Material cleared successfully.");
-                                    GUIFactory.editCurrencyPanel(player,currency, parent.getParent()).open();
-                                    return;
+                                }else{
+                                    editCurrencyUseCase.editBase64Item(currency.getSingular(), item.asBase64());
                                 }
-                                editCurrencyUseCase.editBase64Item(currency.getSingular(), item.asBase64());
+                                HardCashUseCaseFactory.getCacheCurrencyItems().updateCurrencies();
                                 player.sendMessage("Material updated successfully.");
                                 GUIFactory.editCurrencyPanel(player,currency, parent.getParent()).open();
                             }catch (Exception ex){

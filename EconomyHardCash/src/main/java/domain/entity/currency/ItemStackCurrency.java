@@ -24,5 +24,6 @@ public interface ItemStackCurrency {
     String asBase64();
     int maxStackSize();
     boolean isNull();
+    boolean isSimilar(ItemStackCurrency other);
     Object getRoot();
 }

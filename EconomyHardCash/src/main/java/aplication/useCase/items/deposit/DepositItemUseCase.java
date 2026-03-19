@@ -25,6 +25,7 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import domain.service.CacheCurrencyItems;
 
 import java.math.BigDecimal;
 
@@ -32,11 +33,13 @@ public class DepositItemUseCase implements IDepositItemUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
+    private CacheCurrencyItems cacheCurrencyItems;
 
-    public DepositItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public DepositItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase,CacheCurrencyItems cacheCurrencyItems) {
         this.platformHardCash = platformHardCash;
         this.depositUseCase = depositUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.cacheCurrencyItems = cacheCurrencyItems;
     }
 
     @Override
@@ -47,13 +50,10 @@ public class DepositItemUseCase implements IDepositItemUseCase {
             return;
         }
 
-        Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByBase64(item.asBase64());
-        if (!resultC.isSuccess()) {
-            //resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
-            //if (!resultC.isSuccess()) {
-                player.sendMessage("Not have a valid currency item in hand.");
-                return;
-            //}
+        CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
+        if (currencywrapper == null) {
+            player.sendMessage("Not have a valid currency item in hand.");
+            return;
         }
 
         NbtData nbtData = item.getNbtData();
@@ -62,7 +62,7 @@ public class DepositItemUseCase implements IDepositItemUseCase {
             return;
         }
 
-        ICurrency currency = resultC.getValue();
+        ICurrency currency = currencywrapper.getCurrency();
         if(!currency.isPhysicalItemSupported()){
             player.sendMessage("This currency does not support physical items.");
             return;

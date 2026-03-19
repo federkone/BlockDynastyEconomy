@@ -35,6 +35,7 @@ import aplication.useCase.items.withdraw.ExtractItemUseCase;
 import aplication.useCase.items.withdraw.IExtractItemUseCase;
 import aplication.useCase.nbtItems.*;
 import domain.entity.platform.HardCashCreator;
+import domain.service.CacheCurrencyItems;
 
 public class HardCashUseCaseFactory {
     private static HardCashCreator hardCashCreator;
@@ -42,6 +43,7 @@ public class HardCashUseCaseFactory {
     private static IWithdrawUseCase withdrawUseCase;
     private static SearchCurrencyUseCase searchCurrencyUseCase;
     private static IPayUseCase payUseCase;
+    private static CacheCurrencyItems cacheCurrencyItems;
 
     public static void init(HardCashCreator hardCashCreator, IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase, IPayUseCase payUseCase,SearchCurrencyUseCase searchCurrencyUseCase) {
         HardCashUseCaseFactory.hardCashCreator = hardCashCreator;
@@ -49,6 +51,11 @@ public class HardCashUseCaseFactory {
         HardCashUseCaseFactory.withdrawUseCase = withdrawUseCase;
         HardCashUseCaseFactory.searchCurrencyUseCase = searchCurrencyUseCase;
         HardCashUseCaseFactory.payUseCase = payUseCase;
+        HardCashUseCaseFactory.cacheCurrencyItems = new CacheCurrencyItems(searchCurrencyUseCase, hardCashCreator);
+    }
+
+    public static CacheCurrencyItems getCacheCurrencyItems() {
+        return cacheCurrencyItems;
     }
 
     public static IDepositItemNBTUseCase getDepositItemNBTUseCase() {
@@ -60,7 +67,7 @@ public class HardCashUseCaseFactory {
 
     public static IExtractItemNBTUseCase getExtractItemNBTUseCase() {
         if (HardCashService.isEnabled()) {
-            return new ExtractItemNBTUseCase( hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
+            return new ExtractItemNBTUseCase(hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
         }
         return new ExtractItemNBTUseCaseDisable();
     }
@@ -74,21 +81,21 @@ public class HardCashUseCaseFactory {
 
     public static IDepositItemUseCase getDepositItemUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new DepositItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase);
+            return new DepositItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new DepositItemDisableUseCase();
     }
 
     public static IExtractItemUseCase getExtractItemUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new ExtractItemUseCase(hardCashCreator, withdrawUseCase,searchCurrencyUseCase);
+            return new ExtractItemUseCase(hardCashCreator, withdrawUseCase,searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new ExtractItemDisableUseCase();
     }
 
     public static IDepositItemUseCase getDepositAllItemUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new DepositAllItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase);
+            return new DepositAllItemUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new DepositItemDisableUseCase();
     }
@@ -102,7 +109,7 @@ public class HardCashUseCaseFactory {
 
     public static IGetItemsBalanceUseCase getItemsBalanceUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new GetItemsBalanceUseCase(hardCashCreator, searchCurrencyUseCase);
+            return new GetItemsBalanceUseCase(hardCashCreator, searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new GetItemsBalanceDisableUseCase();
     }

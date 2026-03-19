@@ -22,6 +22,7 @@ import aplication.useCase.items.ItemBaseCreator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import domain.service.CacheCurrencyItems;
 import domain.service.ItemCreator;
 
 import java.math.BigDecimal;
@@ -30,10 +31,12 @@ public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private HardCashCreator platform;
     private ItemCreator itemCreator;
+    private CacheCurrencyItems cacheCurrencyItems;
 
-    public GetItemsBalanceUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public GetItemsBalanceUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
+        this.cacheCurrencyItems = cacheCurrencyItems;
         this.itemCreator = new ItemBaseCreator(platform);
     }
 
@@ -55,6 +58,7 @@ public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
             return -1;
         }
         ItemStackCurrency itemCurrency = itemCreator.create(currency, BigDecimal.ONE);
+        if (itemCurrency.isNull()) {return -1;}
         return player.countItems(itemCurrency);
     }
 }

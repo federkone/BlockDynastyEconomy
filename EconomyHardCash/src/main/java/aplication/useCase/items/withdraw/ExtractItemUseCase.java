@@ -26,6 +26,7 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.RecipeItemCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import domain.service.CacheCurrencyItems;
 import domain.service.ItemCreator;
 
 import java.math.BigDecimal;
@@ -35,11 +36,13 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
     private IWithdrawUseCase withdrawUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private ItemCreator itemCreator;
+    private CacheCurrencyItems cacheCurrencyItems;
 
-    public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
+        this.cacheCurrencyItems = cacheCurrencyItems;
         this.itemCreator = new ItemBaseCreator(platform);
     }
 
@@ -66,15 +69,19 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
             return;
         }
 
-        //si el base 64 del item no es igual al que se genera con el item creator, no se puede retirar
-        ItemStackCurrency sentinel = itemCreator.create(currency, amount);
-        if(!currency.getBase64Item().equals(sentinel.asBase64())){
+        var item = itemCreator.create(currency, BigDecimal.ONE);
+        if (item.isNull()){
             player.sendMessage("Currency does not have a valid item representation.");
             return;
         }
 
+        CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
+        if (currencywrapper == null) {
+            player.sendMessage("Currency not have valid item.");
+            return;
+        }
+
         int emptySlots = player.emptySlots();
-        var item = itemCreator.create(currency, BigDecimal.ONE);
         int maxWithdrawable = emptySlots * item.maxStackSize();
 
         if (maxWithdrawable <= 0) {

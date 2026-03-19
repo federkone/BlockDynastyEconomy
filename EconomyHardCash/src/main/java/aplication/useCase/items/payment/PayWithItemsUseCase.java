@@ -76,6 +76,10 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
         }
 
         ItemStackCurrency itemCurrency = itemCreator.create(currency, BigDecimal.ONE);
+        if (itemCurrency.isNull()){
+            player.sendMessage("Failed to create currency item.");
+            return;
+        }
         if(player.takeItems(itemCurrency,cantItems)){
             Result<Void> resultDeposit= depositUseCase.execute(player.getUniqueId(),currencyName, BigDecimal.valueOf(cantItems), Context.SYSTEM);
             if(resultDeposit.isSuccess()){
