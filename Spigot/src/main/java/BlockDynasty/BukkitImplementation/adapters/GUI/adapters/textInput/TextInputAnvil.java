@@ -17,7 +17,6 @@
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.SoundProvider;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;

@@ -18,7 +18,7 @@ package aplication.useCase.items.balance;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.ItemBase64Creator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
@@ -37,7 +37,7 @@ public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.cacheCurrencyItems = cacheCurrencyItems;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
     @Override

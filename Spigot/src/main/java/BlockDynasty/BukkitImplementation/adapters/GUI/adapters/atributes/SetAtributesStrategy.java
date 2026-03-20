@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials;
+package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.atributes;
 
-import abstractions.platform.materials.Materials;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Map;
+import java.util.List;
 
-public interface MaterialService {
-    Map<Materials, Material> getMaterialMap();
-    Material toBukkitMaterial(Materials material);
-    boolean isPlayerHead(Material material);
-    ItemStack createItemStack(Materials materials);
+public interface SetAtributesStrategy {
+    void setDisplayName(ItemMeta item, String displayName);
+    void setLore(ItemMeta item, List<String> lore);
 }

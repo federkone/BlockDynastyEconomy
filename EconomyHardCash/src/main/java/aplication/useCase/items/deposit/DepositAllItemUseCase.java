@@ -45,19 +45,11 @@ public class DepositAllItemUseCase implements IDepositItemUseCase {
     @Override
     public void execute(IEntityHardCash player) {
         ItemStackCurrency item = player.takeHandItem();
-        if(item == null){
+        if(item.isNull()){
             player.sendMessage("You must hold a currency item to deposit.");
             return;
         }
 
-        /*Result<ICurrency> resultC = searchCurrencyUseCase.getCurrencyByBase64(item.asBase64());
-        if (!resultC.isSuccess()) {
-           // resultC = searchCurrencyUseCase.getCurrencyByMaterial(item.getMaterial());
-            //if (!resultC.isSuccess()) {
-                player.sendMessage("Not have a valid currency item in hand.");
-                return;
-            //}
-        }*/
         CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
         if (currencywrapper == null) {
             player.sendMessage("Not have a valid currency item in hand.");

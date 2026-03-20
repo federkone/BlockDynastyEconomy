@@ -31,6 +31,6 @@ public class ItemWithoutTexture implements ItemCreator {
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setBase64ITEM(currency.getBase64Item())
                 .build();
-        return platform.createItemStackCurrency(recipe);
+        return platform.createItemStackNBT(recipe);
     }
 }

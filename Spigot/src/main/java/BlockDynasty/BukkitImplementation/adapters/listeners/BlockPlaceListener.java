@@ -16,8 +16,8 @@
 
 package BlockDynasty.BukkitImplementation.adapters.listeners;
 
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
-import BlockDynasty.BukkitImplementation.adapters.platformAdapter.ItemStackCurrencyAdapter;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackProvider;
 import aplication.listener.CustomHeadValidator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +33,7 @@ public class BlockPlaceListener implements Listener {
         if(!ItemStackProvider.isPlayerHead(itemStack.getType())) {
             return;
         }
-        if(CustomHeadValidator.isACurrency(new ItemStackCurrencyAdapter(itemStack))){
+        if(CustomHeadValidator.isACurrency(new ItemStackAdapter(itemStack))){
             event.setCancelled(true);
         }
     }

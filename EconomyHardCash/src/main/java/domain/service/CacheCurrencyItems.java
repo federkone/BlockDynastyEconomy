@@ -2,7 +2,7 @@ package domain.service;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.ItemBase64Creator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 
@@ -19,13 +19,8 @@ public class CacheCurrencyItems {
     public CacheCurrencyItems(SearchCurrencyUseCase searchCurrencyUseCase, HardCashCreator hardCashCreator) {
         this.items = new HashMap<>();
         this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.itemCreator = new ItemBaseCreator(hardCashCreator);
-        this.searchCurrencyUseCase.getCurrencies().stream()
-                .filter(currency -> currency.getBase64Item() != null && !currency.getBase64Item().isEmpty())
-                .forEach(currency -> {
-                    ItemStackCurrency item =itemCreator.create(currency, BigDecimal.ONE);
-                    this.items.put(currency.getUuid(), new Currencywrapper(item, currency));
-                });
+        this.itemCreator = new ItemBase64Creator(hardCashCreator);
+        this.updateCurrencies();
     }
 
     public Currencywrapper getSimilarItem(ItemStackCurrency item) {
@@ -36,11 +31,15 @@ public class CacheCurrencyItems {
     }
 
     public void updateCurrencies() {
-        this.searchCurrencyUseCase.getCurrencies().stream()
-                .filter(currency -> currency.getBase64Item() != null && !currency.getBase64Item().isEmpty())
+        this.searchCurrencyUseCase.getCurrencies()
+                //.filter(currency -> currency.getBase64Item() != null && !currency.getBase64Item().isEmpty())
                 .forEach(currency -> {
                     ItemStackCurrency item =itemCreator.create(currency, BigDecimal.ONE);
-                    this.items.put(currency.getUuid(), new Currencywrapper(item, currency));
+                    if (item != null && !item.isNull()){
+                        this.items.put(currency.getUuid(), new Currencywrapper(item, currency));
+                    }else{
+                        this.items.remove(currency.getUuid());
+                    }
                 });
     }
 

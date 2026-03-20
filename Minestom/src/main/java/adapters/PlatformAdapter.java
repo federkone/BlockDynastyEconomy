@@ -56,6 +56,16 @@ public class PlatformAdapter implements IPlatform {
     }
 
     @Override
+    public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe) {
+        return null;
+    }
+
+    @Override
+    public ItemStackCurrency createItemBase64(RecipeItemCurrency recipe) {
+        return null;
+    }
+
+    @Override
     public IPlayer getPlayerByUUID(UUID uuid) {
         Player p = MinecraftServer.getConnectionManager().getOnlinePlayerByUuid(uuid);
         if (p == null) {
@@ -135,11 +145,6 @@ public class PlatformAdapter implements IPlatform {
     @Override
     public HardCashCreator asPlatformHardCash() {
         return this;
-    }
-
-    @Override
-    public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        return null;
     }
 
     @Override

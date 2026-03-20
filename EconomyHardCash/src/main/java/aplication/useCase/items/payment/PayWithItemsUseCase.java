@@ -22,7 +22,7 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IPayUseCas
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.ItemBase64Creator;
 import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
@@ -44,7 +44,7 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
         this.getItemsBalanceUseCase = getItemsBalanceUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.payUseCase = payUseCase;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
 
@@ -55,7 +55,7 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
             return;
         }
         int playerItemsBalance = getItemsBalanceUseCase.execute(player, currencyName);
-        if(playerItemsBalance == -1){return;}
+        if(playerItemsBalance == -1)return;
         if (playerItemsBalance < cantItems) {
             player.sendMessage("You don't have enough items to make the payment.");
             return;
@@ -87,6 +87,10 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
                 if (!resultPay.isSuccess()) {
                     player.sendMessage("Payment failed.");
                 }
+            }else{
+                itemCurrency.setCantity(cantItems);
+                player.giveItem(itemCurrency);
+                player.sendMessage("Payment failed.");
             }
         }
     }

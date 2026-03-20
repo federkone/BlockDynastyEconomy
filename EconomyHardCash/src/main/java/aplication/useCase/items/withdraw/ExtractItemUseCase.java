@@ -21,9 +21,7 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawU
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import aplication.useCase.items.ItemBaseCreator;
-import domain.entity.currency.ItemStackCurrency;
-import domain.entity.currency.RecipeItemCurrency;
+import aplication.useCase.items.ItemBase64Creator;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import domain.service.CacheCurrencyItems;
@@ -43,7 +41,7 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
         this.cacheCurrencyItems = cacheCurrencyItems;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
     @Override
@@ -59,13 +57,12 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
         }
 
         ICurrency currency = currencyResult.getValue();
-        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
-            player.sendMessage("Currency does not have a valid material.");
-            return;
-        }
-
         if (!currency.isPhysicalItemSupported()){
             player.sendMessage("This currency does not support physical item withdrawal.");
+            return;
+        }
+        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
+            player.sendMessage("Currency does not have a valid material.");
             return;
         }
 

@@ -17,7 +17,7 @@
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.SoundProvider;
 import BlockDynasty.BukkitImplementation.utils.Version;
 import domain.entity.currency.ItemStackCurrency;
@@ -142,7 +142,7 @@ public class EntityPlayerAdapter implements IPlayer {
     @Override
     public ItemStackCurrency takeHandItem() {
         ItemStack itemStack = player.getItemInHand();
-        return new ItemStackCurrencyAdapter(itemStack);
+        return new ItemStackAdapter(itemStack);
     }
 
     @Override

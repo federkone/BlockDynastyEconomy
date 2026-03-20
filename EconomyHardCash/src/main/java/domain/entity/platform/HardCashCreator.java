@@ -22,6 +22,7 @@ import domain.entity.player.IEntityHardCash;
 
 public interface HardCashCreator {
     IEntityHardCash getPlayer(String playerName);
-    ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe);
+    ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe);
+    ItemStackCurrency createItemBase64(RecipeItemCurrency recipe);
     boolean hasSupportHardCash();
 }

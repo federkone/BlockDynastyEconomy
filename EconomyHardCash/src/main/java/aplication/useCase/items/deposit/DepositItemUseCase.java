@@ -45,7 +45,7 @@ public class DepositItemUseCase implements IDepositItemUseCase {
     @Override
     public void execute(IEntityHardCash player) {
         ItemStackCurrency item = player.takeHandItem();
-        if(item == null){
+        if(item.isNull()){
             player.sendMessage("You must hold a currency item to deposit.");
             return;
         }

@@ -33,6 +33,6 @@ public class ItemWithTexture implements  ItemCreator {
                 .setBase64ITEM(currency.getBase64Item())
                 .build();
 
-        return platform.createItemStackCurrency(recipe);
+        return platform.createItemStackNBT(recipe);
     }
 }
