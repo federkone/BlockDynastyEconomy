@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.nbtItems;
+package aplication.useCase.notes.deposit;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUseCase;

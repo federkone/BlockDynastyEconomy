@@ -17,9 +17,12 @@
 package com.blockdynasty.economy.platform.listeners;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.events.EventManagerProvider;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.events.Context;
+import BlockDynasty.Economy.domain.events.Event;
+import BlockDynasty.Economy.domain.events.EventHandler;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCreated;
@@ -28,6 +31,7 @@ import BlockDynasty.Economy.domain.events.transactionsEvents.*;
 import abstractions.platform.entity.IPlayer;
 import lib.gui.GUISystem;
 import abstractions.platform.scheduler.ContextualTask;
+import services.Console;
 import util.colors.ChatColor;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.services.Message;
@@ -36,10 +40,10 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public class EventListener {
+    private static final Map<Class<? extends Event>, EventHandler<? extends Event>> handlers = new java.util.LinkedHashMap<>();
 
     public static void register(EventManager eventManager, IPlatform platformAdapter) {
-
-        eventManager.subscribe(PayEvent.class, event -> {
+        EventHandler<PayEvent> payHandler = event ->{
             IPlayer player = platformAdapter.getPlayer(event.getPayer().getNickname());
             IPlayer target = platformAdapter.getPlayer(event.getReceived().getNickname());
 
@@ -67,9 +71,11 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task , target));
             }
-        });
+        };
+         handlers.put(PayEvent.class, payHandler);
+        //eventManager.subscribe(PayEvent.class, payHandler);
 
-        eventManager.subscribe(TransferEvent.class, event -> {
+        EventHandler<TransferEvent> transferHandler = event ->  {
             IPlayer player = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
             IPlayer target = platformAdapter.getPlayer(event.getToPlayer().getNickname());
 
@@ -98,9 +104,11 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task , target));
             }
-        });
+        };
+        handlers.put(TransferEvent.class, transferHandler);
+        //eventManager.subscribe(TransferEvent.class, event ->);
 
-        eventManager.subscribe(ExchangeEvent.class, event -> {
+        EventHandler<ExchangeEvent> exchangeHandler = event -> {
             IPlayer player = platformAdapter.getPlayer(event.getPlayer().getNickname());
 
             ICurrency fromCurrency = event.getFromCurrency();
@@ -113,9 +121,11 @@ public class EventListener {
                 player.sendMessage(Message.process(Map.of("fromCurrency",ChatColor.stringValueOf(fromCurrency.getColor())+fromFormat,"toCurrency",ChatColor.stringValueOf(toCurrency.getColor())+toFormat),"exchange"));
                 player.playNotificationSound();
             }
-        });
+        };
+        handlers.put(ExchangeEvent.class, exchangeHandler);
+        //eventManager.subscribe(ExchangeEvent.class, event ->);
 
-        eventManager.subscribe(TradeEvent.class, event -> {
+        EventHandler<TradeEvent> tradeHandler = event -> {
             IPlayer sender = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
             IPlayer receiver = platformAdapter.getPlayer(event.getToPlayer().getNickname());
 
@@ -144,7 +154,7 @@ public class EventListener {
                         Map.of("fromCurrency",ChatColor.stringValueOf(fromCurrency.getColor())+fromFormat,
                                 "toCurrency",ChatColor.stringValueOf(toCurrency.getColor())+toFormat,
                                 "playerName",event.getFromPlayer().getNickname()
-                ),"trade2"));
+                        ),"trade2"));
                 receiver.playNotificationSound();
 
                 Runnable task=()->{
@@ -153,15 +163,17 @@ public class EventListener {
                 platformAdapter.getScheduler().run(ContextualTask.build(task , receiver));
             }
 
-        });
+        };
+        handlers.put(TradeEvent.class, tradeHandler);
+        //eventManager.subscribe(TradeEvent.class, event -> );
 
-        eventManager.subscribe(DepositEvent.class, event -> {
+        EventHandler<DepositEvent> depositHandler = event -> {
             if (event.getContext() == Context.COMMAND){
                 IPlayer player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
                     player.sendMessage(Message.process(Map.of(
                             "currency",ChatColor.stringValueOf(event.getCurrency().getColor()) +event.getCurrency().format(event.getAmount())
-                            ),"deposit"));
+                    ),"deposit"));
                     player.playNotificationSound();
 
                     Runnable task=()->{
@@ -171,9 +183,11 @@ public class EventListener {
                 }
             }
 
-        });
+        };
+        handlers.put(DepositEvent.class, depositHandler);
+        //eventManager.subscribe(DepositEvent.class, event -> );
 
-        eventManager.subscribe(WithdrawEvent.class, event -> {
+        EventHandler<WithdrawEvent> withdrawHandler = event -> {
             if (event.getContext() == Context.COMMAND){
                 IPlayer player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
@@ -188,9 +202,11 @@ public class EventListener {
                     platformAdapter.getScheduler().run(ContextualTask.build(task , player));
                 }
             }
-        });
+        };
+        handlers.put(WithdrawEvent.class, withdrawHandler);
+        //eventManager.subscribe(WithdrawEvent.class, event -> );
 
-        eventManager.subscribe(SetEvent.class, event -> {
+        EventHandler<SetEvent> setHandler = event -> {
             if (event.getContext() == Context.COMMAND){
                 IPlayer player = platformAdapter.getPlayer(event.getPlayer().getNickname());
                 if (player != null) {
@@ -205,9 +221,11 @@ public class EventListener {
                     platformAdapter.getScheduler().run(ContextualTask.build(task , player));
                 }
             }
-        });
+        };
+        handlers.put(SetEvent.class, setHandler);
+        //eventManager.subscribe(SetEvent.class, event -> );
 
-        eventManager.subscribe(OfferCreated.class, event -> {
+        EventHandler<OfferCreated> offerHandler = event -> {
             Offer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
@@ -225,7 +243,7 @@ public class EventListener {
                         Map.of("playerName", offer.getComprador().getNickname(),
                                 "fromCurrency",ChatColor.stringValueOf(currencyOffered.getColor()) + fromFormat,
                                 "toCurrency",ChatColor.stringValueOf(currencyValue.getColor()) + toFormat
-                ),"offerCreated1"));
+                        ),"offerCreated1"));
             }
             if (receiver != null){
                 receiver.sendMessage(Message.process(
@@ -240,9 +258,11 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task1 , receiver));
             }
-        });
+        };
+        handlers.put(OfferCreated.class, offerHandler);
+        //eventManager.subscribe(OfferCreated.class, event -> );
 
-        eventManager.subscribe(OfferCanceled.class, event -> {
+        EventHandler<OfferCanceled> offerCanceledHandler = event -> {
             Offer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
@@ -266,9 +286,11 @@ public class EventListener {
 
                 platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
             }
-        });
+        };
+        handlers.put(OfferCanceled.class, offerCanceledHandler);
+        //eventManager.subscribe(OfferCanceled.class, event -> );
 
-        eventManager.subscribe(OfferExpired.class, event -> {
+        EventHandler<OfferExpired> offerExpiredHandler = event ->  {
             Offer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
@@ -288,9 +310,11 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
             }
-        });
+        };
+        handlers.put(OfferExpired.class, offerExpiredHandler);
+        //eventManager.subscribe(OfferExpired.class, event ->);
 
-        eventManager.subscribe(OfferAccepted.class, event -> {
+        EventHandler<OfferAccepted> offerAcceptedHandler = event ->  {
             Offer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
@@ -308,6 +332,40 @@ public class EventListener {
                 };
                 platformAdapter.getScheduler().run(ContextualTask.build(task , sender));
             }
-        });
+        };
+        handlers.put(OfferAccepted.class, offerAcceptedHandler);
+        //eventManager.subscribe(OfferAccepted.class, event -> );
+
+        handlers.forEach((eventClass, handler) ->
+                subscribeUnsafe(eventManager, eventClass, handler)
+        );
+        Console.log("Event listeners registered: " + handlers.size());
+    }
+
+    public static void unregisterAll() {
+        EventManager eventManager = EventManagerProvider.get();
+        handlers.forEach((eventClass, handler) ->
+                unsubscribeUnsafe(eventManager, eventClass, handler)
+        );
+        Console.log("Event listeners unregistered: " + handlers.size());
+        handlers.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Event> void subscribeUnsafe(
+            EventManager eventManager,
+            Class<? extends Event> eventClass,
+            EventHandler<? extends Event> handler
+    ) {
+        eventManager.subscribe((Class<T>) eventClass, (EventHandler<T>) handler);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Event> void unsubscribeUnsafe(
+            EventManager eventManager,
+            Class<? extends Event> eventClass,
+            EventHandler<? extends Event> handler
+    ) {
+        eventManager.unsubscribe((Class<T>) eventClass, (EventHandler<T>) handler);
     }
 }

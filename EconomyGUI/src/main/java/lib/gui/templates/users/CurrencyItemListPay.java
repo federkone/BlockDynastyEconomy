@@ -25,7 +25,7 @@ public class CurrencyItemListPay extends CurrencyListToPay{
 
     @Override
     public String execute(IEntityGUI sender, ICurrency currency, BigDecimal amount){
-        payWithItemsUseCase.execute(sender.asEntityHardCash(),targetPlayer.getNickname(),currency.getSingular(),amount.intValue());
+        payWithItemsUseCase.execute(sender.asEntityHardCash(),targetPlayer.getNickname(),currency,amount.intValue());
         return "";
     }
 }

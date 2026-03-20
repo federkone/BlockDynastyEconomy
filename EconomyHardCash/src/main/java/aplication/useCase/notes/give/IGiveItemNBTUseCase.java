@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items.withdraw;
-
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import domain.entity.player.IEntityHardCash;
+package aplication.useCase.notes.give;
 
 import java.math.BigDecimal;
 
-public interface IExtractItemUseCase {
-    void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency);
+public interface IGiveItemNBTUseCase {
 
+    boolean execute(String target, BigDecimal amount, String currency);
 }

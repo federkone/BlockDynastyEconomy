@@ -25,7 +25,7 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
-import domain.service.CacheCurrencyItems;
+import aplication.useCase.items.service.CacheCurrencyItems;
 
 import java.math.BigDecimal;
 

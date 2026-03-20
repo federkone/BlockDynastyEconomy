@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items.withdraw;
+package aplication.useCase.notes.service;
 
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import domain.entity.player.IEntityHardCash;
+import aplication.HardCashService;
+import domain.entity.platform.HardCashCreator;
+import domain.service.ItemCreator;
 
-import java.math.BigDecimal;
-
-public interface IExtractItemUseCase {
-    void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency);
-
+public class ItemCreatorFactory {
+    public static ItemCreator getItemCreator(HardCashCreator platform) {
+        if (HardCashService.isEnableCustomHead()){
+            return new ItemWithTexture(platform);
+        }
+        return new ItemWithoutTexture(platform);
+    }
 }

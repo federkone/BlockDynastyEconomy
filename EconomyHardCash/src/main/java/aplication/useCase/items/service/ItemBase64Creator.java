@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.items;
+package aplication.useCase.items.service;
 
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.currency.ItemStackCurrency;
@@ -32,10 +32,14 @@ public class ItemBase64Creator implements ItemCreator {
 
     @Override
     public ItemStackCurrency create(ICurrency currency, BigDecimal amount) {
-        //podemos decidir si renderizar le item con material o solo base64 desde aqui
         return platform.createItemBase64(RecipeItemCurrency.builder()
                 .setBase64ITEM(currency.getBase64Item())
                 .build()
         );
+    }
+
+    @Override
+    public ItemStackCurrency create(ICurrency currency) {
+        return create(currency, null);
     }
 }

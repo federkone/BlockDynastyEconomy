@@ -162,6 +162,7 @@ public class Economy {
     }
 
     public static void shutdown(){
+        EventListener.unregisterAll();
         ServiceProvider.unregister(DynastyEconomy.class, apiWithVaultLogger);
         ServiceProvider.unregister(DynastyEconomy.class, api);
         if (repository != null) {

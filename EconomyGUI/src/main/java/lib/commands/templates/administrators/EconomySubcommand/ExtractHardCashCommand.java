@@ -1,7 +1,7 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.nbtItems.IExtractItemNBTUseCase;
+import aplication.useCase.notes.withdraw.IExtractItemNBTUseCase;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.abstractions.IEntityCommands;
 

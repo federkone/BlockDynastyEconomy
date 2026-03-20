@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package aplication.useCase.nbtItems;
+package aplication.useCase.notes.withdraw;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
@@ -25,7 +25,7 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import domain.service.ItemCreator;
-import domain.service.ItemCreatorFactory;
+import aplication.useCase.notes.service.ItemCreatorFactory;
 
 import java.math.BigDecimal;
 

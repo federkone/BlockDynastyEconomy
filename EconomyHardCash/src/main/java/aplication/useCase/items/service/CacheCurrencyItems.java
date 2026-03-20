@@ -1,10 +1,10 @@
-package domain.service;
+package aplication.useCase.items.service;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import aplication.useCase.items.ItemBase64Creator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
+import domain.service.ItemCreator;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -30,9 +30,12 @@ public class CacheCurrencyItems {
                 .orElse(null);
     }
 
+    public Currencywrapper getItem(UUID itemId) {
+        return this.items.get(itemId);
+    }
+
     public void updateCurrencies() {
         this.searchCurrencyUseCase.getCurrencies()
-                //.filter(currency -> currency.getBase64Item() != null && !currency.getBase64Item().isEmpty())
                 .forEach(currency -> {
                     ItemStackCurrency item =itemCreator.create(currency, BigDecimal.ONE);
                     if (item != null && !item.isNull()){

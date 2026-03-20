@@ -33,9 +33,17 @@ import aplication.useCase.items.payment.PayWithItemsUseCase;
 import aplication.useCase.items.withdraw.ExtractItemDisableUseCase;
 import aplication.useCase.items.withdraw.ExtractItemUseCase;
 import aplication.useCase.items.withdraw.IExtractItemUseCase;
-import aplication.useCase.nbtItems.*;
+import aplication.useCase.notes.deposit.DepositItemNBTUseCase;
+import aplication.useCase.notes.deposit.DepositItemNBTUseCaseDisable;
+import aplication.useCase.notes.deposit.IDepositItemNBTUseCase;
+import aplication.useCase.notes.withdraw.ExtractItemNBTUseCase;
+import aplication.useCase.notes.withdraw.ExtractItemNBTUseCaseDisable;
+import aplication.useCase.notes.withdraw.IExtractItemNBTUseCase;
+import aplication.useCase.notes.give.GiveItemNBTUseCase;
+import aplication.useCase.notes.give.GiveItemNBTUseCaseDisable;
+import aplication.useCase.notes.give.IGiveItemNBTUseCase;
 import domain.entity.platform.HardCashCreator;
-import domain.service.CacheCurrencyItems;
+import aplication.useCase.items.service.CacheCurrencyItems;
 
 public class HardCashUseCaseFactory {
     private static HardCashCreator hardCashCreator;
@@ -88,7 +96,7 @@ public class HardCashUseCaseFactory {
 
     public static IExtractItemUseCase getExtractItemUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new ExtractItemUseCase(hardCashCreator, withdrawUseCase,searchCurrencyUseCase,cacheCurrencyItems);
+            return new ExtractItemUseCase(hardCashCreator, withdrawUseCase,cacheCurrencyItems);
         }
         return new ExtractItemDisableUseCase();
     }
@@ -102,7 +110,7 @@ public class HardCashUseCaseFactory {
 
     public static IPayWithItemsUseCase getPayWithItemsUseCase() {
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new PayWithItemsUseCase(hardCashCreator, searchCurrencyUseCase,payUseCase,depositUseCase,getItemsBalanceUseCase());
+            return new PayWithItemsUseCase(hardCashCreator, searchCurrencyUseCase,payUseCase,depositUseCase,getItemsBalanceUseCase(), cacheCurrencyItems);
         }
         return new PayWithItemsDisableUseCase();
     }

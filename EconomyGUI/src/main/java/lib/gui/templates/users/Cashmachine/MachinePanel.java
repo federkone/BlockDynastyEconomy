@@ -19,7 +19,7 @@ import abstractions.platform.materials.Materials;
 import abstractions.platform.recipes.RecipeItem;
 import aplication.useCase.HardCashUseCaseFactory;
 import aplication.useCase.items.deposit.IDepositItemUseCase;
-import aplication.useCase.nbtItems.IDepositItemNBTUseCase;
+import aplication.useCase.notes.deposit.IDepositItemNBTUseCase;
 import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;

@@ -82,9 +82,15 @@ public class AccountBalance extends PaginatedPanel<Money> {
                 .setName(Message.process(Map.of("currency",ChatColor.stringValueOf(currency.getColor()) + currency.getSingular()),"AccountBalance.button1.nameItem"))
                 .setLore( Message.process(Map.of("color",ChatColor.stringValueOf(Colors.WHITE),
                         "currency",ChatColor.stringValueOf(currency.getColor()) + money.format()),"AccountBalance.button1.lore"),
-                        currency.isPhysicalItemSupported() ? ChatColor.stringValueOf(Colors.WHITE)+"Inventory: "+ ChatColor.stringValueOf(currency.getColor())+getItemsBalanceUseCase.execute(sender.asEntityHardCash(), currency.getSingular()):"")
+                        getItemBalance(sender,currency))
                 .setTexture(currency.getTexture())
                 .build());
+    }
+    private String getItemBalance(IEntityGUI sender, ICurrency currency) {
+        if (!currency.isPhysicalItemSupported()) return "";
+        int cant= getItemsBalanceUseCase.execute(sender.asEntityHardCash(), currency);
+        if (cant == -1 ) return "";
+        return ChatColor.stringValueOf(Colors.WHITE)+"Inventory: "+ ChatColor.stringValueOf(currency.getColor())+cant;
     }
 
     @Override

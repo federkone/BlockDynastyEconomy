@@ -36,7 +36,7 @@ public class ExtractorItemPanel extends CurrencySelectorAndAmount {
 
     @Override
     public String execute(IEntityGUI sender, ICurrency currency, BigDecimal amount){
-        extractItemUseCase.execute(sender.asEntityHardCash(),amount, currency.getSingular());
+        extractItemUseCase.execute(sender.asEntityHardCash(),amount, currency);
         return "";
     }
 }

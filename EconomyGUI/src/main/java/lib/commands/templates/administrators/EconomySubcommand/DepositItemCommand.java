@@ -1,7 +1,7 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.nbtItems.IGiveItemNBTUseCase;
+import aplication.useCase.notes.give.IGiveItemNBTUseCase;
 import lib.commands.PlatformCommand;
 import lib.commands.abstractions.AbstractCommand;
 import lib.commands.abstractions.IEntityCommands;
