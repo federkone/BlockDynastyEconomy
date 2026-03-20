@@ -1,7 +1,7 @@
 package lib.commands.templates.administrators.EconomySubcommand;
 
 import aplication.useCase.HardCashUseCaseFactory;
-import aplication.useCase.nbtItems.IDepositItemNBTUseCase;
+import aplication.useCase.notes.deposit.IDepositItemNBTUseCase;
 import lib.commands.abstractions.AbstractCommand;
 
 public class DepositHardCashCommand extends AbstractCommand {

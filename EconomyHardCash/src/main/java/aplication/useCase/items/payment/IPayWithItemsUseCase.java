@@ -16,9 +16,10 @@
 
 package aplication.useCase.items.payment;
 
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.player.IEntityHardCash;
 
 public interface IPayWithItemsUseCase {
 
-    void execute(IEntityHardCash player, String targetPlayerName, String currencyName, int cantItems);
+    void execute(IEntityHardCash player, String targetPlayerName, ICurrency currency, int cantItems);
 }

@@ -17,6 +17,7 @@
 package BlockDynasty.BukkitImplementation;
 
 import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.TreasuryHook;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.ClickListener;
 import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
@@ -56,6 +57,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         instance = this;
         try {
             registerEconomyCore();
+            ItemStackProvider.init();
             registerCommands();
             registerEvents();
             registerIntegrations();
@@ -80,6 +82,7 @@ public class BlockDynastyEconomy extends JavaPlugin {
         Economy.shutdown();
         try {
             registerEconomyCore();
+            ItemStackProvider.init();
             registerEvents();
             Bukkit.getOnlinePlayers().forEach(player -> {economy.getPlayerJoinListener().loadPlayerAccount(EntityPlayerAdapter.of(player));});
             registerIntegrations();

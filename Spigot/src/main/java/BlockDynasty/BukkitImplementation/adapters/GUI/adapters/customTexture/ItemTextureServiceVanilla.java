@@ -16,7 +16,7 @@
 
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture;
 
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import abstractions.platform.materials.Materials;
 import org.bukkit.inventory.ItemStack;

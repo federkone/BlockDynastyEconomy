@@ -104,6 +104,16 @@ public class HytaleAdapter implements IPlatform {
     }
 
     @Override
+    public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipeItemCurrency) {
+        return MaterialAdapter.createItemStack(recipeItemCurrency);
+    }
+
+    @Override
+    public ItemStackCurrency createItemBase64(RecipeItemCurrency recipeItemCurrency) {
+        return MaterialAdapter.createItemStack(recipeItemCurrency);
+    }
+
+    @Override
     public void dispatchCommand(String s) throws Exception {
         CommandManager.get().handleCommand(ConsoleSender.INSTANCE,s);
     }
@@ -125,10 +135,6 @@ public class HytaleAdapter implements IPlatform {
         return playerRefs.stream().map(PlayerAdapter::new).collect(Collectors.toList());
     }
 
-    @Override
-    public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipeItemCurrency) {
-        return MaterialAdapter.createItemStack(recipeItemCurrency);
-    }
 
     @Override
     public boolean hasSupportHardCash() {

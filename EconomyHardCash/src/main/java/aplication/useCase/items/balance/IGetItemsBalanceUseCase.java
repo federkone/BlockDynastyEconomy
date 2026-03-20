@@ -16,9 +16,10 @@
 
 package aplication.useCase.items.balance;
 
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.player.IEntityHardCash;
 
 public interface IGetItemsBalanceUseCase {
 
-    int execute(IEntityHardCash player, String currencyName);
+    int execute(IEntityHardCash player, ICurrency currencyName);
 }

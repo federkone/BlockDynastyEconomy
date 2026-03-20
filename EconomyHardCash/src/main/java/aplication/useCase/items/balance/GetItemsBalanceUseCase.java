@@ -18,43 +18,41 @@ package aplication.useCase.items.balance;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.service.ItemBase64Creator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import aplication.useCase.items.service.CacheCurrencyItems;
 import domain.service.ItemCreator;
-
-import java.math.BigDecimal;
 
 public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private HardCashCreator platform;
     private ItemCreator itemCreator;
+    private CacheCurrencyItems cacheCurrencyItems;
 
-    public GetItemsBalanceUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public GetItemsBalanceUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.cacheCurrencyItems = cacheCurrencyItems;
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
     @Override
-    public int execute(IEntityHardCash player, String currencyName) {
-        var currencyResult = searchCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            //player.sendMessage("Invalid currency.");
-            return -1;
-        }
-        ICurrency currency = currencyResult.getValue();
+    public int execute(IEntityHardCash player, ICurrency currency) {
         if (!currency.isPhysicalItemSupported()){
-            //player.sendMessage("Currency does not support physical items.");
             return -1;
         }
 
-        if (currency.getMaterial() == null || currency.getMaterial().isEmpty()) {
-            //player.sendMessage("Currency does not have a valid material.");
+        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
             return -1;
         }
-        ItemStackCurrency itemCurrency = itemCreator.create(currency, BigDecimal.ONE);
+        CacheCurrencyItems.Currencywrapper wrapper = cacheCurrencyItems.getItem(currency.getUuid());
+        if (wrapper == null) {
+            return -1;
+        }
+        ItemStackCurrency itemCurrency = wrapper.getItem();
+        if (itemCurrency.isNull()) return -1;
         return player.countItems(itemCurrency);
     }
 }
