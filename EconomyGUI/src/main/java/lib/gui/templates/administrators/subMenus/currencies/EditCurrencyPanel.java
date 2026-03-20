@@ -61,7 +61,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                         .setTexture(currency.getTexture())
                         .setLore(Message.processLines(Map.of(
                                 "symbol", color + currency.getSymbol(),
-                                "material", color + currency.getMaterial(),
+                                "Icon", color + currency.getMaterial(),
                                 "color", color + currency.getColor(),
                                 "balance", color + currency.getDefaultBalance(),
                                 "rate", color + currency.getExchangeRate(),
@@ -72,7 +72,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Edit Start Balance button
-        setButton(11, Button.builder()
+        setButton(10, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.EMERALD_BLOCK)
                         .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button2.nameItem"))
@@ -84,7 +84,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Set Currency Rate button
-        setButton(13, Button.builder()
+        setButton(11, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.GOLD_NUGGET)
                         .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button3.nameItem"))
@@ -95,7 +95,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 })
                 .build());
 
-        setButton(14, Button.builder()
+        setButton(20, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.BOOK)
                         .setName(ChatColor.stringValueOf(Colors.GREEN) + "Whitelist currencies for Exchange")
@@ -150,7 +150,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Edit Symbol button
-        setButton(20,Button.builder()
+        setButton(19,Button.builder()
                 .setItemStack( Item.of(RecipeItem.builder()
                         .setMaterial(Materials.NAME_TAG)
                         .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button5.nameItem"))
@@ -160,7 +160,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Set Default Currency button
-        setButton(22, Button.builder()
+        setButton(13, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.NETHER_STAR)
                         .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button6.nameItem"))
@@ -177,13 +177,13 @@ public class EditCurrencyPanel extends AbstractPanel {
                     }
                 }).build());
 
-        setButton(23, Button.builder()
+        setButton(33, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(currency.isPhysicalItemSupported() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE)
                         .setName(currency.isPhysicalItemSupported() ? "Physical item support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Physical item support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
                         .setLore(ChatColor.stringValueOf(Colors.GRAY)+"Click to " + (currency.isPhysicalItemSupported() ? "Disable" : "Enable"),
                                 "This option enable or disable the possibility ",
-                                "of using physical items to Withdraw this currency")
+                                "of using physical items to Withdraw an Deposit this currency")
                         .build()))
                 .setLeftClickAction( f -> {
                     try {
@@ -198,7 +198,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Toggle Payable button
-        setButton(24, Button.builder()
+        setButton(22, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(currency.isTransferable() ? Materials.LIME_CONCRETE: Materials.RED_CONCRETE)
                         .setName(currency.isTransferable() ? "Transferable: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Transferable: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
@@ -215,7 +215,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                     }
                 }).build());
         // Edit Singular Name button
-        setButton(29, Button.builder()
+        setButton(28, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.PAPER)
                         .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button7.nameItem"))
@@ -226,7 +226,7 @@ public class EditCurrencyPanel extends AbstractPanel {
 
         // Edit Plural Name button
 
-        setButton(31, Button.builder()
+        setButton(29, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(Materials.BOOK)
                         .setName(Message.process(Map.of("color",ChatColor.stringValueOf(Colors.GREEN)), "EditCurrencyPanel.button8.nameItem"))
@@ -236,7 +236,7 @@ public class EditCurrencyPanel extends AbstractPanel {
                 .build());
 
         // Toggle Decimals button
-        setButton(33, Button.builder()
+        setButton(31, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder()
                         .setMaterial(currency.isDecimalSupported() ? Materials.LIME_CONCRETE : Materials.RED_CONCRETE)
                         .setName(currency.isDecimalSupported() ? "Decimals support: "+ ChatColor.stringValueOf(Colors.GREEN)+"Activated" : "Decimals support: "+ChatColor.stringValueOf(Colors.RED)+"Disabled")
@@ -255,9 +255,10 @@ public class EditCurrencyPanel extends AbstractPanel {
 
         setButton(34, Button.builder()
                 .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BEDROCK)
-                        .setName("Select item to represent ItemStack currency")
+                        .setName("Select item to represent Physical currency")
                         .setLore("Click to select an item that will represent",
-                                "this currency when using the ItemStack based system",
+                                "this currency when using the ItemsBasedEconomy",
+                                "Physical item support: "+(currency.isPhysicalItemSupported() ? ChatColor.stringValueOf(Colors.GREEN)+"Activated" : ChatColor.stringValueOf(Colors.RED)+"Disabled"),
                                 ChatColor.stringValueOf(Colors.GREEN)+"#Use the item in your hand, item or Empty to clear")
                         .build()))
                 .setLeftClickAction(

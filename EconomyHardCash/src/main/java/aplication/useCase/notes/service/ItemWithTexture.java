@@ -44,7 +44,7 @@ public class ItemWithTexture implements ItemCreator {
                         ChatColor.stringValueOf(Colors.GOLD)+"Consumable item.",
                         ChatColor.stringValueOf(Colors.GOLD)+"Trade it or store it safely!","",
                         ChatColor.stringValueOf(Colors.GRAY)+"[Valid for Dynasty Economy System]")
-                .setName(color + currency.getSingular())
+                .setName(color + currency.getSingular()+" Note")
                 .setTexture(currency.getTexture())
                 .setMaterial(Materials.match(currency.getMaterial()))
                 .setBase64ITEM(currency.getBase64Item())
