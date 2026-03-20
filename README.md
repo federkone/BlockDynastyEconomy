@@ -57,6 +57,7 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 - **Vault** ✅
 - **VaultUnlocked** ✅
 - **Treasury** ✅
+- **Placeholder** ✅
 ----
 
 ### 🎯 Supported Versions Sponge
@@ -83,7 +84,7 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
-| 3.1.1   | ✅     | JDK 17+      | Fully supported |
+| 3.5.0   | ✅     | JDK 17+      | Fully supported |
 
 ----
 ### 🎯 Supported Versions BungeeCord
