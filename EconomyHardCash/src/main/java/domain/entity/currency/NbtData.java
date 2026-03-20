@@ -19,6 +19,12 @@ package domain.entity.currency;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Warning:
+ This component is a value object which should not be modified,
+ as this is attribute-based identification,
+ and modification may invalidate all items created with this format in the engine.
+ */
 //warning: atributes can be null
 public class NbtData {
     private String nameCurrency;

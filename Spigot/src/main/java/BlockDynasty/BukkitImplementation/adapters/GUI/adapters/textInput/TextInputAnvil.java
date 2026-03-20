@@ -17,7 +17,7 @@
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput;
 
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.SoundProvider;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -38,7 +38,7 @@ public class TextInputAnvil extends TextInputChat {
         Player player = (Player) owner.getRoot();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
-                    player.playSound(player.getLocation(), ItemStackProvider.getClickSound(), 0.3f, 1.0f);
+                    player.playSound(player.getLocation(), SoundProvider.getClickSound(), 0.3f, 1.0f);
                     if (slot != AnvilGUI.Slot.OUTPUT) {
                         return Collections.emptyList();
                     }
@@ -64,7 +64,7 @@ public class TextInputAnvil extends TextInputChat {
         Player player = (Player) owner.getRoot();
         new AnvilGUI.Builder()
                 .onClick((slot, stateSnapshot) -> {
-                    player.playSound(player.getLocation(), ItemStackProvider.getClickSound(), 0.3f, 1.0f);
+                    player.playSound(player.getLocation(), SoundProvider.getClickSound(), 0.3f, 1.0f);
                     // When output slot is clicked (process input)
                     if (slot == AnvilGUI.Slot.OUTPUT) {
                         String input = stateSnapshot.getText();

@@ -16,13 +16,14 @@
 
 package aplication.useCase.items.withdraw;
 
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.player.IEntityHardCash;
 
 import java.math.BigDecimal;
 
 public class ExtractItemDisableUseCase implements IExtractItemUseCase {
     @Override
-    public void execute(IEntityHardCash player, BigDecimal amount, String currency) {
+    public void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency) {
         player.sendMessage("Economy Item Based system is disabled." );
     }
 }

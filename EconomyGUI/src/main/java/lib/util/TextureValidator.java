@@ -12,22 +12,26 @@ public class TextureValidator {
 
     public static String validateInput(String input) {
         if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+
+        if (input.equalsIgnoreCase("clear")) {
             return "";
         }
 
         String trimmedInput = input.trim();
 
         if (isMinecraftTextureUrl(trimmedInput)) {
-            return validateMinecraftUrl(trimmedInput) ? trimmedInput : "";
+            return validateMinecraftUrl(trimmedInput) ? trimmedInput : null;
         }
 
         String urlFromBase64 = extractUrlFromBase64(trimmedInput);
         if (urlFromBase64 != null) {
-            return validateMinecraftUrl(urlFromBase64) ? urlFromBase64 : "";
+            return validateMinecraftUrl(urlFromBase64) ? urlFromBase64 : null;
         }
 
         String constructedUrl = HTTP_TEXTURE_PREFIX + trimmedInput;
-        return validateMinecraftUrl(constructedUrl) ? constructedUrl : "";
+        return validateMinecraftUrl(constructedUrl) ? constructedUrl : null;
     }
 
     private static boolean isMinecraftTextureUrl(String url) {

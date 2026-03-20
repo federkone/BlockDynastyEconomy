@@ -19,7 +19,7 @@ package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.InventoryAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.ItemStackProvider;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackProvider;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput.TextInputFactory;
 import BlockDynasty.BukkitImplementation.adapters.proxy.ProxySubscriberImp;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
@@ -114,10 +114,17 @@ public class BukkitAdapter implements IPlatform {
     }
 
     @Override
-    public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        ItemStack itemStack = ItemStackProvider.createItemStackCurrency(recipe);
-        return new ItemStackCurrencyAdapter(itemStack);
+    public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe) {
+        ItemStack itemStack = ItemStackProvider.createItemStackNBT(recipe);
+        return new ItemStackAdapter(itemStack);
     }
+
+    @Override
+    public ItemStackCurrency createItemBase64(RecipeItemCurrency recipeItemCurrency) {
+        ItemStack itemStack = ItemStackProvider.creteItemStackBase64(recipeItemCurrency);
+        return new ItemStackAdapter(itemStack);
+    }
+
 
     @Override
     public boolean hasSupportHardCash() {

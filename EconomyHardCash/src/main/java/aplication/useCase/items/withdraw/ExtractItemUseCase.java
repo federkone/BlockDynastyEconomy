@@ -16,14 +16,14 @@
 
 package aplication.useCase.items.withdraw;
 
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.service.ItemBase64Creator;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
+import aplication.useCase.items.service.CacheCurrencyItems;
 import domain.service.ItemCreator;
 
 import java.math.BigDecimal;
@@ -31,31 +31,20 @@ import java.math.BigDecimal;
 public class ExtractItemUseCase implements IExtractItemUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
-    private SearchCurrencyUseCase searchCurrencyUseCase;
     private ItemCreator itemCreator;
+    private CacheCurrencyItems cacheCurrencyItems;
 
-    public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
+    public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platform = platform;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.cacheCurrencyItems = cacheCurrencyItems;
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
     @Override
-    public void execute(IEntityHardCash player, BigDecimal amount, String currencyName) {
+    public void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency) {
         if (amount.stripTrailingZeros().scale() > 0) {
             player.sendMessage("Amount must be an integer.");
-            return;
-        }
-        Result<ICurrency> currencyResult = searchCurrencyUseCase.getCurrency(currencyName);
-        if (!currencyResult.isSuccess()) {
-            player.sendMessage("Currency not found.");
-            return;
-        }
-
-        ICurrency currency = currencyResult.getValue();
-        if (currency.getBase64Item() == null || currency.getMaterial().isEmpty()) {
-            player.sendMessage("Currency does not have a valid material.");
             return;
         }
 
@@ -63,9 +52,24 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
             player.sendMessage("This currency does not support physical item withdrawal.");
             return;
         }
+        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
+            player.sendMessage("Currency does not have a valid material.");
+            return;
+        }
+
+        var item = itemCreator.create(currency);
+        if (item.isNull()){
+            player.sendMessage("Currency does not have a valid item representation.");
+            return;
+        }
+
+        CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
+        if (currencywrapper == null) {
+            player.sendMessage("Currency not have valid item.");
+            return;
+        }
 
         int emptySlots = player.emptySlots();
-        var item = itemCreator.create(currency, BigDecimal.ONE);
         int maxWithdrawable = emptySlots * item.maxStackSize();
 
         if (maxWithdrawable <= 0) {
@@ -79,7 +83,7 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
 
         Result<Void> withdrawResult = withdrawUseCase.execute(
                 player.getUniqueId(),
-                currencyName,
+                currency.getSingular(),
                 amountToWithdraw,
                 Context.COMMAND
         );
@@ -95,11 +99,11 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
 
         if (amount.compareTo(amountToWithdraw) > 0) {
             BigDecimal remaining = amount.subtract(amountToWithdraw);
-            player.sendMessage("You have received " + amountToWithdraw + " " + currencyName
-                    + " in items. You still have " + remaining + " " + currencyName
+            player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular()
+                    + " in items. You still have " + remaining + " " + currency.getSingular()
                     + " to withdraw. Please complete the transaction later.");
         } else {
-            player.sendMessage("You have received " + amountToWithdraw + " " + currencyName + " in items.");
+            player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular() + " in items.");
         }
     }
 }

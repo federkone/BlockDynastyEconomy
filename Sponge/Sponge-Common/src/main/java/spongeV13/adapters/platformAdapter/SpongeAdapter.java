@@ -63,6 +63,17 @@ public class SpongeAdapter implements IPlatform {
     public IPlayer getPlayer(String name) {
         return Sponge.server().player(name).map(EntityPlayerAdapter::of).orElse(null);
     }
+
+    @Override
+    public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipeItemCurrency) {
+        return new ItemStackCurrencyAdapter(MaterialAdapter.createItemStackCurrency(recipeItemCurrency));
+    }
+
+    @Override
+    public ItemStackCurrency createItemBase64(RecipeItemCurrency recipeItemCurrency) {
+        return null;
+    }
+
     @Override
     public IPlayer getPlayerByUUID(UUID uuid) {
         return Sponge.server().player(uuid).map(EntityPlayerAdapter::of).orElse(null);
@@ -174,11 +185,6 @@ public class SpongeAdapter implements IPlatform {
             default:
                 throw new IllegalArgumentException("Invalid number of rows: " + rows);
         }
-    }
-
-    @Override
-    public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        return new ItemStackCurrencyAdapter(MaterialAdapter.createItemStackCurrency(recipe));
     }
 
     @Override

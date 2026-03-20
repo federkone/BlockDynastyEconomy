@@ -16,11 +16,12 @@
 
 package aplication.useCase.items.withdraw;
 
+import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.player.IEntityHardCash;
 
 import java.math.BigDecimal;
 
 public interface IExtractItemUseCase {
-    void execute(IEntityHardCash player, BigDecimal amount, String currency);
+    void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency);
 
 }

@@ -22,7 +22,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IPayUseCas
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
-import aplication.useCase.items.ItemBaseCreator;
+import aplication.useCase.items.service.CacheCurrencyItems;
+import aplication.useCase.items.service.ItemBase64Creator;
 import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
@@ -35,37 +36,35 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
     private IDepositUseCase depositUseCase;
     private IGetItemsBalanceUseCase getItemsBalanceUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
+    private CacheCurrencyItems cacheCurrencyItems;
     private ItemCreator itemCreator;
     private HardCashCreator platform;
     private IPayUseCase payUseCase;
 
-    public PayWithItemsUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase,IPayUseCase payUseCase,IDepositUseCase depositUseCase,IGetItemsBalanceUseCase getItemsBalanceUseCase) {
+    public PayWithItemsUseCase(HardCashCreator platform, SearchCurrencyUseCase searchCurrencyUseCase,
+                               IPayUseCase payUseCase, IDepositUseCase depositUseCase, IGetItemsBalanceUseCase getItemsBalanceUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.depositUseCase = depositUseCase;
         this.getItemsBalanceUseCase = getItemsBalanceUseCase;
+        this.cacheCurrencyItems = cacheCurrencyItems;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.payUseCase = payUseCase;
-        this.itemCreator = new ItemBaseCreator(platform);
+        this.itemCreator = new ItemBase64Creator(platform);
     }
 
 
     @Override
-    public void execute(IEntityHardCash player, String targetPlayerName, String currencyName, int cantItems) {
+    public void execute(IEntityHardCash player, String targetPlayerName, ICurrency currency, int cantItems) {
         if(cantItems <= 0){
             player.sendMessage("The amount of items must be greater than zero.");
             return;
         }
-        int playerItemsBalance = getItemsBalanceUseCase.execute(player, currencyName);
-        if(playerItemsBalance == -1){return;}
+        int playerItemsBalance = getItemsBalanceUseCase.execute(player, currency);
+        if(playerItemsBalance == -1)return;
         if (playerItemsBalance < cantItems) {
             player.sendMessage("You don't have enough items to make the payment.");
             return;
         }
-        Result<ICurrency> result = searchCurrencyUseCase.getCurrency(currencyName);
-        if (!result.isSuccess()) {
-            player.sendMessage("Currency not found.");
-            return;
-        }
-        ICurrency currency = result.getValue();
+
         if(!currency.isTransferable()){
             player.sendMessage("This currency is not transferable.");
             return;
@@ -75,14 +74,29 @@ public class PayWithItemsUseCase implements IPayWithItemsUseCase{
             return;
         }
 
-        ItemStackCurrency itemCurrency = itemCreator.create(currency, BigDecimal.ONE);
+        CacheCurrencyItems.Currencywrapper wrapper = cacheCurrencyItems.getItem(currency.getUuid());
+        if (wrapper == null){
+            player.sendMessage("Currency does not have a valid item representation.");
+            return;
+        }
+
+        ItemStackCurrency itemCurrency = wrapper.getItem();
+        if (itemCurrency.isNull()){
+            player.sendMessage("Currency does not have a valid item representation.");
+            return;
+        }
+
         if(player.takeItems(itemCurrency,cantItems)){
-            Result<Void> resultDeposit= depositUseCase.execute(player.getUniqueId(),currencyName, BigDecimal.valueOf(cantItems), Context.SYSTEM);
+            Result<Void> resultDeposit= depositUseCase.execute(player.getUniqueId(),currency.getSingular(), BigDecimal.valueOf(cantItems), Context.SYSTEM);
             if(resultDeposit.isSuccess()){
-                Result<Void> resultPay=payUseCase.execute(player.getName(),targetPlayerName,currencyName, BigDecimal.valueOf(cantItems));
+                Result<Void> resultPay=payUseCase.execute(player.getName(),targetPlayerName,currency.getSingular(), BigDecimal.valueOf(cantItems));
                 if (!resultPay.isSuccess()) {
                     player.sendMessage("Payment failed.");
                 }
+            }else{
+                itemCurrency.setCantity(cantItems);
+                player.giveItem(itemCurrency);
+                player.sendMessage("Payment failed.");
             }
         }
     }

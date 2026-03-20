@@ -110,7 +110,10 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currencyService.getCurrencies().stream()
-                .filter(c -> c.getMaterial() != null && c.getMaterial().equalsIgnoreCase(material))
+                .filter(c -> {
+                    String materialActual = c.getMaterial();
+                    return materialActual != null && !materialActual.isEmpty() && materialActual.equals(material);
+                })
                 .findFirst().ifPresent(c -> {
                     throw new IllegalArgumentException("Material already in use by currency: " + c.getSingular());
                 });
@@ -124,7 +127,10 @@ public class EditCurrencyUseCase {
             throw new CurrencyNotFoundException("Currency not found");
         }
         currencyService.getCurrencies().stream()
-                .filter(c -> c.getBase64Item() != null && c.getBase64Item().equalsIgnoreCase(base64Item))
+                .filter(c ->{
+                    String base64 = c.getBase64Item();
+                    return base64 != null && !base64.isEmpty() && base64.equals(base64Item);
+                })
                 .findFirst().ifPresent(c -> {
                     throw new IllegalArgumentException("Base64 item already in use by currency: " + c.getSingular());
                 });

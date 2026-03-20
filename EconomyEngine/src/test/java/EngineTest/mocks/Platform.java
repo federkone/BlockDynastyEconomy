@@ -34,6 +34,16 @@ public class Platform implements IPlatform {
     }
 
     @Override
+    public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe) {
+        return null;
+    }
+
+    @Override
+    public ItemStackCurrency createItemBase64(RecipeItemCurrency recipe) {
+        return null;
+    }
+
+    @Override
     public IPlayer getPlayerByUUID(UUID uuid) {
         return MinecraftServer.getOnlinePlayers().stream().filter(p -> p.getUniqueId().equals(uuid)).findFirst().orElse(null);
     }
@@ -126,10 +136,6 @@ public class Platform implements IPlatform {
         return this;
     }
 
-    @Override
-    public ItemStackCurrency createItemStackCurrency(RecipeItemCurrency recipe) {
-        return null;
-    }
 
     @Override
     public boolean hasSupportHardCash() {

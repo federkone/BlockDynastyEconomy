@@ -14,51 +14,40 @@
  * limitations under the License.
  */
 
-package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials;
+package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialService;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialServiceFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.NBTData.NBTService;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.NBTData.NBTServiceFactory;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.atributes.SetAtributesFactory;
+import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.atributes.SetAtributesStrategy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.customTexture.*;
-import BlockDynasty.BukkitImplementation.utils.ItemSerialization;
-import BlockDynasty.BukkitImplementation.utils.Version;
 
 import abstractions.platform.materials.Materials;
 import abstractions.platform.recipes.RecipeItem;
 import domain.entity.currency.NbtData;
 import domain.entity.currency.RecipeItemCurrency;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SuppressWarnings( "deprecation")
 public class ItemStackProvider {
-    private static ItemTextureService itemTextureService = new ItemTextureServiceNull();
-    private static NBTService nbtService = NBTServiceFactory.get();
+    private static ItemTextureService itemTextureService;
+    private static NBTService nbtService;
+    private static SetAtributesStrategy setAtributesStrategy;
     private static MaterialService materialService;
-    private static boolean isOldSoundSys = Version.match("1.8", "1.9", "1.10","1.11");
 
-    static {
-        if(Version.hasSupportCustomProfile()){
-            itemTextureService = new ItemTextureServiceModern();
-        }else{
-            if(Version.hasMojangAuthLib()) {
-                itemTextureService = new ItemTextureServiceVanilla();
-            }
-        }
-        if(Version.isLegacy()){
-            materialService= new MaterialLegacy();
-        }else{
-            materialService= new MaterialModern();
-        }
+    public static void init(){
+        itemTextureService= ItemTextureServiceFactory.getItemTextureService();
+        materialService = MaterialServiceFactory.getMaterialService();
+        nbtService = NBTServiceFactory.get();
+        setAtributesStrategy = SetAtributesFactory.getStrategy();
     }
 
     public static Material toBukkitMaterial(Materials material) {
@@ -78,13 +67,7 @@ public class ItemStackProvider {
         } else {
             meta = item.getItemMeta();
         }
-
-        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
-            meta.setDisplayName(displayName);
-        }else {
-            meta.displayName(MiniMessage.miniMessage().deserialize(displayName));
-        }
-
+        setAtributesStrategy.setDisplayName(meta, displayName);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
     }
@@ -95,15 +78,7 @@ public class ItemStackProvider {
         List<String> lore = List.of(loreArray);
         ItemMeta meta= item.getItemMeta();
 
-        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
-                meta.setLore(lore);
-        }else {
-            List<Component> loreComponents = lore.stream()
-                    .map(m ->  MiniMessage.miniMessage().deserialize(m))
-                    .collect(Collectors.toList());
-            meta.lore(loreComponents);
-        }
-
+        setAtributesStrategy.setLore(meta, lore);
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         item.setItemMeta(meta);
     }
@@ -113,30 +88,36 @@ public class ItemStackProvider {
     }
 
     public static ItemStack createItemStack(RecipeItem recipeItem) {
-        ItemStack itemStack;
-        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
-            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
-        }else{
-            itemStack = materialService.createItemStack(recipeItem.getMaterial());
-        }
+        ItemStack itemStack = createItem(recipeItem);
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
     }
 
-    public static ItemStack createItemStackCurrency(RecipeItemCurrency recipeItem) {
-        ItemStack itemStack;
-        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
-            itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
-        }else {
-            itemStack = materialService.createItemStack(recipeItem.getMaterial());
-        }
+    public static ItemStack createItemStackNBT(RecipeItemCurrency recipeItem) {
+        ItemStack itemStack = createItem(recipeItem);
         applyNBTData(itemStack, recipeItem.getNbtData());
         applyItemName(itemStack, recipeItem.getName());
         applyItemLore(itemStack ,recipeItem.getLore());
         applyTexture(itemStack, recipeItem.getTexture());
         return itemStack;
+    }
+
+    public static ItemStack creteItemStackBase64(RecipeItemCurrency recipeItem) {
+        return ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+    }
+
+    private static ItemStack createItem(RecipeItem recipeItem) {
+        if (recipeItem.getBase64ITEM() != null && !recipeItem.getBase64ITEM().isEmpty()) {
+            ItemStack itemStack = ItemSerialization.fromBase64(recipeItem.getBase64ITEM());
+            if (itemStack.getType() == Material.AIR) {
+                return materialService.createItemStack(recipeItem.getMaterial());
+            }
+            return itemStack;
+        }else{
+            return materialService.createItemStack(recipeItem.getMaterial());
+        }
     }
 
     public static void applyNBTData(ItemStack itemStack,NbtData nbtData){
@@ -154,21 +135,5 @@ public class ItemStackProvider {
     }
     public static boolean isPlayerHead(Material material) {
        return materialService.isPlayerHead(material);
-    }
-
-    public static Sound getClickSound() {
-        if (isOldSoundSys) {
-            return Sound.valueOf("CLICK");
-        } else {
-            return Sound.UI_BUTTON_CLICK;
-        }
-    }
-
-    public static Sound getPickupSound() {
-        if (isOldSoundSys) {
-            return Sound.valueOf("ORB_PICKUP");
-        } else {
-            return Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-        }
     }
 }

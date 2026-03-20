@@ -1,3 +1,19 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials;
 
 import abstractions.platform.materials.Materials;
@@ -52,7 +68,34 @@ public class MaterialLegacy implements MaterialService {
                 MATERIAL_MAP.put(material, Material.valueOf("STAINED_GLASS_PANE"));
                 continue;
             }
-
+            if (material == Materials.GRASS_BLOCK) {
+                MATERIAL_MAP.put(material, Material.valueOf("GRASS"));
+                continue;
+            }
+            if (material == Materials.WATER_LILY_PAD) {
+                MATERIAL_MAP.put(material, Material.valueOf("WATER_LILY"));
+                continue;
+            }
+            if (material == Materials.NETHER_QUARTZ_ORE) {
+                MATERIAL_MAP.put(material, Material.valueOf("QUARTZ_ORE"));
+                continue;
+            }
+            if (material == Materials.LAPIS_LAZULI) {
+                MATERIAL_MAP.put(material, Material.valueOf("INK_SACK")); // En 1.8 el lapis es un tinte (Data 4)
+                continue;
+            }
+            if (material.name().contains("PLANKS")) {
+                MATERIAL_MAP.put(material, Material.valueOf("WOOD"));
+                continue;
+            }
+            if (material == Materials.CARVED_PUMPKIN) {
+                MATERIAL_MAP.put(material, Material.valueOf("PUMPKIN"));
+                continue;
+            }
+            if (material == Materials.TALL_GRASS) {
+                MATERIAL_MAP.put(material, Material.valueOf("LONG_GRASS"));
+                continue;
+            }
             try {
                 Material bukkitMaterial = Material.valueOf(material.name());
                 MATERIAL_MAP.put(material, bukkitMaterial);
@@ -84,6 +127,7 @@ public class MaterialLegacy implements MaterialService {
         return new ItemStack(toBukkitMaterial(materials));
     }
 
+    @Override
     public Material toBukkitMaterial(Materials material) {
         return MATERIAL_MAP.getOrDefault(material, FALLBACK);
     }

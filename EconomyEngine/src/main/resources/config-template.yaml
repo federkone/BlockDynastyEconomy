@@ -1,6 +1,6 @@
 # Main Configuration file.
 # BlockDynastyEconomy Plugin
-# Version: 1.1.5
+# Version: 1.2.5
 
 # Developer(s): @Federkone.
 
@@ -20,12 +20,13 @@ online: true
 #Hardcash
 # this option enables or disables the Hard cash system. "ItemStack/Items NBT TAGS".
 # when enabled, players will have a physical item "NOTE" in their inventory that represents their money.
-#Disclaimer: this system its objected to vulnerabilities and exploits related to the game engine or another plugins: example item duplication's, be careful and Test.
 HardCash:
   enable: true
   customHeadTexture: true
 
-# this option enables or disables "ItemStack/Items VANILLA" based economy.
+# this option enables or disables "ItemStack/Items" based economy. Enables Deposit and Withdraw specific item associated with the currency, for example: Diamonds, Emeralds, etc.
+#This option is independent of the Hard cash system, you can have both enabled or just one of them.
+#All configurations are in the gui system.
 ItemsBasedEconomy:
   enable: false
 

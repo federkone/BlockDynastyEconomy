@@ -19,7 +19,7 @@ import abstractions.platform.materials.Materials;
 import abstractions.platform.recipes.RecipeItem;
 import aplication.useCase.HardCashUseCaseFactory;
 import aplication.useCase.items.deposit.IDepositItemUseCase;
-import aplication.useCase.nbtItems.IDepositItemNBTUseCase;
+import aplication.useCase.notes.deposit.IDepositItemNBTUseCase;
 import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
@@ -70,7 +70,7 @@ public class MachinePanel extends AbstractPanel {
                         .setItemStack(Item.of(RecipeItem.builder()
                                 .setMaterial(Materials.EMERALD)
                                 .setName("Deposit Currency Item")
-                                .setLore("Deposit your currency items to convert them into balance.")
+                                .setLore("Deposit your currency items to convert them into wallet balance.")
                                 .build()))
                         .setLeftClickAction(event -> {
                             if (event.hasPermission("BlockDynastyEconomy.players.depositCash")) {
@@ -87,7 +87,7 @@ public class MachinePanel extends AbstractPanel {
                         .setItemStack(Item.of(RecipeItem.builder()
                                 .setMaterial(Materials.EMERALD)
                                 .setName("Deposit All Currency Item in your inventory")
-                                .setLore("Deposit your currency items to convert them into balance.")
+                                .setLore("Deposit your currency items to convert them into wallet balance.")
                                 .build()))
                         .setLeftClickAction(event -> {
                             if (event.hasPermission("BlockDynastyEconomy.players.depositCash")) {
