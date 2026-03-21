@@ -43,12 +43,12 @@ public class DepositItemNBTUseCase implements IDepositItemNBTUseCase {
     public void execute(IEntityHardCash player) {
         ItemStackCurrency item = player.takeHandItem();
         if(item == null){
-            player.sendMessage("You must hold a currency item to deposit.");
+            player.sendMessage("You must hold a Note item to deposit.");
             return;
         }
         NbtData nbtData = item.getNbtData();
         if (nbtData.getItemType() == null || nbtData.getUuidCurrency() == null) {
-            player.sendMessage("Not have a valid currency item in hand.");
+            player.sendMessage("Not have a valid Note item in hand.");
             return;
         }
         Result<ICurrency> result = searchCurrencyUseCase.getCurrency(nbtData.getItemType());
@@ -58,7 +58,7 @@ public class DepositItemNBTUseCase implements IDepositItemNBTUseCase {
         }
         ICurrency currency = result.getValue();
         if(!currency.getUuid().equals(UUID.fromString(nbtData.getUuidCurrency()))) {
-            player.sendMessage("Not have a valid currency item in hand.");
+            player.sendMessage("Not have a valid Note item in hand.");
             return;
         }
         player.removeItem(item);
