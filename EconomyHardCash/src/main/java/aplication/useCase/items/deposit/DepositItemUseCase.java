@@ -68,9 +68,8 @@ public class DepositItemUseCase implements IDepositItemUseCase {
             return;
         }
 
-        player.removeItem(item);
         BigDecimal cant = new BigDecimal(item.getCantity());
-
+        player.removeItem(item);
 
         Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
         if (!depositResult.isSuccess()) {
