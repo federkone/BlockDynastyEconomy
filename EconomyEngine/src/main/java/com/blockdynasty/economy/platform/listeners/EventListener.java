@@ -72,8 +72,7 @@ public class EventListener {
                 platformAdapter.getScheduler().run(ContextualTask.build(task , target));
             }
         };
-         handlers.put(PayEvent.class, payHandler);
-        //eventManager.subscribe(PayEvent.class, payHandler);
+        handlers.put(PayEvent.class, payHandler);
 
         EventHandler<TransferEvent> transferHandler = event ->  {
             IPlayer player = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
@@ -106,7 +105,6 @@ public class EventListener {
             }
         };
         handlers.put(TransferEvent.class, transferHandler);
-        //eventManager.subscribe(TransferEvent.class, event ->);
 
         EventHandler<ExchangeEvent> exchangeHandler = event -> {
             IPlayer player = platformAdapter.getPlayer(event.getPlayer().getNickname());
@@ -123,7 +121,6 @@ public class EventListener {
             }
         };
         handlers.put(ExchangeEvent.class, exchangeHandler);
-        //eventManager.subscribe(ExchangeEvent.class, event ->);
 
         EventHandler<TradeEvent> tradeHandler = event -> {
             IPlayer sender = platformAdapter.getPlayer(event.getFromPlayer().getNickname());
@@ -165,7 +162,6 @@ public class EventListener {
 
         };
         handlers.put(TradeEvent.class, tradeHandler);
-        //eventManager.subscribe(TradeEvent.class, event -> );
 
         EventHandler<DepositEvent> depositHandler = event -> {
             if (event.getContext() == Context.COMMAND){
@@ -185,7 +181,6 @@ public class EventListener {
 
         };
         handlers.put(DepositEvent.class, depositHandler);
-        //eventManager.subscribe(DepositEvent.class, event -> );
 
         EventHandler<WithdrawEvent> withdrawHandler = event -> {
             if (event.getContext() == Context.COMMAND){
@@ -204,7 +199,6 @@ public class EventListener {
             }
         };
         handlers.put(WithdrawEvent.class, withdrawHandler);
-        //eventManager.subscribe(WithdrawEvent.class, event -> );
 
         EventHandler<SetEvent> setHandler = event -> {
             if (event.getContext() == Context.COMMAND){
@@ -223,7 +217,6 @@ public class EventListener {
             }
         };
         handlers.put(SetEvent.class, setHandler);
-        //eventManager.subscribe(SetEvent.class, event -> );
 
         EventHandler<OfferCreated> offerHandler = event -> {
             Offer offer = event.getOffer();
@@ -260,7 +253,6 @@ public class EventListener {
             }
         };
         handlers.put(OfferCreated.class, offerHandler);
-        //eventManager.subscribe(OfferCreated.class, event -> );
 
         EventHandler<OfferCanceled> offerCanceledHandler = event -> {
             Offer offer = event.getOffer();
@@ -288,7 +280,6 @@ public class EventListener {
             }
         };
         handlers.put(OfferCanceled.class, offerCanceledHandler);
-        //eventManager.subscribe(OfferCanceled.class, event -> );
 
         EventHandler<OfferExpired> offerExpiredHandler = event ->  {
             Offer offer = event.getOffer();
@@ -312,7 +303,6 @@ public class EventListener {
             }
         };
         handlers.put(OfferExpired.class, offerExpiredHandler);
-        //eventManager.subscribe(OfferExpired.class, event ->);
 
         EventHandler<OfferAccepted> offerAcceptedHandler = event ->  {
             Offer offer = event.getOffer();
@@ -334,7 +324,6 @@ public class EventListener {
             }
         };
         handlers.put(OfferAccepted.class, offerAcceptedHandler);
-        //eventManager.subscribe(OfferAccepted.class, event -> );
 
         handlers.forEach((eventClass, handler) ->
                 subscribeUnsafe(eventManager, eventClass, handler)
