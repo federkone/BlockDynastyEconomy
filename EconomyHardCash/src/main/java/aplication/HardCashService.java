@@ -30,7 +30,9 @@ public class HardCashService {
     private static boolean enabled = false;
     private static boolean enableCustomHead = false;
 
-    public static void init(IConfiguration configuration, HardCashCreator hardCashCreator, IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase, IPayUseCase payUseCase,SearchCurrencyUseCase searchCurrencyUseCase){
+    public static void init(IConfiguration configuration, HardCashCreator hardCashCreator,
+                            IDepositUseCase depositUseCase, IWithdrawUseCase withdrawUseCase,
+                            IPayUseCase payUseCase,SearchCurrencyUseCase searchCurrencyUseCase){
         enabled = configuration.getBoolean("HardCash.enable");
         enableCustomHead = configuration.getBoolean("HardCash.customHeadTexture");
         itemBasedEconomyEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");

@@ -64,7 +64,7 @@ public class DepositAllItemUseCase implements IDepositItemUseCase {
 
         ICurrency currency = currencywrapper.getCurrency();
         if (!currency.isPhysicalItemSupported()){
-            player.sendMessage("This currency does not support physical item deposit.");
+            player.sendMessage("This currency does not support physical items.");
             return;
         }
 
