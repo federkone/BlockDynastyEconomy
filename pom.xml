@@ -23,6 +23,8 @@
         <module>EconomyApi</module>
         <module>Hytale</module>
         <module>ServiceProvider</module>
+        <module>YamlProcessor</module>
+        <module>CryptoUtils</module>
     </modules>
 
 </project>

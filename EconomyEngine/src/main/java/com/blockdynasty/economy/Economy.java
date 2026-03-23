@@ -20,11 +20,15 @@ import BlockDynasty.Economy.Core;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
+import abstractions.platform.entity.IPlayer;
+import com.blockdynasty.economy.configFromChannel.ProxyConfigRequest;
+import com.blockdynasty.economy.configFromChannel.ProxyConfigSubscriber;
 import com.blockdynasty.economy.apiImplement.ApiCustomSupplier;
 import com.blockdynasty.economy.apiImplement.ApiDefaultSupplier;
 import com.BlockDynasty.api.DynastyEconomy;
 import abstractions.platform.IProxySubscriber;
 import aplication.HardCashService;
+import com.blockdynasty.economy.configFromChannel.PlayerConfigJoinListener;
 import com.blockdynasty.economy.repository.ConnectionHandler.Hibernate.*;
 import net.blockdynasty.providers.services.ServiceProvider;
 import lib.gui.GUISystem;
@@ -55,10 +59,10 @@ import java.util.UUID;
 public class Economy {
     private Core core;
     private static IRepository repository;
-    private PlayerJoinListener playerJoinListener;
+    private static IPlayerJoin playerJoinListener;
     private static ApiDefaultSupplier api;
     private static ApiCustomSupplier apiWithVaultLogger;
-    private PlaceHolder placeHolder;
+    private static PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
     private IConfigurationEngine configuration;
     private Languages languages;
@@ -73,6 +77,22 @@ public class Economy {
         Message.addLang(languages);
         Console.setConsole(platformAdapter.getConsole(),configuration);
 
+        //--- hasta aca....... completableFeature para el caso de que en configuration diga que configsyncenable es true. informar a la espera de una conexion de jugador para terminar de inicializar.
+        if(configuration.getBoolean("sync-config-with-proxy")){
+            platformAdapter.registerMessageChannel(new ProxyConfigSubscriber(this,configuration));
+            Economy.playerJoinListener = new PlayerConfigJoinListener(this.platformAdapter);
+            if (!platformAdapter.getOnlinePlayers().isEmpty()){
+                IPlayer player = platformAdapter.getOnlinePlayers().iterator().next();
+                ProxyConfigRequest.request(platformAdapter, player, player.getUniqueId());
+            }else{
+                Console.log("Waiting for player connection to sync configuration with proxy...");
+            }
+        }else{
+            startServer(configuration);
+        }
+    }
+
+    public void startServer(IConfigurationEngine configuration){
         this.initDatabase(configuration);
 
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
@@ -80,8 +100,8 @@ public class Economy {
         api = new ApiDefaultSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
         apiWithVaultLogger = new ApiCustomSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
 
-        this.placeHolder = new PlaceHolder(core.getUseCaseFactory());
-        this.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
+        placeHolder = new PlaceHolder(core.getUseCaseFactory());
+        Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
 
         ServiceProvider.register(DynastyEconomy.class,api);
         ServiceProvider.register(DynastyEconomy.class, apiWithVaultLogger);
@@ -89,6 +109,8 @@ public class Economy {
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+
+        platformAdapter.startServer(configuration);
     }
 
     public static Economy init( IPlatform platformAdapter){
@@ -145,11 +167,11 @@ public class Economy {
         }
     }
 
-    public IPlayerJoin getPlayerJoinListener(){
+    public static IPlayerJoin getPlayerJoinListener(){
         return playerJoinListener;
     }
 
-    public PlaceHolder getPlaceHolder(){
+    public static PlaceHolder getPlaceHolder(){
         return placeHolder;
     }
 

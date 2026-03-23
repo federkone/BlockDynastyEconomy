@@ -21,6 +21,7 @@ import BlockDynasty.BukkitImplementation.utils.Console;
 import lib.commands.abstractions.Command;
 import lib.commands.CommandService;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +29,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandRegister {
-    private static final BlockDynastyEconomy plugin= BlockDynastyEconomy.getInstance();
 
-    public static void registerAllEconomySystem(){
+
+    public static void registerAllEconomySystem(BlockDynastyEconomy plugin){
         List<Command> commands = CommandService.getMainCommands();
         CommandService.registerSubCommand("eco",new ReloadCommand(plugin));
         for(Command command: commands){

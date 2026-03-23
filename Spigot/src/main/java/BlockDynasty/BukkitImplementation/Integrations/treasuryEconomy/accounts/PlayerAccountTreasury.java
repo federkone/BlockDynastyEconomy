@@ -22,23 +22,22 @@ import me.lokka30.treasury.api.economy.account.PlayerAccount;
 import me.lokka30.treasury.api.economy.currency.Currency;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransaction;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransactionType;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.temporal.Temporal;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerAccountTreasury implements PlayerAccount {
-    private DynastyEconomy api; //una instancia de la api del sistema economico para realizar las operaciones
     private UUID accountUUID;
 
-    public PlayerAccountTreasury(DynastyEconomy api, UUID accountUUID) {
-        this.api = api;
+    public PlayerAccountTreasury( UUID accountUUID) {
         this.accountUUID = accountUUID;
+    }
+    private Optional<DynastyEconomy> getApi(){
+        return ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(com.blockdynasty.economy.Economy.getApiWithVaultLoggerId()));
     }
 
     @Override
@@ -48,17 +47,32 @@ public class PlayerAccountTreasury implements PlayerAccount {
 
     @Override
     public @NotNull Optional<String> getName() {
+        Optional<DynastyEconomy> optionalApi = getApi();
+        if (optionalApi.isEmpty()) {
+            return Optional.empty();
+        }
+        DynastyEconomy api = optionalApi.get();
         return Optional.of(api.getAccount(accountUUID).getName());
     }
 
     @Override
     public @NotNull CompletableFuture<BigDecimal> retrieveBalance(@NotNull Currency currency) {
         //recibe una moneda y pregunta por el monto que tiene la cuenta
+        Optional<DynastyEconomy> optionalApi = getApi();
+        if (optionalApi.isEmpty()) {
+            return CompletableFuture.completedFuture(BigDecimal.ZERO);
+        }
+        DynastyEconomy api = optionalApi.get();
         return CompletableFuture.completedFuture(api.getBalance(accountUUID, currency.getIdentifier()));
     }
 
     @Override
     public @NotNull CompletableFuture<BigDecimal> doTransaction(@NotNull EconomyTransaction economyTransaction) {
+        Optional<DynastyEconomy> optionalApi = getApi();
+        if (optionalApi.isEmpty()) {
+            return CompletableFuture.completedFuture(BigDecimal.ZERO);
+        }
+        DynastyEconomy api = optionalApi.get();
         EconomyTransactionType type = economyTransaction.getType();
         //deposit
         switch (type) {
@@ -77,6 +91,11 @@ public class PlayerAccountTreasury implements PlayerAccount {
 
     @Override
     public @NotNull CompletableFuture<Boolean> deleteAccount() {
+        Optional<DynastyEconomy> optionalApi = getApi();
+        if (optionalApi.isEmpty()) {
+            return CompletableFuture.completedFuture(false);
+        }
+        DynastyEconomy api = optionalApi.get();
         EconomyResponse response = api.deleteAccount(accountUUID);
         if (response.isSuccess()) {
             return CompletableFuture.completedFuture(true);
@@ -87,6 +106,11 @@ public class PlayerAccountTreasury implements PlayerAccount {
 
     @Override
     public @NotNull CompletableFuture<Collection<String>> retrieveHeldCurrencies() { //monedas que tiene la cuenta
+        Optional<DynastyEconomy> optionalApi = getApi();
+        if (optionalApi.isEmpty()) {
+            return CompletableFuture.completedFuture(new ArrayList<>());
+        }
+        DynastyEconomy api = optionalApi.get();
         Account account = api.getAccount(accountUUID);
         List<String> currencies= account.getBalances().stream().map( money -> money.getCurrency().getSingular()).toList();
         return CompletableFuture.completedFuture(currencies);

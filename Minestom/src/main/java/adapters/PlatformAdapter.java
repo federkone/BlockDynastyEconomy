@@ -34,6 +34,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.IPlayer;
+import services.configuration.IConfiguration;
 
 import java.io.File;
 import java.util.Collection;
@@ -155,5 +156,15 @@ public class PlatformAdapter implements IPlatform {
     @Override
     public boolean hasSupportGui() {
         return true;
+    }
+
+    @Override
+    public void startServer(IConfiguration configuration) {
+
+    }
+
+    @Override
+    public void reloadServer() {
+
     }
 }

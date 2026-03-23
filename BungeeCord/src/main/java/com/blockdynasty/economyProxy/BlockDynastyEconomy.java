@@ -38,6 +38,7 @@ public final class BlockDynastyEconomy extends Plugin implements Listener {
     private static final String CHANNEL_NAME = "proxy:blockdynasty";
     private static ProxyServer proxyServer;
     private static Logger logger;
+    //file proxyServer.getPluginsFolder
 
     @Override
     public void onEnable() {
@@ -69,25 +70,42 @@ public final class BlockDynastyEconomy extends Plugin implements Listener {
                 Map<String, String> messageData = gson.fromJson(jsonMessage, new TypeToken<Map<String, String>>(){}.getType());
 
                 String type = messageData.get("type");
-                if (type.equals("event")|| type.equals("account")) {
-                    String target = messageData.get("target");
-                    UUID uuid = UUID.fromString(target);
-
-                    // Get the player's current server except origin server and send message
-                    Optional<ServerInfo> playerServer = Optional.ofNullable(proxyServer.getPlayer(uuid))
-                            .filter(player -> !player.getServer().getInfo().getName().equals(serverSourceName))
-                            .map(player -> player.getServer().getInfo());
-
-                    playerServer.ifPresent(targetServer -> targetServer.sendData(CHANNEL_NAME, event.getData()));
-                }else if (type.equals("currency")) {
-                    //broadcast to all servers except origin server
-                    proxyServer.getServers().values().stream()
-                            .filter(targetServer -> !targetServer.getName().equals(serverSourceName))
-                            .forEach(targetServer -> targetServer.sendData(CHANNEL_NAME, event.getData()));
+                switch (type) {
+                    case "event":
+                    case "account":
+                        processEvent(messageData, serverSourceName, event);
+                        break;
+                    case "currency":
+                        processCurrency(serverSourceName, event);
+                        break;
+                    case "syncData":
+                        processSyncData();
+                        break;
+                    default:
+                        logger.warning("Unknown message type received: " + type);
                 }
             } catch (IOException e) {
                 logger.warning("Error reading message channel: " + e.getMessage());
             }
         }
+    }
+    private void processSyncData(){
+        //todo implement.
+    }
+    private void processEvent(Map<String, String> messageData, String serverSourceName, PluginMessageEvent event){
+        String target = messageData.get("target");
+        UUID uuid = UUID.fromString(target);
+
+        Optional<ServerInfo> playerServer = Optional.ofNullable(proxyServer.getPlayer(uuid))
+                .filter(player -> !player.getServer().getInfo().getName().equals(serverSourceName))
+                .map(player -> player.getServer().getInfo());
+
+        playerServer.ifPresent(targetServer -> targetServer.sendData(CHANNEL_NAME, event.getData()));
+    }
+
+    private void processCurrency(String serverSourceName, PluginMessageEvent event){
+        proxyServer.getServers().values().stream()
+                .filter(targetServer -> !targetServer.getName().equals(serverSourceName))
+                .forEach(targetServer -> targetServer.sendData(CHANNEL_NAME, event.getData()));
     }
 }

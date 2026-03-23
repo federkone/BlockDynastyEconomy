@@ -37,12 +37,14 @@ import domain.entity.platform.HardCashCreator;
 import lib.gui.components.*;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import com.blockdynasty.economy.MessageChannel.proxy.ProxyData;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.IPlayer;
+import services.configuration.IConfiguration;
 
 import java.io.File;
 import java.util.List;
@@ -50,10 +52,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BukkitAdapter implements IPlatform {
+    private final BlockDynastyEconomy plugin;
+    private final Server server;
+
+    public BukkitAdapter(BlockDynastyEconomy plugin) {
+        this.plugin = plugin;
+        this.server = plugin.getServer();
+        SchedulerFactory.init(plugin);
+    }
 
     @Override
     public IPlayer getPlayer(String name) {
-        Player player = Bukkit.getPlayer(name);
+        Player player = server.getPlayer(name);
         if (player == null) {
             return null;
         }
@@ -63,18 +73,18 @@ public class BukkitAdapter implements IPlatform {
     @Override
     public void dispatchCommand(String command) {
         //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-        Scheduler.run(ContextualTask.build(()->Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command)));
+        Scheduler.run(ContextualTask.build(()->this.server.dispatchCommand(Bukkit.getConsoleSender(), command)));
     }
 
     @Override
     public void sendPluginMessage(String channel, byte[] message) {
-        Bukkit.getServer().sendPluginMessage(BlockDynastyEconomy.getInstance(), channel, message);
+        server.sendPluginMessage(plugin, channel, message);
     }
 
     @Override
     public void registerMessageChannel(IProxySubscriber proxySubscriber) {
-        Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(BlockDynastyEconomy.getInstance(),ProxyData.getChannelName());
-        Bukkit.getServer().getMessenger().registerIncomingPluginChannel(BlockDynastyEconomy.getInstance(),ProxyData.getChannelName(), new ProxySubscriberImp(proxySubscriber));
+        server.getMessenger().registerOutgoingPluginChannel(plugin,ProxyData.getChannelName());
+        server.getMessenger().registerIncomingPluginChannel(plugin,ProxyData.getChannelName(), new ProxySubscriberImp(proxySubscriber));
     }
 
     @Override
@@ -89,7 +99,7 @@ public class BukkitAdapter implements IPlatform {
 
     @Override
     public File getDataFolder() {
-        return BlockDynastyEconomy.getInstance().getDataFolder();
+        return plugin.getDataFolder();
     }
 
     @Override
@@ -99,7 +109,7 @@ public class BukkitAdapter implements IPlatform {
 
     @Override
     public boolean isOnlineMode() {
-        return Bukkit.getServer().getOnlineMode();
+        return server.getOnlineMode();
     }
 
     @Override
@@ -133,13 +143,13 @@ public class BukkitAdapter implements IPlatform {
 
     @Override
     public IInventory createInventory(RecipeInventory recipeInventory) {
-        Inventory inventory = Bukkit.createInventory(null, recipeInventory.getRows() * 9, recipeInventory.getTitle());
+        Inventory inventory = server.createInventory(null, recipeInventory.getRows() * 9, recipeInventory.getTitle());
         return new InventoryAdapter(inventory);
     }
 
     @Override
     public IPlayer getPlayerByUUID(UUID uuid) {
-        Player player = Bukkit.getPlayer(uuid);
+        Player player = server.getPlayer(uuid);
         if (player == null) {
             return null;
         }
@@ -148,12 +158,12 @@ public class BukkitAdapter implements IPlatform {
 
     @Override
     public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
-        return Bukkit.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
+        return server.getOnlinePlayers().stream().map(EntityPlayerAdapter::of).collect(Collectors.toList());
     }
 
     @Override
     public ITextInput getTextInput() {
-        return TextInputFactory.getTextInput();
+        return TextInputFactory.getTextInput(plugin);
     }
 
     @Override
@@ -164,5 +174,15 @@ public class BukkitAdapter implements IPlatform {
     @Override
     public boolean hasSupportGui() {
         return true;
+    }
+
+    @Override
+    public void startServer(IConfiguration configuration) {
+        plugin.on(configuration);
+    }
+
+    @Override
+    public void reloadServer() {
+        plugin.reload();
     }
 }

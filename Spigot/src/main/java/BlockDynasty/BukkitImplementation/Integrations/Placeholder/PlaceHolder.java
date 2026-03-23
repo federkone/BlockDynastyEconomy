@@ -20,12 +20,13 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlaceHolder {
     private static PlaceHolderExpansion expansion;
     private static PlaceHolderListener listener;
 
-    public static void register(lib.placeholder.PlaceHolder placeHolder){
+    public static void register(lib.placeholder.PlaceHolder placeHolder,JavaPlugin plugin) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             Console.log("PlaceholderAPI not found. Expansion won't be loaded.");
             return;
@@ -33,7 +34,7 @@ public class PlaceHolder {
         expansion = new PlaceHolderExpansion(placeHolder);
         expansion.register();
         listener = new PlaceHolderListener(expansion);
-        Bukkit.getPluginManager().registerEvents(listener, BlockDynastyEconomy.getInstance());
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
         Console.log("PlaceholderAPI Expansion registered successfully!");
     }
 

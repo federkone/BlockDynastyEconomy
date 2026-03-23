@@ -21,9 +21,15 @@ import BlockDynasty.BukkitImplementation.utils.Version;
 import BlockDynasty.FoliaImplementation.scheduler.SchedulerFolia;
 import abstractions.platform.scheduler.ContextualTask;
 import abstractions.platform.scheduler.IScheduler;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class SchedulerFactory {
     private static IScheduler schedulerInstance;
+    private static JavaPlugin plugin;
+
+    public static void init(JavaPlugin plugin) {
+        SchedulerFactory.plugin = plugin;
+    }
 
     public static IScheduler getScheduler() {
         if (schedulerInstance != null) {
@@ -31,10 +37,10 @@ public class SchedulerFactory {
         }
 
         if(Version.hasFoliaScheduler()) {
-            schedulerInstance = SchedulerFolia.init();
+            schedulerInstance = SchedulerFolia.init(plugin);
             Console.log("Folia detected, applying Folia scheduler implementation.");
         }else{
-            schedulerInstance = SchedulerBukkit.init();
+            schedulerInstance = SchedulerBukkit.init(plugin);
             Console.log("Bukkit detected, applying Bukkit scheduler implementation.");
         }
         return schedulerInstance;

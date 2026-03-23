@@ -19,6 +19,7 @@ import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.IPlayer;
+import services.configuration.IConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -144,5 +145,15 @@ public class HytaleAdapter implements IPlatform {
     @Override
     public boolean hasSupportGui() {
         return true;
+    }
+
+    @Override
+    public void startServer(IConfiguration configuration) {
+
+    }
+
+    @Override
+    public void reloadServer() {
+
     }
 }

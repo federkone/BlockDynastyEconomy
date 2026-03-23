@@ -29,10 +29,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class PlayerJoinListener implements Listener {
+public class PlayerListener implements Listener {
     private IPlayerJoin playerJoin;
 
-    public PlayerJoinListener(IPlayerJoin playerJoin) {
+    public PlayerListener(IPlayerJoin playerJoin) {
         this.playerJoin = playerJoin;
     }
 

@@ -16,17 +16,15 @@
 
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.SoundProvider;
-import BlockDynasty.BukkitImplementation.utils.Version;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.messages.IMessageSender;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.messages.MessageSenderFactory;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IInventory;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -39,9 +37,11 @@ import java.util.UUID;
 
 public class EntityPlayerAdapter implements IPlayer {
     private Player player;
+    private final IMessageSender messageSender;
 
     private EntityPlayerAdapter(Player player) {
         this.player = player;
+        this.messageSender = MessageSenderFactory.getMessageSender();
     }
 
     public static EntityPlayerAdapter of(Player player) {
@@ -65,17 +65,7 @@ public class EntityPlayerAdapter implements IPlayer {
 
     @Override
     public void sendMessage(String message) {
-        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
-            message = translateColorCodes(message);
-            player.sendMessage(message);
-        }else {
-            Component textonuevo = MiniMessage.miniMessage().deserialize(message);
-            player.sendMessage(textonuevo);
-        }
-    }
-
-    private String translateColorCodes(String message) {
-        return message.replaceAll("&([0-9a-fk-or])", "§$1");
+        messageSender.sendMessage(this.player, message);
     }
 
     @Override

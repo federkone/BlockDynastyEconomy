@@ -20,9 +20,14 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import abstractions.platform.scheduler.ContextualTask;
 import abstractions.platform.scheduler.IScheduler;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class SchedulerBukkit implements IScheduler {
-    public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
+    public JavaPlugin plugin;
+
+    private SchedulerBukkit(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void runLater(long delay, ContextualTask contextualTask) {
         Bukkit.getScheduler().runTaskLater(plugin, contextualTask.getRunnable(), delay);
@@ -36,8 +41,8 @@ public class SchedulerBukkit implements IScheduler {
         Bukkit.getScheduler().runTask(plugin, contextualTask.getRunnable());
     }
 
-    public static SchedulerBukkit init() {
-        return new SchedulerBukkit();
+    public static SchedulerBukkit init(JavaPlugin plugin) {
+        return new SchedulerBukkit(plugin);
     }
 
 }

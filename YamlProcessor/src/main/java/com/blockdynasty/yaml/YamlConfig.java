@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.platform.files.yaml;
+package com.blockdynasty.yaml;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -42,7 +42,7 @@ public abstract class YamlConfig implements IYamlConfig {
                 Map<Object, Object> defaultConfig = yaml.load(inputStream);
                 if (defaultConfig != null) {
                     if(checkIfNeedsUpdate(defaultConfig, configAct)) {
-                        mergeFiles(defaultConfig, configAct);
+                        fillMissingKeys(defaultConfig, configAct);
                         writeFile(fileConfig, configAct);
                     }
                 }
@@ -74,7 +74,7 @@ public abstract class YamlConfig implements IYamlConfig {
     }
 
     @Override
-    public void mergeFiles(Map<Object, Object> defaultConfig, Map<Object, Object> configAct) {
+    public void fillMissingKeys(Map<Object, Object> defaultConfig, Map<Object, Object> configAct) {
         for (Map.Entry<Object, Object> entry : defaultConfig.entrySet()) {
             Object key = entry.getKey();
             Object defaultValue = entry.getValue();
@@ -84,7 +84,24 @@ public abstract class YamlConfig implements IYamlConfig {
             } else {
                 Object currentValue = configAct.get(key);
                 if (defaultValue instanceof Map && currentValue instanceof Map) {
-                    mergeFiles((Map<Object, Object>) defaultValue, (Map<Object, Object>) currentValue);
+                    fillMissingKeys((Map<Object, Object>) defaultValue, (Map<Object, Object>) currentValue);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateConfig(Map<Object, Object> newConfig, Map<Object, Object> configAct) {
+        for (Map.Entry<Object, Object> entry : newConfig.entrySet()) {
+            Object key = entry.getKey();
+            Object newValue = entry.getValue();
+
+            if (configAct.containsKey(key)) {
+                Object currentValue = configAct.get(key);
+                if (newValue instanceof Map && currentValue instanceof Map) {
+                    updateConfig((Map<Object, Object>) newValue, (Map<Object, Object>) currentValue);
+                } else {
+                    configAct.put(key, newValue);
                 }
             }
         }

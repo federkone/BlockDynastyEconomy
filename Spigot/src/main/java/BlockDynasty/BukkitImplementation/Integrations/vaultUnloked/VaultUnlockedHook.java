@@ -28,11 +28,15 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class VaultUnlockedHook implements Economy {
-    private final DynastyEconomy api;
 
-    public VaultUnlockedHook(DynastyEconomy api) {
-        this.api = api;
+    public VaultUnlockedHook() {
+
     }
+
+    private Optional<DynastyEconomy> getApi(){
+        return ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(com.blockdynasty.economy.Economy.getApiWithVaultLoggerId()));
+    }
+
 
     @Override
     public boolean isEnabled() {
@@ -61,6 +65,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String format(@NotNull BigDecimal amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return amount.toString();
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.format(amount);
     }
 
@@ -71,6 +80,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull String format(@NotNull BigDecimal amount, @NotNull String currency) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return amount.toString()+" "+currency;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.format(amount, currency);
     }
 
@@ -81,31 +95,61 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean hasCurrency(@NotNull String currency) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.existCurrency(currency);
     }
 
     @Override
     public @NotNull String getDefaultCurrency(@NotNull String pluginName) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return "unknown";
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getDefaultCurrencyNameSingular();
     }
 
     @Override
     public @NotNull String defaultCurrencyNamePlural(@NotNull String pluginName) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return "unknown";
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getDefaultCurrencyNamePlural();
     }
 
     @Override
     public @NotNull String defaultCurrencyNameSingular(@NotNull String pluginName) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return "unknown";
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getDefaultCurrencyNameSingular();
     }
 
     @Override
     public @NotNull Collection<String> currencies() {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return Collections.emptyList();
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getCurrenciesNamesList();
     }
 
     @Override
     public boolean createAccount(@NotNull UUID accountID, @NotNull String name) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.createAccount( accountID, name).isSuccess();
     }
 
@@ -134,6 +178,11 @@ public class VaultUnlockedHook implements Economy {
     public Optional<String> getAccountName(@NotNull UUID accountID) {
         String accountResult;
         try {
+                Optional<DynastyEconomy> apiOptional = getApi();
+                if(apiOptional.isEmpty()){
+                    return Optional.empty();
+                }
+                DynastyEconomy api = apiOptional.get();
              accountResult = api.getAccount(accountID).getName();
         }catch (NullPointerException e){
             return Optional.empty();
@@ -143,6 +192,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public boolean hasAccount(@NotNull UUID accountID) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.existAccount(accountID);
     }
 
@@ -178,52 +232,101 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull BigDecimal getBalance(@NotNull String pluginName, @NotNull UUID accountID) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID);
     }
 
     @Override
     public @NotNull BigDecimal getBalance(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String world) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID);
     }
 
     @Override
     public @NotNull BigDecimal getBalance(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String world, @NotNull String currency) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID,currency);
     }
 
     @Override
     public @NotNull BigDecimal balance(@NotNull String pluginName, @NotNull UUID accountID) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID);
     }
 
     @Override
     public @NotNull BigDecimal balance(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String world) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID);
     }
 
     @Override
     public @NotNull BigDecimal balance(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String world, @NotNull String currency) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return BigDecimal.ZERO;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(accountID,currency);
     }
 
     @Override
     public boolean has(@NotNull String pluginName, @NotNull UUID accountID, @NotNull BigDecimal amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.hasAmount(accountID, amount);
     }
 
     @Override
     public boolean has(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull BigDecimal amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.hasAmount(accountID, amount);
     }
 
     @Override
     public boolean has(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull String currency, @NotNull BigDecimal amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.hasAmount(accountID, amount, currency);
     }
 
-    //todo: implementar
     @Override
     public EconomyResponse set(@NotNull String pluginName, @NotNull UUID accountID, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse response = api.setBalance(accountID, amount);
         if(response.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "set balance success for "+accountID);
@@ -234,6 +337,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public EconomyResponse set(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse response = api.setBalance(accountID, amount);
         if(response.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "set balance success for "+accountID);
@@ -244,6 +352,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public EconomyResponse set(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull String currency, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse response = api.setBalance(accountID, amount,currency);
         if(response.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "set balance success for "+accountID);
@@ -254,6 +367,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull EconomyResponse withdraw(@NotNull String pluginName, @NotNull UUID accountID, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultWithdraw = api.withdraw(accountID, amount);
         if(resultWithdraw.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "withdraw success for "+accountID);
@@ -268,6 +386,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull EconomyResponse withdraw(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull String currency, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultWithdraw = api.withdraw(accountID, amount,currency);
         if(resultWithdraw.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "withdraw success for "+accountID);
@@ -277,6 +400,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull EconomyResponse deposit(@NotNull String pluginName, @NotNull UUID accountID, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultDeposit = api.deposit(accountID, amount);
         if(resultDeposit.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID), EconomyResponse.ResponseType.SUCCESS, "deposit success for "+accountID);
@@ -291,6 +419,11 @@ public class VaultUnlockedHook implements Economy {
 
     @Override
     public @NotNull EconomyResponse deposit(@NotNull String pluginName, @NotNull UUID accountID, @NotNull String worldName, @NotNull String currency, @NotNull BigDecimal amount) {
+        Optional <DynastyEconomy> apiOptional = getApi();
+        if(apiOptional.isEmpty()){
+            return new EconomyResponse(amount, BigDecimal.ZERO, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultDeposit = api.deposit(accountID, amount,currency);
         if(resultDeposit.isSuccess()){
             return new EconomyResponse(amount, getBalance("",accountID,"",currency), EconomyResponse.ResponseType.SUCCESS, "deposit success for "+accountID);
