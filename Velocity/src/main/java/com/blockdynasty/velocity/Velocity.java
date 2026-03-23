@@ -38,9 +38,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Plugin(
     id = "blockdynastyeconomy",
@@ -128,21 +126,26 @@ public class Velocity {
     private void processSyncData(Map<String, String> messageData){
         try {
             Gson gson = new Gson();
-            Map<Object, Object> configData = config.getConfig();
+            Map<Object, Object> configOriginal = config.getConfig();
+
+            Map<Object,Object> configData = new HashMap<>(configOriginal);
+            configData.remove("hashCredentials");
+            configData.remove("whitelist");
 
             Yaml yaml = new Yaml();
             String configAsYaml = yaml.dump(configData);
-            String salt = config.getString("hashCredentials.salt");
 
-            String dataSend = "";
-            if (config.getBoolean("hashCredentials.enable")){
-                configData.remove("hashCredentials");
+            String salt = config.getString("hashCredentials.salt");
+            boolean hashEnabled = config.getBoolean("hashCredentials.enable");
+            List<String> allowedServers = config.getStringList("whitelist.allowedServers");
+            boolean needCheckWhitelist = !allowedServers.isEmpty();
+
+            String dataSend = "Undefined";
+            if (hashEnabled){
                 dataSend = CryptoUtils.encrypt(configAsYaml, salt);
             }else{
-                configData.remove("hashCredentials");
                 dataSend = configAsYaml;
             }
-
             messageData.put("data", dataSend);
 
             String modifiedJson = gson.toJson(messageData);
@@ -156,8 +159,18 @@ public class Velocity {
 
             Optional<Player> optional = proxyServer.getPlayer(uuid);
             optional.flatMap(Player::getCurrentServer).ifPresent(targetServer -> {
-                logger.info("->> Sending syncData response to server: {}", targetServer.getServerInfo().getName());
-                targetServer.sendPluginMessage(MinecraftChannelIdentifier.from(CHANNEL_NAME), modifiedData);
+                if(needCheckWhitelist){
+                    String serverName = targetServer.getServerInfo().getName();
+                    if(allowedServers.contains(serverName)){
+                        logger.info("->> Sending syncData response to server: {}", targetServer.getServerInfo().getName());
+                        targetServer.sendPluginMessage(MinecraftChannelIdentifier.from(CHANNEL_NAME), modifiedData);
+                    }else{
+                        logger.warn("->> Server {} is not in the whitelist, syncData response not sent.", serverName);
+                    }
+                }else{
+                    logger.info("->> Sending syncData response to server: {}", targetServer.getServerInfo().getName());
+                    targetServer.sendPluginMessage(MinecraftChannelIdentifier.from(CHANNEL_NAME), modifiedData);
+                }
             });
         }catch (Exception e){
             logger.warn("->> Error processing syncData message: {}", e.getMessage());

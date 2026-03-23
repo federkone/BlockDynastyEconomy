@@ -20,6 +20,8 @@ import com.blockdynasty.yaml.YamlConfig;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Config extends YamlConfig {
@@ -44,6 +46,12 @@ public class Config extends YamlConfig {
         String value = get(path,config, String.class);
         return value == null ? "Unknown" : value;
     }
+
+    public List<String> getStringList(String path) {
+        List<String> value = get(path, config, List.class);
+        return value != null ? value : new ArrayList<>();
+    }
+
     public Map<Object, Object> getConfig() {
         return config;
     }

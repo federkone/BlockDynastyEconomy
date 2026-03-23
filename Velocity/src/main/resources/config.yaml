@@ -14,12 +14,19 @@
 #-> Make your decision carefully and set the same value on all your servers. Thank you.
 online: true
 
-#This salt for data hashing
-#this protect transfer data credentials between servers
+#This protects transfer data credentials between servers.
 #Enabled: true, the plugin will hash the credentials with the salt before sending it to other servers, and unhash it when receiving it.
+#Betwen you need activate this option in the receiving servers too. Default: false
 hashCredentials:
   enable: false
   salt: "LtCc6NmumE6cpoyM" #16 bytes length, you can generate a random salt with https://www.random.org/strings/?num=1&len=16&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new
+
+whitelist:
+  # This is the list of servers that are allowed to send credentials.
+  # you can add the server names that you want to allow to send credentials.
+  # if you want to allow all servers, just leave it empty. Default: []
+  # ex: ["folia","paper","purpur"]
+  allowedServers: []
 
 sql:
   # You have three valid storage methods, mariadb/mysql/sqlite/h2. You would have to enter the database credentials below.
