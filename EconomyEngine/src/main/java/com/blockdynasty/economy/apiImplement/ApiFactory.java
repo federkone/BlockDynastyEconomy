@@ -20,41 +20,29 @@ import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
+import net.blockdynasty.providers.services.ServiceProvider;
 
-import java.util.UUID;
-import java.util.function.Supplier;
+public class ApiFactory {
+    private final ApiCustomSupplier apiCustomSupplier;
+    private final ApiDefaultSupplier apiDefaultSupplier;
 
-public class ApiCustomSupplier implements Supplier<DynastyEconomy> {
-    private final UUID id= UUID.randomUUID();
-    private UseCaseFactory useCaseFactory;
-    private IAccountService accountService;
-    private Log logger;
-    private volatile DynastyEconomy economy;
-
-    public ApiCustomSupplier(){
-        this.economy = new DynastyEconomyApiNull();
+    public ApiFactory(){
+        this.apiCustomSupplier = new ApiCustomSupplier();
+        this.apiDefaultSupplier = new ApiDefaultSupplier();
+        ServiceProvider.register(DynastyEconomy.class,apiCustomSupplier);
+        ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
     }
 
     public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService, Log logger) {
-        this.useCaseFactory = useCaseFactory;
-        this.accountService = accountService;
-        this.logger = logger;
-        this.economy = null;
+        apiCustomSupplier.updateDependencies(useCaseFactory, accountService, logger);
+        apiDefaultSupplier.updateDependencies(useCaseFactory, accountService);
     }
 
-    public UUID getId() {
-        return id;
+    public ApiCustomSupplier getApiCustomSupplier() {
+        return apiCustomSupplier;
     }
 
-    @Override
-    public DynastyEconomy get() {
-        if (economy == null) {
-            synchronized (this) {
-                if (economy == null) {
-                    economy = new DynastyEconomyApi(useCaseFactory, accountService, logger, id);
-                }
-            }
-        }
-        return economy;
+    public ApiDefaultSupplier getApiDefaultSupplier() {
+        return apiDefaultSupplier;
     }
 }

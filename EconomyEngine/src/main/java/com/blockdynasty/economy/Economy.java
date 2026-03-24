@@ -21,16 +21,13 @@ import BlockDynasty.Economy.domain.persistence.entities.IRepository;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.log.Log;
 import abstractions.platform.entity.IPlayer;
+import com.blockdynasty.economy.apiImplement.ApiFactory;
 import com.blockdynasty.economy.configFromChannel.ProxyConfigRequest;
 import com.blockdynasty.economy.configFromChannel.ProxyConfigSubscriber;
-import com.blockdynasty.economy.apiImplement.ApiCustomSupplier;
-import com.blockdynasty.economy.apiImplement.ApiDefaultSupplier;
-import com.BlockDynasty.api.DynastyEconomy;
 import abstractions.platform.IProxySubscriber;
 import aplication.HardCashService;
 import com.blockdynasty.economy.configFromChannel.PlayerConfigJoinListener;
 import com.blockdynasty.economy.repository.ConnectionHandler.Hibernate.*;
-import net.blockdynasty.providers.services.ServiceProvider;
 import lib.gui.GUISystem;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.files.Configuration;
@@ -58,10 +55,9 @@ import java.util.UUID;
 
 public class Economy {
     private Core core;
+    private static final ApiFactory apiFactory=new ApiFactory();;
     private static IRepository repository;
     private static IPlayerJoin playerJoinListener;
-    private static ApiDefaultSupplier api;
-    private static ApiCustomSupplier apiWithVaultLogger;
     private static PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
     private IConfigurationEngine configuration;
@@ -96,15 +92,11 @@ public class Economy {
         this.initDatabase(configuration);
 
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
+        apiFactory.updateDependencies(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
         this.createSubscriber(configuration,platformAdapter);
-        api = new ApiDefaultSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService());
-        apiWithVaultLogger = new ApiCustomSupplier(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
-
         placeHolder = new PlaceHolder(core.getUseCaseFactory());
         Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
 
-        ServiceProvider.register(DynastyEconomy.class,api);
-        ServiceProvider.register(DynastyEconomy.class, apiWithVaultLogger);
         HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().pay(),core.getUseCaseFactory().searchCurrency());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
@@ -185,8 +177,6 @@ public class Economy {
 
     public static void shutdown(){
         EventListener.unregisterAll();
-        ServiceProvider.unregister(DynastyEconomy.class, apiWithVaultLogger);
-        ServiceProvider.unregister(DynastyEconomy.class, api);
         if (repository != null) {
             repository.close();
         }
@@ -196,9 +186,9 @@ public class Economy {
     }
 
     public static UUID getApiWithVaultLoggerId(){
-        return apiWithVaultLogger.getId();
+        return apiFactory.getApiCustomSupplier().getId();
     }
     public static UUID getApiId(){
-        return api.getId();
+        return apiFactory.getApiDefaultSupplier().getId();
     }
 }
