@@ -30,12 +30,7 @@ import java.util.Optional;
 public class TreasuryHook {
     public static void register(){
         if(Bukkit.getPluginManager().isPluginEnabled("Treasury")) {
-            Optional<DynastyEconomy> api = ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
-            if (api.isEmpty()){
-                Console.log("No economy API found. Treasury integration will not be enabled.");
-                return;
-            }
-            EconomyProvider econProvider = new EconomyHook(api.get());
+            EconomyProvider econProvider = new EconomyHook();
             ServiceRegistry.INSTANCE.registerService(
                     EconomyProvider.class,
                     econProvider,

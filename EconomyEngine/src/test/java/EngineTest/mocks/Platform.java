@@ -16,6 +16,7 @@ import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.scheduler.IScheduler;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.IPlayer;
+import services.configuration.IConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -140,5 +141,15 @@ public class Platform implements IPlatform {
     @Override
     public boolean hasSupportHardCash() {
         return false;
+    }
+
+    @Override
+    public void startServer(IConfiguration configuration) {
+
+    }
+
+    @Override
+    public void reloadServer() {
+
     }
 }

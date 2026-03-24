@@ -1,12 +1,12 @@
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters.textInput;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.scheduler.Scheduler;
 import abstractions.platform.scheduler.ContextualTask;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.ITextInput;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import util.colors.ChatColor;
 import util.colors.Colors;
 import org.bukkit.Bukkit;
@@ -22,22 +22,27 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public class TextInputChat implements ITextInput {
+    private JavaPlugin plugin;
+
+    public TextInputChat(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
         sendInitialMessages(owner, title, initialText, false);
-        Bukkit.getPluginManager().registerEvents(new ChatInputListener(null, owner, title, function), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new ChatInputListener(null, owner, title, function),this.plugin);
     }
 
     @Override
     public void open(IGUI parent, IEntityGUI owner, String title, String initialText, Function<String, String> function) {
         sendInitialMessages(owner, title, initialText, true);
-        Bukkit.getPluginManager().registerEvents(new ChatInputListener(parent, owner, title, function), getPlugin());
+        Bukkit.getPluginManager().registerEvents(new ChatInputListener(parent, owner, title, function),this.plugin);
     }
 
     @Override
     public ITextInput asInputChat() {
-        return new TextInputChat();
+        return new TextInputChat(plugin);
     }
 
     private void sendInitialMessages(IEntityGUI owner, String title, String initialText, boolean hasParent) {
@@ -45,10 +50,6 @@ public class TextInputChat implements ITextInput {
         owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY) +"Type your response in chat.");
         owner.sendMessage(ChatColor.stringValueOf(Colors.GRAY) +"Type "+ChatColor.stringValueOf(Colors.RED) +"cancel"+ChatColor.stringValueOf(Colors.GRAY) +" to cancel." + (hasParent ? ChatColor.stringValueOf(Colors.GRAY) +" Type "+ChatColor.stringValueOf(Colors.RED) +"back"+ChatColor.stringValueOf(Colors.GRAY) +" to go back." : ""));
         owner.closeInventory();
-    }
-
-    private Plugin getPlugin() {
-        return BlockDynastyEconomy.getInstance();
     }
 
     private class ChatInputListener implements Listener {

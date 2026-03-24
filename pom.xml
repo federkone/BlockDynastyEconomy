@@ -15,14 +15,15 @@
         <module>Sponge</module>
         <module>EconomyGUI</module>
         <module>EconomyEngine</module>
-        <module>Velocity</module>
-        <module>BungeeCord</module>
         <module>Minestom</module>
         <module>EconomyHardCash</module>
         <module>EconomyLibrary</module>
         <module>EconomyApi</module>
         <module>Hytale</module>
         <module>ServiceProvider</module>
+        <module>YamlProcessor</module>
+        <module>CryptoUtils</module>
+        <module>Proxy</module>
     </modules>
 
 </project>

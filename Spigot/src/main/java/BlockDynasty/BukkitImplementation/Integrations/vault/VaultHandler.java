@@ -29,17 +29,15 @@ import java.util.Optional;
 public class VaultHandler implements  IVaultHandler {
     private VaultHook economy = null;
     private final BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin;
-    private final DynastyEconomy api;
 
-    public VaultHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin, DynastyEconomy api) {
+    public VaultHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin) {
         this.plugin = plugin;
-        this.api = api;
     }
 
     public void hook() {
             try {
                 if (this.economy == null) {
-                    this.economy = new VaultHook(api);
+                    this.economy = new VaultHook();
                 }
 
                 ServicesManager sm = Bukkit.getServicesManager();

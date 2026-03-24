@@ -16,7 +16,7 @@
 
 package com.blockdynasty.economy.platform.files;
 
-import com.blockdynasty.economy.platform.files.yaml.YamlConfig;
+import com.blockdynasty.yaml.YamlConfig;
 import services.configuration.IConfiguration;
 
 import java.io.File;

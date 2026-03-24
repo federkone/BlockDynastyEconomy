@@ -1,12 +1,10 @@
 <project>
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>com.BlockDynasty</groupId>
         <artifactId>project-parent</artifactId>
         <version>1.0</version>
     </parent>
-
 
     <artifactId>Sponge</artifactId>
     <packaging>pom</packaging>

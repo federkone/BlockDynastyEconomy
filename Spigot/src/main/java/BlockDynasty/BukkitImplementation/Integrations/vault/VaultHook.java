@@ -29,12 +29,15 @@ import org.bukkit.entity.Player;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class VaultHook extends AbstractEconomy {
-    private final DynastyEconomy api;
 
-    public VaultHook(DynastyEconomy api) {
-       this.api = api;
+    public VaultHook() {
+
+    }
+    private Optional<DynastyEconomy> getApi(){
+        return ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
     }
 
     @Override
@@ -49,21 +52,41 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public String format(double amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return String.valueOf(amount);
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.format(new BigDecimal(amount));
     }
 
     @Override
     public String currencyNamePlural() {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return "Unknown";
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getDefaultCurrencyNamePlural();
     }
 
     @Override
     public String currencyNameSingular() {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return "Unknown";
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getDefaultCurrencyNameSingular();
     }
 
     @Override
     public boolean has(String playerName, double amount) {  //El jugador X tiene X cantidad de "dinero default"
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.hasAmount(playerName, BigDecimal.valueOf(amount));
     }
 
@@ -74,17 +97,32 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public boolean hasAccount(String playerName) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.existAccount(playerName);
     }
 
     @Override
     public boolean hasAccount(OfflinePlayer player) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.existAccount(player.getName());
     }
 
     //caso de uso obtener balance
     @Override
     public double getBalance(String playerName) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return 0;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.getBalance(playerName).doubleValue();
     }
 
@@ -108,6 +146,11 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public EconomyResponse withdrawPlayer(String player, double amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultWithdraw = api.withdraw(player, BigDecimal.valueOf(amount));
         if(resultWithdraw.isSuccess()){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "withdraw success for "+player);
@@ -117,6 +160,11 @@ public class VaultHook extends AbstractEconomy {
 
     @Override
     public EconomyResponse depositPlayer(String player, double amount) {
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return new EconomyResponse(amount, 0, EconomyResponse.ResponseType.FAILURE, "Economy API not found");
+        }
+        DynastyEconomy api = apiOptional.get();
         com.BlockDynasty.api.EconomyResponse resultDeposit = api.deposit(player, BigDecimal.valueOf(amount));
         if(resultDeposit.isSuccess()){
             return new EconomyResponse(amount, getBalance(player), EconomyResponse.ResponseType.SUCCESS, "Deposit success for "+player);
@@ -140,6 +188,11 @@ public class VaultHook extends AbstractEconomy {
         if (player == null) {
             return false;
         }
+        Optional<DynastyEconomy> apiOptional = getApi();
+        if (apiOptional.isEmpty()) {
+            return false;
+        }
+        DynastyEconomy api = apiOptional.get();
         return api.createAccount(player.getUniqueId(), playerName).isSuccess();
     }
 

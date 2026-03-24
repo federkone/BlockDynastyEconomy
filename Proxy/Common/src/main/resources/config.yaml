@@ -1,0 +1,52 @@
+# Main Configuration file.
+# BlockDynastyEconomy Plugin
+# Version: 1.2.5
+
+# Developer(s): @Federkone.
+
+#The plugin is designed to work in both offline and online modes.
+#Therefore:
+#In online mode: the user will be validated with their UUID, and if a change in nickname is detected, it will be updated in the database.
+#In offline mode: the user will be validated with their nickname, and if a change in UUID is detected, it will be updated in the database.
+#As you can see, selecting this option from the beginning is critical and must be synchronized with your network, since
+#changing the operating mode from offline to online during the process will result in the total loss of information.
+#It is impossible to assume that the UUIDs uploaded in offline mode are true, as they may be random data not supported by Mojang.
+#-> Make your decision carefully and set the same value on all your servers. Thank you.
+online: true
+
+#This protects transfer data credentials between servers.
+#Enabled: true, the plugin will hash the credentials with the salt before sending it to other servers, and unhash it when receiving it.
+#Betwen you need activate this option in the receiving servers too. Default: false
+hashCredentials:
+  enable: false
+  salt: "LtCc6NmumE6cpoyM" #16 bytes length, you can generate a random salt with https://www.random.org/strings/?num=1&len=16&digits=on&upperalpha=on&loweralpha=on&unique=on&format=plain&rnd=new
+
+whitelist:
+  # This is the list of servers that are allowed to send credentials.
+  # you can add the server names that you want to allow to send credentials.
+  # if you want to allow all servers, just leave it empty. Default: []
+  # ex: ["folia","paper","purpur"]
+  allowedServers: []
+
+sql:
+  # You have three valid storage methods, mariadb/mysql/sqlite/h2. You would have to enter the database credentials below.
+  type: h2
+  # you would have to enter the database credentials down below.
+  database: minecraft
+  host: localhost
+  port: 3306
+  username: root
+  password: ''
+  # EnableWebEditorSqlServer is to enable the web sql server for h2/sqlite database in http://localhost:8082,
+  # if you want to use the web console of h2/sqlite database, you have to set this to true.
+  # With this you can manage the h2/sqlite database from a web browser.
+  EnableWebEditorSqlServer: false
+
+# Redis configuration, this replaces module messaging with Proxy:Velocity, BungeeCord, for sync cache balances,notifications between servers.
+redis:
+  enabled: false
+  host: localhost
+  port: 6379
+  password: ""
+  user: default
+

@@ -7,6 +7,13 @@
 #EN(English), ES(Spanish),RU(Russia),ZH(Chinese),DE(Deutschland),IT(Italian),FR(French),JA(Japan) You can also create your own language file in the language folder.
 lang: EN
 
+#This option is to synchronize the configuration of the plugin with the proxy,ex: bungee,velocity.
+sync-config-with-proxy: false
+#This protect transfer data credentials between servers.Add the same salt as the proxy for the synchronization of credentials between servers to work.
+hashCredentials:
+  enable: false
+  salt: "LtCc6NmumE6cpoyM"
+
 #The plugin is designed to work in both offline and online modes.
 #Therefore:
 #In online mode: the user will be validated with their UUID, and if a change in nickname is detected, it will be updated in the database.

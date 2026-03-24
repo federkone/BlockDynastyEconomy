@@ -23,12 +23,13 @@ import BlockDynasty.BukkitImplementation.adapters.GUI.listener.CloseListener;
 import BlockDynasty.BukkitImplementation.Integrations.Placeholder.PlaceHolder;
 import BlockDynasty.BukkitImplementation.adapters.listeners.BlockPlaceListener;
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.messages.MessageSenderFactory;
 import BlockDynasty.BukkitImplementation.adapters.proxy.ChannelRegister;
 import BlockDynasty.BukkitImplementation.Integrations.vault.Vault;
 
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.BukkitAdapter;
 import BlockDynasty.BukkitImplementation.adapters.commands.CommandRegister;
-import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerJoinListener;
+import BlockDynasty.BukkitImplementation.adapters.listeners.PlayerListener;
 
 import BlockDynasty.BukkitImplementation.utils.Console;
 import BlockDynasty.BukkitImplementation.utils.Updater;
@@ -41,10 +42,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import services.configuration.IConfiguration;
 
 public class BlockDynastyEconomy extends JavaPlugin {
-    private static BlockDynastyEconomy instance;
-    private static Economy economy;
-    private static IConfiguration configuration;
+    private Economy economy;
     private Metrics metrics;
+    private PlayerListener playerJoinListener;
 
     @Override
     public void onEnable() {
@@ -54,40 +54,56 @@ public class BlockDynastyEconomy extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        instance = this;
         try {
-            registerEconomyCore();
-            ItemStackProvider.init();
-            registerCommands();
-            registerEvents();
-            registerIntegrations();
-            Console.log("§aPlugin enabled successfully!");
+            this.economy = Economy.init(new BukkitAdapter(this));
+            MessageSenderFactory.createMessageSender(this.economy.getConfiguration());
+            this.playerJoinListener = new PlayerListener(Economy.getPlayerJoinListener());
+            getServer().getPluginManager().registerEvents(playerJoinListener, this);
+            Vault.init(this,this.economy.getConfiguration().getBoolean("vault"));
+            TreasuryHook.register();
         } catch (Exception e) {
             getLogger().severe("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
         }
-
         try {
             metrics= new Metrics(this, 27470);
             Updater.check(this,129308);
-        }catch (Exception e) {}
+        }catch (Exception e) {
+            Console.logError("Failed to initialize metrics or check for updates: " + e.getMessage());
+        }
+    }
+    public void on(IConfiguration configuration){
+        MessageSenderFactory.createMessageSender(configuration);
+        HandlerList.unregisterAll(this.playerJoinListener);
+        ItemStackProvider.init(configuration,this);
+        registerCommands();
+        registerEvents();
+        PlaceHolder.register(Economy.getPlaceHolder(),this);
+        Bukkit.getOnlinePlayers().forEach(player -> {Economy.getPlayerJoinListener().loadPlayerAccount(EntityPlayerAdapter.of(player));});
+        Console.log("§aPlugin enabled successfully!");
+    }
+
+    private void registerCommands(){
+        CommandRegister.registerAllEconomySystem(this);
+    }
+    private void registerEvents() {
+        getServer().getPluginManager().registerEvents(new PlayerListener(Economy.getPlayerJoinListener()), this);
+        getServer().getPluginManager().registerEvents(new ClickListener(),this);
+        getServer().getPluginManager().registerEvents(new CloseListener(),this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceListener(),this);
     }
 
     public void reload() {
         Console.log("Reloading plugin...");
-        HandlerList.unregisterAll();
+        HandlerList.unregisterAll(this);
         PlaceHolder.unregister();
-        Vault.unhook();
         ChannelRegister.unhook(this);
         Economy.shutdown();
         try {
-            registerEconomyCore();
-            ItemStackProvider.init();
-            registerEvents();
-            Bukkit.getOnlinePlayers().forEach(player -> {economy.getPlayerJoinListener().loadPlayerAccount(EntityPlayerAdapter.of(player));});
-            registerIntegrations();
-            registerCommands();
-            Console.log("§aPlugin enabled successfully!");
+            this.economy = Economy.init(new BukkitAdapter(this));
+            MessageSenderFactory.createMessageSender(this.economy.getConfiguration());
+            this.playerJoinListener = new PlayerListener(Economy.getPlayerJoinListener());
+            getServer().getPluginManager().registerEvents(playerJoinListener, this);
         } catch (Exception e) {
             Console.logError("during plugin initialization: " + e.getMessage());
         }
@@ -102,33 +118,5 @@ public class BlockDynastyEconomy extends JavaPlugin {
         if (metrics != null) {
             metrics.shutdown();
         }
-    }
-
-    private void registerEconomyCore() {
-        //int expireCacheTopMinutes = getConfig().getInt("expireCacheTopMinutes", 60);
-        economy = Economy.init(new BukkitAdapter());
-        configuration = economy.getConfiguration();
-    }
-    private void registerCommands(){
-        CommandRegister.registerAllEconomySystem();
-    }
-    private void registerEvents() {
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(economy.getPlayerJoinListener()), this);
-        getServer().getPluginManager().registerEvents(new ClickListener(),this);
-        getServer().getPluginManager().registerEvents(new CloseListener(),this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceListener(),this);
-
-    }
-    private void registerIntegrations() {
-        Vault.init();
-        PlaceHolder.register(economy.getPlaceHolder());
-        TreasuryHook.register();
-    }
-
-    public static BlockDynastyEconomy getInstance() {
-        return instance;
-    }
-    public static IConfiguration getConfiguration() {
-        return configuration;
     }
 }

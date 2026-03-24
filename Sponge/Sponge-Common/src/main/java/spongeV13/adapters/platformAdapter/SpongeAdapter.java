@@ -25,6 +25,7 @@ import lib.gui.components.IItemStack;
 import lib.gui.components.ITextInput;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.IPlayer;
+import services.configuration.IConfiguration;
 import spongeV13.adapters.GUI.adapters.InventoryAdapter;
 import spongeV13.adapters.GUI.adapters.ItemStackAdapter;
 import spongeV13.adapters.GUI.adapters.MaterialAdapter;
@@ -195,5 +196,15 @@ public class SpongeAdapter implements IPlatform {
     @Override
     public boolean hasSupportGui() {
         return true;
+    }
+
+    @Override
+    public void startServer(IConfiguration configuration) {
+
+    }
+
+    @Override
+    public void reloadServer() {
+
     }
 }

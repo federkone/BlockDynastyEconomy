@@ -38,7 +38,9 @@ public class Message<T extends Message<T>> {
         @SerializedName("currency")
         CURRENCY,
         @SerializedName("event")
-        EVENT;
+        EVENT,
+        @SerializedName("syncData")
+        SYNC_DATA;
     }
 
     protected final static UUID serverId = UUID.randomUUID();
