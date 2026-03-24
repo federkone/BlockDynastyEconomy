@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.velocity;
+package com.blockdynasty.proxy.common;
 
 import com.blockdynasty.yaml.YamlConfig;
 
@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Config extends YamlConfig {
+public class ConfigFile extends YamlConfig {
     private Map<Object, Object> config;
     private final String templatePath = "config.yaml";
     private final File configFile;
 
-    public Config(Path dataDirectory) {
-        this.configFile =dataDirectory.resolve("config.yaml").toFile();
+    public ConfigFile(Path dataDirectory) {
+        this.configFile = dataDirectory.resolve("config.yaml").toFile();
         if (!this.configFile.exists()) {
             this.config = createNewFile(configFile, templatePath);
         } else {
@@ -42,8 +42,9 @@ public class Config extends YamlConfig {
         Boolean value = get(path, config, Boolean.class);
         return value != null && value;
     }
+
     public String getString(String path) {
-        String value = get(path,config, String.class);
+        String value = get(path, config, String.class);
         return value == null ? "Unknown" : value;
     }
 
@@ -55,5 +56,4 @@ public class Config extends YamlConfig {
     public Map<Object, Object> getConfig() {
         return config;
     }
-
 }

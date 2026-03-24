@@ -15,6 +15,7 @@
  */
 package com.blockdynasty.velocity;
 
+import com.blockdynasty.proxy.common.MessageProcessor;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -25,14 +26,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 public class CommandReload  {
 
-    public static BrigadierCommand createBrigadierCommand(final Velocity plugin) {
+    public static BrigadierCommand createBrigadierCommand(final MessageProcessor messageProcessor) {
         LiteralCommandNode<CommandSource> ecoNode = LiteralArgumentBuilder
                 .<CommandSource>literal("bd")
                 .then(
                         LiteralArgumentBuilder.<CommandSource>literal("reload")
                                 .requires(source -> source.hasPermission("blockdynastyeconomy.reload"))
                                 .executes(context -> {
-                                    plugin.updateConf();
+                                    messageProcessor.updateConfig();
                                     context.getSource().sendMessage(Component.text("Configuration reloaded.", NamedTextColor.GREEN));
                                     return 1;
                                 })

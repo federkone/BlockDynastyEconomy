@@ -58,9 +58,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.BlockDynasty</groupId>
-      <artifactId>YamlProcessor</artifactId>
+      <groupId>com.blockdynasty</groupId>
+      <artifactId>BlockDynastyEconomy-Common</artifactId>
       <version>1.0</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 </project>
