@@ -22,17 +22,16 @@ import me.lokka30.treasury.api.economy.account.accessor.PlayerAccountAccessor;
 import org.jetbrains.annotations.NotNull;
 
 public class AccountTreasury implements AccountAccessor {
-    private static DynastyEconomy api;
-    public AccountTreasury(@NotNull DynastyEconomy api) {
-        AccountTreasury.api = api;
+    public AccountTreasury() {
+
     }
     @Override
     public @NotNull PlayerAccountAccessor player() {
-        return new PlayerAccountAccessorTreasury(api);
+        return new PlayerAccountAccessorTreasury();
     }
 
     @Override
     public @NotNull NonPlayerAccountAccessor nonPlayer() {
-        return new NonPlayerAccountAccessorTreasury(api);
+        return new NonPlayerAccountAccessorTreasury();
     }
 }

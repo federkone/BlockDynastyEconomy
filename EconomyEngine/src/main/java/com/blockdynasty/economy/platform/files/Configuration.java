@@ -16,7 +16,7 @@
 
 package com.blockdynasty.economy.platform.files;
 
-import com.blockdynasty.economy.platform.files.yaml.YamlConfig;
+import com.blockdynasty.yaml.YamlConfig;
 
 import java.io.File;
 import java.util.HashMap;
@@ -91,6 +91,10 @@ public class Configuration extends YamlConfig implements IConfigurationEngine {
     public double getDouble(String path) {
         Double value = get(path,config, Double.class);
         return value != null ? value : 0.0;
+    }
+
+    public void updateConfig(Map<Object, Object> newConfig) {
+        updateConfig(newConfig, this.config);
     }
 
     public String getDatabasePath() {

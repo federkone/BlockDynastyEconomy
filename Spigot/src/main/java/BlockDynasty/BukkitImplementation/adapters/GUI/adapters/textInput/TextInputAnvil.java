@@ -25,6 +25,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,12 @@ import java.util.List;
 import java.util.function.Function;
 
 public class TextInputAnvil extends TextInputChat {
+    private JavaPlugin plugin;
+
+    public TextInputAnvil(JavaPlugin plugin) {
+        super(plugin);
+        this.plugin = plugin;
+    }
 
     @Override
     public void open(IEntityGUI owner, String title, String initialText, Function<String, String> function) {
@@ -55,7 +62,7 @@ public class TextInputAnvil extends TextInputChat {
                 })
                 .text(initialText)
                 .title(title)
-                .plugin(BlockDynastyEconomy.getInstance())  //this probably is needed to check plugin version for compatibility
+                .plugin(plugin)  //this probably is needed to check plugin version for compatibility
                 .open(player);
     }
 
@@ -90,7 +97,7 @@ public class TextInputAnvil extends TextInputChat {
                 })
                 .text(initialText)
                 .title(title)
-                .plugin(BlockDynastyEconomy.getInstance())  //this probably is needed to check plugin version for compatibility
+                .plugin(plugin)  //this probably is needed to check plugin version for compatibility
                 .itemLeft(createBackItem())
                 .itemOutput(new ItemStack(Material.PAPER))
                 .open(player);

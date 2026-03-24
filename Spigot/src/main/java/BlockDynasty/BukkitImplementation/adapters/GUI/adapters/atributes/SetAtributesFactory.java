@@ -20,8 +20,9 @@ import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.utils.Version;
 
 public class SetAtributesFactory {
-    public static SetAtributesStrategy getStrategy(){
-        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
+    public static SetAtributesStrategy getStrategy(boolean forceVanilla){
+        // BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")
+        if (!Version.hasSupportAdventureText() || forceVanilla){
             return new SetAtributeVanilla();
         }else{
             return new SetAtributeModern();

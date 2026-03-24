@@ -16,6 +16,7 @@
 
 package BlockDynasty.BukkitImplementation.adapters.GUI.adapters;
 
+import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialService;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.Materials.MaterialServiceFactory;
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.NBTData.NBTService;
@@ -33,6 +34,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import services.configuration.IConfiguration;
 
 import java.util.*;
 
@@ -43,11 +46,11 @@ public class ItemStackProvider {
     private static SetAtributesStrategy setAtributesStrategy;
     private static MaterialService materialService;
 
-    public static void init(){
+    public static void init(IConfiguration configuration, JavaPlugin plugin){
         itemTextureService= ItemTextureServiceFactory.getItemTextureService();
         materialService = MaterialServiceFactory.getMaterialService();
-        nbtService = NBTServiceFactory.get();
-        setAtributesStrategy = SetAtributesFactory.getStrategy();
+        nbtService = NBTServiceFactory.get(plugin);
+        setAtributesStrategy = SetAtributesFactory.getStrategy(configuration.getBoolean("forceVanillaColorsSystem"));
     }
 
     public static Material toBukkitMaterial(Materials material) {

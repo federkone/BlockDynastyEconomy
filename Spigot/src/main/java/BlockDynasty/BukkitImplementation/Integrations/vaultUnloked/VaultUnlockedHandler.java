@@ -30,21 +30,19 @@ import java.util.Optional;
 public class VaultUnlockedHandler implements IVaultHandler {
     private VaultUnlockedHook vaultUnlockedHook=null;
     private final BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin;
-    private final DynastyEconomy api;
 
-    public VaultUnlockedHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin,DynastyEconomy api) {
+    public VaultUnlockedHandler(BlockDynasty.BukkitImplementation.BlockDynastyEconomy plugin) {
         this.plugin = plugin;
-        this.api = api;
     }
 
     public void hook() {
         try {
             if (this.vaultUnlockedHook == null) {
-                this.vaultUnlockedHook = new VaultUnlockedHook(api);
+                this.vaultUnlockedHook = new VaultUnlockedHook();
             }
 
             ServicesManager sm = Bukkit.getServicesManager();
-            sm.register(net.milkbowl.vault.economy.Economy.class, new VaultHook(api), plugin, ServicePriority.Highest);
+            sm.register(net.milkbowl.vault.economy.Economy.class, new VaultHook(), plugin, ServicePriority.Highest);
             sm.register(net.milkbowl.vault2.economy.Economy.class, this.vaultUnlockedHook, plugin, ServicePriority.Highest);
 
             Console.log("Vault Unlocked detect, link enabled.");

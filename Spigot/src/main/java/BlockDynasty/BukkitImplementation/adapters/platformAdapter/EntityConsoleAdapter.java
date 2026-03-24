@@ -16,12 +16,10 @@
 
 package BlockDynasty.BukkitImplementation.adapters.platformAdapter;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
-import BlockDynasty.BukkitImplementation.utils.Version;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.messages.IMessageSender;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.messages.MessageSenderFactory;
 import lib.commands.abstractions.IEntityCommands;
 import lib.gui.components.IEntityGUI;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.UUID;
@@ -29,8 +27,11 @@ import java.util.UUID;
 //Adapter para CommandSender que no son jugadores (Consola, Bloque de comandos, etc)
 public class EntityConsoleAdapter implements IEntityCommands {
     private final ConsoleCommandSender commandSender;
+    private final IMessageSender messageSender;
+
     private EntityConsoleAdapter(ConsoleCommandSender commandSender) {
         this.commandSender = commandSender;
+        this.messageSender=MessageSenderFactory.getMessageSender();
     }
 
     public static EntityConsoleAdapter of(ConsoleCommandSender commandSender) {
@@ -53,17 +54,7 @@ public class EntityConsoleAdapter implements IEntityCommands {
 
     @Override
     public void sendMessage(String message) {
-        if (!Version.hasSupportAdventureText() || BlockDynastyEconomy.getConfiguration().getBoolean("forceVanillaColorsSystem")){
-            message = translateColorCodes(message);
-            commandSender.sendMessage(message);
-        }else {
-            Component textonuevo = MiniMessage.miniMessage().deserialize(message);
-            commandSender.sendMessage(textonuevo);
-        }
-    }
-
-    private String translateColorCodes(String message) {
-        return message.replaceAll("&([0-9a-fk-or])", "");
+        messageSender.sendMessage(this.commandSender, message);
     }
 
     @Override

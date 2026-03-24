@@ -23,14 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayerAccountAccessorTreasury extends PlayerAccountAccessor {
-    private DynastyEconomy api;
 
-    public  PlayerAccountAccessorTreasury(@NotNull DynastyEconomy api) {
-        this.api = api;
+    public  PlayerAccountAccessorTreasury() {
+        ;
     }
 
     @Override
     protected @NotNull CompletableFuture<PlayerAccount> getOrCreate(@NotNull PlayerAccountCreateContext context) {
-        return CompletableFuture.completedFuture(new PlayerAccountTreasury(api, context.getUniqueId()));
+        return CompletableFuture.completedFuture(new PlayerAccountTreasury( context.getUniqueId()));
     }
 }

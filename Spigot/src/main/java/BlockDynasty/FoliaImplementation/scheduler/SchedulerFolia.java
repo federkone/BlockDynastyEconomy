@@ -16,16 +16,19 @@
 
 package BlockDynasty.FoliaImplementation.scheduler;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
 import abstractions.platform.scheduler.ContextualTask;
 import abstractions.platform.scheduler.IScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class SchedulerFolia implements IScheduler {
-    public static BlockDynastyEconomy plugin = BlockDynastyEconomy.getInstance();
+    private final JavaPlugin plugin;
 
+    private SchedulerFolia(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
     public void runLater(long delay, ContextualTask contextualTask) {
         Bukkit.getGlobalRegionScheduler().runDelayed(plugin, task -> contextualTask.getRunnable().run(), delay);
     }
@@ -51,7 +54,7 @@ public class SchedulerFolia implements IScheduler {
         Bukkit.getGlobalRegionScheduler().execute(plugin, contextualTask.getRunnable());
     }
 
-    public static SchedulerFolia init() {
-        return new SchedulerFolia();
+    public static SchedulerFolia init(JavaPlugin plugin) {
+        return new SchedulerFolia(plugin);
     }
 }
