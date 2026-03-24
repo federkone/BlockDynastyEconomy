@@ -40,6 +40,7 @@ public final class BlockDynastyEconomy extends Plugin implements Listener {
         this.messageProcessor = new BungeeCordAdapter(new BungeeLoggerAdapter(logger),proxyServer.getPluginsFolder().toPath().resolve("BlockDynastyEconomy"), proxyServer);
         proxyServer.registerChannel(MessageProcessor.CHANNEL_NAME);
         proxyServer.getPluginManager().registerListener(this, this);
+        proxyServer.getPluginManager().registerCommand(this, new CommandReload(messageProcessor, logger));
         logger.info("Plugin BlockDynastyEconomy enabled!");
     }
 

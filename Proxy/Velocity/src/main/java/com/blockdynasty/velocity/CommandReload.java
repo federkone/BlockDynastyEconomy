@@ -21,6 +21,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,21 +29,14 @@ public class CommandReload  {
 
     public static BrigadierCommand createBrigadierCommand(final MessageProcessor messageProcessor) {
         LiteralCommandNode<CommandSource> ecoNode = LiteralArgumentBuilder
-                .<CommandSource>literal("bd")
-                .then(
-                        LiteralArgumentBuilder.<CommandSource>literal("reload")
-                                .requires(source -> source.hasPermission("blockdynastyeconomy.reload"))
-                                .executes(context -> {
-                                    messageProcessor.updateConfig();
-                                    context.getSource().sendMessage(Component.text("Configuration reloaded.", NamedTextColor.GREEN));
-                                    return 1;
-                                })
-                )
+                .<CommandSource>literal("bdreload")
+                .requires(source -> source instanceof ConsoleCommandSource)
+                .requires(source -> source.hasPermission("blockdynastyeconomy.reload"))
                 .executes(context -> {
-                    context.getSource().sendMessage(Component.text("Usage: /bd reload", NamedTextColor.RED));
+                    messageProcessor.updateConfig();
+                    context.getSource().sendMessage(Component.text("Configuration reloaded.", NamedTextColor.GREEN));
                     return Command.SINGLE_SUCCESS;
-                })
-                .build();
+                }).build();
         return new BrigadierCommand(ecoNode);
     }
 }
