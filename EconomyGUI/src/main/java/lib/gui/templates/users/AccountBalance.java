@@ -21,11 +21,13 @@ import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
 import aplication.useCase.HardCashUseCaseFactory;
 import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
+import lib.gui.components.PlatformGUI;
 import lib.gui.components.factory.Item;
 import lib.gui.components.generics.Button;
 import abstractions.platform.recipes.RecipeItem;
@@ -44,21 +46,24 @@ public class AccountBalance extends PaginatedPanel<Money> {
     private final Player targetPlayer;
     private final IEntityGUI sender;
     private final IGetItemsBalanceUseCase getItemsBalanceUseCase;
+    private final PlatformGUI platform;
 
-    public AccountBalance(IEntityGUI player, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
+    public AccountBalance(IEntityGUI player, GetBalanceUseCase getBalanceUseCase, IGUI parent, PlatformGUI platform) {
         super(Message.process("AccountBalance.title"), 3, player, parent, 7); // 7 currencies per page
         this.getBalanceUseCase = getBalanceUseCase;
         this.sender = player;
         this.targetPlayer = new Player(player.getUniqueId(), player.getName());
+        this.platform = platform;
         this.getItemsBalanceUseCase = HardCashUseCaseFactory.getItemsBalanceUseCase();
 
         loadBalances();
     }
 
-    public AccountBalance(IEntityGUI sender, Player target, GetBalanceUseCase getBalanceUseCase, IGUI parent) {
+    public AccountBalance(IEntityGUI sender, Player target, GetBalanceUseCase getBalanceUseCase, IGUI parent, PlatformGUI platform) {
         super(Message.process("AccountBalance.title"), 3, sender, parent, 7);
         this.getBalanceUseCase = getBalanceUseCase;
         this.targetPlayer = target;
+        this.platform = platform;
         this.sender = sender;
         this.getItemsBalanceUseCase = HardCashUseCaseFactory.getItemsBalanceUseCase();
 
@@ -66,11 +71,17 @@ public class AccountBalance extends PaginatedPanel<Money> {
     }
 
     private void loadBalances() {
-        Result<List<Money>> result = getBalanceUseCase.getBalances(targetPlayer);
-        if (result.isSuccess() && result.getValue() != null) {
-            showItemsPage(result.getValue());
-
-        }else {showItemsPage( new ArrayList<>());}
+        showItemsPage(new ArrayList<>());
+        this.createLoadingMessage();
+        //async
+        Runnable r= () -> {
+            Result<List<Money>> result = getBalanceUseCase.getBalances(targetPlayer);
+            if (result.isSuccess() && result.getValue() != null) {
+                this.clearStatusMessage();
+                showItemsPage(result.getValue());
+            }
+        };
+        platform.getScheduler().runAsync(ContextualTask.build(r,sender));
     }
 
     @Override

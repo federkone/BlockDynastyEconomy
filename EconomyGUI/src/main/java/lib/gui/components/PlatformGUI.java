@@ -19,6 +19,7 @@ package lib.gui.components;
 import abstractions.platform.entity.IPlayer;
 import abstractions.platform.recipes.RecipeInventory;
 import abstractions.platform.recipes.RecipeItem;
+import abstractions.platform.scheduler.IScheduler;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public interface PlatformGUI  {
     ITextInput getTextInput();
     IPlayer getPlayer( String name);
     void dispatchCommand( String command) throws Exception;
+    IScheduler getScheduler();
     List<IPlayer> getOnlinePlayers();
     boolean hasSupportGui();
 }

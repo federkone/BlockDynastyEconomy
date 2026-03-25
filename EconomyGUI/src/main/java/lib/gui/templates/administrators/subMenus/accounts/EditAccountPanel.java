@@ -23,6 +23,7 @@ import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
 import abstractions.platform.entity.IPlayer;
+import abstractions.platform.scheduler.ContextualTask;
 import lib.gui.components.PlatformGUI;
 import lib.gui.GUIFactory;
 import lib.gui.components.IGUI;
@@ -157,45 +158,52 @@ public class EditAccountPanel extends AbstractPanel {
                 })
                 .build());
 
-        Result<Account> accRes = getAccountByPlayerUseCase.execute(target);
-        if (accRes.isSuccess()) {
-            boolean isBlocked = accRes.getValue().isBlocked();
-            if (isBlocked) {
-                setButton(13, Button.builder()
-                        .setItemStack(Item.of(RecipeItem.builder()
-                                .setMaterial(Materials.RED_CONCRETE)
-                                .setName(ChatColor.stringValueOf(Colors.RED)+"Account is blocked")
-                                .setLore("Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
-                                .build()))
-                        .setLeftClickAction(  f -> {
-                            Result<Void>result= editAccountUseCase.unblockAccount(target.getUuid());
-                            if (result.isSuccess()){
-                                GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
-                            }
-                            else {
-                                sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
-                            }
-                        })
-                        .build());
-            } else {
-                setButton(13, Button.builder()
-                        .setItemStack(Item.of(RecipeItem.builder()
-                                .setMaterial(Materials.LIME_CONCRETE)
-                                .setName(ChatColor.stringValueOf(Colors.GREEN)+"Account is enabled")
-                                .setLore("Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
-                                .build()))
-                        .setLeftClickAction(f -> {
-                            Result<Void>result= editAccountUseCase.blockAccount(target.getUuid());
-                            if (result.isSuccess()){
-                                GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
-                            }
-                            else {
-                                sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
-                            }
-                        })
-                        .build());
-            }
+        //async
+        setButton(13, Button.builder().
+                setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.ICE).setName("Loading...").build()))
+                .build());
 
-        }
+        Runnable r = () -> {
+            Result<Account> accRes = getAccountByPlayerUseCase.execute(target);
+            if (accRes.isSuccess()) {
+                boolean isBlocked = accRes.getValue().isBlocked();
+                if (isBlocked) {
+                    setButton(13, Button.builder()
+                            .setItemStack(Item.of(RecipeItem.builder()
+                                    .setMaterial(Materials.RED_CONCRETE)
+                                    .setName(ChatColor.stringValueOf(Colors.RED)+"Account is blocked")
+                                    .setLore("Click to unblock transactions","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
+                                    .build()))
+                            .setLeftClickAction(  f -> {
+                                Result<Void>result= editAccountUseCase.unblockAccount(target.getUuid());
+                                if (result.isSuccess()){
+                                    GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
+                                }
+                                else {
+                                    sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
+                                }
+                            })
+                            .build());
+                } else {
+                    setButton(13, Button.builder()
+                            .setItemStack(Item.of(RecipeItem.builder()
+                                    .setMaterial(Materials.LIME_CONCRETE)
+                                    .setName(ChatColor.stringValueOf(Colors.GREEN)+"Account is enabled")
+                                    .setLore("Click to block transactions Account","This affects:","Withdraw","Deposit","Transfer", "Pay","Trade","Exchange","All economy op")
+                                    .build()))
+                            .setLeftClickAction(f -> {
+                                Result<Void>result= editAccountUseCase.blockAccount(target.getUuid());
+                                if (result.isSuccess()){
+                                    GUIFactory.editAccountPanel( sender, target, this.getParent()).open();
+                                }
+                                else {
+                                    sender.sendMessage(result.getErrorMessage()+" "+ result.getErrorCode());
+                                }
+                            })
+                            .build());
+                }
+            }
+        };
+        platformAdapter.getScheduler().runAsync(ContextualTask.build(r, sender));
     }
 }

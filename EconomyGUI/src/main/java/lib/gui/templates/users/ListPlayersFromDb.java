@@ -21,10 +21,12 @@ import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOffl
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
 import lib.gui.GUIFactory;
 import lib.gui.components.IGUI;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.ITextInput;
+import lib.gui.components.PlatformGUI;
 import lib.gui.components.factory.Item;
 import lib.gui.components.generics.Button;
 import abstractions.platform.recipes.RecipeItem;
@@ -37,23 +39,33 @@ import services.messages.Message;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ListPlayersFromDb extends AccountsList {
     private IEntityGUI sender;
     private final GetAccountByNameUseCase getAccountByNameUseCase;
-    public ListPlayersFromDb(IEntityGUI sender, IGUI parent, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase , ITextInput textInput) {
+    public ListPlayersFromDb(IEntityGUI sender, IGUI parent,
+                             GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase ,
+                             ITextInput textInput, PlatformGUI platform) {
         super(Message.process("listPlayersFromDb.title"), 5, sender, parent, textInput);
         this.sender = sender;
         this.getAccountByNameUseCase = getAccountByNameUseCase;
-        Result<List<Account>> result =getOfflineAccountsUseCase.execute();
-        if(result.isSuccess()) {
-            List<BlockDynasty.Economy.domain.entities.account.Player> players = result.getValue().stream()
-                    .map(Account::getPlayer)
-                    .filter( player -> !player.getUuid().equals(sender.getUniqueId()))
-                    .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname())).collect(Collectors.toList());
-            showPlayers(players);
-        }else {showPlayers(new ArrayList<>());}
+
+        this.showPlayers(new ArrayList<>());
+        this.createLoadingMessage();
+        Runnable r = () -> {
+            Result<List<Account>> result =getOfflineAccountsUseCase.execute();
+            if(result.isSuccess()) {
+                List<BlockDynasty.Economy.domain.entities.account.Player> players = result.getValue().stream()
+                        .map(Account::getPlayer)
+                        .filter( player -> !player.getUuid().equals(sender.getUniqueId()))
+                        .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname())).collect(Collectors.toList());
+                this.clearStatusMessage();
+                this.showPlayers(players);
+            }
+        };
+        platform.getScheduler().runAsync(ContextualTask.build(r,sender));
     }
 
     @Override

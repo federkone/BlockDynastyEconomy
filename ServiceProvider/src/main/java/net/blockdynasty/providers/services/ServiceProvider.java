@@ -16,11 +16,11 @@
 
 package net.blockdynasty.providers.services;
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -47,9 +47,7 @@ public class ServiceProvider {
      * @param <T> type of the service
      */
     public static <T extends Service<?>> void register(Class<T> clazz, Supplier<T> supplier) {
-        synchronized (SERVICES) {
-            SERVICES.computeIfAbsent(clazz, k -> new LinkedList<>()).add(supplier);
-        }
+        SERVICES.computeIfAbsent(clazz, k -> new ConcurrentLinkedQueue<>()).add(supplier);
     }
 
     /** Retrieves a service implementation for the specified interface/class.
@@ -61,13 +59,11 @@ public class ServiceProvider {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Service<?>> Optional<T> get(Class<T> clazz) {
-        synchronized (SERVICES) {
-            Queue<Supplier<?>> services = SERVICES.get(clazz);
-            if (services == null || services.isEmpty()) {
-                return Optional.empty();
-            }
-            return Optional.of((T) services.peek().get());
+        Queue<Supplier<?>> services = SERVICES.get(clazz);
+        if (services == null || services.isEmpty()) {
+            return Optional.empty();
         }
+        return Optional.of((T) services.peek().get());
     }
 
     /** Retrieves a service implementation for the specified interface/class that matches the given ID.
@@ -80,16 +76,14 @@ public class ServiceProvider {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Service<I>,I> Optional<T> getWithId(Class<T> clazz, I id) {
-        synchronized (SERVICES) {
-            Queue<Supplier<?>> services = SERVICES.get(clazz);
-            if (services == null || services.isEmpty()) {
-                return Optional.empty();
-            }
-            return services.stream()
-                    .map(s -> (T) s.get())
-                    .filter(service -> service.getId().equals(id))
-                    .findFirst();
+        Queue<Supplier<?>> services = SERVICES.get(clazz);
+        if (services == null || services.isEmpty()) {
+            return Optional.empty();
         }
+        return services.stream()
+                .map(s -> (T) s.get())
+                .filter(service -> service.getId().equals(id))
+                .findFirst();
     }
 
     /** Retrieves a service implementation for the specified interface/class that matches the given selector.
@@ -101,16 +95,14 @@ public class ServiceProvider {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Service<?>> Optional<T> get(Class<T> clazz, Predicate<T> selector) {
-        synchronized (SERVICES) {
-            Queue<Supplier<?>> services = SERVICES.get(clazz);
-            if (services == null || services.isEmpty()) {
-                return Optional.empty();
-            }
-            return services.stream()
-                    .map(s -> (T) s.get())
-                    .filter(selector)
-                    .findFirst();
+        Queue<Supplier<?>> services = SERVICES.get(clazz);
+        if (services == null || services.isEmpty()) {
+            return Optional.empty();
         }
+        return services.stream()
+                .map(s -> (T) s.get())
+                .filter(selector)
+                .findFirst();
     }
 
     /** Unregisters a service implementation for the specified interface/class.
@@ -119,13 +111,11 @@ public class ServiceProvider {
      * @param supplier original of the service to be unregistered
      */
     public static <T extends Service<?>> void unregister(Class<T> clazz, Supplier<T> supplier) {
-        synchronized (SERVICES) {
-            Queue<Supplier<?>> services = SERVICES.get(clazz);
-            if (services != null && !services.isEmpty()) {
-                services.removeIf(s -> s == supplier);
-                if (services.isEmpty()) {
-                    SERVICES.remove(clazz);
-                }
+        Queue<Supplier<?>> services = SERVICES.get(clazz);
+        if (services != null && !services.isEmpty()) {
+            services.removeIf(s -> s == supplier);
+            if (services.isEmpty()) {
+                SERVICES.remove(clazz);
             }
         }
     }

@@ -1,25 +1,64 @@
+/**
+ * Copyright 2026 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.blockdynasty.economy.apiImplement;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.domain.services.IAccountService;
 import com.BlockDynasty.api.DynastyEconomy;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class ApiDefaultSupplier implements Supplier<DynastyEconomy> {
-    private UseCaseFactory useCaseFactory;
-    private IAccountService accountService;
-    private final UUID id= UUID.randomUUID();
+class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
+    private final UUID id;
+    private final DynastyEconomy proxy;
 
-    public ApiDefaultSupplier(UseCaseFactory useCaseFactory, IAccountService accountService) {
+    private volatile UseCaseFactory useCaseFactory;
+    private volatile DynastyEconomy internalEconomy;
+
+    public ApiDefaultSupplier(){
+        this.id= UUID.randomUUID();
+        this.internalEconomy = new DynastyEconomyApiNull(id);
+        this.proxy = new DynastyEconomyProxy(this);
+    }
+
+    public void updateDependencies(UseCaseFactory useCaseFactory) {
         this.useCaseFactory = useCaseFactory;
-        this.accountService = accountService;
+        this.internalEconomy = null;
     }
 
     @Override
     public DynastyEconomy get() {
-        return new DynastyEconomyApi(useCaseFactory,accountService,id);
+        return this.proxy;
+    }
+
+    //pattern recommended by Joshua Bloch en Effective Java.
+    @Override
+    public DynastyEconomy getInternal() {
+        DynastyEconomy current = internalEconomy;
+        if (current == null) {
+            synchronized (this) {
+                current = internalEconomy;
+                if (current == null) {
+                    current = new DynastyEconomyApi(useCaseFactory, id);
+                    internalEconomy = current;
+                }
+            }
+        }
+        return current;
     }
 
     public UUID getId() {

@@ -16,6 +16,7 @@
 
 package lib.gui.components.generics;
 
+import lib.gui.components.IButton;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
 import lib.gui.components.IEntityGUI;
@@ -137,6 +138,20 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
                 .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "Paginated.button1.lore"))
                 .build();
         return Item.of(recipe);
+    }
+
+    protected void createLoadingMessage() {
+        RecipeItem recipe = RecipeItem.builder()
+                .setMaterial(Materials.ICE)
+                .setName(ChatColor.stringValueOf(Colors.YELLOW) + "Loading...")
+                .build();
+        setButton(getEmptyMessageSlot(), Button.builder().setItemStack(Item.of(recipe)).build());
+    }
+    protected void clearStatusMessage() {
+        IButton fillGlass = Button.builder()
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.GLASS_PANE).build()))
+                .build();
+        setButton(getEmptyMessageSlot(), fillGlass);
     }
 
     protected IItemStack createPreviousButton() {

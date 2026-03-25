@@ -57,13 +57,13 @@ public class GUIFactory {
         return new EconomyAdminPanelDisabled(sender);
     }
     public static IGUI accountSelectorToEdit(IEntityGUI sender,IGUI parent){
-        return new AccountSelectorToEdit(sender,useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),parent,textInput);
+        return new AccountSelectorToEdit(sender,useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),parent,textInput,platformAdapter);
     }
     public static IGUI editAccountPanel(IEntityGUI sender,Player target,IGUI parent) {
         return new EditAccountPanel(useCaseFactory.deleteAccount(),useCaseFactory.editAccount(),useCaseFactory.searchAccountByPlayer(),platformAdapter,sender, target, parent,textInput);
     }
     public static IGUI balancePanel(IEntityGUI sender,Player target,IGUI parent) {
-        return new AccountBalance(sender, target, useCaseFactory.getBalance(), parent);
+        return new AccountBalance(sender, target, useCaseFactory.getBalance(), parent, platformAdapter);
     }
     public static IGUI depositPanel(IEntityGUI sender,Player target,IGUI parent){
         return new DepositPanel( sender,target,useCaseFactory.searchCurrency(),useCaseFactory.deposit(),parent,textInput);
@@ -107,10 +107,10 @@ public class GUIFactory {
         return new CreateOfferFirstPanel(sender,target,useCaseFactory.searchCurrency(),useCaseFactory.createOffer(), parent, textInput);
     }
     public static IGUI balancePanel(IEntityGUI sender,IGUI parent) {
-        return new AccountBalance(sender, useCaseFactory.getBalance(), parent);
+        return new AccountBalance(sender, useCaseFactory.getBalance(), parent,platformAdapter);
     }
     public static IGUI listPlayersFromDb(IEntityGUI sender,IGUI parent) {
-        return new ListPlayersFromDb(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
+        return new ListPlayersFromDb(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput,platformAdapter);
     }
     public static IGUI exchangeFirstPanel(IEntityGUI sender,IGUI parent) {
         return new ExchangeFirstPanel(sender, useCaseFactory.searchCurrency(), useCaseFactory.exchange(), parent , textInput);
@@ -131,7 +131,7 @@ public class GUIFactory {
         return new ListPlayerOnlineToOffer(sender, parent, textInput,platformAdapter);
     }
     public static IGUI listPlayersOfflineToOffer(IEntityGUI sender,IGUI parent) {
-        return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput);
+        return new ListPlayersOfflineToOffer(sender, parent, useCaseFactory.searchAccountByName(),useCaseFactory.searchOfflineAccounts(),textInput,platformAdapter);
     }
     public static IGUI walletSelector(IEntityGUI sender,Player target,IGUI parent) {
         if(HardCashService.isItemBasedEconomyEnabled()){

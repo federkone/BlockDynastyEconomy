@@ -27,6 +27,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,5 +109,56 @@ public class ServiceProviderTest {
         assertTrue(ServiceProvider.getWithId(MockService.class, "Service1").isPresent());
         assertTrue(ServiceProvider.getWithId(MockService.class, "Service2").isPresent());
         assertTrue(ServiceProvider.getWithId(MockService.class, "Service3").isPresent());
+    }
+
+    @Test
+    public void testHighConcurrencyGet() throws InterruptedException {
+        int threadCount = 100;
+        int requestsPerThread = 100000;
+
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch startSignal = new CountDownLatch(1);
+        CountDownLatch doneSignal = new CountDownLatch(threadCount);
+
+        LongAdder totalTimeNanos = new LongAdder();
+
+        for (int i = 0; i < threadCount; i++) {
+            executor.execute(() -> {
+                try {
+                    startSignal.await();
+                    for (int j = 0; j < requestsPerThread; j++) {
+                        long start = System.nanoTime();
+
+                        // --- CALL SERVICE PROVIDER ---
+                        ServiceProvider.get(MockService.class);
+                        // ------------------------------------
+
+                        totalTimeNanos.add(System.nanoTime() - start);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    doneSignal.countDown();
+                }
+            });
+        }
+
+        long startTime = System.currentTimeMillis();
+        startSignal.countDown();
+        doneSignal.await();
+        long endTime = System.currentTimeMillis();
+
+        long totalRequests = (long) threadCount * requestsPerThread;
+        long totalExecutionTime = endTime - startTime;
+        double avgLatencyMs = (totalTimeNanos.doubleValue() / totalRequests) / 1_000_000.0;
+        double rps = (totalRequests / (totalExecutionTime / 1000.0));
+
+        System.out.println("--- TEST RESULTS ---");
+        System.out.println("Total Requests: " + totalRequests);
+        System.out.println("Total Time: " + totalExecutionTime + " ms");
+        System.out.println("RPS (Throughput): " + String.format("%.2f", rps));
+        System.out.println("Average Latency: " + String.format("%.6f", avgLatencyMs) + " ms");
+
+        executor.shutdown();
     }
 }
