@@ -22,6 +22,7 @@ import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.EditAccountUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
+import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOfflineAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetTopAccountsUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
@@ -32,7 +33,6 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.*;
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.EconomyResponse;
@@ -52,6 +52,7 @@ class DynastyEconomyApi implements DynastyEconomy {
     private CreateAccountUseCase createAccountUseCase;
     private GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     private GetAccountByNameUseCase getAccountByNameUseCase;
+    private GetOfflineAccountsUseCase getOfflineAccountsUseCase;
     private IWithdrawUseCase withdrawUseCase;
     private IDepositUseCase depositUseCase;
     private ISetBalanceUseCase setBalanceUseCase;
@@ -63,10 +64,9 @@ class DynastyEconomyApi implements DynastyEconomy {
     private CreateCurrencyUseCase createCurrencyUseCase;
     private DeleteCurrencyUseCase deleteCurrencyUseCase;
     private GetTopAccountsUseCase topAccounts;
-    private IAccountService accountService;
     private EditCurrencyUseCase editCurrencyUseCase;
 
-    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService,UUID id) {
+    public DynastyEconomyApi(UseCaseFactory factory,UUID id) {
         this.id = id;
         editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
@@ -74,6 +74,7 @@ class DynastyEconomyApi implements DynastyEconomy {
         createAccountUseCase = factory.createAccount();
         getAccountByNameUseCase = factory.searchAccountByName();
         getAccountByUUIDUseCase = factory.searchAccountByUUID();
+        getOfflineAccountsUseCase = factory.searchOfflineAccounts();
         deleteAccountUseCase = factory.deleteAccount();
         editAccountUseCase = factory.editAccount();
         createCurrencyUseCase = factory.createCurrency();
@@ -86,9 +87,8 @@ class DynastyEconomyApi implements DynastyEconomy {
         tradeCurrenciesUseCase = factory.tradeCurrencies();
         transferFundsUseCase = factory.transferFunds();
         exchangeUseCase = factory.exchange();
-        this.accountService = accountService;
     }
-    public DynastyEconomyApi(UseCaseFactory factory, IAccountService accountService, Log log,UUID id) {
+    public DynastyEconomyApi(UseCaseFactory factory, Log log,UUID id) {
         this.id = id;
         editCurrencyUseCase = factory.editCurrency();
         searchCurrencyUseCase = factory.searchCurrency();
@@ -96,6 +96,7 @@ class DynastyEconomyApi implements DynastyEconomy {
         createAccountUseCase = factory.createAccount();
         getAccountByNameUseCase = factory.searchAccountByName();
         getAccountByUUIDUseCase = factory.searchAccountByUUID();
+        getOfflineAccountsUseCase = factory.searchOfflineAccounts();
         deleteAccountUseCase = factory.deleteAccount();
         editAccountUseCase = factory.editAccount();
         createCurrencyUseCase = factory.createCurrency();
@@ -108,7 +109,6 @@ class DynastyEconomyApi implements DynastyEconomy {
         tradeCurrenciesUseCase = factory.tradeCurrencies(log);
         transferFundsUseCase = factory.transferFunds(log);
         exchangeUseCase = factory.exchange(log);
-        this.accountService = accountService;
     }
 
     @Override
@@ -151,8 +151,11 @@ class DynastyEconomyApi implements DynastyEconomy {
 
     @Override
     public List<Account> getAccountsOffline() {
-        //format core account to api account
-        List<BlockDynasty.Economy.domain.entities.account.Account> accounts = accountService.getAccountsOffline();
+        Result<List<BlockDynasty.Economy.domain.entities.account.Account>> result = this.getOfflineAccountsUseCase.execute();
+        if (!result.isSuccess()) {
+            return List.of();
+        }
+        List<BlockDynasty.Economy.domain.entities.account.Account> accounts = result.getValue();
         return accounts.stream().map(coreA ->{
             List<com.BlockDynasty.api.entity.Money> moneyList =coreA.getWallet().getBalances().stream()
                     .map(coreMoney ->{

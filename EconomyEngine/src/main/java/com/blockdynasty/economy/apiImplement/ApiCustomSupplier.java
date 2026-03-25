@@ -17,7 +17,6 @@
 package com.blockdynasty.economy.apiImplement;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 
@@ -29,7 +28,6 @@ class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
     private final DynastyEconomy proxy;
 
     private volatile UseCaseFactory useCaseFactory;
-    private volatile IAccountService accountService;
     private volatile Log logger;
     private volatile DynastyEconomy internalEconomy;
 
@@ -39,9 +37,8 @@ class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
         this.proxy = new DynastyEconomyProxy(this);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService, Log logger) {
+    public void updateDependencies(UseCaseFactory useCaseFactory,Log logger) {
         this.useCaseFactory = useCaseFactory;
-        this.accountService = accountService;
         this.logger = logger;
         this.internalEconomy = null;
     }
@@ -58,7 +55,7 @@ class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
             synchronized (this) {
                 current = internalEconomy;
                 if (current == null) {
-                    current = new DynastyEconomyApi(useCaseFactory, accountService,logger, id);
+                    current = new DynastyEconomyApi(useCaseFactory,logger, id);
                     internalEconomy = current;
                 }
             }

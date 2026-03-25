@@ -21,11 +21,9 @@ import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOffl
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
 import lib.gui.GUIFactory;
-import lib.gui.components.IGUI;
-import lib.gui.components.IEntityGUI;
-import lib.gui.components.IItemStack;
-import lib.gui.components.ITextInput;
+import lib.gui.components.*;
 import lib.gui.components.factory.Item;
 import lib.gui.components.generics.Button;
 import abstractions.platform.recipes.RecipeItem;
@@ -41,20 +39,26 @@ public class AccountSelectorToEdit extends AccountsList {
     private final IEntityGUI sender;
     private final GetAccountByNameUseCase getAccountByNameUseCase;
 
-    public AccountSelectorToEdit(IEntityGUI sender, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase, IGUI parent, ITextInput textInput) {
+    public AccountSelectorToEdit(IEntityGUI sender, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase,
+                                 IGUI parent, ITextInput textInput, PlatformGUI platform) {
         super(Message.process("AccountSelectorToEdit.title"), 5,sender,parent,textInput);
         this.getAccountByNameUseCase = getAccountByNameUseCase;
         this.sender = sender;
 
-        Result<List<Account>> result = getOfflineAccountsUseCase.execute();
-        if(result.isSuccess()) {
-            List<Player> players = new ArrayList<>(result.getValue().stream()
-                    .map(Account::getPlayer)
-                    .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
-                    .collect(Collectors.toList()));
-
-            showPlayers(players);
-        }else {showPlayers(new ArrayList<>());}
+        this.showPlayers(new ArrayList<>());
+        this.createLoadingMessage();
+        Runnable r= () -> {
+            Result<List<Account>> result = getOfflineAccountsUseCase.execute();
+            if(result.isSuccess()) {
+                List<Player> players = new ArrayList<>(result.getValue().stream()
+                        .map(Account::getPlayer)
+                        .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname()))
+                        .collect(Collectors.toList()));
+                this.clearStatusMessage();
+                this.showPlayers(players);
+            }
+        };
+        platform.getScheduler().runAsync(ContextualTask.build(r,sender));
     }
 
     @Override

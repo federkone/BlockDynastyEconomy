@@ -25,6 +25,7 @@ import lib.gui.GUIFactory;
 import lib.gui.components.IEntityGUI;
 import lib.gui.components.IGUI;
 import lib.gui.components.ITextInput;
+import lib.gui.components.PlatformGUI;
 import lib.gui.components.factory.Item;
 import lib.gui.components.generics.Button;
 import abstractions.platform.recipes.RecipeItem;
@@ -33,31 +34,17 @@ import lib.gui.templates.users.ListPlayersFromDb;
 import util.colors.ChatColor;
 import util.colors.Colors;
 import services.messages.Message;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ListPlayersOfflineToOffer extends ListPlayersFromDb {
     private IEntityGUI sender;
-    private final GetOfflineAccountsUseCase getOfflineAccountsUseCase;
     private final GetAccountByNameUseCase getAccountByNameUseCase;
 
-    public ListPlayersOfflineToOffer(IEntityGUI sender, IGUI parent, GetAccountByNameUseCase getAccountByNameUseCase, GetOfflineAccountsUseCase getOfflineAccountsUseCase , ITextInput textInput) {
-        super( sender, parent, getAccountByNameUseCase, getOfflineAccountsUseCase,textInput);
+    public ListPlayersOfflineToOffer(IEntityGUI sender, IGUI parent, GetAccountByNameUseCase getAccountByNameUseCase,
+                                     GetOfflineAccountsUseCase getOfflineAccountsUseCase , ITextInput textInput, PlatformGUI platform) {
+        super( sender, parent, getAccountByNameUseCase, getOfflineAccountsUseCase,textInput, platform);
         this.sender = sender;
-        this.getOfflineAccountsUseCase = getOfflineAccountsUseCase;
         this.getAccountByNameUseCase = getAccountByNameUseCase;
-
-        Result<List<Account>> result = getOfflineAccountsUseCase.execute();
-        if(result.isSuccess()) {
-            List<BlockDynasty.Economy.domain.entities.account.Player> players = result.getValue().stream()
-                    .map(Account::getPlayer)
-                    .sorted((a, b) -> a.getNickname().compareToIgnoreCase(b.getNickname())).collect(Collectors.toList());
-
-            showPlayers(players);
-        }else {showPlayers(new ArrayList<>());}
     }
 
     @Override

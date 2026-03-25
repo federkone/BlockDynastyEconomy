@@ -17,7 +17,6 @@
 package com.blockdynasty.economy.apiImplement;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.domain.services.IAccountService;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
@@ -35,9 +34,9 @@ public class ApiFactory {
         ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService, Log logger) {
-        apiCustomSupplier.updateDependencies(useCaseFactory, accountService, logger);
-        apiDefaultSupplier.updateDependencies(useCaseFactory, accountService);
+    public void updateDependencies(UseCaseFactory useCaseFactory,  Log logger) {
+        apiCustomSupplier.updateDependencies(useCaseFactory, logger);
+        apiDefaultSupplier.updateDependencies(useCaseFactory);
     }
 
     public void unregister() {

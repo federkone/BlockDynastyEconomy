@@ -92,7 +92,7 @@ public class Economy {
         this.initDatabase(configuration);
 
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
-        apiFactory.updateDependencies(core.getUseCaseFactory(),core.getServicesManager().getAccountService(), getVaultLogger());
+        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger());
         this.createSubscriber(configuration,platformAdapter);
         placeHolder = new PlaceHolder(core.getUseCaseFactory());
         Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());

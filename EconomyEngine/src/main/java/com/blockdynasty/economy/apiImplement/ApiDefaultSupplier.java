@@ -17,7 +17,6 @@
 package com.blockdynasty.economy.apiImplement;
 
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.domain.services.IAccountService;
 import com.BlockDynasty.api.DynastyEconomy;
 
 import java.util.UUID;
@@ -28,7 +27,6 @@ class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
     private final DynastyEconomy proxy;
 
     private volatile UseCaseFactory useCaseFactory;
-    private volatile IAccountService accountService;
     private volatile DynastyEconomy internalEconomy;
 
     public ApiDefaultSupplier(){
@@ -37,9 +35,8 @@ class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
         this.proxy = new DynastyEconomyProxy(this);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService) {
+    public void updateDependencies(UseCaseFactory useCaseFactory) {
         this.useCaseFactory = useCaseFactory;
-        this.accountService = accountService;
         this.internalEconomy = null;
     }
 
@@ -56,7 +53,7 @@ class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
             synchronized (this) {
                 current = internalEconomy;
                 if (current == null) {
-                    current = new DynastyEconomyApi(useCaseFactory, accountService, id);
+                    current = new DynastyEconomyApi(useCaseFactory, id);
                     internalEconomy = current;
                 }
             }
