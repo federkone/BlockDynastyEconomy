@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class DynastyEconomyApi implements DynastyEconomy {
+class DynastyEconomyApi implements DynastyEconomy {
     private UUID id;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private GetBalanceUseCase getBalanceUseCase;

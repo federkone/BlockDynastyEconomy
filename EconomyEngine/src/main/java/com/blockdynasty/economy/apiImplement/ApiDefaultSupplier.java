@@ -23,32 +23,45 @@ import com.BlockDynasty.api.DynastyEconomy;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class ApiDefaultSupplier implements Supplier<DynastyEconomy> {
-    private UseCaseFactory useCaseFactory;
-    private IAccountService accountService;
-    private final UUID id= UUID.randomUUID();
-    private volatile DynastyEconomy economy;
+class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
+    private final UUID id;
+    private final DynastyEconomy proxy;
+
+    private volatile UseCaseFactory useCaseFactory;
+    private volatile IAccountService accountService;
+    private volatile DynastyEconomy internalEconomy;
 
     public ApiDefaultSupplier(){
-        this.economy = new DynastyEconomyApiNull();
+        this.id= UUID.randomUUID();
+        this.internalEconomy = new DynastyEconomyApiNull(id);
+        this.proxy = new DynastyEconomyProxy(this);
     }
 
     public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService) {
         this.useCaseFactory = useCaseFactory;
         this.accountService = accountService;
-        this.economy = null;
+        this.internalEconomy = null;
     }
 
     @Override
     public DynastyEconomy get() {
-        if (economy == null) {
+        return this.proxy;
+    }
+
+    //pattern recommended by Joshua Bloch en Effective Java.
+    @Override
+    public DynastyEconomy getInternal() {
+        DynastyEconomy current = internalEconomy;
+        if (current == null) {
             synchronized (this) {
-                if (economy == null) {
-                    economy = new DynastyEconomyApi(useCaseFactory, accountService, id);
+                current = internalEconomy;
+                if (current == null) {
+                    current = new DynastyEconomyApi(useCaseFactory, accountService, id);
+                    internalEconomy = current;
                 }
             }
         }
-        return economy;
+        return current;
     }
 
     public UUID getId() {

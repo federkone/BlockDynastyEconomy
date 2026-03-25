@@ -186,9 +186,9 @@ public class Economy {
     }
 
     public static UUID getApiWithVaultLoggerId(){
-        return apiFactory.getApiCustomSupplier().getId();
+        return apiFactory.getIDApiCustomSupplier();
     }
     public static UUID getApiId(){
-        return apiFactory.getApiDefaultSupplier().getId();
+        return apiFactory.getIDApiDefaultSupplier();
     }
 }

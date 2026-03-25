@@ -22,6 +22,8 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 
+import java.util.UUID;
+
 public class ApiFactory {
     private final ApiCustomSupplier apiCustomSupplier;
     private final ApiDefaultSupplier apiDefaultSupplier;
@@ -38,11 +40,16 @@ public class ApiFactory {
         apiDefaultSupplier.updateDependencies(useCaseFactory, accountService);
     }
 
-    public ApiCustomSupplier getApiCustomSupplier() {
-        return apiCustomSupplier;
+    public void unregister() {
+        ServiceProvider.unregister(DynastyEconomy.class, apiCustomSupplier);
+        ServiceProvider.unregister(DynastyEconomy.class, apiDefaultSupplier);
     }
 
-    public ApiDefaultSupplier getApiDefaultSupplier() {
-        return apiDefaultSupplier;
+    public UUID getIDApiCustomSupplier() {
+        return apiCustomSupplier.getId();
+    }
+
+    public UUID getIDApiDefaultSupplier() {
+        return apiDefaultSupplier.getId();
     }
 }

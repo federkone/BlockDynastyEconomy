@@ -24,37 +24,49 @@ import com.BlockDynasty.api.DynastyEconomy;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class ApiCustomSupplier implements Supplier<DynastyEconomy> {
-    private final UUID id= UUID.randomUUID();
-    private UseCaseFactory useCaseFactory;
-    private IAccountService accountService;
-    private Log logger;
-    private volatile DynastyEconomy economy;
+class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
+    private final UUID id;
+    private final DynastyEconomy proxy;
+
+    private volatile UseCaseFactory useCaseFactory;
+    private volatile IAccountService accountService;
+    private volatile Log logger;
+    private volatile DynastyEconomy internalEconomy;
 
     public ApiCustomSupplier(){
-        this.economy = new DynastyEconomyApiNull();
+        this.id = UUID.randomUUID();
+        this.internalEconomy = new DynastyEconomyApiNull(id);
+        this.proxy = new DynastyEconomyProxy(this);
     }
 
     public void updateDependencies(UseCaseFactory useCaseFactory, IAccountService accountService, Log logger) {
         this.useCaseFactory = useCaseFactory;
         this.accountService = accountService;
         this.logger = logger;
-        this.economy = null;
-    }
-
-    public UUID getId() {
-        return id;
+        this.internalEconomy = null;
     }
 
     @Override
     public DynastyEconomy get() {
-        if (economy == null) {
+        return proxy;
+    }
+
+    //pattern recommended by Joshua Bloch en Effective Java.
+    public DynastyEconomy getInternal() {
+        DynastyEconomy current = internalEconomy;
+        if (current == null) {
             synchronized (this) {
-                if (economy == null) {
-                    economy = new DynastyEconomyApi(useCaseFactory, accountService, logger, id);
+                current = internalEconomy;
+                if (current == null) {
+                    current = new DynastyEconomyApi(useCaseFactory, accountService,logger, id);
+                    internalEconomy = current;
                 }
             }
         }
-        return economy;
+        return current;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }
