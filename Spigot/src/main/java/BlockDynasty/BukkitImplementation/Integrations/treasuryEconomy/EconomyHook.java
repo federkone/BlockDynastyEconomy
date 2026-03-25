@@ -20,6 +20,7 @@ import BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.currency.C
 import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.EconomyResponse;
 import com.BlockDynasty.api.entity.Account;
+import com.blockdynasty.economy.Economy;
 import me.lokka30.treasury.api.common.NamespacedKey;
 import me.lokka30.treasury.api.common.misc.TriState;
 import me.lokka30.treasury.api.economy.EconomyProvider;
@@ -37,14 +38,14 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class EconomyHook implements EconomyProvider {
-
+    private DynastyEconomy api;
     public EconomyHook() {
-
+        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        if (apiOptional.isEmpty()) {
+            throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
+        }
+        this.api = apiOptional.get();
     }
-    private Optional<DynastyEconomy> getApi(){
-        return ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(com.blockdynasty.economy.Economy.getApiWithVaultLoggerId()));
-    }
-
 
     @Override
     public @NotNull AccountAccessor accountAccessor() {
@@ -53,11 +54,6 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull CompletableFuture<Boolean> hasAccount(@NotNull AccountData accountData) {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return CompletableFuture.completedFuture(false);
-        }
-        DynastyEconomy api = optionalApi.get();
         Optional<UUID> optional =accountData.getPlayerIdentifier();
         if (optional.isPresent()) {
             UUID playerId = optional.get();
@@ -71,22 +67,12 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull CompletableFuture<Collection<UUID>> retrievePlayerAccountIds() {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return CompletableFuture.completedFuture(Collections.emptyList());
-        }
-        DynastyEconomy api = optionalApi.get();
         List<Account> accounts = api.getAccountsOffline();
         return CompletableFuture.completedFuture(accounts.stream().map(Account::getUuid).toList());
     }
 
     @Override
     public @NotNull CompletableFuture<Collection<NamespacedKey>> retrieveNonPlayerAccountIds() {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return CompletableFuture.completedFuture(Collections.emptyList());
-        }
-        DynastyEconomy api = optionalApi.get();
         List<Account> accounts = api.getAccountsOffline();
         List<String> list = accounts.stream().map(Account::getName).toList();
         return CompletableFuture.completedFuture(list.stream().map(name -> NamespacedKey.of("blockdynasty",name)).toList());
@@ -104,20 +90,11 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull Currency getPrimaryCurrency() {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return new CurrencyTreasury(null);
-        }
-        return new CurrencyTreasury(optionalApi.get().getDefaultCurrency());
+        return new CurrencyTreasury(api.getDefaultCurrency());
     }
 
     @Override
     public @NotNull Optional<Currency> findCurrency(@NotNull String identifier) {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return Optional.empty();
-        }
-        DynastyEconomy api = optionalApi.get();
         com.BlockDynasty.api.entity.Currency c = api.getCurrency(identifier);
         if (c == null) {
             return Optional.empty();
@@ -132,11 +109,6 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull Set<Currency> getCurrencies() {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return Set.of();
-        }
-        DynastyEconomy api = optionalApi.get();
         List< com.BlockDynasty.api.entity.Currency> c= api.getCurrencies();
         if (c != null) {
             Set<Currency> currencies = new HashSet<>();
@@ -155,11 +127,6 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull CompletableFuture<TriState> registerCurrency(@NotNull Currency currency) {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return CompletableFuture.completedFuture(TriState.FALSE);
-        }
-        DynastyEconomy api = optionalApi.get();
         EconomyResponse response = api.createCurrency(currency.getDisplayName(BigDecimal.ZERO,Locale.getDefault()),currency.getDisplayName(BigDecimal.ZERO,Locale.getDefault()));
         if (response.isSuccess()){
             return CompletableFuture.completedFuture(TriState.TRUE);
@@ -170,11 +137,6 @@ public class EconomyHook implements EconomyProvider {
 
     @Override
     public @NotNull CompletableFuture<TriState> unregisterCurrency(@NotNull Currency currency) {
-        Optional<DynastyEconomy> optionalApi = getApi();
-        if (optionalApi.isEmpty()) {
-            return CompletableFuture.completedFuture(TriState.FALSE);
-        }
-        DynastyEconomy api = optionalApi.get();
         EconomyResponse response = api.deleteCurrency(currency.getDisplayName(BigDecimal.ZERO,Locale.getDefault()));
         if (response.isSuccess()){
             return CompletableFuture.completedFuture(TriState.TRUE);
