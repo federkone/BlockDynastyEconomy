@@ -17,16 +17,16 @@
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
 import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityPlayerAdapter;
-import lib.placeholder.PlaceHolder;
+import lib.placeholder.IPlaceHolderDynastyEconomy;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 import org.bukkit.OfflinePlayer;
 
 
 public class PlaceHolderExpansion extends PlaceholderExpansion {
-    private final PlaceHolder placeHolder;
+    private final IPlaceHolderDynastyEconomy placeHolder;
 
-    public PlaceHolderExpansion(PlaceHolder placeHolder) {
+    public PlaceHolderExpansion(IPlaceHolderDynastyEconomy placeHolder) {
         this.placeHolder = placeHolder;
     }
 
@@ -65,7 +65,7 @@ public class PlaceHolderExpansion extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String s) {
-        return placeHolder.onRequest(EntityPlayerAdapter.of(player.getPlayer()), s);
+        return this.placeHolder.onRequest(EntityPlayerAdapter.of(player.getPlayer()), s);
     }
 
 }

@@ -18,7 +18,7 @@ package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
 
 import services.Console;
 import org.h2.tools.Server;
-
+import org.h2.Driver;
 import java.nio.charset.StandardCharsets;
 
 public class ConnectionHibernateH2 extends ConnectionHibernate {
@@ -26,9 +26,14 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
 
     public ConnectionHibernateH2(String dbFilePath,boolean enableServerConsole) {
         super();
-        String url = "jdbc:h2:file:" + dbFilePath + "/h2Database"; //;AUTO_SERVER=TRUE;USER=sa;PASSWORD=Admin123
-        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        configuration.setProperty("hibernate.connection.url", url);
+        String url = "jdbc:h2:file:" + dbFilePath + "/h2Database";
+        configuration.setProperty("hibernate.hikari.driverClassName", Driver.class.getName());
+        configuration.setProperty("hibernate.hikari.jdbcUrl", url);
+
+        configuration.setProperty("hibernate.hikari.maximumPoolSize", "10");
+        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
+
+        configuration.setProperty("hibernate.hikari.poolName", "H2Pool");
         this.init();
 
         if (enableServerConsole) {

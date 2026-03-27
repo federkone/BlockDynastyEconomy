@@ -42,7 +42,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import services.configuration.IConfiguration;
 
 public class BlockDynastyEconomy extends JavaPlugin {
-    private Economy economy;
     private Metrics metrics;
     private PlayerListener playerJoinListener;
 
@@ -55,12 +54,14 @@ public class BlockDynastyEconomy extends JavaPlugin {
             return;
         }
         try {
-            this.economy = Economy.init(new BukkitAdapter(this));
-            MessageSenderFactory.createMessageSender(this.economy.getConfiguration());
+            Economy.init(new BukkitAdapter(this));
+            MessageSenderFactory.createMessageSender(Economy.getConfiguration());
             this.playerJoinListener = new PlayerListener(Economy.getPlayerJoinListener());
             getServer().getPluginManager().registerEvents(playerJoinListener, this);
-            Vault.init(this,this.economy.getConfiguration().getBoolean("vault"));
+
+            Vault.init(this,Economy.getConfiguration().getBoolean("vault"));
             TreasuryHook.register();
+            PlaceHolder.register(this);
         } catch (Exception e) {
             getLogger().severe("An error occurred during plugin initialization: " + e.getMessage());
             getServer().getPluginManager().disablePlugin(this);
@@ -78,7 +79,6 @@ public class BlockDynastyEconomy extends JavaPlugin {
         ItemStackProvider.init(configuration,this);
         registerCommands();
         registerEvents();
-        PlaceHolder.register(Economy.getPlaceHolder(),this);
         Bukkit.getOnlinePlayers().forEach(player -> {Economy.getPlayerJoinListener().loadPlayerAccount(EntityPlayerAdapter.of(player));});
         Console.log("§aPlugin enabled successfully!");
     }
@@ -96,12 +96,11 @@ public class BlockDynastyEconomy extends JavaPlugin {
     public void reload() {
         Console.log("Reloading plugin...");
         HandlerList.unregisterAll(this);
-        PlaceHolder.unregister();
         ChannelRegister.unhook(this);
         Economy.shutdown();
         try {
-            this.economy = Economy.init(new BukkitAdapter(this));
-            MessageSenderFactory.createMessageSender(this.economy.getConfiguration());
+            Economy.init(new BukkitAdapter(this));
+            MessageSenderFactory.createMessageSender(Economy.getConfiguration());
             this.playerJoinListener = new PlayerListener(Economy.getPlayerJoinListener());
             getServer().getPluginManager().registerEvents(playerJoinListener, this);
         } catch (Exception e) {

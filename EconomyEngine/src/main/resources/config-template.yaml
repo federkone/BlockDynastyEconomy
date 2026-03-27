@@ -31,11 +31,15 @@ HardCash:
   enable: true
   customHeadTexture: true
 
-# this option enables or disables "ItemStack/Items" based economy. Enables Deposit and Withdraw specific item associated with the currency, for example: Diamonds, Emeralds, etc.
+#This option enables or disables "ItemStack/Items" based economy. Enables Deposit and Withdraw specific item associated with the currency, for example: Diamonds, Emeralds, etc.
 #This option is independent of the Hard cash system, you can have both enabled or just one of them.
 #All configurations are in the gui system.
 ItemsBasedEconomy:
   enable: false
+  #List to indicate which Vault consumers will use the item-based economy.
+  #This allows Vault to become a modular provider and lets us decide what type of economy each plugin can use.
+  #ex: "me.angeschossen.lands" from Plugin "lands", "com.gamingmesh.jobs" from plugin "Jobs", etc.
+  vaultConsumers: ["me.angeschossen.lands"]
 
 #Console log some information for debugging.
 debug: false

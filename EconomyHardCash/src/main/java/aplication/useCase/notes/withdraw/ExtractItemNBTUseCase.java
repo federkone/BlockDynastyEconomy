@@ -21,6 +21,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawU
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
+import abstractions.platform.scheduler.IScheduler;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
@@ -28,38 +30,67 @@ import domain.service.ItemCreator;
 import aplication.useCase.notes.service.ItemCreatorFactory;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ExtractItemNBTUseCase implements IExtractItemNBTUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private ItemCreator itemCreator;
+    private IScheduler scheduler;
+    private static final Set<UUID> activeTransactions = ConcurrentHashMap.newKeySet();
 
     public ExtractItemNBTUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
         this.platform = platform;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.withdrawUseCase = withdrawUseCase;
+        this.scheduler = platform.getScheduler();
         this.itemCreator = ItemCreatorFactory.getItemCreator(platform);
     }
 
     public void execute(IEntityHardCash player, BigDecimal amount, String currency){
-        Result<ICurrency> currencyResult = searchCurrencyUseCase.getCurrency(currency);
-        if (!currencyResult.isSuccess()) {
-            player.sendMessage("Error."+ currencyResult.getErrorMessage());
+        if (!activeTransactions.add(player.getUniqueId())) {
+            player.sendMessage("You already have a transaction in progress. Please wait.");
             return;
         }
-        ICurrency currencyData = currencyResult.getValue();
-        ItemStackCurrency item = itemCreator.create(currencyData, amount);
-        if (player.hasItem(item) || player.hasEmptySlot() ){
-            //si tiene el item validar que la canidad q tiene es < a 64 para agregarlo al stack, de lo contrario de debe agregarlo como un nuevo item
-            var withdrawResult = withdrawUseCase.execute(player.getUniqueId(),currency, amount, Context.COMMAND);
-            if (withdrawResult.isSuccess()){
-                player.giveItem(item);
-            }else {
-                player.sendMessage("Error."+ withdrawResult.getErrorMessage());
+
+        Runnable r =()->{
+            try {
+                Result<ICurrency> currencyResult = searchCurrencyUseCase.getCurrency(currency);
+                if (!currencyResult.isSuccess()) {
+                    player.sendMessage("Error."+ currencyResult.getErrorMessage());
+                    return;
+                }
+                ICurrency currencyData = currencyResult.getValue();
+                ItemStackCurrency item = itemCreator.create(currencyData, amount);
+
+                int emptySlots = player.emptySlots();
+                int maxWithdrawable = emptySlots * item.maxStackSize();
+
+                if (maxWithdrawable <= 0) {
+                    player.sendMessage("Error. Not enough space in inventory.");
+                    return;
+                }
+
+                Result<Void> withdrawResult = withdrawUseCase.execute(
+                        player.getUniqueId(),
+                        currency,
+                        amount,
+                        Context.COMMAND);
+
+                if (!withdrawResult.isSuccess()) {
+                    player.sendMessage("Error."+ withdrawResult.getErrorMessage());
+                    return;
+                }
+
+                scheduler.run(ContextualTask.build(()->{player.giveItem(item);},player));
+            }finally {
+                activeTransactions.remove(player.getUniqueId());
             }
-        }else  {
-            player.sendMessage("Error."+ "Not enough space in inventory.");
-        }
+        };
+        ContextualTask task = ContextualTask.build(r,player);
+        scheduler.runAsync(task);
     }
 }

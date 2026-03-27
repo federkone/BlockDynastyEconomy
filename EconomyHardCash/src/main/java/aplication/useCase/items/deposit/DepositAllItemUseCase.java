@@ -21,22 +21,30 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUs
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
+import abstractions.platform.scheduler.IScheduler;
+import aplication.listener.ItemNoteValidator;
 import domain.entity.currency.ItemStackCurrency;
-import domain.entity.currency.NbtData;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import aplication.useCase.items.service.CacheCurrencyItems;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DepositAllItemUseCase implements IDepositItemUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
     private CacheCurrencyItems cacheCurrencyItems;
+    private IScheduler scheduler;
+    private static final Set<UUID> activeTransactions = ConcurrentHashMap.newKeySet();
 
     public DepositAllItemUseCase(HardCashCreator platformHardCash, IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platformHardCash = platformHardCash;
+        this.scheduler = platformHardCash.getScheduler();
         this.depositUseCase = depositUseCase;
         this.searchCurrencyUseCase = searchCurrencyUseCase;
         this.cacheCurrencyItems = cacheCurrencyItems;
@@ -44,37 +52,54 @@ public class DepositAllItemUseCase implements IDepositItemUseCase {
 
     @Override
     public void execute(IEntityHardCash player) {
-        ItemStackCurrency item = player.takeHandItem();
-        if(item.isNull()){
-            player.sendMessage("You must hold a currency item to deposit.");
+        if (!activeTransactions.add(player.getUniqueId())) {
+            player.sendMessage("You already have a transaction in progress. Please wait.");
             return;
         }
 
-        CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
-        if (currencywrapper == null) {
-            player.sendMessage("Not have a valid currency item in hand.");
-            return;
-        }
+        Runnable task = () -> {
+            try{
+                ItemStackCurrency item = player.takeHandItem();
+                if(item.isNull()){
+                    player.sendMessage("You must hold a currency item to deposit.");
+                    return;
+                }
 
-        NbtData nbtData = item.getNbtData();
-        if (nbtData.getItemType() != null && !nbtData.getItemType().isEmpty()|| nbtData.getUuidCurrency() != null && !nbtData.getUuidCurrency().isEmpty()) {
-            player.sendMessage("Not have a valid currency item in hand.");
-            return;
-        }
+                CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
+                if (currencywrapper == null) {
+                    player.sendMessage("Not have a valid currency item in hand.");
+                    return;
+                }
 
-        ICurrency currency = currencywrapper.getCurrency();
-        if (!currency.isPhysicalItemSupported()){
-            player.sendMessage("This currency does not support physical items.");
-            return;
-        }
+                if (ItemNoteValidator.isANoteCurrency(item)) {
+                    player.sendMessage("Not have a valid currency item in hand.");
+                    return;
+                }
 
-        int cantItems = player.takeAllItems(item);
-        BigDecimal cant = new BigDecimal(cantItems);
+                ICurrency currency = currencywrapper.getCurrency();
+                if (!currency.isPhysicalItemSupported()){
+                    player.sendMessage("This currency does not support physical items.");
+                    return;
+                }
 
-        Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
-        if (!depositResult.isSuccess()) {
-            item.setCantity(cantItems);
-            player.giveItem(item);
-        }
+                int cantItems = player.takeAllItems(item);
+                BigDecimal cant = new BigDecimal(cantItems);
+
+                scheduler.runAsync(ContextualTask.build(()->{
+                    Result<Void> depositResult = depositUseCase.execute(player.getUniqueId(),currency.getSingular(), cant, Context.COMMAND);
+                    if (!depositResult.isSuccess()) {
+                        scheduler.run(ContextualTask.build(()->{
+                            item.setCantity(cantItems);
+                            player.giveItem(item);
+                        }));
+                    }
+                }));
+            }finally {
+                activeTransactions.remove(player.getUniqueId());
+            }
+        };
+
+        ContextualTask contextualTask = ContextualTask.build(task,player);
+        scheduler.run(contextualTask);
     }
 }

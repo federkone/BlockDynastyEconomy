@@ -16,22 +16,33 @@
 
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
-import BlockDynasty.BukkitImplementation.BlockDynastyEconomy;
+import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityConsoleAdapter;
 import BlockDynasty.BukkitImplementation.utils.Console;
+import com.blockdynasty.economy.Economy;
+import lib.placeholder.IPlaceHolderDynastyEconomy;
+import net.blockdynasty.providers.services.ServiceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Optional;
 
 public class PlaceHolder {
     private static PlaceHolderExpansion expansion;
     private static PlaceHolderListener listener;
 
-    public static void register(lib.placeholder.PlaceHolder placeHolder,JavaPlugin plugin) {
+    public static void register(JavaPlugin plugin) {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
             Console.log("PlaceholderAPI not found. Expansion won't be loaded.");
             return;
         }
-        expansion = new PlaceHolderExpansion(placeHolder);
+        Optional<IPlaceHolderDynastyEconomy> placeHolder= ServiceProvider.get(IPlaceHolderDynastyEconomy.class, service -> service.getId().equals(Economy.getPlaceholderId()));
+        if (placeHolder.isEmpty()) {
+            Console.log("IPlaceHolderDynastyEconomy service not found. Expansion won't be loaded.");
+            return;
+        }
+
+        expansion = new PlaceHolderExpansion(placeHolder.get());
         expansion.register();
         listener = new PlaceHolderListener(expansion);
         Bukkit.getPluginManager().registerEvents(listener, plugin);

@@ -33,13 +33,16 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
-public class PlaceHolder {
+public class PlaceHolderDynastyEconomy implements IPlaceHolderDynastyEconomy {
+    private final UUID id;
     private final GetTopAccountsUseCase getTopAccountsUseCase;
     private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
     private final SearchCurrencyUseCase searchCurrencyUseCase;
 
-    public PlaceHolder(UseCaseFactory useCaseFactory) {
+    public PlaceHolderDynastyEconomy(UseCaseFactory useCaseFactory, UUID id) {
+        this.id = id;
         this.getAccountByUUIDUseCase = useCaseFactory.searchAccountByUUID();
         this.getTopAccountsUseCase = useCaseFactory.topAccounts();
         this.searchCurrencyUseCase = useCaseFactory.searchCurrency();
@@ -308,5 +311,10 @@ public class PlaceHolder {
             default:
                 return Locale.US;
         }
+    }
+
+    @Override
+    public UUID getId() {
+        return this.id;
     }
 }
