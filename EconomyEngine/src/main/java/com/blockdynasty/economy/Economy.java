@@ -36,7 +36,7 @@ import com.blockdynasty.economy.platform.files.Languages;
 import com.blockdynasty.economy.platform.files.logs.EconomyLogger;
 import com.blockdynasty.economy.platform.files.logs.VaultLogger;
 import lib.commands.CommandService;
-import lib.placeholder.PlaceHolder;
+import lib.placeholder.PlaceholderFactory;
 import services.configuration.IConfiguration;
 import util.colors.ChatColor;
 import com.blockdynasty.economy.platform.listeners.EventListener;
@@ -56,17 +56,17 @@ import java.util.UUID;
 public class Economy {
     private Core core;
     private static final ApiFactory apiFactory=new ApiFactory();;
+    private static final PlaceholderFactory placeholderFactory = new PlaceholderFactory();
     private static IRepository repository;
     private static IPlayerJoin playerJoinListener;
-    private static PlaceHolder placeHolder;
     private static RedisSubscriber subscriber;
-    private IConfigurationEngine configuration;
+    private static IConfigurationEngine configuration;
     private Languages languages;
     private IPlatform platformAdapter;
 
     private Economy(IPlatform platformAdapter){
         this.platformAdapter=platformAdapter;
-        this.configuration= new Configuration(platformAdapter.getDataFolder());
+        configuration= new Configuration(platformAdapter.getDataFolder());
         ChatColor.setupSystem(platformAdapter.hasSupportAdventureText(),configuration.getBoolean("forceVanillaColorsSystem") );
 
         this.languages = new Languages(platformAdapter.getDataFolder(),configuration);
@@ -79,7 +79,7 @@ public class Economy {
             Economy.playerJoinListener = new PlayerConfigJoinListener(this.platformAdapter);
             if (!platformAdapter.getOnlinePlayers().isEmpty()){
                 IPlayer player = platformAdapter.getOnlinePlayers().iterator().next();
-                ProxyConfigRequest.request(platformAdapter, player, player.getUniqueId());
+                ProxyConfigRequest.request(platformAdapter, player.getUniqueId());
             }else{
                 Console.log("Waiting for player connection to sync configuration with proxy...");
             }
@@ -92,16 +92,19 @@ public class Economy {
         this.initDatabase(configuration);
 
         this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
-        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger());
-        this.createSubscriber(configuration,platformAdapter);
-        placeHolder = new PlaceHolder(core.getUseCaseFactory());
-        Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
 
+        this.createSubscriber(configuration,platformAdapter);
+        Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
         HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().pay(),core.getUseCaseFactory().searchCurrency());
         CommandService.init(platformAdapter,core.getUseCaseFactory());
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
 
+        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger(),
+                configuration.getStringList("ItemsBasedEconomy.vaultConsumers"),
+                configuration.getBoolean("ItemsBasedEconomy.enable")
+        );
+        placeholderFactory.updateDependencies(core.getUseCaseFactory());
         platformAdapter.startServer(configuration);
     }
 
@@ -163,19 +166,13 @@ public class Economy {
         return playerJoinListener;
     }
 
-    public static PlaceHolder getPlaceHolder(){
-        return placeHolder;
-    }
-
-    public IConfiguration getConfiguration(){
-        return configuration;
-    }
-
     public Log getVaultLogger(){
         return VaultLogger.build(configuration,platformAdapter.getScheduler());
     }
 
     public static void shutdown(){
+        placeholderFactory.disableService();
+        apiFactory.disableService();
         EventListener.unregisterAll();
         if (repository != null) {
             repository.close();
@@ -185,10 +182,18 @@ public class Economy {
         }
     }
 
+    public static IConfiguration getConfiguration(){
+        return configuration;
+    }
+
     public static UUID getApiWithVaultLoggerId(){
-        return apiFactory.getIDApiCustomSupplier();
+        return apiFactory.getIDApiDynamicSupplier();
     }
     public static UUID getApiId(){
         return apiFactory.getIDApiDefaultSupplier();
+    }
+
+    public static UUID getPlaceholderId(){
+        return placeholderFactory.getId();
     }
 }

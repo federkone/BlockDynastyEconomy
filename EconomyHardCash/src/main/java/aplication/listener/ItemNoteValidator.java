@@ -19,11 +19,9 @@ package aplication.listener;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
 
-public class CustomHeadValidator {
-
-    public static boolean isACurrency(ItemStackCurrency itemCustomHead) {
+public class ItemNoteValidator {
+    public static boolean isANoteCurrency(ItemStackCurrency itemCustomHead) {
         NbtData nbtData = itemCustomHead.getNbtData();
-        String itemType = nbtData.getUuidCurrency();
-        return itemType != null && !itemType.isEmpty();
+        return nbtData.isValid();
     }
 }

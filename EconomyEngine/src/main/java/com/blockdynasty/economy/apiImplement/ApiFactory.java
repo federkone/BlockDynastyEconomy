@@ -21,27 +21,39 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ApiFactory {
-    private final ApiCustomSupplier apiCustomSupplier;
+    private final ApiDynamicSupplier apiDynamicSupplier;
     private final ApiDefaultSupplier apiDefaultSupplier;
+    private final ApiCustomSupplier apiCustomSupplier;
 
     public ApiFactory(){
+        this.apiDynamicSupplier = new ApiDynamicSupplier();
         this.apiCustomSupplier = new ApiCustomSupplier();
         this.apiDefaultSupplier = new ApiDefaultSupplier();
+        ServiceProvider.register(DynastyEconomy.class,apiDynamicSupplier);
         ServiceProvider.register(DynastyEconomy.class,apiCustomSupplier);
         ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory,  Log logger) {
+    public void updateDependencies(UseCaseFactory useCaseFactory, Log logger, List<String > pluginsPath, boolean itemEcoEnabled) {
         apiCustomSupplier.updateDependencies(useCaseFactory, logger);
+        apiDynamicSupplier.updateDependencies(useCaseFactory, logger,pluginsPath, itemEcoEnabled);
         apiDefaultSupplier.updateDependencies(useCaseFactory);
     }
 
     public void unregister() {
+        ServiceProvider.unregister(DynastyEconomy.class, apiDynamicSupplier);
         ServiceProvider.unregister(DynastyEconomy.class, apiCustomSupplier);
         ServiceProvider.unregister(DynastyEconomy.class, apiDefaultSupplier);
+    }
+
+    public void disableService() {
+        apiCustomSupplier.disable();
+        apiDefaultSupplier.disable();
+        apiDynamicSupplier.disable();
     }
 
     public UUID getIDApiCustomSupplier() {
@@ -50,5 +62,9 @@ public class ApiFactory {
 
     public UUID getIDApiDefaultSupplier() {
         return apiDefaultSupplier.getId();
+    }
+
+    public UUID getIDApiDynamicSupplier() {
+        return apiDynamicSupplier.getId();
     }
 }

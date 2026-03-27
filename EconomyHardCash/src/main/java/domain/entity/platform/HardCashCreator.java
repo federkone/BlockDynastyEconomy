@@ -16,13 +16,18 @@
 
 package domain.entity.platform;
 
+import abstractions.platform.scheduler.IScheduler;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.RecipeItemCurrency;
 import domain.entity.player.IEntityHardCash;
 
+import java.util.UUID;
+
 public interface HardCashCreator {
     IEntityHardCash getPlayer(String playerName);
+    IEntityHardCash getPlayerByUUID(UUID playerUUID);
     ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe);
     ItemStackCurrency createItemBase64(RecipeItemCurrency recipe);
+    IScheduler getScheduler();
     boolean hasSupportHardCash();
 }
