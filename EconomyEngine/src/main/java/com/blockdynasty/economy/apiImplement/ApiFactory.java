@@ -21,6 +21,7 @@ import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ApiFactory {
@@ -37,9 +38,9 @@ public class ApiFactory {
         ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, Log logger) {
+    public void updateDependencies(UseCaseFactory useCaseFactory, Log logger, List<String > pluginsPath, boolean itemEcoEnabled) {
         apiCustomSupplier.updateDependencies(useCaseFactory, logger);
-        apiDynamicSupplier.updateDependencies(useCaseFactory, logger);
+        apiDynamicSupplier.updateDependencies(useCaseFactory, logger,pluginsPath, itemEcoEnabled);
         apiDefaultSupplier.updateDependencies(useCaseFactory);
     }
 

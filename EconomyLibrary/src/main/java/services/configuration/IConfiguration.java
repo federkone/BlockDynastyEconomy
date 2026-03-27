@@ -16,10 +16,13 @@
 
 package services.configuration;
 
+import java.util.List;
+
 public interface IConfiguration {
 
     boolean getBoolean(String path);
     String getString(String path);
+    List<String> getStringList(String path);
     int getInt(String path);
     double getDouble(String path);
 }

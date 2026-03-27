@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 public class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
     private final UUID id;
     private final DynastyEconomy proxy;
+    private boolean bypass = true;
 
     private volatile Log logger;
     private volatile UseCaseFactory useCaseFactory;
@@ -37,20 +38,20 @@ public class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalPro
         this.proxy = new DynastyEconomyProxy(this);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, Log log) {
+    public void updateDependencies(UseCaseFactory useCaseFactory, Log log,List<String> pluginsPath,boolean itemEcoEnabled) {
         this.useCaseFactory = useCaseFactory;
+        this.bypass = !itemEcoEnabled;
         this.logger = log;
         this.defaultEconomy = new DynastyEconomyApi(useCaseFactory,log, id);
         this.callerCache.clear();
         this.specificProviders.clear();
-        this.registerSpecialProvider();
+        this.registerSpecialProvider(pluginsPath);
     }
 
-    public void registerSpecialProvider() {
-        //specificProviders.put("com.gamingmesh.jobs", new DynastyEconomyApiHardCash(this.useCaseFactory, id));
-        specificProviders.put("me.angeschossen.lands", new DynastyEconomyApiHardCash(this.useCaseFactory,logger, id));
-        //ahora puedo extender la posibilidad de agregar mas proveedores especificos para plugins conocidos
-        //objetivo: que consuman la posibilidad de indicar que plugin usa items o no.
+    public void registerSpecialProvider(List<String> pluginsPath) {
+        pluginsPath.forEach(plugin -> {
+            specificProviders.put(plugin, new DynastyEconomyApiHardCash(this.useCaseFactory,logger, id));
+        });
     }
 
     public void disable() {
@@ -74,6 +75,7 @@ public class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalPro
     }
 
     private DynastyEconomy resolveProvider() {
+        if (this.bypass) return defaultEconomy;
         return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
                 .walk(frames -> frames
                         .map(StackWalker.StackFrame::getDeclaringClass)

@@ -100,7 +100,10 @@ public class Economy {
         GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
         EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
 
-        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger());
+        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger(),
+                configuration.getStringList("ItemsBasedEconomy.vaultConsumers"),
+                configuration.getBoolean("ItemsBasedEconomy.enable")
+        );
         placeholderFactory.updateDependencies(core.getUseCaseFactory());
         platformAdapter.startServer(configuration);
     }

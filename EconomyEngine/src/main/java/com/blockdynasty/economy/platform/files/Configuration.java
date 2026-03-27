@@ -20,6 +20,7 @@ import com.blockdynasty.yaml.YamlConfig;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
@@ -91,6 +92,10 @@ public class Configuration extends YamlConfig implements IConfigurationEngine {
     public double getDouble(String path) {
         Double value = get(path,config, Double.class);
         return value != null ? value : 0.0;
+    }
+    public List<String> getStringList(String path) {
+        List<String> value = get(path,config, List.class);
+        return value != null ? value : List.of();
     }
 
     public void updateConfig(Map<Object, Object> newConfig) {
