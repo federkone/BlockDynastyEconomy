@@ -17,8 +17,7 @@
 package BlockDynasty.BukkitImplementation.adapters.listeners;
 
 import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackAdapter;
-import BlockDynasty.BukkitImplementation.adapters.GUI.adapters.ItemStackProvider;
-import aplication.listener.CustomHeadValidator;
+import aplication.listener.ItemNoteValidator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,10 +29,10 @@ public class BlockPlaceListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onBlockPlace(BlockPlaceEvent event) {
         ItemStack itemStack = event.getItemInHand();
-        if(!ItemStackProvider.isPlayerHead(itemStack.getType())) {
-            return;
-        }
-        if(CustomHeadValidator.isACurrency(new ItemStackAdapter(itemStack))){
+        //if(!ItemStackProvider.isPlayerHead(itemStack.getType())) {
+        //    return;
+        //}
+        if(ItemNoteValidator.isANoteCurrency(new ItemStackAdapter(itemStack))){
             event.setCancelled(true);
         }
     }

@@ -37,7 +37,11 @@ class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
 
     public void updateDependencies(UseCaseFactory useCaseFactory) {
         this.useCaseFactory = useCaseFactory;
-        this.internalEconomy = null;
+        this.internalEconomy = new DynastyEconomyApi(useCaseFactory, id);
+    }
+
+    public void disable() {
+        this.internalEconomy = new DynastyEconomyApiNull(id);
     }
 
     @Override
@@ -45,20 +49,9 @@ class ApiDefaultSupplier implements Supplier<DynastyEconomy>,InternalProvider {
         return this.proxy;
     }
 
-    //pattern recommended by Joshua Bloch en Effective Java.
     @Override
     public DynastyEconomy getInternal() {
-        DynastyEconomy current = internalEconomy;
-        if (current == null) {
-            synchronized (this) {
-                current = internalEconomy;
-                if (current == null) {
-                    current = new DynastyEconomyApi(useCaseFactory, id);
-                    internalEconomy = current;
-                }
-            }
-        }
-        return current;
+        return this.internalEconomy;
     }
 
     public UUID getId() {

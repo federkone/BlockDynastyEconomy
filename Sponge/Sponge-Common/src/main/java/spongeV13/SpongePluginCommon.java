@@ -16,14 +16,13 @@
 
 package spongeV13;
 
-import aplication.listener.CustomHeadValidator;
+import aplication.listener.ItemNoteValidator;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.block.InteractBlockEvent;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import spongeV13.adapters.commands.CommandRegister;
 import spongeV13.adapters.platformAdapter.ItemStackCurrencyAdapter;
@@ -109,8 +108,8 @@ public class SpongePluginCommon {
         event.cause().first(Player.class).ifPresent(player -> {
             ItemStack item = player.itemInHand(HandTypes.MAIN_HAND);
             if(item == null) return;
-            if(item.type() != ItemTypes.PLAYER_HEAD.get()) return;
-            if(!CustomHeadValidator.isACurrency(new ItemStackCurrencyAdapter(item))) return;
+            //if(item.type() != ItemTypes.PLAYER_HEAD.get()) return;
+            if(!ItemNoteValidator.isANoteCurrency(new ItemStackCurrencyAdapter(item))) return;
             event.setCancelled(true);
         });
     }

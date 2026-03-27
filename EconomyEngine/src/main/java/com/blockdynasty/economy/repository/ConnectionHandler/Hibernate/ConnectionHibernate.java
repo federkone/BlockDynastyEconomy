@@ -22,18 +22,25 @@ import com.blockdynasty.economy.repository.Models.AccountDb;
 import com.blockdynasty.economy.repository.Models.BalanceDb;
 import com.blockdynasty.economy.repository.Models.CurrencyDb;
 import com.blockdynasty.economy.repository.Models.WalletDb;
+import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
 public abstract class ConnectionHibernate implements Connection {
     private SessionFactory sessionFactory;
     protected Configuration configuration = new Configuration();
 
     public ConnectionHibernate() {
+        configuration.setProperty("hibernate.connection.provider_class", HikariCPConnectionProvider.class.getName());
+        configuration.setProperty("hibernate.hikari.maximumPoolSize", "20");
+        configuration.setProperty("hibernate.hikari.minimumIdle", "5");
+        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
+
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
-        configuration.setProperty("hibernate.connection.autocommit", "true");
+        configuration.setProperty("hibernate.connection.autocommit", "false");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
         configuration.setProperty("hibernate.show_sql", "false"); //todo: setup for debug
         configuration.setProperty("hibernate.format_sql", "false");  //todo: setup for debug
         configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
+
         configuration.addAnnotatedClass(CurrencyDb.class);
         configuration.addAnnotatedClass(AccountDb.class);
         configuration.addAnnotatedClass(BalanceDb.class);

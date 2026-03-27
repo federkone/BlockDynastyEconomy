@@ -30,6 +30,9 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <minimizeJar>false</minimizeJar>
@@ -97,6 +100,18 @@
                                     <pattern>com.google.gson</pattern>
                                     <shadedPattern>com.BlockDynasty.gson</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.zaxxer.hikari</pattern>
+                                    <shadedPattern>com.BlockDynasty.hikari</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.hibernate.hikaricp</pattern>
+                                    <shadedPattern>com.BlockDynasty.hibernate.hikari</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.hibernate</pattern>
+                                    <shadedPattern>com.BlockDynasty.hibernate</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -159,6 +174,18 @@
             <artifactId>hibernate-community-dialects</artifactId>
             <version>6.6.2.Final</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-hikaricp</artifactId>
+            <version>6.4.4.Final</version>
         </dependency>
 
         <dependency>

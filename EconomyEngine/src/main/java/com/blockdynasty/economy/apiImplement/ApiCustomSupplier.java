@@ -40,7 +40,11 @@ class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
     public void updateDependencies(UseCaseFactory useCaseFactory,Log logger) {
         this.useCaseFactory = useCaseFactory;
         this.logger = logger;
-        this.internalEconomy = null;
+        this.internalEconomy = new DynastyEconomyApi(useCaseFactory,logger, id);
+    }
+
+    public void disable() {
+        this.internalEconomy = new DynastyEconomyApiNull(id);
     }
 
     @Override
@@ -48,19 +52,8 @@ class ApiCustomSupplier implements Supplier<DynastyEconomy>,InternalProvider {
         return proxy;
     }
 
-    //pattern recommended by Joshua Bloch en Effective Java.
     public DynastyEconomy getInternal() {
-        DynastyEconomy current = internalEconomy;
-        if (current == null) {
-            synchronized (this) {
-                current = internalEconomy;
-                if (current == null) {
-                    current = new DynastyEconomyApi(useCaseFactory,logger, id);
-                    internalEconomy = current;
-                }
-            }
-        }
-        return current;
+        return this.internalEconomy;
     }
 
     public UUID getId() {

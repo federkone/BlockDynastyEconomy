@@ -18,16 +18,21 @@ package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
 
 import services.Console;
 import org.h2.tools.Server;
-
+import org.sqlite.JDBC;
 import java.nio.charset.StandardCharsets;
 
 public class ConnectionHibernateSQLite extends ConnectionHibernate{
     private Server webServer;
     public ConnectionHibernateSQLite(String dbFilePath,boolean enableServerConsole) {
         super();
-        configuration.setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-        configuration.setProperty("hibernate.connection.url", "jdbc:sqlite:" + dbFilePath+ "/database.db");
+        String url = "jdbc:sqlite:" + dbFilePath + "/database.db";
+        configuration.setProperty("hibernate.hikari.driverClassName", JDBC.class.getName());
+        configuration.setProperty("hibernate.hikari.jdbcUrl", url);
+        configuration.setProperty("hibernate.hikari.maximumPoolSize", "1");
+        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
         configuration.setProperty("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect");
+        configuration.setProperty("hibernate.hikari.dataSource.journal_mode", "WAL");
+        configuration.setProperty("hibernate.hikari.dataSource.synchronous", "NORMAL");
         this.init();
 
         if (enableServerConsole) {

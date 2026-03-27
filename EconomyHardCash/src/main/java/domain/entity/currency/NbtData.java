@@ -58,6 +58,10 @@ public class NbtData {
         this.value = nbtMap.getOrDefault("value",null);
     }
 
+    public boolean isValid(){
+        return getUuidCurrency() != null && !getUuidCurrency().isEmpty() && getItemType() != null && !getItemType().isEmpty();
+    }
+
     public String getItemType() {
         return nameCurrency;
     }

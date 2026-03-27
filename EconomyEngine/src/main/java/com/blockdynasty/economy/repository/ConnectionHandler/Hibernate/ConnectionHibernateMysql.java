@@ -16,14 +16,26 @@
 
 package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
+
 public class ConnectionHibernateMysql extends ConnectionHibernate {
 
     public ConnectionHibernateMysql(String host, int port, String database, String username, String password) {
         super();
-        configuration.setProperty("hibernate.connection.driver_class", "com.BlockDynasty.mysql.cj.jdbc.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
-        configuration.setProperty("hibernate.connection.username", username);
-        configuration.setProperty("hibernate.connection.password", password);
+        configuration.setProperty("hibernate.hikari.dataSourceClassName", MysqlDataSource.class.getName());
+        configuration.setProperty("hibernate.hikari.dataSource.url", "jdbc:mysql://" + host + ":" + port + "/" + database);
+        configuration.setProperty("hibernate.hikari.dataSource.user", username);
+        configuration.setProperty("hibernate.hikari.dataSource.password", password);
+
+        configuration.setProperty("hibernate.hikari.maximumPoolSize", "20");
+        configuration.setProperty("hibernate.hikari.minimumIdle", "5");
+        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000"); // 30 segundos de espera máx.
+        configuration.setProperty("hibernate.hikari.idleTimeout", "600000");     // 10 minutos
+        configuration.setProperty("hibernate.hikari.maxLifetime", "1800000");    // 30 minutos
+
+        configuration.setProperty("hibernate.hikari.dataSource.cachePrepStmts", "true");
+        configuration.setProperty("hibernate.hikari.dataSource.prepStmtCacheSize", "250");
+        configuration.setProperty("hibernate.hikari.dataSource.prepStmtCacheSqlLimit", "2048");
         this.init();
     }
 

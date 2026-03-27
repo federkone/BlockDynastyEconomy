@@ -20,6 +20,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawU
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.result.Result;
+import abstractions.platform.scheduler.ContextualTask;
+import abstractions.platform.scheduler.IScheduler;
 import aplication.useCase.items.service.ItemBase64Creator;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
@@ -28,15 +30,22 @@ import domain.service.ItemCreator;
 import services.messages.Message;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ExtractItemUseCase implements IExtractItemUseCase {
     private HardCashCreator platform;
     private IWithdrawUseCase withdrawUseCase;
     private ItemCreator itemCreator;
     private CacheCurrencyItems cacheCurrencyItems;
+    private IScheduler scheduler;
+
+    private static final Set<UUID> activeTransactions = ConcurrentHashMap.newKeySet();
 
     public ExtractItemUseCase(HardCashCreator platform, IWithdrawUseCase withdrawUseCase, CacheCurrencyItems cacheCurrencyItems) {
         this.platform = platform;
+        this.scheduler = platform.getScheduler();
         this.withdrawUseCase = withdrawUseCase;
         this.cacheCurrencyItems = cacheCurrencyItems;
         this.itemCreator = new ItemBase64Creator(platform);
@@ -44,67 +53,79 @@ public class ExtractItemUseCase implements IExtractItemUseCase {
 
     @Override
     public void execute(IEntityHardCash player, BigDecimal amount, ICurrency currency) {
-        if (amount.stripTrailingZeros().scale() > 0) {
-            player.sendMessage("Amount must be an integer.");
+        if (!activeTransactions.add(player.getUniqueId())) {
+            player.sendMessage("You already have a transaction in progress. Please wait.");
             return;
         }
 
-        if (!currency.isPhysicalItemSupported()){
-            player.sendMessage("This currency does not support physical item withdrawal.");
-            return;
-        }
-        if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
-            player.sendMessage("Currency does not have a valid material.");
-            return;
-        }
+        Runnable r = () -> {
+            try {
+                if (amount.stripTrailingZeros().scale() > 0) {
+                    player.sendMessage("Amount must be an integer.");
+                    return;
+                }
 
-        var item = itemCreator.create(currency);
-        if (item.isNull()){
-            player.sendMessage("Currency does not have a valid item representation.");
-            return;
-        }
+                if (!currency.isPhysicalItemSupported()) {
+                    player.sendMessage("This currency does not support physical item withdrawal.");
+                    return;
+                }
+                if (currency.getBase64Item() == null || currency.getBase64Item().isEmpty()) {
+                    player.sendMessage("Currency does not have a valid material.");
+                    return;
+                }
 
-        CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
-        if (currencywrapper == null) {
-            player.sendMessage("Currency not have valid item.");
-            return;
-        }
+                var item = itemCreator.create(currency);
+                if (item.isNull()) {
+                    player.sendMessage("Currency does not have a valid item representation.");
+                    return;
+                }
 
-        int emptySlots = player.emptySlots();
-        int maxWithdrawable = emptySlots * item.maxStackSize();
+                CacheCurrencyItems.Currencywrapper currencywrapper = cacheCurrencyItems.getSimilarItem(item);
+                if (currencywrapper == null) {
+                    player.sendMessage("Currency not have valid item.");
+                    return;
+                }
 
-        if (maxWithdrawable <= 0) {
-            player.sendMessage("Error. Not enough space in inventory.");
-            return;
-        }
+                int emptySlots = player.emptySlots();
+                int maxWithdrawable = emptySlots * item.maxStackSize();
 
-        BigDecimal amountToWithdraw = amount.compareTo(BigDecimal.valueOf(maxWithdrawable)) > 0
-                ? BigDecimal.valueOf(maxWithdrawable)
-                : amount;
+                if (maxWithdrawable <= 0) {
+                    player.sendMessage("Error. Not enough space in inventory.");
+                    return;
+                }
 
-        Result<Void> withdrawResult = withdrawUseCase.execute(
-                player.getUniqueId(),
-                currency.getSingular(),
-                amountToWithdraw,
-                Context.COMMAND
-        );
+                BigDecimal amountToWithdraw = amount.compareTo(BigDecimal.valueOf(maxWithdrawable)) > 0
+                        ? BigDecimal.valueOf(maxWithdrawable)
+                        : amount;
 
-        if (!withdrawResult.isSuccess()) {
-            player.sendMessage("Error. " + withdrawResult.getErrorMessage());
-            return;
-        }
+                Result<Void> withdrawResult = withdrawUseCase.execute(
+                        player.getUniqueId(),
+                        currency.getSingular(),
+                        amountToWithdraw,
+                        Context.COMMAND
+                );
 
+                if (!withdrawResult.isSuccess()) {
+                    player.sendMessage("Error. " + withdrawResult.getErrorMessage());
+                    return;
+                }
 
-        item.setCantity(amountToWithdraw.intValue());
-        player.giveItem(item);
+                item.setCantity(amountToWithdraw.intValue());
+                scheduler.run(ContextualTask.build(() -> {player.giveItem(item);}, player));
 
-        if (amount.compareTo(amountToWithdraw) > 0) {
-            BigDecimal remaining = amount.subtract(amountToWithdraw);
-            player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular()
-                    + " in items. You still have " + remaining + " " + currency.getSingular()
-                    + " to withdraw. Please complete the transaction later.");
-        } else {
-            player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular() + " in items.");
-        }
+                if (amount.compareTo(amountToWithdraw) > 0) {
+                    BigDecimal remaining = amount.subtract(amountToWithdraw);
+                    player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular()
+                            + " in items. You still have " + remaining + " " + currency.getSingular()
+                            + " to withdraw. Please complete the transaction later.");
+                } else {
+                    player.sendMessage("You have received " + amountToWithdraw + " " + currency.getSingular() + " in items.");
+                }
+            }finally {
+                activeTransactions.remove(player.getUniqueId());
+            }
+        };
+        ContextualTask contextualTask = ContextualTask.build(r,player);
+        this.scheduler.runAsync(contextualTask);
     }
 }

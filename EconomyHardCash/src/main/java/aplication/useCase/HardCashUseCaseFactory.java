@@ -20,13 +20,8 @@ import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IDepositUs
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IPayUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.IWithdrawUseCase;
 import aplication.HardCashService;
-import aplication.useCase.items.balance.GetItemsBalanceDisableUseCase;
-import aplication.useCase.items.balance.GetItemsBalanceUseCase;
-import aplication.useCase.items.balance.IGetItemsBalanceUseCase;
-import aplication.useCase.items.deposit.DepositAllItemUseCase;
-import aplication.useCase.items.deposit.DepositItemDisableUseCase;
-import aplication.useCase.items.deposit.DepositItemUseCase;
-import aplication.useCase.items.deposit.IDepositItemUseCase;
+import aplication.useCase.items.balance.*;
+import aplication.useCase.items.deposit.*;
 import aplication.useCase.items.payment.IPayWithItemsUseCase;
 import aplication.useCase.items.payment.PayWithItemsDisableUseCase;
 import aplication.useCase.items.payment.PayWithItemsUseCase;
@@ -120,5 +115,19 @@ public class HardCashUseCaseFactory {
             return new GetItemsBalanceUseCase(hardCashCreator, searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new GetItemsBalanceDisableUseCase();
+    }
+
+    public static DepositAllItemsDefaultUseCase getDepositAllItemsDefaultUseCase(){
+        if (HardCashService.isItemBasedEconomyEnabled()) {
+            return new DepositAllItemCurrencyDefault(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
+        }
+        return new DepositAllItemCurrencyDefaultDisable();
+    }
+
+    public static IGetItemBalanceCurrencyDefaultUseCase getItemBalanceCurrencyDefaultUseCase(){
+        if (HardCashService.isItemBasedEconomyEnabled()) {
+            return new GetItemBalanceCurrencyDefaultUseCase(hardCashCreator, searchCurrencyUseCase,cacheCurrencyItems);
+        }
+        return new GetItemBalanceCurrencyDefaultDisableUseCase();
     }
 }
