@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
+package com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import com.blockdynasty.economy.repository.Models.AccountDb;
-import com.blockdynasty.economy.repository.Models.BalanceDb;
-import com.blockdynasty.economy.repository.Models.CurrencyDb;
-import com.blockdynasty.economy.repository.Models.WalletDb;
+import com.blockdynasty.economy.repository.hibernate.Models.AccountDb;
+import com.blockdynasty.economy.repository.hibernate.Models.BalanceDb;
+import com.blockdynasty.economy.repository.hibernate.Models.CurrencyDb;
+import com.blockdynasty.economy.repository.hibernate.Models.WalletDb;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
 public abstract class ConnectionHibernate implements Connection {

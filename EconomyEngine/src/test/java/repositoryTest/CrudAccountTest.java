@@ -22,8 +22,8 @@ import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.persistence.entities.IAccountRepository;
 import org.junit.jupiter.api.AfterAll;
-import com.blockdynasty.economy.repository.AccountRepository;
-import com.blockdynasty.economy.repository.CurrencyRepository;
+import com.blockdynasty.economy.repository.hibernate.AccountRepository;
+import com.blockdynasty.economy.repository.hibernate.CurrencyRepository;
 import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.Test;
 

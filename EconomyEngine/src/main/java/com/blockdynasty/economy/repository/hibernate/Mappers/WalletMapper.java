@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.Mappers;
+package com.blockdynasty.economy.repository.hibernate.Mappers;
 
 import BlockDynasty.Economy.domain.entities.balance.Money;
 import BlockDynasty.Economy.domain.entities.wallet.Wallet;
-import com.blockdynasty.economy.repository.Models.WalletDb;
+import com.blockdynasty.economy.repository.hibernate.Models.WalletDb;
 
 import java.util.List;
 import java.util.stream.Collectors;

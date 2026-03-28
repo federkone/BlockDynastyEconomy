@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.ConnectionHandler.Hikari;
-
-import java.sql.SQLException;
+package com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Hikari;
 
 public class ConnectionMysql {
     /*private final HikariDataSource hikari;

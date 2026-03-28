@@ -27,7 +27,7 @@ import com.blockdynasty.economy.configFromChannel.ProxyConfigSubscriber;
 import abstractions.platform.IProxySubscriber;
 import aplication.HardCashService;
 import com.blockdynasty.economy.configFromChannel.PlayerConfigJoinListener;
-import com.blockdynasty.economy.repository.ConnectionHandler.Hibernate.*;
+import com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Hibernate.*;
 import lib.gui.GUISystem;
 import com.blockdynasty.economy.platform.IPlatform;
 import com.blockdynasty.economy.platform.files.Configuration;
@@ -47,7 +47,7 @@ import com.blockdynasty.economy.MessageChannel.proxy.ProxyPublisher;
 import com.blockdynasty.economy.MessageChannel.redis.RedisPublisher;
 import com.blockdynasty.economy.MessageChannel.redis.RedisData;
 import com.blockdynasty.economy.MessageChannel.redis.RedisSubscriber;
-import com.blockdynasty.economy.repository.Repository;
+import com.blockdynasty.economy.repository.hibernate.Repository;
 import com.blockdynasty.economy.services.Message;
 import services.Console;
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.Mappers;
+package com.blockdynasty.economy.repository.hibernate.Mappers;
 
 import BlockDynasty.Economy.domain.entities.balance.Money;
-import com.blockdynasty.economy.repository.Models.BalanceDb;
+import com.blockdynasty.economy.repository.hibernate.Models.BalanceDb;
 
 public class BalanceMapper {
     public static BalanceDb toEntity(Money domain) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository;
+package com.blockdynasty.economy.repository.hibernate;
 
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyAlreadyExist;
 import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
@@ -25,8 +25,8 @@ import jakarta.persistence.NoResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import com.blockdynasty.economy.repository.Mappers.CurrencyMapper;
-import com.blockdynasty.economy.repository.Models.CurrencyDb;
+import com.blockdynasty.economy.repository.hibernate.Mappers.CurrencyMapper;
+import com.blockdynasty.economy.repository.hibernate.Models.CurrencyDb;
 
 import java.util.List;
 import java.util.stream.Collectors;

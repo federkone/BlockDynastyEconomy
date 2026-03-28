@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.Models;
+package com.blockdynasty.economy.repository.hibernate.Models;
 
 import jakarta.persistence.*;
 
