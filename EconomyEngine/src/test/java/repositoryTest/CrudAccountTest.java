@@ -21,11 +21,13 @@ import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundEx
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.persistence.entities.IAccountRepository;
+
+import com.blockdynasty.economy.repository.hibernate.AccountRepository;
+import com.blockdynasty.economy.repository.hibernate.CurrencyRepository;
 import org.junit.jupiter.api.AfterAll;
-import com.blockdynasty.economy.repository.AccountRepository;
-import com.blockdynasty.economy.repository.CurrencyRepository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.Test;
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+
 
 import java.math.BigDecimal;
 import java.util.UUID;

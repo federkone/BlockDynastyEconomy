@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package repositoryTest;
+package com.blockdynasty.economy.repository.hibernate.Models;
 
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import com.blockdynasty.economy.repository.hibernate.Repository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
 
-public class FactoryRepo {
-
-    public static IRepository getDb(){
-        return new Repository(new MockConnectionHibernateH2());
-    }
+@Embeddable
+public class BalanceId implements Serializable {
+    private Long walletId;
+    private Long currencyId;
 }

@@ -14,57 +14,61 @@
  * limitations under the License.
  */
 
-package repositoryTest.ConnectionHandler;
+package com.blockdynasty.economy.repository.hibernate.ConnectionHandler;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Connection;
 import com.blockdynasty.economy.repository.hibernate.Models.AccountDb;
 import com.blockdynasty.economy.repository.hibernate.Models.BalanceDb;
 import com.blockdynasty.economy.repository.hibernate.Models.CurrencyDb;
 import com.blockdynasty.economy.repository.hibernate.Models.WalletDb;
+import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
-public class MockConnectionHibernateH2 implements Connection {
+public abstract class ConnectionHibernate implements Connection {
     private SessionFactory sessionFactory;
-    private Configuration configuration;
+    protected Configuration configuration = new Configuration();
 
-    public MockConnectionHibernateH2() {
-        this.configuration = new Configuration();
+    public ConnectionHibernate() {
+        configuration.setProperty("hibernate.connection.provider_class", HikariCPConnectionProvider.class.getName());
+        configuration.setProperty("hibernate.hikari.maximumPoolSize", "20");
+        configuration.setProperty("hibernate.hikari.minimumIdle", "5");
+        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
 
-        // Configure H2 in-memory database
-        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem:testdb");
-        configuration.setProperty("hibernate.connection.username", "");
-        configuration.setProperty("hibernate.connection.password", "");
-
-        // Configure Hibernate properties
-        configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        configuration.setProperty("hibernate.connection.autocommit", "true");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+        configuration.setProperty("hibernate.connection.autocommit", "false");
         configuration.setProperty("hibernate.cache.use_second_level_cache", "false");
-        configuration.setProperty("hibernate.show_sql", "false");
-        configuration.setProperty("hibernate.format_sql", "false");
-        configuration.setProperty("hibernate.use_sql_comments", "false");
+        configuration.setProperty("hibernate.show_sql", "false"); //todo: setup for debug
+        configuration.setProperty("hibernate.format_sql", "false");  //todo: setup for debug
+        configuration.setProperty("hibernate.use_sql_comments", "false");//todo: setup for debug
+
         configuration.addAnnotatedClass(CurrencyDb.class);
         configuration.addAnnotatedClass(AccountDb.class);
         configuration.addAnnotatedClass(BalanceDb.class);
         configuration.addAnnotatedClass(WalletDb.class);
-        // Initialize the session factory
+    }
+
+    protected void init(){
         try {
             this.sessionFactory = this.configuration.buildSessionFactory();
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError("Initial SessionFactory creation failed: " + ex);
+            //sessionFactory = new Configuration().configure().buildSessionFactory(); //bildea la sesion con los parametros del archivo hibernate.cfg.xml
+        } catch (Exception ex) {
+            throw new RuntimeException("Initial SessionFactory creation failed: " + ex);
         }
     }
 
     @Override
     public SessionFactory getSession() {
-        return this.sessionFactory;
+        return sessionFactory;
     }
 
     @Override
     public void close() {
-        if (sessionFactory != null) {
+        if (sessionFactory != null && !sessionFactory.isClosed()) {
             sessionFactory.close();
         }
+        stopServer();
     }
+
+    protected abstract void stopServer();
+
 }

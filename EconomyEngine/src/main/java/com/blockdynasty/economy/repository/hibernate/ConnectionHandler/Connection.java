@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package repositoryTest;
+package com.blockdynasty.economy.repository.hibernate.ConnectionHandler;
 
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import com.blockdynasty.economy.repository.hibernate.Repository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+import org.hibernate.SessionFactory;
 
-
-public class FactoryRepo {
-
-    public static IRepository getDb(){
-        return new Repository(new MockConnectionHibernateH2());
-    }
+public interface Connection {
+    SessionFactory getSession();
+    void close();
 }

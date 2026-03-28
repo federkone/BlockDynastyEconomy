@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package repositoryTest;
-
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import com.blockdynasty.economy.repository.hibernate.Repository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+/*
+package com.blockdynasty.economy.repository.ebean.ConnectionHandler;
 
 
-public class FactoryRepo {
-
-    public static IRepository getDb(){
-        return new Repository(new MockConnectionHibernateH2());
-    }
+public interface Connection {
+    io.ebean.Database getDatabase();
+    void close();
 }
+*/

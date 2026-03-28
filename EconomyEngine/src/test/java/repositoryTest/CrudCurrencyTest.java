@@ -21,11 +21,13 @@ import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFound
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.persistence.entities.ICurrencyRepository;
 
+import com.blockdynasty.economy.repository.hibernate.CurrencyRepository;
 import org.junit.jupiter.api.AfterAll;
-import com.blockdynasty.economy.repository.CurrencyRepository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
