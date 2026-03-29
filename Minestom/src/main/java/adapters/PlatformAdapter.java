@@ -58,12 +58,12 @@ public class PlatformAdapter implements IPlatform {
 
     @Override
     public ItemStackCurrency createItemStackNBT(RecipeItemCurrency recipe) {
-        return null;
+        return new ItemStackAdapter(null);
     }
 
     @Override
     public ItemStackCurrency createItemBase64(RecipeItemCurrency recipe) {
-        return null;
+        return new ItemStackAdapter(null);
     }
 
     @Override

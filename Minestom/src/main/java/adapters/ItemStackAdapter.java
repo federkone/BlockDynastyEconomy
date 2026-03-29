@@ -16,10 +16,12 @@
 
 package adapters;
 
+import domain.entity.currency.ItemStackCurrency;
+import domain.entity.currency.NbtData;
 import lib.gui.components.IItemStack;
 import net.minestom.server.item.ItemStack;
 
-public class ItemStackAdapter implements IItemStack {
+public class ItemStackAdapter implements IItemStack, ItemStackCurrency {
     private ItemStack itemStack;
 
     public ItemStackAdapter(ItemStack itemStack) {
@@ -29,5 +31,50 @@ public class ItemStackAdapter implements IItemStack {
     @Override
     public Object getHandle() {
         return itemStack;
+    }
+
+    @Override
+    public NbtData getNbtData() {
+        return new NbtData();
+    }
+
+    @Override
+    public int getCantity() {
+        return itemStack.amount();
+    }
+
+    @Override
+    public void setCantity(int amount) {
+        itemStack = itemStack.withAmount(amount);
+    }
+
+    @Override
+    public String getMaterial() {
+        return itemStack.material().name();
+    }
+
+    @Override
+    public String asBase64() {
+        return "";
+    }
+
+    @Override
+    public int maxStackSize() {
+        return itemStack.maxStackSize();
+    }
+
+    @Override
+    public boolean isNull() {
+        return itemStack == null || itemStack.isAir();
+    }
+
+    @Override
+    public boolean isSimilar(ItemStackCurrency other) {
+        return this.itemStack.isSimilar((ItemStack) other.getRoot());
+    }
+
+    @Override
+    public Object getRoot() {
+        return this.itemStack;
     }
 }
