@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository;
+package com.blockdynasty.economy.repository.hibernate;
 
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountAlreadyExist;
@@ -30,11 +30,11 @@ import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import com.blockdynasty.economy.repository.Mappers.AccountMapper;
-import com.blockdynasty.economy.repository.Models.AccountDb;
-import com.blockdynasty.economy.repository.Models.BalanceDb;
-import com.blockdynasty.economy.repository.Models.CurrencyDb;
-import com.blockdynasty.economy.repository.Models.WalletDb;
+import com.blockdynasty.economy.repository.hibernate.Mappers.AccountMapper;
+import com.blockdynasty.economy.repository.hibernate.Models.AccountDb;
+import com.blockdynasty.economy.repository.hibernate.Models.BalanceDb;
+import com.blockdynasty.economy.repository.hibernate.Models.CurrencyDb;
+import com.blockdynasty.economy.repository.hibernate.Models.WalletDb;
 
 import java.util.List;
 import java.util.Optional;

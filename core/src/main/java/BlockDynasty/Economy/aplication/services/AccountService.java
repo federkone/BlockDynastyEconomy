@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+//todo make private
 public class AccountService implements IAccountService {
     private final IRepository dataStore;
     private final ICurrencyService currencyService;

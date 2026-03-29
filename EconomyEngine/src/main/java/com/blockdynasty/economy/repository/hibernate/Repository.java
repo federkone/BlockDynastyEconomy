@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository;
+package com.blockdynasty.economy.repository.hibernate;
 
 import BlockDynasty.Economy.domain.entities.account.Account;
 import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountAlreadyExist;
@@ -30,7 +30,7 @@ import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.SessionFactory;
-import com.blockdynasty.economy.repository.ConnectionHandler.Hibernate.Connection;
+import com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Hibernate.Connection;
 
 import java.util.List;
 import java.util.UUID;

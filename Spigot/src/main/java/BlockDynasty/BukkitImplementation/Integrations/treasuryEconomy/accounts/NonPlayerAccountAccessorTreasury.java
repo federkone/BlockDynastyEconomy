@@ -15,7 +15,6 @@
  */
 package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts;
 
-import com.BlockDynasty.api.DynastyEconomy;
 import me.lokka30.treasury.api.economy.account.NonPlayerAccount;
 import me.lokka30.treasury.api.economy.account.accessor.NonPlayerAccountAccessor;
 import org.jetbrains.annotations.NotNull;

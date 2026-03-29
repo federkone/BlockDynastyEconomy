@@ -24,6 +24,7 @@ import BlockDynasty.Economy.domain.services.ICurrencyService;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 
+//todo make private
 public class ServicesManager {
     private final ICurrencyService currencyService;
     private final IAccountService accountService;

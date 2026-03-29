@@ -22,7 +22,7 @@ import BlockDynasty.Economy.domain.services.IBankService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BankService implements IBankService {
+class BankService implements IBankService {
         private List<Bank> banks;
 
         public BankService(){

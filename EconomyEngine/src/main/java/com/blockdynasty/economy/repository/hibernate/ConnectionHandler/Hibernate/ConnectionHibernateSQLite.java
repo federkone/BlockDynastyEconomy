@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
+package com.blockdynasty.economy.repository.hibernate.ConnectionHandler.Hibernate;
 
 import services.Console;
 import org.h2.tools.Server;

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package com.blockdynasty.economy.repository.ConnectionHandler.Hibernate;
+package com.blockdynasty.economy.repository.hibernate.Models;
 
-import org.hibernate.SessionFactory;
+import jakarta.persistence.Embeddable;
 
-public interface Connection {
-    SessionFactory getSession();
-    void close();
+import java.io.Serializable;
+
+@Embeddable
+public class BalanceId implements Serializable {
+    private Long walletId;
+    private Long currencyId;
 }

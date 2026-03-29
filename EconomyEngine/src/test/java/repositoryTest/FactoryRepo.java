@@ -17,7 +17,7 @@
 package repositoryTest;
 
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import com.blockdynasty.economy.repository.Repository;
+import com.blockdynasty.economy.repository.hibernate.Repository;
 import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 
 public class FactoryRepo {

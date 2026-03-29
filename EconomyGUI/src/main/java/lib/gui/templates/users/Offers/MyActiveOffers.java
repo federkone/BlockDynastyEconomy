@@ -20,7 +20,7 @@ import BlockDynasty.Economy.aplication.useCase.offer.CancelOfferUseCase;
 import BlockDynasty.Economy.aplication.useCase.offer.SearchOfferUseCase;
 import BlockDynasty.Economy.domain.entities.account.Player;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.result.Result;
 import lib.gui.components.IGUI;
 import lib.gui.components.IItemStack;
@@ -38,7 +38,7 @@ import services.messages.Message;
 import java.util.List;
 import java.util.Map;
 
-public class MyActiveOffers extends PaginatedPanel<Offer> {
+public class MyActiveOffers extends PaginatedPanel<IOffer> {
     private final CancelOfferUseCase cancelOfferUseCase;
     private final SearchOfferUseCase searchOfferUseCase;
     private final IEntityGUI player;
@@ -52,7 +52,7 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
         this.player = player;
 
         //can be Player
-        List<Offer> offers = searchOfferUseCase.getOffersSeller(player.getUniqueId());
+        List<IOffer> offers = searchOfferUseCase.getOffersSeller(player.getUniqueId());
         showItemsPage(offers);
     }
 
@@ -67,7 +67,7 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
     }
 
     @Override
-    protected IItemStack createItemFor(Offer offer) {
+    protected IItemStack createItemFor(IOffer offer) {
         Player comprador = offer.getComprador();
 
         ICurrency tipoCantidad = offer.getTipoCantidad();
@@ -85,7 +85,7 @@ public class MyActiveOffers extends PaginatedPanel<Offer> {
             );
     }
     @Override
-    protected void functionLeftItemClick(Offer offer) {
+    protected void functionLeftItemClick(IOffer offer) {
         Result<Void> result =cancelOfferUseCase.execute(offer.getVendedor());
         if (result.isSuccess()) {
             GUIFactory.myActiveOffers(player).open();

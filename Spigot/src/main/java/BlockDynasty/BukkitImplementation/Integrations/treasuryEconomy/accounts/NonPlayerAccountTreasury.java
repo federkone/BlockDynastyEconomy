@@ -16,7 +16,6 @@
 package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts;
 
 import com.BlockDynasty.api.EconomyResponse;
-import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.entity.Account;
 import com.blockdynasty.economy.Economy;
 import me.lokka30.treasury.api.common.NamespacedKey;
@@ -26,7 +25,6 @@ import me.lokka30.treasury.api.economy.account.NonPlayerAccount;
 import me.lokka30.treasury.api.economy.currency.Currency;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransaction;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransactionType;
-import net.blockdynasty.providers.services.ServiceProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import com.BlockDynasty.api.DynastyEconomy;
 
 public class NonPlayerAccountTreasury implements NonPlayerAccount {
     private String nameAccount;
@@ -41,7 +40,7 @@ public class NonPlayerAccountTreasury implements NonPlayerAccount {
 
     public NonPlayerAccountTreasury(String nameAccount) {
         this.nameAccount = nameAccount;
-        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        Optional<DynastyEconomy> apiOptional =  Economy.getApi();
         if (apiOptional.isEmpty()) {
             throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
         }

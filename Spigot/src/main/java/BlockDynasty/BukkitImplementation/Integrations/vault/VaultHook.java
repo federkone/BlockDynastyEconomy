@@ -18,7 +18,6 @@ package BlockDynasty.BukkitImplementation.Integrations.vault;
 
 import com.BlockDynasty.api.DynastyEconomy;
 import com.blockdynasty.economy.Economy;
-import net.blockdynasty.providers.services.ServiceProvider;
 import net.milkbowl.vault.economy.AbstractEconomy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -34,7 +33,7 @@ public class VaultHook extends AbstractEconomy {
     private DynastyEconomy api;
 
     public VaultHook() {
-        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        Optional<DynastyEconomy> apiOptional = Economy.getApi();
         if (apiOptional.isEmpty()) {
             throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
         }

@@ -29,7 +29,6 @@ import me.lokka30.treasury.api.economy.account.AccountPermission;
 import me.lokka30.treasury.api.economy.account.NonPlayerAccount;
 import me.lokka30.treasury.api.economy.account.accessor.AccountAccessor;
 import me.lokka30.treasury.api.economy.currency.Currency;
-import net.blockdynasty.providers.services.ServiceProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 public class EconomyHook implements EconomyProvider {
     private DynastyEconomy api;
     public EconomyHook() {
-        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        Optional<DynastyEconomy> apiOptional =  Economy.getApi();
         if (apiOptional.isEmpty()) {
             throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
         }

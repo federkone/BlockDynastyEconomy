@@ -19,7 +19,7 @@ package com.blockdynasty.economy.platform.listeners;
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.events.EventManagerProvider;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.events.Context;
 import BlockDynasty.Economy.domain.events.Event;
 import BlockDynasty.Economy.domain.events.EventHandler;
@@ -219,7 +219,7 @@ public class EventListener {
         handlers.put(SetEvent.class, setHandler);
 
         EventHandler<OfferCreated> offerHandler = event -> {
-            Offer offer = event.getOffer();
+            IOffer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
 
@@ -255,7 +255,7 @@ public class EventListener {
         handlers.put(OfferCreated.class, offerHandler);
 
         EventHandler<OfferCanceled> offerCanceledHandler = event -> {
-            Offer offer = event.getOffer();
+            IOffer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
 
@@ -282,7 +282,7 @@ public class EventListener {
         handlers.put(OfferCanceled.class, offerCanceledHandler);
 
         EventHandler<OfferExpired> offerExpiredHandler = event ->  {
-            Offer offer = event.getOffer();
+            IOffer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
 
@@ -305,7 +305,7 @@ public class EventListener {
         handlers.put(OfferExpired.class, offerExpiredHandler);
 
         EventHandler<OfferAccepted> offerAcceptedHandler = event ->  {
-            Offer offer = event.getOffer();
+            IOffer offer = event.getOffer();
             IPlayer receiver = platformAdapter.getPlayerByUUID(offer.getComprador().getUuid());
             IPlayer sender = platformAdapter.getPlayerByUUID(offer.getVendedor().getUuid());
 

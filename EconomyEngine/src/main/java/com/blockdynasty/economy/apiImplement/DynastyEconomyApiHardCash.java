@@ -8,9 +8,10 @@ import aplication.useCase.items.deposit.DepositAllItemsDefaultUseCase;
 import com.BlockDynasty.api.EconomyResponse;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
-public class DynastyEconomyApiHardCash extends DynastyEconomyApi{
+class DynastyEconomyApiHardCash extends DynastyEconomyApi{
     private DepositAllItemsDefaultUseCase depositItemUseCase;
     private IGetItemBalanceCurrencyDefaultUseCase getItemsBalanceUseCase;
 
@@ -28,25 +29,37 @@ public class DynastyEconomyApiHardCash extends DynastyEconomyApi{
 
     @Override
     public EconomyResponse withdraw(UUID uuid, BigDecimal amount) {
-        BigDecimal itemsInInventory = BigDecimal.valueOf(getItemsBalanceUseCase.execute(uuid));
-        BigDecimal amountToMove = amount.min(itemsInInventory);
+        BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+
+        int invInt = getItemsBalanceUseCase.execute(uuid);
+        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
+
+        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
+                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
+                : BigDecimal.ZERO;
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
             this.depositItemUseCase.execute(uuid, amountToMove);
         }
-        return super.withdraw(uuid, amount);
-    }
 
+        return super.withdraw(uuid, filteredAmount);
+    }
     @Override
     public EconomyResponse withdraw(String name, BigDecimal amount) {
-        BigDecimal itemsInInventory = BigDecimal.valueOf(getItemsBalanceUseCase.execute(name));
-        BigDecimal amountToMove = amount.min(itemsInInventory);
+        BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+
+        int invInt = getItemsBalanceUseCase.execute(name);
+        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
+
+        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
+                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
+                : BigDecimal.ZERO;
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
             this.depositItemUseCase.execute(name, amountToMove);
         }
 
-        return super.withdraw(name, amount);
+        return super.withdraw(name, filteredAmount);
     }
 
     @Override

@@ -19,7 +19,6 @@ package BlockDynasty.BukkitImplementation.Integrations.vault2;
 import BlockDynasty.BukkitImplementation.Integrations.vault.VaultHook;
 import com.blockdynasty.economy.Economy;
 import com.BlockDynasty.api.DynastyEconomy;
-import net.blockdynasty.providers.services.ServiceProvider;
 import com.BlockDynasty.api.entity.Currency;
 import net.milkbowl.vault.economy.EconomyMultiCurrency;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -33,7 +32,7 @@ public class Vault2Hook extends VaultHook implements EconomyMultiCurrency {
     private DynastyEconomy api;
 
     public Vault2Hook() {
-        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        Optional<DynastyEconomy> apiOptional = Economy.getApi();
         if (apiOptional.isEmpty()) {
             throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
         }

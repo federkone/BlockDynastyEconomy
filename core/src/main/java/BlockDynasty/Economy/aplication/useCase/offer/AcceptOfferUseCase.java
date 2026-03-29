@@ -18,11 +18,11 @@ package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ITradeUseCase;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
 import BlockDynasty.Economy.domain.services.IOfferService;
 import BlockDynasty.Economy.domain.services.courier.Courier;
 import BlockDynasty.Economy.domain.services.courier.Message;
@@ -43,7 +43,7 @@ public class AcceptOfferUseCase {
     }
 
     public Result<Void> execute (UUID playerAccept, UUID playerOffer) {
-        Offer offer = offerService.getOffer(playerAccept,playerOffer);
+        IOffer offer = offerService.getOffer(playerAccept,playerOffer);
         if(offer == null) {
             return Result.failure("This user has not offered you anything", ErrorCode.OFFER_NOT_FOUND);
         }
