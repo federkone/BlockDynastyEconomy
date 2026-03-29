@@ -38,8 +38,8 @@ ItemsBasedEconomy:
   enable: false
   #List to indicate which Vault consumers will use the item-based economy.
   #This allows Vault to become a modular provider and lets us decide what type of economy each plugin can use.
-  #ex: "me.angeschossen.lands" from Plugin "lands", "com.gamingmesh.jobs" from plugin "Jobs", etc.
-  vaultConsumers: ["me.angeschossen.lands"]
+  #ex: "me.angeschossen.lands" from "lands", "com.gamingmesh.jobs" from "Jobs", "com.palmergames.bukkit.towny" towny, etc
+  vaultConsumers: ["me.angeschossen.lands","com.palmergames.bukkit.towny"]
 
 #Console log some information for debugging.
 debug: false
