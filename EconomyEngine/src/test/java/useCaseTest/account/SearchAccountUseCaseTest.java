@@ -17,6 +17,7 @@
 package useCaseTest.account;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
+import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.aplication.services.CurrencyService;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import BlockDynasty.Economy.domain.result.ErrorCode;
@@ -27,9 +28,10 @@ import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
 import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.services.AccountService;
 import BlockDynasty.Economy.domain.entities.currency.Currency;
 import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import BlockDynasty.Economy.domain.services.IAccountService;
+import BlockDynasty.Economy.domain.services.ICurrencyService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.FactoryRepo;
@@ -46,8 +48,8 @@ public class SearchAccountUseCaseTest {
     IRepository repository;
     SearchAccountUseCase searchAccountUseCase;
     CreateAccountUseCase createAccountUseCase;
-    AccountService accountService;
-    CurrencyService currencyService;
+    IAccountService accountService;
+    ICurrencyService currencyService;
     DepositUseCase depositUseCase;
     SearchCurrencyUseCase searchCurrencyUseCase;
     CreateCurrencyUseCase createCurrencyUseCase;

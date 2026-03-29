@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//todo make private
 public class CurrencyService implements ICurrencyService {
     private List<ICurrency> currencies ;
     private IRepository repository;

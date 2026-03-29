@@ -16,18 +16,18 @@
 
 package BlockDynasty.Economy.domain.events.offersEvents;
 
-import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
+import BlockDynasty.Economy.domain.services.IOfferService;
 
 public class OfferCreated extends OfferEvent {
 
-    public OfferCreated(Offer offer) {
+    public OfferCreated(IOffer offer) {
         super(offer);
     }
 
     @Override
-    public void syncOffer(OfferService offerService) {
-        Offer offer = getOffer();
+    public void syncOffer(IOfferService offerService) {
+        IOffer offer = getOffer();
         offerService.addOffer(offer);
     }
 }

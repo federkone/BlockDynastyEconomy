@@ -10,7 +10,7 @@ import com.BlockDynasty.api.EconomyResponse;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class DynastyEconomyApiHardCash extends DynastyEconomyApi{
+class DynastyEconomyApiHardCash extends DynastyEconomyApi{
     private DepositAllItemsDefaultUseCase depositItemUseCase;
     private IGetItemBalanceCurrencyDefaultUseCase getItemsBalanceUseCase;
 

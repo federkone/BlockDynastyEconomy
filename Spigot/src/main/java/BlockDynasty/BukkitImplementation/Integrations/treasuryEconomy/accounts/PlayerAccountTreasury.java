@@ -16,14 +16,12 @@
 package BlockDynasty.BukkitImplementation.Integrations.treasuryEconomy.accounts;
 
 import com.BlockDynasty.api.EconomyResponse;
-import com.BlockDynasty.api.DynastyEconomy;
 import com.BlockDynasty.api.entity.Account;
 import com.blockdynasty.economy.Economy;
 import me.lokka30.treasury.api.economy.account.PlayerAccount;
 import me.lokka30.treasury.api.economy.currency.Currency;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransaction;
 import me.lokka30.treasury.api.economy.transaction.EconomyTransactionType;
-import net.blockdynasty.providers.services.ServiceProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -37,7 +35,7 @@ public class PlayerAccountTreasury implements PlayerAccount {
 
     public PlayerAccountTreasury( UUID accountUUID) {
         this.accountUUID = accountUUID;
-        Optional<DynastyEconomy> apiOptional =  ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(Economy.getApiWithVaultLoggerId()));
+        Optional<DynastyEconomy> apiOptional =  Economy.getApi();
         if (apiOptional.isEmpty()) {
             throw new IllegalStateException("DynastyEconomy API not found. Make sure it is registered correctly.");
         }

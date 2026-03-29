@@ -18,8 +18,7 @@ package BlockDynasty.Economy.aplication.useCase.offer;
 
 import BlockDynasty.Economy.aplication.events.EventManager;
 import BlockDynasty.Economy.domain.entities.account.Player;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
-import BlockDynasty.Economy.domain.events.offersEvents.OfferAccepted;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.events.offersEvents.OfferCanceled;
 import BlockDynasty.Economy.domain.result.ErrorCode;
 import BlockDynasty.Economy.domain.result.Result;
@@ -39,7 +38,7 @@ public class CancelOfferUseCase {
     }
 
     public Result<Void> execute (Player playerCancel){
-        Offer offer = offerService.getOfferBuyer(playerCancel.getUuid());
+        IOffer offer = offerService.getOfferBuyer(playerCancel.getUuid());
         if (offer == null){
             offer= offerService.getOfferSeller(playerCancel.getUuid());
         }

@@ -11,8 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-//si esta habilitado itemsbasedEconomy a lo mejor deberia registrar este
-public class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
+class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
     private final UUID id;
     private final DynastyEconomy proxy;
     private boolean bypass = true;

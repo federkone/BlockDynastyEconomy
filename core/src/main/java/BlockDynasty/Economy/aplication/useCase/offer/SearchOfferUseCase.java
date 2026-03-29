@@ -16,7 +16,7 @@
 
 package BlockDynasty.Economy.aplication.useCase.offer;
 
-import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.services.IOfferService;
 
 import java.util.List;
@@ -29,10 +29,10 @@ public class SearchOfferUseCase {
         this.offerService = offerService;
     }
 
-    public List<Offer> getOffersBuyer(UUID playerId) {
+    public List<IOffer> getOffersBuyer(UUID playerId) {
         return offerService.getOffersBuyer(playerId);
     }
-    public List<Offer> getOffersSeller(UUID playerId) {
+    public List<IOffer> getOffersSeller(UUID playerId) {
         return offerService.getOffersSeller(playerId);
     }
 

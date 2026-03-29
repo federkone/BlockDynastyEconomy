@@ -16,11 +16,9 @@
 
 package BlockDynasty.BukkitImplementation.Integrations.Placeholder;
 
-import BlockDynasty.BukkitImplementation.adapters.platformAdapter.EntityConsoleAdapter;
 import BlockDynasty.BukkitImplementation.utils.Console;
 import com.blockdynasty.economy.Economy;
 import lib.placeholder.IPlaceHolderDynastyEconomy;
-import net.blockdynasty.providers.services.ServiceProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +34,7 @@ public class PlaceHolder {
             Console.log("PlaceholderAPI not found. Expansion won't be loaded.");
             return;
         }
-        Optional<IPlaceHolderDynastyEconomy> placeHolder= ServiceProvider.get(IPlaceHolderDynastyEconomy.class, service -> service.getId().equals(Economy.getPlaceholderId()));
+        Optional<IPlaceHolderDynastyEconomy> placeHolder= Economy.getPlaceholder();
         if (placeHolder.isEmpty()) {
             Console.log("IPlaceHolderDynastyEconomy service not found. Expansion won't be loaded.");
             return;

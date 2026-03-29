@@ -16,17 +16,17 @@
 
 package BlockDynasty.Economy.domain.events.offersEvents;
 
-import BlockDynasty.Economy.aplication.services.OfferService;
-import BlockDynasty.Economy.domain.entities.offers.Offer;
+import BlockDynasty.Economy.domain.entities.offers.IOffer;
 import BlockDynasty.Economy.domain.events.SerializableEvent;
+import BlockDynasty.Economy.domain.services.IOfferService;
 
 public abstract class OfferEvent extends SerializableEvent {
-    private final Offer offer;
-    public OfferEvent(Offer offer) {
+    private final IOffer offer;
+    public OfferEvent(IOffer offer) {
         this.offer = offer;
     }
-    public abstract void syncOffer(OfferService offerService);
-    public Offer getOffer() {
+    public abstract void syncOffer(IOfferService offerService);
+    public IOffer getOffer() {
         return offer;
     }
 

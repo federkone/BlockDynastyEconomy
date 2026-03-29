@@ -36,7 +36,9 @@ import com.blockdynasty.economy.platform.files.Languages;
 import com.blockdynasty.economy.platform.files.logs.EconomyLogger;
 import com.blockdynasty.economy.platform.files.logs.VaultLogger;
 import lib.commands.CommandService;
+import lib.placeholder.IPlaceHolderDynastyEconomy;
 import lib.placeholder.PlaceholderFactory;
+import net.blockdynasty.providers.services.ServiceProvider;
 import services.configuration.IConfiguration;
 import util.colors.ChatColor;
 import com.blockdynasty.economy.platform.listeners.EventListener;
@@ -50,8 +52,9 @@ import com.blockdynasty.economy.MessageChannel.redis.RedisSubscriber;
 import com.blockdynasty.economy.repository.hibernate.Repository;
 import com.blockdynasty.economy.services.Message;
 import services.Console;
+import com.BlockDynasty.api.DynastyEconomy;
 
-import java.util.UUID;
+import java.util.Optional;
 
 public class Economy {
     private Core core;
@@ -186,14 +189,11 @@ public class Economy {
         return configuration;
     }
 
-    public static UUID getApiWithVaultLoggerId(){
-        return apiFactory.getIDApiDynamicSupplier();
-    }
-    public static UUID getApiId(){
-        return apiFactory.getIDApiDefaultSupplier();
+    public static Optional<DynastyEconomy> getApi(){
+        return ServiceProvider.get(DynastyEconomy.class, service -> service.getId().equals(apiFactory.getIDApiDynamicSupplier()));
     }
 
-    public static UUID getPlaceholderId(){
-        return placeholderFactory.getId();
+    public static Optional<IPlaceHolderDynastyEconomy> getPlaceholder(){
+        return ServiceProvider.get(IPlaceHolderDynastyEconomy.class, service -> service.getId().equals(placeholderFactory.getId()));
     }
 }
