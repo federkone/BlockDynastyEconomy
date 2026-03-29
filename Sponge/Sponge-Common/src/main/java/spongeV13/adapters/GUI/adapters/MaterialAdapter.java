@@ -22,16 +22,21 @@ import domain.entity.currency.NbtData;
 import domain.entity.currency.RecipeItemCurrency;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.apache.logging.log4j.util.Base64Util;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
+import org.spongepowered.api.data.persistence.DataContainer;
+import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.property.ProfileProperty;
+import spongeV13.adapters.platformAdapter.ItemStackCurrencyAdapter;
 import spongeV13.adapters.platformAdapter.NBTApi.CustomKeys;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -129,6 +134,21 @@ public class MaterialAdapter {
             applyTexture(itemStack, recipeItem.getTexture());
         }
         return itemStack;
+    }
+
+    public static ItemStack createItemStackBase64(RecipeItemCurrency recipe){
+       String base64 = recipe.getBase64ITEM();
+       if (base64 == null || base64.isEmpty()) {
+           return null;
+       }
+       byte[] bytes = Base64.getDecoder().decode(base64);
+       String jsonItem = new String(bytes);
+       try {
+           DataContainer dataFromJson = DataFormats.SNBT.get().read(jsonItem);
+           return ItemStack.builder().fromContainer(dataFromJson).build();
+       } catch (IOException e) {
+           throw new RuntimeException(e);
+       }
     }
 
     public static ItemStack createItemStackCurrency(RecipeItemCurrency recipe){

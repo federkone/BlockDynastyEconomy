@@ -20,10 +20,14 @@ import abstractions.platform.recipes.RecipeInventory;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.player.IEntityHardCash;
 import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.Container;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import com.blockdynasty.economy.platform.IPlayer;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
+import org.spongepowered.api.item.inventory.query.QueryTypes;
 import spongeV13.adapters.GUI.adapters.InventoryAdapter;
 import spongeV13.adapters.GUI.listener.ClickListener;
 import spongeV13.adapters.GUI.listener.CloseListener;
@@ -193,7 +197,7 @@ public class EntityPlayerAdapter implements IPlayer {
         Inventory inv = player.inventory().primary();
         for (Slot slot : inv.slots()) {
            if (slot.peek().equalTo(item)) {
-                slot.clear();
+                slot.set(ItemStack.empty());
                 break;
            }
         }
@@ -208,21 +212,47 @@ public class EntityPlayerAdapter implements IPlayer {
         for (Slot slot : inv.slots()) {
             if (slot.peek().equalTo(item)) {
                 totalRemoved += slot.peek().quantity();
-                slot.clear();
+                slot.set(ItemStack.empty());
             }
         }
         return totalRemoved;
     }
 
     @Override
-    public boolean takeItems(ItemStackCurrency itemStackCurrency, int i) {
-        //inventory and shulkers
-        return false;
+    public boolean takeItems(ItemStackCurrency itemStackCurrency, int amount) {
+        Inventory inv = player.inventory().primary();
+        int remainingToRemove = amount;
+        ItemStack itemMatch = (ItemStack) itemStackCurrency.getRoot();
+
+        for (Slot slot : inv.slots()) {
+            if (remainingToRemove <= 0) break;
+
+            ItemStack stackInSlot = slot.peek();
+            if (stackInSlot.equalTo(itemMatch)) {
+                int quantityInSlot = stackInSlot.quantity();
+                int toRemove = Math.min(quantityInSlot, remainingToRemove);
+                ItemStack newStack = stackInSlot.copy();
+                newStack.setQuantity(quantityInSlot - toRemove);
+                slot.set(newStack);
+
+                remainingToRemove -= toRemove;
+            }
+        }
+        return remainingToRemove == 0;
     }
 
     @Override
     public int countItems(ItemStackCurrency itemStackCurrency) {
         //inventory and shulkers
-        return 0;
+        Inventory inv = player.inventory().primary();
+        ItemStack item = (ItemStack) itemStackCurrency.getRoot();
+        final int[] totalCount = {0};
+        inv.slots().forEach(slot -> {
+            if (slot.peek().equalTo(item)) {
+                totalCount[0] += slot.peek().quantity();
+            }
+        });
+        return totalCount[0];
     }
+
 }
