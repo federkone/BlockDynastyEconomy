@@ -76,7 +76,6 @@ public class Economy {
         Message.addLang(languages);
         Console.setConsole(platformAdapter.getConsole(),configuration);
 
-        //--- hasta aca....... completableFeature para el caso de que en configuration diga que configsyncenable es true. informar a la espera de una conexion de jugador para terminar de inicializar.
         if(configuration.getBoolean("sync-config-with-proxy")){
             platformAdapter.registerMessageChannel(new ProxyConfigSubscriber(this,configuration));
             Economy.playerJoinListener = new PlayerConfigJoinListener(this.platformAdapter);

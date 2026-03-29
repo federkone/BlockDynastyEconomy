@@ -32,6 +32,7 @@ import java.math.BigDecimal;
 import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import com.BlockDynasty.api.DynastyEconomy;
 
 public class NonPlayerAccountTreasury implements NonPlayerAccount {
     private String nameAccount;
