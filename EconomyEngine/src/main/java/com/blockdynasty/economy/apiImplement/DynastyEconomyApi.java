@@ -701,7 +701,11 @@ class DynastyEconomyApi implements DynastyEconomy {
     }
 
     public Currency getCurrency(String name){
-        ICurrency currency = this.searchCurrencyUseCase.getCurrency(name).getValue();
+        Result<ICurrency> result = this.searchCurrencyUseCase.getCurrency(name);
+        if (!result.isSuccess()){
+            return null;
+        }
+        ICurrency currency = result.getValue();
         return new Currency(
                 currency.getUuid(),
                 currency.getPlural(),

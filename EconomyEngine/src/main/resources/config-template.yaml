@@ -51,6 +51,19 @@ forceVanillaColorsSystem: false
 
 #Enable or Disable Vault integration.
 vault: true
+#List to indicate which Vault consumers will use specific currency. Add or remove plugins.
+#Ensure that currency name exist or create first. and reload plugin to apply changes.
+#You can use debug:true to see in the console the list of plugins package that are detected and can be used in this configuration.
+consumerUseTheCurrency:
+  enable: false
+  plugins:
+    - plugin: "com.palmergames.bukkit.towny"
+      currency: "Dollars"
+    - plugin: "me.angeschossen.lands"
+      currency: "Coins"
+    - plugin: "me.gypopo.economyshopgui.providers.economys.VaultEconomy"
+      currency: "Coins"
+
 # Enable or Disable the transaction log vault integration. This will log all transactions operations to vault.
 # Note: This option enabled cause a lot of logs because every transaction will be logged to vault integrations.
 transaction_log_vault: false

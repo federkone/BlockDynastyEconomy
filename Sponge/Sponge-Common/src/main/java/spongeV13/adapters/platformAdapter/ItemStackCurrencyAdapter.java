@@ -18,9 +18,16 @@ package spongeV13.adapters.platformAdapter;
 
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.currency.NbtData;
+import org.apache.logging.log4j.util.Base64Util;
+import org.spongepowered.api.data.persistence.DataContainer;
+import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import spongeV13.adapters.platformAdapter.NBTApi.CustomKeys;
 
+import javax.xml.crypto.Data;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Optional;
 
 public class ItemStackCurrencyAdapter implements ItemStackCurrency {
@@ -70,7 +77,15 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
 
     @Override
     public String asBase64() {
-        return "Undefined";
+        ItemStack copy = item.copy();
+        copy.setQuantity(1);
+        DataContainer datacontainer = copy.toContainer();
+        try {
+            String jsonItem= DataFormats.SNBT.get().write(datacontainer); //escribo el datacontainer a json
+            return Base64Util.encode(jsonItem);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override
@@ -85,7 +100,9 @@ public class ItemStackCurrencyAdapter implements ItemStackCurrency {
 
     @Override
     public boolean isSimilar(ItemStackCurrency itemStackCurrency) {
-        return this.item.equalTo((ItemStack) itemStackCurrency.getRoot());
+        ItemStack toCompare = ((ItemStack) itemStackCurrency.getRoot()).copy();
+        toCompare.setQuantity(1);
+        return this.item.equalTo(toCompare);
     }
 
     @Override

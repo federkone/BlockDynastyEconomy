@@ -27,6 +27,7 @@ import java.util.Map;
 public class Configuration extends YamlConfig implements IConfigurationEngine {
     private Map<Object, Object> config;
     private Map<Object, Object> configButtons;
+    private final String backupConfigPath = "backupConfig.txt";
     private final String databasePath = "/database";
     private final String templatePath = "config-template.yaml";
     private final String configName = "config.yaml";
@@ -43,6 +44,9 @@ public class Configuration extends YamlConfig implements IConfigurationEngine {
         this.configFile = new File(rootDirectory, configName);
         this.buttonsFile = new File(rootDirectory, configButtonsName);
         File databaseDir = new File(rootDirectory, databasePath);
+
+        createNewFile(new File(rootDirectory,backupConfigPath), templatePath);
+
         if (!databaseDir.exists()) {
             databaseDir.mkdirs();
         }
@@ -95,6 +99,11 @@ public class Configuration extends YamlConfig implements IConfigurationEngine {
     }
     public List<String> getStringList(String path) {
         List<String> value = get(path,config, List.class);
+        return value != null ? value : List.of();
+    }
+
+    public List<Map<String, String>> getStringMapList(String path) {
+        List<Map<String, String>> value = get(path,config, List.class);
         return value != null ? value : List.of();
     }
 

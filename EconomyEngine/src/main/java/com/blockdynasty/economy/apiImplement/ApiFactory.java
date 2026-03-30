@@ -20,8 +20,10 @@ import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
+import services.configuration.IConfiguration;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ApiFactory {
@@ -33,14 +35,19 @@ public class ApiFactory {
         this.apiDynamicSupplier = new ApiDynamicSupplier();
         this.apiCustomSupplier = new ApiCustomSupplier();
         this.apiDefaultSupplier = new ApiDefaultSupplier();
+        ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
         ServiceProvider.register(DynastyEconomy.class,apiDynamicSupplier);
         ServiceProvider.register(DynastyEconomy.class,apiCustomSupplier);
-        ServiceProvider.register(DynastyEconomy.class,apiDefaultSupplier);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, Log logger, List<String > pluginsPath, boolean itemEcoEnabled) {
+    public void updateDependencies(UseCaseFactory useCaseFactory, Log logger, IConfiguration configuration) {
+        List<String> pluginsPath= configuration.getStringList("ItemsBasedEconomy.vaultConsumers");
+        boolean itemEcoEnabled = configuration.getBoolean("ItemsBasedEconomy.enable");
+        boolean consumerUseCurrency = configuration.getBoolean("consumerUseTheCurrency.enable");
+        List<Map<String,String>> plugins= configuration.getStringMapList("consumerUseTheCurrency.plugins");
+
         apiCustomSupplier.updateDependencies(useCaseFactory, logger);
-        apiDynamicSupplier.updateDependencies(useCaseFactory, logger,pluginsPath, itemEcoEnabled);
+        apiDynamicSupplier.updateDependencies(useCaseFactory, logger,pluginsPath, itemEcoEnabled, consumerUseCurrency, plugins);
         apiDefaultSupplier.updateDependencies(useCaseFactory);
     }
 

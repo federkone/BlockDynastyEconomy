@@ -117,11 +117,11 @@ public class HardCashUseCaseFactory {
         return new GetItemsBalanceDisableUseCase();
     }
 
-    public static DepositAllItemsDefaultUseCase getDepositAllItemsDefaultUseCase(){
+    public static DepositItemsDefaultUseCase getDepositAllItemsDefaultUseCase(){
         if (HardCashService.isItemBasedEconomyEnabled()) {
-            return new DepositAllItemCurrencyDefault(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
+            return new DepositItemCurrencyDefault(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
         }
-        return new DepositAllItemCurrencyDefaultDisable();
+        return new DepositItemCurrencyDefaultDisable();
     }
 
     public static IGetItemBalanceCurrencyDefaultUseCase getItemBalanceCurrencyDefaultUseCase(){
@@ -129,5 +129,12 @@ public class HardCashUseCaseFactory {
             return new GetItemBalanceCurrencyDefaultUseCase(hardCashCreator, searchCurrencyUseCase,cacheCurrencyItems);
         }
         return new GetItemBalanceCurrencyDefaultDisableUseCase();
+    }
+
+    public static IDepositItemsCurrencyUseCase getDepositItemsCurrencyUseCase(){
+        if (HardCashService.isItemBasedEconomyEnabled()) {
+            return new DepositItemsCurrencyUseCase(hardCashCreator, depositUseCase,searchCurrencyUseCase,cacheCurrencyItems);
+        }
+        return new DepositItemsCurrencyUseCaseDisable();
     }
 }

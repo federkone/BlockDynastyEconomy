@@ -72,7 +72,7 @@ public class SpongeAdapter implements IPlatform {
 
     @Override
     public ItemStackCurrency createItemBase64(RecipeItemCurrency recipeItemCurrency) {
-        return null;
+        return new ItemStackCurrencyAdapter(MaterialAdapter.createItemStackBase64(recipeItemCurrency));
     }
 
     @Override
