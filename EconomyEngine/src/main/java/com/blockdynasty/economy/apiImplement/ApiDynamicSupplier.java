@@ -3,6 +3,7 @@ package com.blockdynasty.economy.apiImplement;
 import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
 import BlockDynasty.Economy.domain.services.log.Log;
 import com.BlockDynasty.api.DynastyEconomy;
+import com.BlockDynasty.api.entity.Currency;
 import services.Console;
 
 import java.util.List;
@@ -62,6 +63,12 @@ class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
         for (Map<String, String> pluginConfig : plugins) {
             String pluginPackage = pluginConfig.get("plugin");
             String currencyName = pluginConfig.get("currency");
+
+            Currency currency= this.defaultEconomy.getCurrency(currencyName);
+            if (currency == null){
+                Console.logError("Failed to register specific currency for plugin: " + pluginPackage + " - Currency not found: " + currencyName);
+                return;
+            }
 
             if (pluginsPath.contains(pluginPackage)) {
                 specificProviders.put(pluginPackage, new DynastyEconomyApiHardCashHardcoded(this.useCaseFactory, logger, id, currencyName));
