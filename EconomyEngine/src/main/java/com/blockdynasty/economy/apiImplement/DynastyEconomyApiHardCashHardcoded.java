@@ -34,43 +34,35 @@ public class DynastyEconomyApiHardCashHardcoded extends DynastyEconomyApiHardCod
     @Override
     public EconomyResponse withdraw(UUID uuid, BigDecimal amount){
         BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal itemsNeeded = filteredAmount.setScale(0, RoundingMode.CEILING);
 
-        int invInt = getItemsBalanceUseCase.execute(uuid,this.currencyName);
-        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
-
-        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
-                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
-                : BigDecimal.ZERO;
+        int itemsAvailable = getItemsBalanceUseCase.execute(uuid, this.currencyName);
+        BigDecimal amountToMove = itemsNeeded.min(BigDecimal.valueOf(itemsAvailable));
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
-            this.depositItemUseCase.execute(uuid, this.currencyName,amountToMove);
+            this.depositItemUseCase.execute(uuid, this.currencyName, amountToMove);
         }
-
-        return super.withdraw(uuid, filteredAmount);
+        return super.withdraw(uuid, filteredAmount, this.currencyName);
     }
 
     @Override
     public EconomyResponse withdraw(String name, BigDecimal amount) {
         BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal itemsNeeded = filteredAmount.setScale(0, RoundingMode.CEILING);
 
-        int invInt = getItemsBalanceUseCase.execute(name,this.currencyName);
-        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
-
-        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
-                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
-                : BigDecimal.ZERO;
+        int itemsAvailable = getItemsBalanceUseCase.execute(name, this.currencyName);
+        BigDecimal amountToMove = itemsNeeded.min(BigDecimal.valueOf(itemsAvailable));
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
-            this.depositItemUseCase.execute(name, this.currencyName,amountToMove);
+            this.depositItemUseCase.execute(name, this.currencyName, amountToMove);
         }
-
-        return super.withdraw(name, filteredAmount);
+        return super.withdraw(name, filteredAmount, this.currencyName);
     }
 
     @Override
     public BigDecimal getBalance(UUID uuid){
         int inv = getItemsBalanceUseCase.execute(uuid,this.currencyName);
-        BigDecimal balance = super.getBalance(uuid);
+        BigDecimal balance = super.getBalance(uuid,this.currencyName);
         if (inv != -1) return balance.add(BigDecimal.valueOf(inv));
         return balance;
     }
@@ -78,7 +70,7 @@ public class DynastyEconomyApiHardCashHardcoded extends DynastyEconomyApiHardCod
     @Override
     public BigDecimal getBalance(String name){
         int inv = getItemsBalanceUseCase.execute(name,this.currencyName);
-        BigDecimal balance = super.getBalance(name);
+        BigDecimal balance = super.getBalance(name,this.currencyName);
         if (inv != -1) return balance.add(BigDecimal.valueOf(inv));
         return balance;
     }

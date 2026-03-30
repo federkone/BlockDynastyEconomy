@@ -30,35 +30,28 @@ class DynastyEconomyApiHardCash extends DynastyEconomyApi{
     @Override
     public EconomyResponse withdraw(UUID uuid, BigDecimal amount) {
         BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal itemsNeeded = filteredAmount.setScale(0, RoundingMode.CEILING);
 
-        int invInt = getItemsBalanceUseCase.execute(uuid);
-        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
-
-        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
-                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
-                : BigDecimal.ZERO;
+        int itemsAvailable = getItemsBalanceUseCase.execute(uuid);
+        BigDecimal amountToMove = itemsNeeded.min(BigDecimal.valueOf(itemsAvailable));
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
             this.depositItemUseCase.execute(uuid, amountToMove);
         }
-
         return super.withdraw(uuid, filteredAmount);
     }
+
     @Override
     public EconomyResponse withdraw(String name, BigDecimal amount) {
         BigDecimal filteredAmount = amount.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal itemsNeeded = filteredAmount.setScale(0, RoundingMode.CEILING);
 
-        int invInt = getItemsBalanceUseCase.execute(name);
-        BigDecimal itemsInInventory = BigDecimal.valueOf(invInt);
-
-        BigDecimal amountToMove = (filteredAmount.compareTo(BigDecimal.ONE) >= 0)
-                ? filteredAmount.min(itemsInInventory).setScale(0, RoundingMode.FLOOR)
-                : BigDecimal.ZERO;
+        int itemsAvailable = getItemsBalanceUseCase.execute(name);
+        BigDecimal amountToMove = itemsNeeded.min(BigDecimal.valueOf(itemsAvailable));
 
         if (amountToMove.compareTo(BigDecimal.ZERO) > 0) {
             this.depositItemUseCase.execute(name, amountToMove);
         }
-
         return super.withdraw(name, filteredAmount);
     }
 
