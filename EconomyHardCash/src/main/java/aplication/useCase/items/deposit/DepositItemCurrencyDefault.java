@@ -14,14 +14,11 @@ import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import domain.service.ItemCreator;
-import services.Console;
 
 import java.math.BigDecimal;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class DepositAllItemCurrencyDefault implements DepositAllItemsDefaultUseCase{
+public class DepositItemCurrencyDefault implements DepositItemsDefaultUseCase {
     private HardCashCreator platformHardCash;
     private IDepositUseCase depositUseCase;
     private SearchCurrencyUseCase searchCurrencyUseCase;
@@ -30,9 +27,10 @@ public class DepositAllItemCurrencyDefault implements DepositAllItemsDefaultUseC
     private ItemCreator itemCreator;
     //private static final Set<UUID> activeTransactions = ConcurrentHashMap.newKeySet();
 
-    public DepositAllItemCurrencyDefault(HardCashCreator platformHardCash,
-                                         IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase,
-                                         CacheCurrencyItems cacheCurrencyItems) {
+    //todo refactor
+    public DepositItemCurrencyDefault(HardCashCreator platformHardCash,
+                                      IDepositUseCase depositUseCase, SearchCurrencyUseCase searchCurrencyUseCase,
+                                      CacheCurrencyItems cacheCurrencyItems) {
         this.platformHardCash = platformHardCash;
         this.scheduler = platformHardCash.getScheduler();
         this.itemCreator = new ItemBase64Creator(platformHardCash);

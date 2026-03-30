@@ -98,6 +98,11 @@ public class Configuration extends YamlConfig implements IConfigurationEngine {
         return value != null ? value : List.of();
     }
 
+    public List<Map<String, String>> getStringMapList(String path) {
+        List<Map<String, String>> value = get(path,config, List.class);
+        return value != null ? value : List.of();
+    }
+
     public void updateConfig(Map<Object, Object> newConfig) {
         updateConfig(newConfig, this.config);
     }

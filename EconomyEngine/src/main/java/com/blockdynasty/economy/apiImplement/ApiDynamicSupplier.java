@@ -37,20 +37,44 @@ class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
         this.proxy = new DynastyEconomyProxy(this);
     }
 
-    public void updateDependencies(UseCaseFactory useCaseFactory, Log log,List<String> pluginsPath,boolean itemEcoEnabled) {
+    public void updateDependencies(UseCaseFactory useCaseFactory, Log log,List<String> pluginsPath,boolean itemEcoEnabled,
+                                   boolean consumerUseCurrency, List<Map<String,String>> plugins) {
         this.useCaseFactory = useCaseFactory;
-        this.bypass = !itemEcoEnabled;
+        this.bypass = !itemEcoEnabled && !consumerUseCurrency;
         this.logger = log;
         this.defaultEconomy = new DynastyEconomyApi(useCaseFactory,log, id);
         this.callerCache.clear();
         this.specificProviders.clear();
-        this.registerSpecialProvider(pluginsPath);
+        if (consumerUseCurrency){
+            this.registerSpecialProvider(pluginsPath,plugins);
+        }else {
+            this.registerSpecialProvider(pluginsPath);
+        }
     }
 
-    public void registerSpecialProvider(List<String> pluginsPath) {
+    private void registerSpecialProvider(List<String> pluginsPath){
         pluginsPath.forEach(plugin -> {
             specificProviders.put(plugin, new DynastyEconomyApiHardCash(this.useCaseFactory,logger, id));
         });
+    }
+
+    public void registerSpecialProvider(List<String> pluginsPath, List<Map<String,String>> plugins) {
+        for (Map<String, String> pluginConfig : plugins) {
+            String pluginPackage = pluginConfig.get("plugin");
+            String currencyName = pluginConfig.get("currency");
+
+            if (pluginsPath.contains(pluginPackage)) {
+                specificProviders.put(pluginPackage, new DynastyEconomyApiHardCashHardcoded(this.useCaseFactory, logger, id, currencyName));
+            } else {
+                specificProviders.put(pluginPackage, new DynastyEconomyApiHardCoded(this.useCaseFactory, logger, id, currencyName));
+            }
+        }
+
+        for (String pluginPath : pluginsPath) {
+            if (!specificProviders.containsKey(pluginPath)) {
+                specificProviders.put(pluginPath, new DynastyEconomyApiHardCash(this.useCaseFactory, logger, id));
+            }
+        }
     }
 
     public void disable() {

@@ -19,7 +19,11 @@ package aplication.useCase.items.balance;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
 import domain.entity.player.IEntityHardCash;
 
+import java.util.UUID;
+
 public interface IGetItemsBalanceUseCase {
 
     int execute(IEntityHardCash player, ICurrency currencyName);
+    int execute(String playerName, String currencyName);
+    int execute(UUID playerUuid, String currencyName);
 }

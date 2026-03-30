@@ -18,12 +18,15 @@ package aplication.useCase.items.balance;
 
 import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
 import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import BlockDynasty.Economy.domain.result.Result;
 import aplication.useCase.items.service.ItemBase64Creator;
 import domain.entity.currency.ItemStackCurrency;
 import domain.entity.platform.HardCashCreator;
 import domain.entity.player.IEntityHardCash;
 import aplication.useCase.items.service.CacheCurrencyItems;
 import domain.service.ItemCreator;
+
+import java.util.UUID;
 
 public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
     private SearchCurrencyUseCase searchCurrencyUseCase;
@@ -54,5 +57,36 @@ public class GetItemsBalanceUseCase implements IGetItemsBalanceUseCase {
         ItemStackCurrency itemCurrency = wrapper.getItem();
         if (itemCurrency.isNull()) return -1;
         return player.countItems(itemCurrency);
+    }
+
+    @Override
+    public int execute(String playerName, String currencyName) {
+        IEntityHardCash player = this.platform.getPlayer(playerName);
+        if (player == null) {
+            return -1;
+        }
+
+        Result<ICurrency> currencyResult = searchCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return -1;
+        }
+
+
+        return execute(player, currencyResult.getValue());
+    }
+
+    @Override
+    public int execute(UUID playerUuid, String currencyName) {
+        IEntityHardCash player = this.platform.getPlayerByUUID(playerUuid);
+        if (player == null) {
+            return -1;
+        }
+
+        Result<ICurrency> currencyResult = searchCurrencyUseCase.getCurrency(currencyName);
+        if (!currencyResult.isSuccess()) {
+            return -1;
+        }
+
+        return execute(player, currencyResult.getValue());
     }
 }

@@ -17,12 +17,14 @@
 package services.configuration;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IConfiguration {
 
     boolean getBoolean(String path);
     String getString(String path);
     List<String> getStringList(String path);
+    List<Map<String, String>> getStringMapList(String path);
     int getInt(String path);
     double getDouble(String path);
 }
