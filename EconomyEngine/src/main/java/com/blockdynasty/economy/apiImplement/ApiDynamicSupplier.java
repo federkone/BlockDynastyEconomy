@@ -68,12 +68,14 @@ class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
             } else {
                 specificProviders.put(pluginPackage, new DynastyEconomyApiHardCoded(this.useCaseFactory, logger, id, currencyName));
             }
+            Console.debug("Registered specific currency for plugin: " + pluginPackage + " with currency: " + currencyName);
         }
 
         for (String pluginPath : pluginsPath) {
             if (!specificProviders.containsKey(pluginPath)) {
                 specificProviders.put(pluginPath, new DynastyEconomyApiHardCash(this.useCaseFactory, logger, id));
             }
+            Console.debug("Registered ItemsBasedEconomy for plugin: " + pluginPath);
         }
     }
 
