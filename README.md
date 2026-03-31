@@ -6,6 +6,9 @@
 
 ## BlockDynasty-Economy
 Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
+---
+API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
+---
 
 Wiki: https://wiki.blockdynasty.net
 
@@ -17,11 +20,19 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 
 ### 🗃️ Supported Databases
 - **MySQL**: v8.0.38
+- **MariaDb**: v12.1.2
 - **SQLite**: Compatible 
 - **H2**: Compatible
 - **Redis**: "Jedis" 5.2.0
 
 > **💡 Note**: REDIS replaces the need to use proxy plugins like Velocity or BungeeCord.
+
+----
+### 🎯 Hytale Support
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| Alpha | ✅ | JDK 25 | Fully supported |
+
 ----
 ### 🎯 Supported Versions Paper/Spigot/Folia/Canvas
 - **Spigot API version**: `1.15`  
@@ -44,19 +55,29 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 | 1.19.x  | ✅     | JDK 17       | Fully supported |
 | 1.20.x  | ✅     | JDK 17+      | Fully supported |
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
+| 26.1    | ✅     | JDK 25+      | Fully supported |
 
 - **Vault** ✅
 - **VaultUnlocked** ✅
+- **Treasury** ✅
+- **Placeholder** ✅
 ----
 
 ### 🎯 Supported Versions Sponge
-- **Api**: `Sponge 8`
+- **Api**: `Sponge v16`
 - **JDK**: `21` minimum requirement
-- **Tested in**: Sponge Vanilla server
+- **Tested in**: Sponge Vanilla, Sponge Neo, Sponge Forge
   
-| Version | Status | Required JDK | Notes |
-|---------|--------|--------------|-------|
-| 1.21.3   | ✅    | JDK 21+      | Fully supported |
+| Version | Status | Required JDK | Notes | SpongeVanilla | SpongeNeo | SpongeForge|
+|---------|--------|--------------|-------|---------------|-----------|------------|
+| 1.21.3   | ✅    | JDK 21+      | Fully supported | ✅|  ✅ | ✅ 
+| 1.21.4   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.5   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.6   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.7   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.8   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.9   | ✅    | JDK 21+      | Fully supported |✅ | ✅ | ✅ 
+| 1.21.10   | ✅    | JDK 21+      | Fully supported |✅|  ✅|  ✅ 
 
 - **'spongepowered.api.service.economy'** registered ✅
 - **Support Channel Comunication: Velocity,BungeeCord** ✅
@@ -66,7 +87,7 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 
 | Version | Status | Required JDK | Notes |
 |---------|--------|--------------|-------|
-| 3.1.1   | ✅     | JDK 17+      | Fully supported |
+|  3.5.0  | ✅     | JDK 17+      | Fully supported |
 
 ----
 ### 🎯 Supported Versions BungeeCord
