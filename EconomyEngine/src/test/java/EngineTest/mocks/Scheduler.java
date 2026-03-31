@@ -1,7 +1,7 @@
 package EngineTest.mocks;
 
-import abstractions.platform.scheduler.ContextualTask;
-import abstractions.platform.scheduler.IScheduler;
+import net.blockdynasty.economy.libs.abstractions.platform.scheduler.ContextualTask;
+import net.blockdynasty.economy.libs.abstractions.platform.scheduler.IScheduler;
 
 public class Scheduler implements IScheduler {
 

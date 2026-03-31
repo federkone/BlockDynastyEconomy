@@ -1,4 +1,0 @@
-package BlockDynasty.Economy.aplication.useCase.transaction.interfaces;
-
-public interface ITransferUseCase extends IPayUseCase {
-}

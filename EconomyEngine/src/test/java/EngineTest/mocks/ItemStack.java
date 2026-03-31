@@ -1,8 +1,8 @@
 package EngineTest.mocks;
 
 import EngineTest.mocks.utils.Color;
-import lib.gui.components.IItemStack;
-import abstractions.platform.recipes.RecipeItem;
+import net.blockdynasty.economy.gui.gui.components.IItemStack;
+import net.blockdynasty.economy.libs.abstractions.platform.recipes.RecipeItem;
 
 public class ItemStack implements IItemStack {
     private RecipeItem recipeItem;

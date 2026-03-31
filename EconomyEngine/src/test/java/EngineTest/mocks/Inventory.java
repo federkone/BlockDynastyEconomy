@@ -1,8 +1,8 @@
 package EngineTest.mocks;
 
-import lib.gui.components.IInventory;
-import lib.gui.components.IItemStack;
-import abstractions.platform.recipes.RecipeInventory;
+import net.blockdynasty.economy.gui.gui.components.IInventory;
+import net.blockdynasty.economy.gui.gui.components.IItemStack;
+import net.blockdynasty.economy.libs.abstractions.platform.recipes.RecipeInventory;
 
 public class Inventory implements IInventory {
     //matriz de items [][]

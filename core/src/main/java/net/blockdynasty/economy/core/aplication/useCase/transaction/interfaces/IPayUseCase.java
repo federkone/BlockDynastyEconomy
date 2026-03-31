@@ -1,0 +1,11 @@
+package net.blockdynasty.economy.core.aplication.useCase.transaction.interfaces;
+
+import net.blockdynasty.economy.core.domain.result.Result;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public interface IPayUseCase {
+    Result<Void> execute(UUID userFrom, UUID targetUUID,String currencyName, BigDecimal amount);
+    Result<Void> execute(String userFrom,String targetName, String currencyName, BigDecimal amount);
+}

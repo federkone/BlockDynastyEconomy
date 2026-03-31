@@ -16,8 +16,8 @@
 
 package mockClass;
 
-import BlockDynasty.Economy.domain.services.courier.Courier;
-import BlockDynasty.Economy.domain.services.courier.Message;
+import net.blockdynasty.economy.core.domain.services.courier.Courier;
+import net.blockdynasty.economy.core.domain.services.courier.Message;
 
 public class CourierTest implements Courier {
 

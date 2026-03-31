@@ -16,22 +16,21 @@
 
 package useCaseTest.transaction;
 
-import BlockDynasty.Economy.Core;
-import BlockDynasty.Economy.aplication.useCase.UseCaseFactory;
-import BlockDynasty.Economy.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
-import BlockDynasty.Economy.domain.entities.balance.Money;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.Core;
+import net.blockdynasty.economy.core.aplication.useCase.UseCaseFactory;
+import net.blockdynasty.economy.core.aplication.useCase.transaction.interfaces.ISetBalanceUseCase;
+import net.blockdynasty.economy.core.domain.entities.balance.Money;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.domain.result.ErrorCode;
-import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.transaction.SetBalanceUseCase;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.domain.result.ErrorCode;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import BlockDynasty.Economy.domain.entities.currency.Currency;
+import net.blockdynasty.economy.core.domain.entities.currency.Currency;
 
 import mockClass.LoggerTest;
 import repositoryTest.FactoryRepo;

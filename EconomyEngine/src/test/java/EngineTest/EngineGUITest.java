@@ -3,10 +3,10 @@ package EngineTest;
 import EngineTest.mocks.MinecraftServer;
 import EngineTest.mocks.Player;
 import EngineTest.mocks.TextInput;
-import lib.commands.CommandService;
-import lib.commands.abstractions.Command;
-import lib.gui.GUISystem;
-import lib.gui.components.ClickType;
+import net.blockdynasty.economy.gui.commands.CommandService;
+import net.blockdynasty.economy.gui.commands.abstractions.Command;
+import net.blockdynasty.economy.gui.gui.GUISystem;
+import net.blockdynasty.economy.gui.gui.components.ClickType;
 import org.junit.jupiter.api.*;
 
 import java.util.UUID;

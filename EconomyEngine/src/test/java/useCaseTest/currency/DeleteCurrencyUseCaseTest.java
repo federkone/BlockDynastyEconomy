@@ -16,16 +16,16 @@
 
 package useCaseTest.currency;
 
-import BlockDynasty.Economy.domain.entities.balance.Money;
-import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.Economy.aplication.useCase.currency.DeleteCurrencyUseCase;
+import net.blockdynasty.economy.core.domain.entities.balance.Money;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.core.aplication.useCase.account.CreateAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.currency.CreateCurrencyUseCase;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.aplication.services.AccountService;
+import net.blockdynasty.economy.core.aplication.services.CurrencyService;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.aplication.useCase.currency.DeleteCurrencyUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.FactoryRepo;

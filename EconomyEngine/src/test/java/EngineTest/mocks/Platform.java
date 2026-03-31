@@ -3,20 +3,20 @@ package EngineTest.mocks;
 import EngineTest.mocks.utils.Color;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import abstractions.platform.IConsole;
-import abstractions.platform.IProxySubscriber;
-import domain.entity.currency.ItemStackCurrency;
-import domain.entity.currency.RecipeItemCurrency;
-import domain.entity.platform.HardCashCreator;
-import abstractions.platform.recipes.RecipeItem;
-import lib.gui.components.IInventory;
-import lib.gui.components.IItemStack;
-import lib.gui.components.ITextInput;
-import abstractions.platform.recipes.RecipeInventory;
-import abstractions.platform.scheduler.IScheduler;
-import com.blockdynasty.economy.platform.IPlatform;
-import com.blockdynasty.economy.platform.IPlayer;
-import services.configuration.IConfiguration;
+import net.blockdynasty.economy.libs.abstractions.platform.IConsole;
+import net.blockdynasty.economy.libs.abstractions.platform.IProxySubscriber;
+import net.blockdynasty.economy.hardcash.domain.entity.currency.ItemStackCurrency;
+import net.blockdynasty.economy.hardcash.domain.entity.currency.RecipeItemCurrency;
+import net.blockdynasty.economy.hardcash.domain.entity.platform.HardCashCreator;
+import net.blockdynasty.economy.libs.abstractions.platform.recipes.RecipeItem;
+import net.blockdynasty.economy.gui.gui.components.IInventory;
+import net.blockdynasty.economy.gui.gui.components.IItemStack;
+import net.blockdynasty.economy.gui.gui.components.ITextInput;
+import net.blockdynasty.economy.libs.abstractions.platform.recipes.RecipeInventory;
+import net.blockdynasty.economy.libs.abstractions.platform.scheduler.IScheduler;
+import net.blockdynasty.economy.engine.platform.IPlatform;
+import net.blockdynasty.economy.engine.platform.IPlayer;
+import net.blockdynasty.economy.libs.services.configuration.IConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -50,7 +50,7 @@ public class Platform implements IPlatform {
     }
 
     @Override
-    public List<abstractions.platform.entity.IPlayer> getOnlinePlayers() {
+    public List<net.blockdynasty.economy.libs.abstractions.platform.entity.IPlayer> getOnlinePlayers() {
         return new ArrayList<>(MinecraftServer.getOnlinePlayers());
     }
 

@@ -16,15 +16,15 @@
 
 package useCaseTest.account;
 
-import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.DeleteAccountUseCase;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.Economy.domain.result.ErrorCode;
-import BlockDynasty.Economy.domain.result.Result;
+import net.blockdynasty.economy.core.aplication.services.AccountService;
+import net.blockdynasty.economy.core.aplication.services.CurrencyService;
+import net.blockdynasty.economy.core.aplication.useCase.account.CreateAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.DeleteAccountUseCase;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.domain.result.ErrorCode;
+import net.blockdynasty.economy.core.domain.result.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import repositoryTest.FactoryRepo;

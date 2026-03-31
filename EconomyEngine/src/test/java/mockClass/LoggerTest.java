@@ -16,7 +16,7 @@
 
 package mockClass;
 
-import BlockDynasty.Economy.domain.services.log.Log;
+import net.blockdynasty.economy.core.domain.services.log.Log;
 
 public class LoggerTest implements Log {
 

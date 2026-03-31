@@ -1,0 +1,72 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.blockdynasty.economy.gui.commands.templates.users;
+
+import net.blockdynasty.economy.core.aplication.useCase.transaction.PayUseCase;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.libs.abstractions.platform.entity.IPlayer;
+import net.blockdynasty.economy.gui.commands.PlatformCommand;
+import net.blockdynasty.economy.gui.commands.abstractions.IEntityCommands;
+import net.blockdynasty.economy.gui.commands.abstractions.AbstractCommand;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+public class PayCommand extends AbstractCommand {
+    private final PayUseCase pay;
+    private final PlatformCommand platformAdapter;
+
+    public PayCommand(PayUseCase pay, PlatformCommand platformAdapter) {
+        super("pay","BlockDynastyEconomy.players.pay", List.of("player","amount","currency"));
+        this.platformAdapter = platformAdapter;
+        this.pay = pay;
+    }
+
+    @Override
+    public boolean execute(IEntityCommands sender, String[] args) {
+        if(!super.execute( sender, args)){
+            return false;
+        }
+
+        String targetName = args[0]; //nombre del jugador
+
+        IPlayer target = platformAdapter.getPlayer(targetName);
+        if(target==null){
+            sender.sendMessage("The player is not online");
+            return false;
+        }
+
+        String currencyName = args[2];  //nombre de la moneda
+
+        BigDecimal amount=BigDecimal.ZERO; //monto temporal
+        try{
+            amount = new BigDecimal(args[1]);  //intentar extraer monto
+        }catch (NumberFormatException e){
+            sender.sendMessage("Invalid amount");
+            return false;
+        }
+
+        BigDecimal finalAmount = amount;
+
+        Result<Void> result = pay.execute(sender.getName(), targetName, currencyName, finalAmount);
+
+        if (!result.isSuccess()){
+            sender.sendMessage(result.getErrorMessage()+" " +result.getErrorCode());
+        }
+        return true;
+    }
+}

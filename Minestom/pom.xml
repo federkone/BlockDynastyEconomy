@@ -69,7 +69,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>minestom.MainTest</mainClass> <!--Change this to your main class-->
+                            <mainClass>net.blockdynasty.economy.minestom.MainTest</mainClass> <!--Change this to your main class-->
                         </manifest>
                     </archive>
                     <descriptorRefs>

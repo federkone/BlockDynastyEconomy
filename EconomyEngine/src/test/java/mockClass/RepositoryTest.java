@@ -16,13 +16,13 @@
 
 package mockClass;
 
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.account.Player;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.Economy.domain.result.ErrorCode;
-import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.domain.result.TransferResult;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.entities.account.Player;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.domain.result.ErrorCode;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.core.domain.result.TransferResult;
 
 import java.math.BigDecimal;
 import java.util.*;

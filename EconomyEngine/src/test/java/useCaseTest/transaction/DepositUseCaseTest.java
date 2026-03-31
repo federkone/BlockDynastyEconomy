@@ -16,20 +16,20 @@
 
 package useCaseTest.transaction;
 
-import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.CreateCurrencyUseCase;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.aplication.events.EventManager;
+import net.blockdynasty.economy.core.aplication.useCase.account.CreateAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.currency.CreateCurrencyUseCase;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 import mockClass.CourierTest;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
-import BlockDynasty.Economy.domain.result.Result;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.currency.SearchCurrencyUseCase;
-import BlockDynasty.Economy.aplication.useCase.transaction.DepositUseCase;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.aplication.services.CurrencyService;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.SearchAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.currency.SearchCurrencyUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.transaction.DepositUseCase;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.aplication.services.AccountService;
+import net.blockdynasty.economy.core.domain.entities.currency.Currency;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
