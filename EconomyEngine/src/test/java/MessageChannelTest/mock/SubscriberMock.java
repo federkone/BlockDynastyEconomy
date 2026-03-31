@@ -1,14 +1,14 @@
 package MessageChannelTest.mock;
 
-import BlockDynasty.Economy.aplication.events.EventManager;
-import BlockDynasty.Economy.domain.services.IAccountService;
-import BlockDynasty.Economy.domain.services.ICurrencyService;
-import BlockDynasty.Economy.domain.services.IOfferService;
-import BlockDynasty.Economy.domain.services.courier.PlayerTargetMessage;
-import com.blockdynasty.economy.MessageChannel.Subscriber;
-import lib.gui.GUISystem;
-import abstractions.platform.scheduler.ContextualTask;
-import com.blockdynasty.economy.platform.IPlatform;
+import net.blockdynasty.economy.core.aplication.events.EventManager;
+import net.blockdynasty.economy.core.domain.services.IAccountService;
+import net.blockdynasty.economy.core.domain.services.ICurrencyService;
+import net.blockdynasty.economy.core.domain.services.IOfferService;
+import net.blockdynasty.economy.core.domain.services.courier.PlayerTargetMessage;
+import net.blockdynasty.economy.engine.MessageChannel.Subscriber;
+import net.blockdynasty.economy.gui.gui.GUISystem;
+import net.blockdynasty.economy.libs.abstractions.platform.scheduler.ContextualTask;
+import net.blockdynasty.economy.engine.platform.IPlatform;
 
 public class SubscriberMock extends Subscriber {
     private ICurrencyService currencyService;

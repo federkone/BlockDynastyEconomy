@@ -1,9 +1,9 @@
 package EngineTest.mocks;
 
 import EngineTest.mocks.utils.Color;
-import lib.gui.components.IEntityGUI;
-import lib.gui.components.IGUI;
-import lib.gui.components.ITextInput;
+import net.blockdynasty.economy.gui.gui.components.IEntityGUI;
+import net.blockdynasty.economy.gui.gui.components.IGUI;
+import net.blockdynasty.economy.gui.gui.components.ITextInput;
 
 import java.util.function.Function;
 

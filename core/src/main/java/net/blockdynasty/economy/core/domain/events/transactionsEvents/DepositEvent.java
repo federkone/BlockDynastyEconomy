@@ -1,0 +1,71 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.blockdynasty.economy.core.domain.events.transactionsEvents;
+
+import net.blockdynasty.economy.core.domain.entities.account.Player;
+import net.blockdynasty.economy.core.domain.entities.currency.Currency;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.domain.events.Context;
+import net.blockdynasty.economy.core.domain.events.SerializableEvent;
+
+import java.math.BigDecimal;
+
+public class DepositEvent extends SerializableEvent {
+    private final Context context;
+    private final Currency currency;
+    private final Player player;
+    private final BigDecimal amount;
+
+    public DepositEvent(Player player, ICurrency currency, BigDecimal amount) {
+        this.currency = Currency.builder().copy(currency).build();
+        this.player = new Player(player);
+        this.amount = amount;
+        this.context = Context.OTHER;
+    }
+
+    public DepositEvent(Player player, ICurrency currency, BigDecimal amount, Context context) {
+        this.currency = Currency.builder().copy(currency).build();
+        this.player = new Player(player);
+        this.amount = amount;
+        this.context = context;
+    }
+
+    public ICurrency getCurrency() {
+        return currency;
+    }
+    public Player getPlayer() {
+        return player;
+    }
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public String toString() {
+        return "DepositEvent{" +
+                "currency=" + currency.getSingular() +
+                ", player=" + player.getNickname() +
+                ", amount=" + amount.toString() +
+                '}';
+    }
+
+
+}

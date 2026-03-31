@@ -16,14 +16,14 @@
 
 package repositoryTest;
 
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.account.Exceptions.AccountNotFoundException;
-import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import BlockDynasty.Economy.domain.persistence.entities.IAccountRepository;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.entities.account.Exceptions.AccountNotFoundException;
+import net.blockdynasty.economy.core.domain.entities.currency.Currency;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.domain.persistence.entities.IAccountRepository;
 import org.junit.jupiter.api.AfterAll;
-import com.blockdynasty.economy.repository.hibernate.AccountRepository;
-import com.blockdynasty.economy.repository.hibernate.CurrencyRepository;
+import net.blockdynasty.economy.engine.repository.hibernate.AccountRepository;
+import net.blockdynasty.economy.engine.repository.hibernate.CurrencyRepository;
 import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.Test;
 

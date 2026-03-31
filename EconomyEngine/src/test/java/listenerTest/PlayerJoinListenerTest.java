@@ -1,21 +1,21 @@
 package listenerTest;
 
-import BlockDynasty.Economy.aplication.services.AccountService;
-import BlockDynasty.Economy.aplication.services.CurrencyService;
-import BlockDynasty.Economy.aplication.useCase.account.CreateAccountUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
-import BlockDynasty.Economy.aplication.useCase.account.getAccountUseCase.GetOfflineAccountsUseCase;
-import BlockDynasty.Economy.domain.entities.account.Account;
-import BlockDynasty.Economy.domain.entities.account.Player;
-import BlockDynasty.Economy.domain.persistence.entities.IRepository;
-import BlockDynasty.Economy.domain.result.Result;
-import lib.commands.abstractions.IEntityCommands;
-import lib.gui.components.IEntityGUI;
+import net.blockdynasty.economy.core.aplication.services.AccountService;
+import net.blockdynasty.economy.core.aplication.services.CurrencyService;
+import net.blockdynasty.economy.core.aplication.useCase.account.CreateAccountUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.GetAccountByNameUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
+import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.GetOfflineAccountsUseCase;
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.entities.account.Player;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.gui.commands.abstractions.IEntityCommands;
+import net.blockdynasty.economy.gui.gui.components.IEntityGUI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.blockdynasty.economy.platform.listeners.PlayerJoinListenerOffline;
-import com.blockdynasty.economy.platform.listeners.PlayerJoinListenerOnline;
+import net.blockdynasty.economy.engine.platform.listeners.PlayerJoinListenerOffline;
+import net.blockdynasty.economy.engine.platform.listeners.PlayerJoinListenerOnline;
 import repositoryTest.FactoryRepo;
 
 import java.util.List;

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.BlockDynasty</groupId>
+        <groupId>net.blockdynasty</groupId>
         <artifactId>project-parent</artifactId>
         <version>1.0</version>
     </parent>
@@ -78,39 +78,39 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.xerial</pattern>
-                                    <shadedPattern>com.BlockDynasty.xerial</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.xerial</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.mysql</pattern>
-                                    <shadedPattern>com.BlockDynasty.mysql</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.mysql</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.mariadb</pattern>
-                                    <shadedPattern>com.BlockDynasty.mariadb</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.mariadb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.yaml</pattern>
-                                    <shadedPattern>com.BlockDynasty.yaml</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.yaml</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>redis.clients</pattern>
-                                    <shadedPattern>com.BlockDynasty.redis.clients</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.clients</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.google.gson</pattern>
-                                    <shadedPattern>com.BlockDynasty.gson</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.gson</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.zaxxer.hikari</pattern>
-                                    <shadedPattern>com.BlockDynasty.hikari</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.hikari</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.hibernate.hikaricp</pattern>
-                                    <shadedPattern>com.BlockDynasty.hibernate.hikari</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.hibernate.hikari</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.hibernate</pattern>
-                                    <shadedPattern>com.BlockDynasty.hibernate</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.hibernate</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -128,36 +128,36 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>core</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>EconomyGUI</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>DynastyEconomyApi</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>EconomyLibrary</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>CryptoUtils</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>YamlProcessor</artifactId>
             <version>1.0</version>
         </dependency>

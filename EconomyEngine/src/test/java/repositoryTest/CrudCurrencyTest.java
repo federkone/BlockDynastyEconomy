@@ -16,13 +16,13 @@
 
 package repositoryTest;
 
-import BlockDynasty.Economy.domain.entities.currency.Currency;
-import BlockDynasty.Economy.domain.entities.currency.Exceptions.CurrencyNotFoundException;
-import BlockDynasty.Economy.domain.entities.currency.ICurrency;
-import BlockDynasty.Economy.domain.persistence.entities.ICurrencyRepository;
+import net.blockdynasty.economy.core.domain.entities.currency.Currency;
+import net.blockdynasty.economy.core.domain.entities.currency.Exceptions.CurrencyNotFoundException;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.domain.persistence.entities.ICurrencyRepository;
 
 import org.junit.jupiter.api.AfterAll;
-import com.blockdynasty.economy.repository.hibernate.CurrencyRepository;
+import net.blockdynasty.economy.engine.repository.hibernate.CurrencyRepository;
 import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

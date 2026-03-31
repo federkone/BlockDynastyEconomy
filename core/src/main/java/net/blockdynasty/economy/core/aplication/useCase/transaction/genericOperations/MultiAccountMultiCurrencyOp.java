@@ -1,0 +1,54 @@
+package net.blockdynasty.economy.core.aplication.useCase.transaction.genericOperations;
+
+
+import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.domain.entities.account.Player;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
+import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
+import net.blockdynasty.economy.core.domain.result.Result;
+import net.blockdynasty.economy.core.domain.services.IAccountService;
+import net.blockdynasty.economy.core.domain.services.ICurrencyService;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+public abstract class MultiAccountMultiCurrencyOp extends Operation {
+    public MultiAccountMultiCurrencyOp(IAccountService accountService, ICurrencyService currencyService, IRepository dataStore) {
+        super(accountService, currencyService, dataStore);
+    }
+
+    public Result<Void> execute(UUID userFrom, UUID userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        return this.execute(this.getAccountByUUIDUseCase.execute(userFrom), this.getAccountByUUIDUseCase.execute(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+    };
+    public Result<Void> execute(String userFrom, String userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        return this.execute(this.getAccountByNameUseCase.execute(userFrom), this.getAccountByNameUseCase.execute(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+    };
+
+    public Result<Void> execute(Player userFrom, Player userTo, String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        return this.execute(this.getAccountByPlayerUseCase.execute(userFrom), this.getAccountByPlayerUseCase.execute(userTo), currencyFromS, currencyToS, amountFrom, amountTo);
+    }
+
+    private Result<Void> execute(Result<Account> accountFromResult,Result<Account> accountToResult,  String currencyFromS, String currencyToS, BigDecimal amountFrom, BigDecimal amountTo){
+        if (!accountFromResult.isSuccess()) {
+            return Result.failure(accountFromResult.getErrorMessage(), accountFromResult.getErrorCode());
+        }
+
+        if (!accountToResult.isSuccess()) {
+            return Result.failure(accountToResult.getErrorMessage(), accountToResult.getErrorCode());
+        }
+
+        Result<ICurrency> currencyFromResult =  this.searchCurrencyUseCase.getCurrency(currencyFromS);
+        if (!currencyFromResult.isSuccess()) {
+            return Result.failure(currencyFromResult.getErrorMessage(), currencyFromResult.getErrorCode());
+        }
+
+        Result<ICurrency> currencyToResult =  this.searchCurrencyUseCase.getCurrency(currencyToS);
+        if (!currencyToResult.isSuccess()) {
+            return Result.failure(currencyToResult.getErrorMessage(), currencyToResult.getErrorCode());
+        }
+
+        return execute(accountFromResult.getValue(), accountToResult.getValue(), currencyFromResult.getValue(), currencyToResult.getValue(), amountFrom, amountTo);
+    }
+
+    public abstract Result<Void> execute(Account accountFrom, Account accountTo, ICurrency currencyFrom, ICurrency currencyTo, BigDecimal amountFrom, BigDecimal amountTo);
+}

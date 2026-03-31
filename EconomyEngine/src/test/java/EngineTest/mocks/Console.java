@@ -1,7 +1,7 @@
 package EngineTest.mocks;
 
 import EngineTest.mocks.utils.Color;
-import abstractions.platform.IConsole;
+import net.blockdynasty.economy.libs.abstractions.platform.IConsole;
 
 public class Console implements IConsole {
 

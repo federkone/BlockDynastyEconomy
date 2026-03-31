@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.BlockDynasty</groupId>
+        <groupId>net.blockdynasty</groupId>
         <artifactId>project-parent</artifactId>
         <version>1.0</version>
     </parent>
@@ -13,19 +13,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>core</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>EconomyLibrary</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>EconomyHardCash</artifactId>
             <version>1.0</version>
         </dependency>

@@ -1,4 +1,4 @@
 name: BlockDynastyEconomy
 version: '2.0'
 author: 'federkone'
-main: com.blockdynasty.economyProxy.BlockDynastyEconomy
+main: net.blockdynasty.economy.proxy.bungeecord.BlockDynastyEconomy

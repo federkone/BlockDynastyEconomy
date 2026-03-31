@@ -1,7 +1,6 @@
 package EngineTest.mocks;
 
-import com.blockdynasty.economy.Economy;
-import com.BlockDynasty.api.DynastyEconomy;
+import net.blockdynasty.economy.engine.Economy;
 
 import java.util.ArrayList;
 import java.util.List;

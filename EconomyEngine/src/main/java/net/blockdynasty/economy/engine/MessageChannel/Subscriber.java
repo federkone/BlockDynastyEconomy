@@ -1,0 +1,86 @@
+package net.blockdynasty.economy.engine.MessageChannel;
+
+import net.blockdynasty.economy.core.aplication.events.EventManager;
+import net.blockdynasty.economy.core.domain.services.IAccountService;
+import net.blockdynasty.economy.core.domain.services.ICurrencyService;
+import net.blockdynasty.economy.core.domain.services.IOfferService;
+import net.blockdynasty.economy.core.domain.services.courier.PlayerTargetMessage;
+import net.blockdynasty.economy.libs.abstractions.platform.entity.IPlayer;
+import net.blockdynasty.economy.hardcash.aplication.useCase.HardCashUseCaseFactory;
+import net.blockdynasty.economy.gui.gui.GUISystem;
+import net.blockdynasty.economy.libs.abstractions.platform.scheduler.ContextualTask;
+import net.blockdynasty.economy.engine.platform.IPlatform;
+
+import java.util.UUID;
+
+public abstract class Subscriber {
+    private final IPlatform platformAdapter;
+    private final IOfferService offerService;
+    private final EventManager eventManager;
+    private final ICurrencyService currencyService;
+    private final IAccountService accountService;
+
+    public Subscriber(IPlatform platformAdapter,
+                      IOfferService offerService, ICurrencyService currencyService,
+                      IAccountService accountService, EventManager eventManager) {
+        this.platformAdapter = platformAdapter;
+        this.offerService = offerService;
+        this.eventManager = eventManager;
+        this.currencyService = currencyService;
+        this.accountService = accountService;
+    }
+
+    public void processMessage(String messageString) {
+        PlayerTargetMessage message = PlayerTargetMessage.builder()
+                .fromJson(messageString)
+                .build();
+        if(message.isSameOrigin()){
+            return;
+        }
+        switch (message.getType()) {
+            case EVENT:
+                offerService.processNetworkEvent(message.getData());
+                if(shouldSkipProcessing(message.getTarget())){
+                    break;
+                }
+                if(message.getTargetPlayer() != null){
+                    platformAdapter.getScheduler().runAsync(
+                            ContextualTask.build(
+                                    () -> {
+                                        accountService.syncOnlineAccount(message.getTargetPlayer());
+                                        //GUISystem.refresh(message.getTarget());
+                                        eventManager.processNetworkEvent(message.getData());
+                                    }
+                            )
+                    );
+                    break;
+                }
+                eventManager.processNetworkEvent(message.getData());
+                break;
+            case ACCOUNT:
+                if(shouldSkipProcessing(message.getTarget())){
+                    break;
+                }
+                if(message.getTargetPlayer() != null){
+                    platformAdapter.getScheduler().runAsync(
+                            ContextualTask.build(
+                                    () -> {
+                                        accountService.syncOnlineAccount(message.getTargetPlayer());
+                                        GUISystem.refresh(message.getTarget());
+                                    }
+                            )
+                    );
+                }
+                break;
+            case CURRENCY:
+                currencyService.syncCurrency(message.getTarget());
+                HardCashUseCaseFactory.getCacheCurrencyItems().updateCurrencies();
+                break;
+        }
+    }
+
+    private boolean shouldSkipProcessing(UUID target) {
+        IPlayer player = platformAdapter.getPlayerByUUID(target);
+        return player == null || !player.isOnline();
+    }
+}

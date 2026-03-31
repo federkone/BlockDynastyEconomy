@@ -17,12 +17,12 @@
 package EngineTest.mocks;
 
 import EngineTest.mocks.utils.Color;
-import domain.entity.currency.ItemStackCurrency;
-import domain.entity.player.IEntityHardCash;
-import lib.commands.abstractions.IEntityCommands;
-import lib.gui.components.IEntityGUI;
-import lib.gui.components.IInventory;
-import com.blockdynasty.economy.platform.IPlayer;
+import net.blockdynasty.economy.hardcash.domain.entity.currency.ItemStackCurrency;
+import net.blockdynasty.economy.hardcash.domain.entity.player.IEntityHardCash;
+import net.blockdynasty.economy.gui.commands.abstractions.IEntityCommands;
+import net.blockdynasty.economy.gui.gui.components.IEntityGUI;
+import net.blockdynasty.economy.gui.gui.components.IInventory;
+import net.blockdynasty.economy.engine.platform.IPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

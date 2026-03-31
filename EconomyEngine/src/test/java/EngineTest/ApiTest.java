@@ -2,14 +2,13 @@ package EngineTest;
 
 import EngineTest.mocks.MinecraftServer;
 import EngineTest.mocks.Player;
-import com.BlockDynasty.api.EconomyResponse;
-import com.BlockDynasty.api.DynastyEconomy;
+import net.blockdynasty.economy.api.EconomyResponse;
+import net.blockdynasty.economy.api.DynastyEconomy;
 import net.blockdynasty.providers.services.ServiceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
