@@ -30,7 +30,7 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>net.blockdynasty.providers</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>ServiceProvider</artifactId>
             <version>1.0</version>
         </dependency>
