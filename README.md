@@ -10,9 +10,6 @@ Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
 API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
 ---
 
-API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
----
-
 Wiki: https://wiki.blockdynasty.net 
 
 Spigot: https://www.spigotmc.org/resources/dynastyeconomy.129308
