@@ -5,11 +5,11 @@
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
 ## BlockDynasty-Economy
-Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
+---
+API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
+---
 
 Wiki: https://wiki.blockdynasty.net 
-
-Documentation: https://deepwiki.com/federkone/BlockDynastyEconomy
 
 Spigot: https://www.spigotmc.org/resources/dynastyeconomy.129308
 
@@ -53,6 +53,7 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 | 1.19.x  | ✅     | JDK 17       | Fully supported |
 | 1.20.x  | ✅     | JDK 17+      | Fully supported |
 | 1.21.x  | ✅     | JDK 21+      | Fully supported |
+| 26.1    | ✅     | JDK 25+      | Fully supported |
 
 - **Vault** ✅
 - **VaultUnlocked** ✅
