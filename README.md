@@ -10,7 +10,10 @@ Issues and releases -> https://github.com/BlockDynasty/BlockDynastyEconomy
 API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
 ---
 
-Wiki: https://wiki.blockdynasty.net
+API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
+---
+
+Wiki: https://wiki.blockdynasty.net 
 
 Spigot: https://www.spigotmc.org/resources/dynastyeconomy.129308
 
@@ -26,6 +29,12 @@ Bukkit: https://dev.bukkit.org/projects/dynastyeconomy
 - **Redis**: "Jedis" 5.2.0
 
 > **💡 Note**: REDIS replaces the need to use proxy plugins like Velocity or BungeeCord.
+
+----
+### 🎯 Hytale Support
+| Version | Status | Required JDK | Notes |
+|---------|--------|--------------|-------|
+| Alpha | ✅ | JDK 25 | Fully supported |
 
 ----
 ### 🎯 Hytale Support
