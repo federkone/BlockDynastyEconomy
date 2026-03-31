@@ -25,8 +25,7 @@ class ApiDynamicSupplier implements Supplier<DynastyEconomy>, InternalProvider {
     private final Map<Class<?>, DynastyEconomy> callerCache = new ConcurrentHashMap<>();
 
     private final List<String> ignoredPackages = List.of(
-            "BlockDynasty",
-            "com.blockdynasty",
+            "net.blockdynasty",
             "org.bukkit",
             "net.milkbowl.vault",
             "spigotmc"

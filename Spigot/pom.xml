@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.BlockDynasty</groupId>
+        <groupId>net.blockdynasty</groupId>
         <artifactId>project-parent</artifactId>
         <version>1.0</version>
     </parent>
@@ -67,19 +67,19 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>com.BlockDynasty.bstats</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.spigot.shaded.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>net.wesjd.anvilgui</pattern>
-                                    <shadedPattern>com.BlockDynasty.anvilgui</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.spigot.shaded.anvilgui</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.antlr</pattern>
-                                    <shadedPattern>com.BlockDynasty.antlr</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.spigot.shaded.antlr</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                                    <shadedPattern>com.BlockDynasty.nbtapi</shadedPattern>
+                                    <shadedPattern>net.blockdynasty.economy.spigot.shaded.nbtapi</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -171,7 +171,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.BlockDynasty</groupId>
+            <groupId>net.blockdynasty</groupId>
             <artifactId>EconomyEngine</artifactId>
             <version>1.0</version>
             <scope>compile</scope>

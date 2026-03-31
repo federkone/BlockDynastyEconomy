@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.blockdynasty</groupId>
+  <groupId>net.blockdynasty</groupId>
   <artifactId>BlockDynastyEconomy</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
 
   <parent>
-    <groupId>com.BlockDynasty</groupId>
+    <groupId>net.blockdynasty</groupId>
     <artifactId>Sponge</artifactId>
     <version>1.0</version>
   </parent>
@@ -113,28 +113,28 @@
               <relocations>
                 <relocation>
                   <pattern>org.bstats</pattern>
-                  <shadedPattern>com.BlockDynasty.bstats</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.bstats</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.bson</pattern>
-                  <shadedPattern>com.BlockDynasty.lib.bson</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.lib.bson</shadedPattern>
                 </relocation>
 
                 <relocation>
                   <pattern>org.slf4j</pattern>
-                  <shadedPattern>com.BlockDynasty.slf4j</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.slf4j</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.yaml</pattern>
-                  <shadedPattern>com.BlockDynasty.yaml</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.yaml</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.google.gson</pattern>
-                  <shadedPattern>com.BlockDynasty.google.gson</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.google.gson</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.google.errorprone</pattern>
-                  <shadedPattern>com.BlockDynasty.google.errorprone</shadedPattern>
+                  <shadedPattern>net.blockdynasty.sponge.shaded.google.errorprone</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
@@ -221,7 +221,7 @@
     </dependency>
 
       <dependency>
-          <groupId>com.BlockDynasty</groupId>
+          <groupId>net.blockdynasty</groupId>
           <artifactId>Sponge-Common</artifactId>
           <version>1.0</version>
           <scope>compile</scope>

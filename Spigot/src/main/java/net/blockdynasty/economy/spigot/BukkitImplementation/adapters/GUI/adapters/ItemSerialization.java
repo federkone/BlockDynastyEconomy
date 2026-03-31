@@ -16,7 +16,7 @@
 
 package net.blockdynasty.economy.spigot.BukkitImplementation.adapters.GUI.adapters;
 
-import com.BlockDynasty.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import net.blockdynasty.economy.engine.shaded.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;

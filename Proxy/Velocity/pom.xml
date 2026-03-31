@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.blockdynasty</groupId>
+    <groupId>net.blockdynasty</groupId>
     <artifactId>Proxy</artifactId>
     <version>1.0</version>
   </parent>
@@ -190,7 +190,7 @@
     </dependency>
     <!-- Dependencia de Common (mismo grupo, versión heredada del parent) -->
     <dependency>
-      <groupId>com.blockdynasty</groupId>
+      <groupId>net.blockdynasty</groupId>
       <artifactId>BlockDynastyEconomy-Common</artifactId>
       <version>1.0</version>
       <scope>compile</scope>
