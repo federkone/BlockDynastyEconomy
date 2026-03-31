@@ -9,6 +9,31 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Base configuration for BlockDynasty projects.</description>
+    <url>https://github.com/BlockDynasty/Economy</url>
+
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>federkone</id>
+            <name>Federico Barrionuevo</name>
+            <email>federicobarrionuevo47@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/BlockDynasty/BlockDynastyEconomy.git</connection>
+        <developerConnection>scm:git:ssh://github.com/BlockDynasty/BlockDynastyEconomy.git</developerConnection>
+        <url>https://github.com/BlockDynasty/BlockDynastyEconomy</url>
+    </scm>
+
     <modules>
         <module>core</module>
         <module>Spigot</module>

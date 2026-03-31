@@ -17,6 +17,27 @@
 
     <name>Sponge-v13</name>
 
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>federkone</id>
+            <name>Federico Barrionuevo</name>
+            <email>federicobarrionuevo47@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/BlockDynasty/BlockDynastyEconomy.git</connection>
+        <developerConnection>scm:git:ssh://github.com/BlockDynasty/BlockDynastyEconomy.git</developerConnection>
+        <url>https://github.com/BlockDynasty/BlockDynastyEconomy</url>
+    </scm>
+
     <properties>
         <java.version>21</java.version>
         <spongeapi.version>13.0.0</spongeapi.version>
