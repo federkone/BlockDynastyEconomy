@@ -5,7 +5,7 @@
 ![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
 
 ## BlockDynasty-Economy
----
+
 API for Develpers: https://wiki.blockdynasty.net/Developers/Api/
 ---
 
