@@ -32,9 +32,24 @@ public interface DynastyEconomy extends Service<UUID> {
      * @param amount - An amount of the default currency.
      */
     EconomyResponse deposit(UUID uuid, BigDecimal amount);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of the default currency.
+     */
     EconomyResponse deposit(String name, BigDecimal amount);
 
+    /**
+     *
+     * @return - The default currency.
+     */
     Currency getDefaultCurrency();
+
+    /**
+     *
+     * @return - A list of all accounts that are currently offline.
+     */
     List<Account> getAccountsOffline();
 
     /**
@@ -43,13 +58,38 @@ public interface DynastyEconomy extends Service<UUID> {
      * @param amount - An amount of the default currency.
      */
     EconomyResponse withdraw(UUID uuid, BigDecimal amount);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of the default currency.
+     */
     EconomyResponse withdraw(String name, BigDecimal amount);
 
+    /**
+     *
+     * @param uuid - The users unique ID.
+     * @param amount - An amount of a currency
+     */
     EconomyResponse setBalance(UUID uuid, BigDecimal amount);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of a currency
+     * @param currency - A specified currency.
+     */
     EconomyResponse setBalance(String name, BigDecimal amount, String currency);
 
     EconomyResponse setBalance(UUID uuid, BigDecimal amount, String currency);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of a currency
+     */
     EconomyResponse setBalance(String name, BigDecimal amount);
+
     /**
      *
      * @param uuid - The users unique ID.
@@ -57,6 +97,13 @@ public interface DynastyEconomy extends Service<UUID> {
      * @param currency - A specified currency.
      */
     EconomyResponse deposit(UUID uuid, BigDecimal amount, String currency);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of a currency
+     * @param currency - A specified currency.
+     */
     EconomyResponse deposit(String name, BigDecimal amount, String currency);
     /**
      *
@@ -65,6 +112,13 @@ public interface DynastyEconomy extends Service<UUID> {
      * @param currency - The currency you withdraw from.
      */
     EconomyResponse withdraw(UUID uuid, BigDecimal amount, String currency);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param amount - An amount of the currency.
+     * @param currency - The currency you withdraw from.
+     */
     EconomyResponse withdraw(String name, BigDecimal amount, String currency);
 
     /**
@@ -73,6 +127,12 @@ public interface DynastyEconomy extends Service<UUID> {
      * @return - The default currency balance of the user.
      */
     BigDecimal getBalance(UUID uuid);
+
+    /**
+     *
+     * @param name - The users name.
+     * @return - The default currency balance of the user.
+     */
     BigDecimal getBalance(String name);
 
     /**
@@ -82,6 +142,13 @@ public interface DynastyEconomy extends Service<UUID> {
      * @return - The balance of the specified currency.
      */
     BigDecimal getBalance(UUID uuid, String currency);
+
+    /**
+     *
+     * @param name - The users name.
+     * @param currency - An amount of the default currency.
+     * @return - The balance of the specified currency.
+     */
     BigDecimal getBalance(String name, String currency);
 
     /**
@@ -102,6 +169,14 @@ public interface DynastyEconomy extends Service<UUID> {
      * @param amount - double mount amount.
      */
     EconomyResponse transfer(UUID userFrom, UUID userTo, String currency, BigDecimal amount);
+
+    /**
+     *
+     * @param userFrom - The userFrom unique ID.
+     * @param userTo - The userTO unique ID.
+     * @param currency- String name currency.
+     * @param amount - double mount amount.
+     */
     EconomyResponse transfer(String userFrom, String userTo, String currency, BigDecimal amount);
 
     /**
