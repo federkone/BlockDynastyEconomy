@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 /** ServiceProvider is a utility class for registering, retrieving, and unregistering service implementations.
  * It supports multiple implementations for the same service interface/class and allows selection based on predicates.
- * <h3>Rules:</h3>
+ * <b>Rules:</b>
  * <ul>
  *   <li>Multiple implementations can be registered for the same service interface/class.</li>
  *   <li>When retrieving a service, the first registered implementation is returned by default.</li>
@@ -41,19 +41,17 @@ public class ServiceProvider {
     private static final Map<Class<?>, Queue<Supplier<?>>> SERVICES = new ConcurrentHashMap<>();
 
     /** Registers a service implementation for the specified interface/class.
-     *
+     * @param <T> type of the service
      * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @param supplier service Supplier of implementation of the service
-     * @param <T> type of the service
      */
     public static <T extends Service<?>> void register(Class<T> clazz, Supplier<T> supplier) {
         SERVICES.computeIfAbsent(clazz, k -> new ConcurrentLinkedQueue<>()).add(supplier);
     }
 
     /** Retrieves a service implementation for the specified interface/class.
-     *
-     * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @param <T> type of the service
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @return implementation of the service or null if not found
      * NOTE: If multiple implementations are registered, the first one registered is returned.
      */
@@ -67,11 +65,10 @@ public class ServiceProvider {
     }
 
     /** Retrieves a service implementation for the specified interface/class that matches the given ID.
-     *
-     * @param clazz class/interface type of the service "ex: EconomyService.Class"
-     * @param id identifier to select the desired service implementation
      * @param <T> type of the service
      * @param <I> type of the service ID
+     * @param clazz class/interface type of the service "ex: EconomyService.Class"
+     * @param id identifier to select the desired service implementation
      * @return implementation of the service or null if not found
      */
     @SuppressWarnings("unchecked")
@@ -87,10 +84,9 @@ public class ServiceProvider {
     }
 
     /** Retrieves a service implementation for the specified interface/class that matches the given selector.
-     *
+     * @param <T> type of the service
      * @param clazz class/interface type of the service "ex: EconomyService.Class"
      * @param selector predicate to select the desired service implementation
-     * @param <T> type of the service
      * @return implementation of the service or null if not found
      */
     @SuppressWarnings("unchecked")
