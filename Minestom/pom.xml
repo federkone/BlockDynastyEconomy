@@ -9,7 +9,9 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <name>Minestom implementations</name>
+    <name>Minestom Economy Framework</name>
+    <description>Economy Engine for Minestom Servers</description>
+    <url>https://github.com/BlockDynasty/BlockDynastyEconomy</url>
 
     <licenses>
         <license>
@@ -31,6 +33,12 @@
         <developerConnection>scm:git:ssh://github.com/BlockDynasty/BlockDynastyEconomy.git</developerConnection>
         <url>https://github.com/BlockDynasty/BlockDynastyEconomy</url>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
 
     <modules>
         <module>Base-2025.07.08-1.21.5</module>

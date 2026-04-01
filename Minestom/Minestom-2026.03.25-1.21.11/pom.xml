@@ -10,7 +10,12 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>minestom-${minestom.version}</artifactId>
+    <name>Minestom Economy Framework</name>
+    <description>Economy Engine for Minestom Servers</description>
+    <url>https://github.com/BlockDynasty/BlockDynastyEconomy</url>
+    <groupId>net.blockdynasty</groupId>
+    <artifactId>minestom-2026.03.25-1.21.11</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -57,16 +62,43 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
                                     <include>net.blockdynasty:EconomyEngine</include>
+                                    <include>net.blockdynasty:Base-2025.07.08-1.21.5</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
@@ -95,6 +127,13 @@
 
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>net.minestom</groupId>
