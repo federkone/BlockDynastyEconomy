@@ -78,6 +78,7 @@ public class PayUseCaseTest {
         repository.saveCurrency(plata);
         repository.saveCurrency(coin);
         repository.saveCurrency(dinero);
+
         repository.saveAccount(nullplague);
         repository.saveAccount(cris);
 
@@ -100,6 +101,11 @@ public class PayUseCaseTest {
 
     @Test
     void payUseCseTest (){
+        Account account = searchAccountUseCase.execute("nullplague").getValue();
+        Account account2 = searchAccountUseCase.execute("cris").getValue();
+        System.out.println("Antes del pago:");
+        System.out.println(account.getNickname() + " tiene " + account.getMoney(dinero).getAmount() + " " + dinero.getPlural());
+        System.out.println(account2.getNickname() + " tiene " + account2.getMoney(dinero).getAmount() + " " + dinero.getPlural());
         Result<Void> result = payUseCase.execute("nullplague","cris","dinero", BigDecimal.valueOf(10000));
         assertTrue(result.isSuccess());
 

@@ -12,8 +12,8 @@ public class ConnectionFactory{
     private final Map<DbConfig.TYPE, Function<DbConfig, Connection>> connectionStrategies= Map.ofEntries(
             Map.entry(DbConfig.TYPE.MYSQL, ConnectionEbeanMysql::new),
             Map.entry(DbConfig.TYPE.MARIADB, ConnectionEbeanMariaDb::new),
-            Map.entry(DbConfig.TYPE.H2, ConnectionEbeanH2::new),
-            Map.entry(DbConfig.TYPE.SQLITE, ConnectionEbeanSQLite::new)
+            Map.entry(DbConfig.TYPE.H2, ConnectionEbeanH2::new)
+            //Map.entry(DbConfig.TYPE.SQLITE, ConnectionEbeanSQLite::new)
     );
 
     public ConnectionFactory(IConfigurationEngine fileConfig){

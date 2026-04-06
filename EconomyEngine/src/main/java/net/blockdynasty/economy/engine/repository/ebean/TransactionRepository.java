@@ -97,16 +97,16 @@ public class TransactionRepository  implements ITransactions {
             // Uso de forUpdate() para bloqueo pesimista basado en el ID del Player
             AccountDb fromDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", playerFrom.getId())
                     .forUpdate()
                     .findOne();
 
             AccountDb toDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", playerTo.getId())
                     .forUpdate()
                     .findOne();
@@ -121,6 +121,9 @@ public class TransactionRepository  implements ITransactions {
             // Lógica de dominio
             Result<Void> result = from.subtract(currency, amount);
             if (!result.isSuccess()) {
+                System.out.println(fromDb.getWallet().getBalances().size() + " balances que tiene nullplague");
+                //la consulta no trae a nullplague con su wallet
+                System .out.println("Error en transferencia desde repositorio: " + result.getErrorMessage() + " Código: " + result.getErrorCode());
                 return Result.failure(result.getErrorMessage(), result.getErrorCode());
             }
             to.add(currency, amount);
@@ -136,6 +139,7 @@ public class TransactionRepository  implements ITransactions {
             return Result.success(new TransferResult(from, to));
 
         } catch (Exception e) {
+
             // Rollback automático al cerrar el try-with-resources sin commit()
             return Result.failure("Error en la transferencia: " + e.getMessage(), ErrorCode.UNKNOWN_ERROR);
         }
@@ -155,7 +159,11 @@ public class TransactionRepository  implements ITransactions {
 
             if (existingBalance.isPresent()) {
                 // Actualizar monto del balance existente
-                existingBalance.get().setAmount(money.getAmount());
+                BalanceDb balanceToUpdate = existingBalance.get();
+                balanceToUpdate.setAmount(money.getAmount());
+
+                // SOLUCIÓN: Guardar explícitamente el balance actualizado
+                database.save(balanceToUpdate);
             } else {
                 // Buscar la moneda en la DB para crear el nuevo balance
                 CurrencyDb currencyDb = database.find(CurrencyDb.class)
@@ -172,8 +180,8 @@ public class TransactionRepository  implements ITransactions {
                 newBalance.setAmount(money.getAmount());
                 newBalance.setWallet(walletDb);
 
-                // Al añadirlo a la lista, Ebean lo persistirá por cascada al guardar la cuenta/wallet
                 walletDb.getBalances().add(newBalance);
+                database.save(newBalance);
             }
         }
     }
@@ -185,8 +193,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista con forUpdate()
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", accountUuid)
                     .forUpdate()
                     .findOne();
@@ -223,8 +231,8 @@ public class TransactionRepository  implements ITransactions {
             // Búsqueda con bloqueo pesimista por ID de la entidad
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", player.getId())
                     .forUpdate()
                     .findOne();
@@ -259,8 +267,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista con forUpdate() para asegurar la atomicidad del depósito
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", accountUuid)
                     .forUpdate()
                     .findOne();
@@ -296,8 +304,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista por ID del Player usando forUpdate()
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", player.getId())
                     .forUpdate()
                     .findOne();
@@ -333,8 +341,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista mediante forUpdate() para evitar condiciones de carrera durante el intercambio
             AccountDb playerDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", playerUUID)
                     .forUpdate()
                     .findOne();
@@ -378,8 +386,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista por ID de la entidad para el intercambio atómico
             AccountDb playerDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", playerFrom.getId())
                     .forUpdate()
                     .findOne();
@@ -423,16 +431,16 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista para ambas cuentas involucradas en el trade
             AccountDb fromDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", fromUuid)
                     .forUpdate()
                     .findOne();
 
             AccountDb toDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", toUuid)
                     .forUpdate()
                     .findOne();
@@ -476,16 +484,16 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista por ID del Player para asegurar la integridad del intercambio
             AccountDb fromDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", playerFrom.getId())
                     .forUpdate()
                     .findOne();
 
             AccountDb toDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", playerTo.getId())
                     .forUpdate()
                     .findOne();
@@ -531,8 +539,8 @@ public class TransactionRepository  implements ITransactions {
             // Bloqueo pesimista con forUpdate para asegurar que nadie más toque los balances
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("uuid", accountUuid)
                     .forUpdate()
                     .findOne();
@@ -568,8 +576,8 @@ public class TransactionRepository  implements ITransactions {
             // Búsqueda con bloqueo pesimista por el ID de la entidad (Player)
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetchQuery("wallet.balances")
+                    .fetchQuery("wallet.balances.currency")
                     .where().eq("id", player.getId())
                     .forUpdate()
                     .findOne();

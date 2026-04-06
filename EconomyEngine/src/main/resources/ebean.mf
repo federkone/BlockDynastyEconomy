@@ -1,0 +1,3 @@
+entity-packages: net.blockdynasty.economy.engine.repository.ebean.Models
+transactional-packages: net.blockdynasty.economy.engine.repository.ebean
+querybean-packages: none

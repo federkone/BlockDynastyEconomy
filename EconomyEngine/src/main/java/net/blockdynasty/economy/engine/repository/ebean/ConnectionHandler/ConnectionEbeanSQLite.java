@@ -15,7 +15,7 @@
  */
 
 package net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler;
-
+/*
 import net.blockdynasty.economy.engine.repository.ebean.DbConfig;
 import net.blockdynasty.economy.libs.services.Console;
 import org.h2.tools.Server;
@@ -101,4 +101,4 @@ public class ConnectionEbeanSQLite extends ConnectionEbean {
         }
 
     }
-}
+}*/

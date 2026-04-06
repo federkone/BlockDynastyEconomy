@@ -67,4 +67,5 @@ public class MockConnectionHibernateH2 implements Connection {
             sessionFactory.close();
         }
     }
-}*/
+}
+ */

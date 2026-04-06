@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,7 +50,7 @@ public class ApiTest {
         EconomyResponse response = api.deposit(fede.getName(), BigDecimal.valueOf(5000),"Money");
         BigDecimal balanceNew = api.getBalance(fede.getName(),"Money");
         assertTrue(response.isSuccess());
-        assertEquals(balanceAct, balanceNew.subtract(BigDecimal.valueOf(5000)));
+        assertEquals(0, balanceAct.compareTo(balanceNew.subtract(new BigDecimal("5000"))));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class ApiTest {
         BigDecimal balanceNew1 = api.getBalance(nullplague.getName(),"Money");
         BigDecimal balanceNew2 = api.getBalance(fede.getName(),"Money");
         assertTrue(response.isSuccess());
-        assertEquals(balanceNew1, balanceAct1.add(BigDecimal.valueOf(2000)));
-        assertEquals(balanceNew2, balanceAct2.subtract(BigDecimal.valueOf(2000)));
+        assertEquals(0, balanceNew1.compareTo(balanceAct1.add(new BigDecimal("2000"))));
+        assertEquals(0, balanceNew2.compareTo(balanceAct2.subtract(new BigDecimal("2000"))));
     }
 }

@@ -21,16 +21,19 @@ import net.blockdynasty.economy.engine.platform.files.IConfigurationEngine;
 import net.blockdynasty.economy.engine.repository.ebean.ConnectionFactory;
 import net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler.Connection;
 import net.blockdynasty.economy.engine.repository.ebean.Repository;
+import repositoryTest.ConnectionHandler.MockConnectionHEbeanH2;
 
 import java.util.List;
 import java.util.Map;
 
 public class FactoryRepo {
+    private static Connection connection = new MockConnectionHEbeanH2();
+    private static IRepository repository = new Repository(connection);
 
     public static IRepository getDb(){
-        ConnectionFactory factory = new ConnectionFactory(config());
-        Connection connection = factory.get();
-        return new Repository(connection);
+       ConnectionFactory factory = new ConnectionFactory(config());
+       Connection connection = factory.get();
+       return new Repository(connection);
     }
 
     public static Connection getConnection(){

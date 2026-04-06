@@ -1,6 +1,5 @@
 package net.blockdynasty.economy.hytale.integrations.vaultUnlocked;
 
-import com.sun.istack.NotNull;
 import net.blockdynasty.economy.api.DynastyEconomy;
 import net.milkbowl.vault2.economy.AccountPermission;
 import net.milkbowl.vault2.economy.Economy;

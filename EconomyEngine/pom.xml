@@ -43,6 +43,27 @@
         </resources>
         <plugins>
             <plugin>
+                <groupId>io.ebean</groupId>
+                <artifactId>ebean-maven-plugin</artifactId>
+                <version>17.2.0</version>
+                <executions>
+                    <execution>
+                        <id>main</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.3</version>
@@ -85,24 +106,8 @@
                                         <exclude>org/h2/javadoc/**</exclude>
                                     </excludes>
                                 </filter>
-                                <filter>
-                                    <artifact>org.xerial:sqlite-jdbc</artifact>
-                                    <excludes>
-                                        <exclude>org/sqlite/native/Linux/android/**</exclude>
-                                        <exclude>org/sqlite/native/Mac/**</exclude>
-                                        <exclude>org/sqlite/native/FreeBSD/**</exclude>
-                                        <exclude>org/sqlite/native/AIX/**</exclude>
-                                        <exclude>org/sqlite/native/OpenBSD/**</exclude>
-                                        <exclude>org/sqlite/native/SunOS/**</exclude>
-                                        <exclude>org/sqlite/test/**</exclude>
-                                    </excludes>
-                                </filter>
                             </filters>
                             <relocations>
-                                <relocation>
-                                    <pattern>org.xerial</pattern>
-                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.xerial</shadedPattern>
-                                </relocation>
                                 <relocation>
                                     <pattern>com.mysql</pattern>
                                     <shadedPattern>net.blockdynasty.economy.engine.shaded.mysql</shadedPattern>
@@ -131,6 +136,10 @@
                                     <pattern>jakarta.persistence</pattern>
                                     <shadedPattern>net.blockdynasty.economy.engine.shaded.jakarta</shadedPattern>
                                </relocation>
+                                <relocation>
+                                    <pattern>io.ebean</pattern>
+                                    <shadedPattern>net.blockdynasty.economy.engine.shaded.ebean</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -189,15 +198,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.xerial</groupId>
-            <artifactId>sqlite-jdbc</artifactId>
-            <version>3.50.3.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
             <scope>compile</scope>
         </dependency>

@@ -49,17 +49,14 @@ public class AccountRepository implements IAccountRepository {
     @Override
     public List<Account> findAll() {
         try {
-            // Ebean usa una API fluida que reemplaza al HQL
             return database.find(AccountDb.class)
-                    .setDistinct(true) // Equivalente al SELECT DISTINCT
-                    .fetch("wallet")   // Join optimizado (Eager loading) si lo necesitas
-                    .findList()        // Ejecuta la consulta y devuelve List<AccountDb>
+                    .setDistinct(true)
+                    .fetch("wallet")
+                    .findList()
                     .stream()
                     .map(AccountMapper::toDomain)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            // En Ebean, si no inicias una transacción explícita para leer,
-            // no hay nada que hacer rollback. Solo capturamos el error.
             throw new RepositoryException("Repository Account Error: " + e.getMessage(), e);
         }
     }
@@ -68,14 +65,13 @@ public class AccountRepository implements IAccountRepository {
 @Override
 public Account findByUuid(UUID uuid) {
     try {
-        // La API fluida de Ebean reemplaza al HQL complejo
         AccountDb accountDb = database.find(AccountDb.class)
-                .fetch("wallet")              // LEFT JOIN FETCH a.wallet
-                .fetch("wallet.balances")     // LEFT JOIN FETCH w.balances
-                .fetch("wallet.balances.currency") // LEFT JOIN FETCH b.currency
+                .fetch("wallet")
+                .fetch("wallet.balances")
+                .fetch("wallet.balances.currency")
                 .where()
                 .eq("uuid", uuid.toString())
-                .findOne(); // Devuelve null si no hay resultados, en lugar de lanzar excepción
+                .findOne();
 
         if (accountDb == null) {
             throw new AccountNotFoundException("Account not found: " + uuid);
@@ -84,9 +80,8 @@ public Account findByUuid(UUID uuid) {
         return AccountMapper.toDomain(accountDb);
 
     } catch (AccountNotFoundException e) {
-        throw e; // Relanzamos nuestra excepción personalizada
+        throw e;
     } catch (Exception e) {
-        // Ebean no requiere rollback manual en consultas de lectura (SELECT)
         throw new RepositoryException("Repository Account Error: " + e.getMessage(), e);
     }
 }
@@ -94,14 +89,13 @@ public Account findByUuid(UUID uuid) {
     @Override
     public Account findByPlayer(Player player) {
         try {
-            // Usamos la API fluida para cargar la cuenta y toda su jerarquía
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
                     .fetch("wallet.balances")
                     .fetch("wallet.balances.currency")
                     .where()
-                    .eq("id", player.getId()) // Buscamos por el ID del player
-                    .findOne(); // Retorna null si no existe, evitando excepciones costosas
+                    .eq("id", player.getId())
+                    .findOne();
 
             if (accountDb == null) {
                 throw new AccountNotFoundException("Account not found: " + player.getNickname());
@@ -112,7 +106,6 @@ public Account findByUuid(UUID uuid) {
         } catch (AccountNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            // No hace falta rollback en SELECTs simples con Ebean
             throw new RepositoryException("Repository Account Error: " + e.getMessage(), e);
         }
     }
@@ -147,12 +140,12 @@ public Account findByUuid(UUID uuid) {
 
     @Override
     public void save(Player account, Account newAccount) {
+        System.out .println("Saving account: " + account.getNickname() + " with UUID: " + account.getUuid()+ " id "+ account.getId()); //account id no deberia ser null
         try (io.ebean.Transaction tx = database.beginTransaction()) {
 
-            // CORRECCIÓN: Añadir fetch("wallet.balances") para cargar los balances existentes.
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances") // <-- ESTA LÍNEA ES CRUCIAL
+                    .fetch("wallet.balances")
                     .where()
                     .eq("id", account.getId())
                     .findOne();
@@ -161,40 +154,39 @@ public Account findByUuid(UUID uuid) {
                 throw new AccountNotFoundException("Account not found: " + account.getUuid());
             }
 
-            // Update basic properties
             accountDb.setNickname(newAccount.getNickname());
             accountDb.setUuid(newAccount.getUuid().toString());
             accountDb.setCanReceiveCurrency(newAccount.canReceiveCurrency());
             accountDb.setBlock(newAccount.isBlocked());
 
-            // Actualización de balances
             updateBalancesInWallet(newAccount, accountDb.getWallet(), database);
 
-            // Guardamos los cambios
             database.save(accountDb);
 
             tx.commit();
         } catch (AccountNotFoundException e) {
+            System.out.println( "Account not found during save: " + account.getUuid());
             throw e;
         } catch (Exception e) {
             throw new RepositoryException("Repository accounts error: " + e.getMessage(), e);
         }
     }
-    // Helper method similar to what's in TransactionRepository
+
     private void updateBalancesInWallet(Account account, WalletDb walletDb, io.ebean.Database database) {
         for (Money money : account.getBalances()) {
             String currencyUuid = money.getCurrency().getUuid().toString();
 
-            // Buscamos si ya existe el balance en la colección cargada
             Optional<BalanceDb> existingBalance = walletDb.getBalances().stream()
                     .filter(b -> b.getCurrency().getUuid().equals(currencyUuid))
                     .findFirst();
 
             if (existingBalance.isPresent()) {
-                // Actualizamos el monto existente
-                existingBalance.get().setAmount(money.getAmount());
+                BalanceDb balanceToUpdate = existingBalance.get();
+                balanceToUpdate.setAmount(money.getAmount());
+
+                // --- SOLUCIÓN: Guardar explícitamente la actualización ---
+                database.save(balanceToUpdate);
             } else {
-                // Buscamos la moneda en la base de datos para crear el nuevo balance
                 CurrencyDb currencyDb = database.find(CurrencyDb.class)
                         .where()
                         .eq("uuid", currencyUuid)
@@ -209,8 +201,6 @@ public Account findByUuid(UUID uuid) {
                 newBalance.setAmount(money.getAmount());
                 newBalance.setWallet(walletDb);
 
-                // Añadimos a la lista (Ebean persistirá esto por cascada si está configurado,
-                // o puedes llamar a database.save(newBalance) explícitamente)
                 walletDb.getBalances().add(newBalance);
                 database.save(newBalance);
             }
@@ -219,10 +209,8 @@ public Account findByUuid(UUID uuid) {
 
     @Override
     public void delete(Player account) {
-        // Ebean simplifica el borrado; puedes borrar por ID directamente o por entidad
         try (io.ebean.Transaction tx = database.beginTransaction()) {
 
-            // Buscamos la entidad para asegurar que existe (y cargar cascadas si es necesario)
             AccountDb accountDb = database.find(AccountDb.class)
                     .fetch("wallet")
                     .where()
@@ -233,14 +221,12 @@ public Account findByUuid(UUID uuid) {
                 throw new AccountNotFoundException("Account not found: " + account.getUuid());
             }
 
-            // Borrado físico de la entidad
             database.delete(accountDb);
 
             tx.commit();
         } catch (AccountNotFoundException e) {
             throw e;
         } catch (Exception e) {
-            // Rollback automático al cerrar el try-with-resources sin commit
             throw new RepositoryException("Error repositorio: " + e.getMessage(), e);
         }
     }
@@ -257,7 +243,6 @@ public Account findByUuid(UUID uuid) {
     public void create(Account account) {
         try (io.ebean.Transaction tx = database.beginTransaction()) {
 
-            // 1. Verificar existencia (Sintaxis fluida de Ebean)
             int count = database.find(AccountDb.class)
                     .where()
                     .eq("uuid", account.getUuid().toString())
@@ -268,21 +253,15 @@ public Account findByUuid(UUID uuid) {
                 throw new AccountAlreadyExist("Account already exist: " + account.getUuid());
             }
 
-            // 2. Crear nueva cuenta
             AccountDb accountDb = new AccountDb();
             accountDb.setUuid(account.getUuid().toString());
             accountDb.setNickname(account.getNickname());
             accountDb.setCanReceiveCurrency(account.canReceiveCurrency());
 
-            // 3. Crear nueva Wallet
             WalletDb walletDb = new WalletDb();
-            // En Ebean, si tienes CascadeType.ALL, no necesitas persistir la wallet antes.
-            // Pero para mantener tu lógica exacta:
             database.save(walletDb);
-
             accountDb.setWallet(walletDb);
 
-            // 4. Procesar balances
             for (Money domainMoney : account.getBalances()) {
                 String currencyUuid = domainMoney.getCurrency().getUuid().toString();
 
@@ -300,18 +279,16 @@ public Account findByUuid(UUID uuid) {
                 balanceDb.setAmount(domainMoney.getAmount());
                 balanceDb.setWallet(walletDb);
 
-                // Añadir a la lista de la wallet persistida
                 walletDb.getBalances().add(balanceDb);
+                database.save(balanceDb);
             }
 
-            // 5. Guardar la cuenta (Persistencia final)
             database.save(accountDb);
 
             tx.commit();
 
-            // Sincronizar ID generado de vuelta al dominio
             account.setId(accountDb.getId());
-
+            System.out. println("Account created with ID: " + account.getId());
         } catch (AccountAlreadyExist | CurrencyNotFoundException e) {
             throw e;
         } catch (Exception e) {
@@ -322,27 +299,28 @@ public Account findByUuid(UUID uuid) {
     @Override
     public List<Account> getAccountsTopByCurrency(String currencyName, int limit, int offset) {
         try {
-            // Ebean traduce automáticamente los joins en la API fluida
-            List<AccountDb> accountDbs = database.find(AccountDb.class)
+            List<BalanceDb> topBalances = database.find(BalanceDb.class)
                     .fetch("wallet")
-                    .fetch("wallet.balances")
-                    .fetch("wallet.balances.currency")
+                    .fetch("wallet.accounts")
+                    .fetch("currency")
                     .where()
                     .or()
-                    .eq("wallet.balances.currency.singular", currencyName)
-                    .eq("wallet.balances.currency.plural", currencyName)
+                    .eq("currency.singular", currencyName)
+                    .eq("currency.plural", currencyName)
                     .endOr()
-                    .orderBy("wallet.balances.amount desc")
-                    .setFirstRow(offset) // Equivalente a setFirstResult
-                    .setMaxRows(limit)   // Equivalente a setMaxResults
+                    .orderBy("amount desc") // Ahora ordenamos por una propiedad directa del BalanceDb
+                    .setFirstRow(offset)
+                    .setMaxRows(limit)
                     .findList();
 
-            return accountDbs.stream()
+            return topBalances.stream()
+                    .flatMap(balance -> balance.getWallet().getAccounts().stream())
+                    .distinct() // Evita duplicados si una wallet tiene varias cuentas
+                    .limit(limit)
                     .map(AccountMapper::toDomain)
                     .collect(Collectors.toList());
 
         } catch (Exception e) {
-            // En Ebean, las consultas de lectura no requieren rollback manual
             throw new RepositoryException("Error retrieving accounts by currency", e);
         }
     }
