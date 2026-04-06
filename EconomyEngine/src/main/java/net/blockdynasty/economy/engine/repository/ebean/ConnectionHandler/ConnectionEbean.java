@@ -1,0 +1,67 @@
+/**
+ * Copyright 2025 Federico Barrionuevo "@federkone"
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler;
+
+import io.ebean.Database;
+import io.ebean.DatabaseFactory;
+import io.ebean.config.DatabaseConfig;
+import io.ebean.datasource.DataSourceConfig;
+import net.blockdynasty.economy.engine.repository.ebean.Models.AccountDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.BalanceDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.CurrencyDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.WalletDb;
+
+public abstract class ConnectionEbean implements Connection {
+    private Database database;
+    protected DatabaseConfig config = new DatabaseConfig();
+    protected DataSourceConfig dsConfig = new DataSourceConfig();
+
+    public ConnectionEbean() {
+        config.setDdlGenerate(true);
+        config.setDdlRun(true);
+        //config.setDdlCreateOnly(false);
+
+        config.addClass(CurrencyDb.class);
+        config.addClass(AccountDb.class);
+        config.addClass(BalanceDb.class);
+        config.addClass(WalletDb.class);
+    }
+
+    protected void init() {
+        try {
+            this.config.setDataSourceConfig(dsConfig);
+            this.database = DatabaseFactory.create(config);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error al iniciar el motor de Ebean: " + ex);
+        }
+    }
+
+    @Override
+    public Database getDatabase() {
+        return database;
+    }
+
+    @Override
+    public void close() {
+        if (database != null) {
+            database.shutdown(); // Cierra el pool y libera recursos
+        }
+        stopServer();
+    }
+
+    protected abstract void stopServer();
+}

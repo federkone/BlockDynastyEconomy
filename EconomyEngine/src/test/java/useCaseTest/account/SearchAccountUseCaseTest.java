@@ -131,6 +131,7 @@ public class SearchAccountUseCaseTest {
     @Test
     void getTopAccountsUseCaseTest() {
         Result<List<Account>> resultTopAccounts = searchAccountUseCase.getTopAccounts("default",10,0);
+        assertTrue(resultTopAccounts.isSuccess());
         List<Account> accounts = resultTopAccounts.getValue();
 
         List<Account> accounts2= repository.loadAccounts( );

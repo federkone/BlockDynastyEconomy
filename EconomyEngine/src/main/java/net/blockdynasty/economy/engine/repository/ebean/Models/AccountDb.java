@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.Models;
+package net.blockdynasty.economy.engine.repository.ebean.Models;
 
 import jakarta.persistence.*;
 
@@ -39,7 +39,6 @@ public class AccountDb {
     private boolean canReceiveCurrency;
 
     @Column(name = "block") //default false
-    @org.hibernate.annotations.ColumnDefault("false")
     private boolean block;
 
     public AccountDb() {

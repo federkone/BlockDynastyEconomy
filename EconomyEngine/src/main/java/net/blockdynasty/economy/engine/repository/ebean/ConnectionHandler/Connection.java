@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.Models;
+package net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler;
 
-import jakarta.persistence.Embeddable;
 
-import java.io.Serializable;
-
-@Embeddable
-public class BalanceId implements Serializable {
-    private Long walletId;
-    private Long currencyId;
+public interface Connection {
+    io.ebean.Database getDatabase();
+    void close();
 }

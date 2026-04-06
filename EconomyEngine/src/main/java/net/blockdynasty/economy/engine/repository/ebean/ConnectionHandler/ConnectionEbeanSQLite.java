@@ -14,31 +14,49 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.ConnectionHandler.Hibernate;
+package net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler;
 
-import net.blockdynasty.economy.engine.repository.hibernate.DbConfig;
+import net.blockdynasty.economy.engine.repository.ebean.DbConfig;
 import net.blockdynasty.economy.libs.services.Console;
 import org.h2.tools.Server;
-import org.h2.Driver;
+import org.sqlite.JDBC;
+
+
 import java.nio.charset.StandardCharsets;
 
-public class ConnectionHibernateH2 extends ConnectionHibernate {
+import io.ebean.datasource.DataSourceConfig;
+
+public class ConnectionEbeanSQLite extends ConnectionEbean {
     private Server webServer;
-
-    public ConnectionHibernateH2(DbConfig dbConfig) {
+    public ConnectionEbeanSQLite(DbConfig dbconfig) {
         super();
-        String url = "jdbc:h2:file:" + dbConfig.getDatabasePath() + "/h2Database";
-        configuration.setProperty("hibernate.hikari.driverClassName", Driver.class.getName());
-        configuration.setProperty("hibernate.hikari.jdbcUrl", url);
 
-        configuration.setProperty("hibernate.hikari.maximumPoolSize", "10");
-        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
+        // 1. URL de conexión estándar para SQLite
+        String url = "jdbc:sqlite:" + dbconfig.getDatabasePath() + "/database.db";
 
-        configuration.setProperty("hibernate.hikari.poolName", "H2Pool");
+        DataSourceConfig dsConfig = new DataSourceConfig();
+        dsConfig.setDriver(JDBC.class.getName());
+        dsConfig.setUrl(url);
+
+        // En SQLite, el pool debe ser de 1 conexión para evitar bloqueos de escritura
+        dsConfig.setMaxConnections(1);
+        dsConfig.setWaitTimeoutMillis(30000);
+
+        // 2. Configuración de PRAGMAs (WAL y Synchronous)
+        // Ebean permite pasar estas propiedades que el driver de SQLite aplica al conectar
+        dsConfig.addProperty("journal_mode", "WAL");
+        dsConfig.addProperty("synchronous", "NORMAL");
+
+        // 3. Asignar configuración
+        config.setDataSourceConfig(dsConfig);
+
+        // 4. Inicializar Ebean
         this.init();
 
-        if (dbConfig.isEnableWebEditorSqlServer()) {
-            startServerConsole(dbConfig.getDatabasePath());
+        if (dbconfig.isEnableWebEditorSqlServer()) {
+            // Nota: SQLite no tiene una consola web nativa como H2.
+            // Si usabas una herramienta externa, asegúrate de que sea compatible.
+            startServerConsole(dbconfig.getDatabasePath());
         }
     }
 
@@ -81,5 +99,6 @@ public class ConnectionHibernateH2 extends ConnectionHibernate {
         if (webServer != null) {
             webServer.stop();
         }
+
     }
 }

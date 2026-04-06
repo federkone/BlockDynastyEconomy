@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.Mappers;
+package net.blockdynasty.economy.engine.repository.ebean.Mappers;
 
 import net.blockdynasty.economy.core.domain.entities.currency.Currency;
 import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
-import net.blockdynasty.economy.engine.repository.hibernate.Models.CurrencyDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.CurrencyDb;
+
 
 import java.util.List;
 import java.util.UUID;

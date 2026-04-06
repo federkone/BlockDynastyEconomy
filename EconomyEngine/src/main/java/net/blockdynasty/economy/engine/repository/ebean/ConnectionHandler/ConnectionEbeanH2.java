@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.ConnectionHandler.Hibernate;
+package net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler;
 
-import net.blockdynasty.economy.engine.repository.hibernate.DbConfig;
+import net.blockdynasty.economy.engine.repository.ebean.DbConfig;
 import net.blockdynasty.economy.libs.services.Console;
+import org.h2.Driver;
 import org.h2.tools.Server;
-import org.sqlite.JDBC;
+
 import java.nio.charset.StandardCharsets;
 
-public class ConnectionHibernateSQLite extends ConnectionHibernate{
+public class ConnectionEbeanH2 extends ConnectionEbean {
     private Server webServer;
-    public ConnectionHibernateSQLite(DbConfig dbConfig) {
+
+    public ConnectionEbeanH2(DbConfig dBconfig) {
         super();
-        String url = "jdbc:sqlite:" + dbConfig.getDatabasePath() + "/database.db";
-        configuration.setProperty("hibernate.hikari.driverClassName", JDBC.class.getName());
-        configuration.setProperty("hibernate.hikari.jdbcUrl", url);
-        configuration.setProperty("hibernate.hikari.maximumPoolSize", "1");
-        configuration.setProperty("hibernate.hikari.connectionTimeout", "30000");
-        configuration.setProperty("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect");
-        configuration.setProperty("hibernate.hikari.dataSource.journal_mode", "WAL");
-        configuration.setProperty("hibernate.hikari.dataSource.synchronous", "NORMAL");
+        String url = "jdbc:h2:file:" + dBconfig.getDatabasePath() + "/h2Database";
+        dsConfig.setDriver(Driver.class.getName());
+        dsConfig.setUrl(url);
+        dsConfig.setUsername("");
+        dsConfig.setPassword("");
+
+        dsConfig.setMaxConnections(10);
+        dsConfig.setWaitTimeoutMillis(30000);
+
         this.init();
 
-        if (dbConfig.isEnableWebEditorSqlServer()) {
-            startServerConsole(dbConfig.getDatabasePath());
+        if (dBconfig.isEnableWebEditorSqlServer()) {
+            startServerConsole(dBconfig.getDatabasePath());
         }
     }
 
@@ -80,6 +83,5 @@ public class ConnectionHibernateSQLite extends ConnectionHibernate{
         if (webServer != null) {
             webServer.stop();
         }
-
     }
 }

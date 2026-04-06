@@ -21,10 +21,9 @@ import net.blockdynasty.economy.core.domain.entities.account.Exceptions.AccountN
 import net.blockdynasty.economy.core.domain.entities.currency.Currency;
 import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 import net.blockdynasty.economy.core.domain.persistence.entities.IAccountRepository;
+import net.blockdynasty.economy.engine.repository.ebean.AccountRepository;
+import net.blockdynasty.economy.engine.repository.ebean.CurrencyRepository;
 import org.junit.jupiter.api.AfterAll;
-import net.blockdynasty.economy.engine.repository.hibernate.AccountRepository;
-import net.blockdynasty.economy.engine.repository.hibernate.CurrencyRepository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -34,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CrudAccountTest {
-   IAccountRepository accountRepository = new AccountRepository(new MockConnectionHibernateH2().getSession());
-   CurrencyRepository currencyRepository = new CurrencyRepository(new MockConnectionHibernateH2().getSession());
+   IAccountRepository accountRepository = new AccountRepository(FactoryRepo.getConnection().getDatabase());
+   CurrencyRepository currencyRepository = new CurrencyRepository(FactoryRepo.getConnection().getDatabase());
 
     @Test
     public void testCreateAccount() {

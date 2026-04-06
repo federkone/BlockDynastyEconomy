@@ -21,9 +21,9 @@ import net.blockdynasty.economy.core.domain.entities.currency.Exceptions.Currenc
 import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 import net.blockdynasty.economy.core.domain.persistence.entities.ICurrencyRepository;
 
+import net.blockdynasty.economy.engine.repository.ebean.CurrencyRepository;
 import org.junit.jupiter.api.AfterAll;
-import net.blockdynasty.economy.engine.repository.hibernate.CurrencyRepository;
-import repositoryTest.ConnectionHandler.MockConnectionHibernateH2;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CrudCurrencyTest {
-        ICurrencyRepository currencyRepository = new CurrencyRepository(new MockConnectionHibernateH2().getSession());
+        ICurrencyRepository currencyRepository = new CurrencyRepository(FactoryRepo.getConnection().getDatabase());
         @BeforeEach
         public void setUp() {
         }

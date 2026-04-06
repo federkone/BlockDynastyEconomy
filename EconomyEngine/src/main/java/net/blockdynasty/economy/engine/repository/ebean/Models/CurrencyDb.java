@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate.Models;
+package net.blockdynasty.economy.engine.repository.ebean.Models;
 
 import jakarta.persistence.*;
+import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -66,11 +67,8 @@ public class CurrencyDb {
     private double exchangeRate;
 
     @Column(name = "physical_item_supported")
-    //@org.hibernate.annotations.ColumnDefault("false")
     private Boolean physicalItemSupported=false;
 
-    //@OnDelete(action = OnDeleteAction.CASCADE)
-    //@OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "currency_interchangeable",
@@ -79,7 +77,6 @@ public class CurrencyDb {
     )
     private List<CurrencyDb> interchangeableWith  = new ArrayList<>();
 
-    //esto se agrega para que hibernate elimine en cascada los balances asociados a esta moneda
     @OneToMany(mappedBy = "currency", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BalanceDb> balances = new ArrayList<>();
 
@@ -166,10 +163,11 @@ public class CurrencyDb {
         this.exchangeRate = exchangeRate;
     }
     public List<CurrencyDb> getInterchangeableWith() {
-        return interchangeableWith;
+      // return interchangeableWith;
+        return List.of();
     }
     public void setInterchangeableWith(List<CurrencyDb> interchangeableWith) {
-        this.interchangeableWith = interchangeableWith;
+        //this.interchangeableWith = interchangeableWith;
     }
 
 }

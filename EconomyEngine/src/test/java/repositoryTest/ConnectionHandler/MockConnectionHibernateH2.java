@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repositoryTest.ConnectionHandler;
+/*package repositoryTest.ConnectionHandler;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -67,4 +67,4 @@ public class MockConnectionHibernateH2 implements Connection {
             sessionFactory.close();
         }
     }
-}
+}*/

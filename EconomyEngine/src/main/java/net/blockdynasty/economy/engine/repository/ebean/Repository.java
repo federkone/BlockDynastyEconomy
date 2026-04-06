@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package net.blockdynasty.economy.engine.repository.hibernate;
+package net.blockdynasty.economy.engine.repository.ebean;
 
+
+import jakarta.persistence.NonUniqueResultException;
 import net.blockdynasty.economy.core.domain.entities.account.Account;
 import net.blockdynasty.economy.core.domain.entities.account.Exceptions.AccountAlreadyExist;
 import net.blockdynasty.economy.core.domain.entities.account.Exceptions.AccountNotFoundException;
@@ -28,24 +30,27 @@ import net.blockdynasty.economy.core.domain.persistence.entities.ICurrencyReposi
 import net.blockdynasty.economy.core.domain.persistence.entities.IRepository;
 import net.blockdynasty.economy.core.domain.result.ErrorCode;
 import net.blockdynasty.economy.core.domain.result.Result;
-import org.hibernate.NonUniqueResultException;
-import org.hibernate.SessionFactory;
+import net.blockdynasty.economy.engine.repository.ebean.ConnectionHandler.Connection;
+import net.blockdynasty.economy.engine.repository.ebean.Models.AccountDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.BalanceDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.CurrencyDb;
+import net.blockdynasty.economy.engine.repository.ebean.Models.WalletDb;
 
 import java.util.List;
 import java.util.UUID;
 
 public class Repository extends TransactionRepository implements IRepository {
     private Connection connection;
-    private final SessionFactory sessionFactory;
+    private final io.ebean.Database database;
     private IAccountRepository accountRepository;
     private ICurrencyRepository currencyRepository;
 
     public Repository(Connection connection) {
-        super(connection.getSession());
+        super(connection.getDatabase());
         this.connection = connection;
-        this.sessionFactory = connection.getSession();
-        this.accountRepository = new AccountRepository(sessionFactory);
-        this.currencyRepository = new CurrencyRepository(sessionFactory);
+        this.database = connection.getDatabase();
+        this.accountRepository = new AccountRepository(database);
+        this.currencyRepository = new CurrencyRepository(database);
     }
 
     @Override
@@ -224,28 +229,26 @@ public class Repository extends TransactionRepository implements IRepository {
 
     @Override
     public void clearAll() {
-        try (org.hibernate.Session session = sessionFactory.openSession()) {
-            org.hibernate.Transaction tx = session.beginTransaction();
-            try {
-                // Delete in correct order to respect foreign key constraints
+        try (io.ebean.Transaction tx = database.beginTransaction()) {
+            // Ebean permite ejecutar SQL crudo o DQL para borrados masivos.
+            // El orden se mantiene para respetar las claves foráneas.
 
-                // First remove balances (which reference wallets and currencies)
-                session.createQuery("DELETE FROM BalanceDb").executeUpdate();
+            // 1. Borrar Balances
+            database.createQuery(BalanceDb.class).delete();
 
-                // Then remove accounts (which reference wallets)
-                session.createQuery("DELETE FROM AccountDb").executeUpdate();
+            // 2. Borrar Cuentas
+            database.createQuery(AccountDb.class).delete();
 
-                // Now it's safe to remove wallets as no accounts reference them
-                session.createQuery("DELETE FROM WalletDb").executeUpdate();
+            // 3. Borrar Wallets
+            database.createQuery(WalletDb.class).delete();
 
-                // Finally currencies can be removed
-                session.createQuery("DELETE FROM CurrencyDb").executeUpdate();
+            // 4. Borrar Monedas
+            database.createQuery(CurrencyDb.class).delete();
 
-                tx.commit();
-            } catch (Exception e) {
-                tx.rollback();
-                throw new RepositoryException("Error clearing database: " + e.getMessage(), e);
-            }
+            tx.commit();
+        } catch (Exception e) {
+            // Rollback automático al no hacer commit()
+            throw new RepositoryException("Error clearing database: " + e.getMessage(), e);
         }
     }
 }

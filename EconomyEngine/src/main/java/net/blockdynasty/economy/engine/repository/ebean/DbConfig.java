@@ -1,4 +1,4 @@
-package net.blockdynasty.economy.engine.repository.hibernate;
+package net.blockdynasty.economy.engine.repository.ebean;
 
 import net.blockdynasty.economy.engine.platform.files.IConfigurationEngine;
 
