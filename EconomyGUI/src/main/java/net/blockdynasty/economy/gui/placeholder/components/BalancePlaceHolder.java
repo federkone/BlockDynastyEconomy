@@ -1,22 +1,18 @@
 package net.blockdynasty.economy.gui.placeholder.components;
 
-import net.blockdynasty.economy.core.aplication.useCase.account.getAccountUseCase.GetAccountByUUIDUseCase;
-import net.blockdynasty.economy.core.aplication.useCase.currency.SearchCurrencyUseCase;
-import net.blockdynasty.economy.core.domain.entities.account.Account;
+import net.blockdynasty.economy.core.aplication.useCase.transaction.balance.GetBalanceUseCase;
+import net.blockdynasty.economy.core.domain.entities.balance.Money;
 import net.blockdynasty.economy.core.domain.entities.currency.ICurrency;
 import net.blockdynasty.economy.core.domain.result.Result;
-import net.blockdynasty.economy.libs.util.colors.ChatColor;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
 public class BalancePlaceHolder {
-    private final GetAccountByUUIDUseCase getAccountByUUIDUseCase;
-    private final SearchCurrencyUseCase searchCurrencyUseCase;
-
+    private final GetBalanceUseCase getBalanceUseCase;
+    private final Formatter formatter;
     private static final Map<String, Locale> LOCALE_MAP = Map.ofEntries(
             Map.entry("english", Locale.ENGLISH), Map.entry("en", Locale.ENGLISH),
             Map.entry("french", Locale.FRENCH), Map.entry("fr", Locale.FRENCH),
@@ -34,72 +30,41 @@ public class BalancePlaceHolder {
             Map.entry("us", Locale.US)
     );
 
-    public BalancePlaceHolder(GetAccountByUUIDUseCase getAccountByUUIDUseCase, SearchCurrencyUseCase searchCurrencyUseCase) {
-        this.getAccountByUUIDUseCase = getAccountByUUIDUseCase;
-        this.searchCurrencyUseCase = searchCurrencyUseCase;
+    public BalancePlaceHolder(GetBalanceUseCase getBalanceUseCase) {
+        this.getBalanceUseCase = getBalanceUseCase;
+        this.formatter = new Formatter();
     }
 
     public String handle(UUID playerId, String placeholder) {
-        Result<Account> accountResult = getAccountByUUIDUseCase.execute(playerId);
-        Result<ICurrency> defaultCurrencyResult = searchCurrencyUseCase.getDefaultCurrency();
-
-        if (!accountResult.isSuccess()) return "Player data not found";
-        if (!defaultCurrencyResult.isSuccess()) return "Default currency not found";
-
-        return processInternal(placeholder, accountResult.getValue(), defaultCurrencyResult.getValue());
+        return processInternal(placeholder,playerId);
     }
 
-    private String processInternal(String placeholder, Account account, ICurrency defaultCurrency) {
+    private String processInternal(String placeholder, UUID playerId) {
         if (placeholder.equals("balance_default")) {
-            return String.valueOf(Math.round(account.getMoney(defaultCurrency).getAmount().doubleValue()));
+            Result<Money> balanceResult = getBalanceUseCase.execute(playerId);
+            if (!balanceResult.isSuccess()) return balanceResult.getErrorMessage();
+            return balanceResult.getValue().getAmount().toString();
         }
 
         if (placeholder.equals("balance_default_formatted")) {
-            return defaultCurrency.format(account.getMoney(defaultCurrency).getAmount());
+            Result<Money> balanceResult = getBalanceUseCase.execute(playerId);
+            if (!balanceResult.isSuccess()) return balanceResult.getErrorMessage();
+            Money money = balanceResult.getValue();
+            ICurrency currency = money.getCurrency();
+            BigDecimal amount = money.getAmount();
+            return currency.format(amount);
         }
 
         String[] parts = placeholder.split("_");
         if (parts.length < 2) return "Invalid placeholder format";
 
         String currencyName = parts[1];
-        Result<ICurrency> result = searchCurrencyUseCase.getCurrency(currencyName);
-        if (!result.isSuccess()) return "Currency not found";
 
-        ICurrency currency = result.getValue();
-        BigDecimal amount = account.getMoney(currency).getAmount();
+        Result<Money> balanceResult = getBalanceUseCase.execute(playerId, currencyName);
+        if (!balanceResult.isSuccess()) return balanceResult.getErrorMessage();
+        Money money = balanceResult.getValue();
 
-        boolean isFormattedPlaceholder = placeholder.startsWith("balance_" + currencyName + "_formatted");
-        Locale locale = getLocaleFromPlaceholder(parts);
-
-        return formatBalance(currency, amount, isFormattedPlaceholder, locale != null ? locale : Locale.US, locale != null);
-    }
-
-    private Locale getLocaleFromPlaceholder(String[] parts) {
-        if (parts.length >= 3) {
-            String possibleLocale = parts[parts.length - 1].toLowerCase();
-            return LOCALE_MAP.get(possibleLocale);
-        }
-        return null;
-    }
-
-    private String formatBalance(ICurrency currency, BigDecimal amountBD, boolean isFormatted, Locale locale, boolean hasLocale) {
-        double amount = amountBD.doubleValue();
-        String prefix = isFormatted ? ChatColor.formatColorToPlaceholder(currency.getColor()) : "";
-
-        if (hasLocale) {
-            NumberFormat formatter = NumberFormat.getNumberInstance(locale);
-            int fractionDigits = currency.isDecimalSupported() ? 2 : 0;
-            formatter.setMaximumFractionDigits(fractionDigits);
-            formatter.setMinimumFractionDigits(fractionDigits);
-
-            double amountToFormat = currency.isDecimalSupported() ? amount : Math.floor(amount);
-            return prefix + formatter.format(amountToFormat);
-        }
-
-        if (isFormatted) {
-            return prefix + currency.format(amountBD);
-        }
-
-        return currency.isDecimalSupported() ? String.valueOf(amount) : String.valueOf((int) Math.floor(amount));
+        //locale donde esta??
+        return formatter.format(placeholder,parts,money);
     }
 }

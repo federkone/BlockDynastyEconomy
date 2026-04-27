@@ -35,10 +35,7 @@ public class PlaceHolderDynastyEconomy implements IPlaceHolderDynastyEconomy {
     public PlaceHolderDynastyEconomy(UseCaseFactory useCaseFactory, UUID id) {
         this.id = id;
         this.topHandler = new TopPlaceHolder(useCaseFactory.topAccounts());
-        this.balanceHandler = new BalancePlaceHolder(
-                useCaseFactory.searchAccountByUUID(),
-                useCaseFactory.searchCurrency()
-        );
+        this.balanceHandler = new BalancePlaceHolder(useCaseFactory.getBalance());
         this.balanceItemsHandler = new BalanceItemsPlaceHolder();
         this.balanceItemsAndVirtualHandler = new BalanceItemsAndVirtualPlaceHolder(useCaseFactory.getBalance());
     }
