@@ -126,10 +126,10 @@ public abstract class AbstractPanel implements IGUI {
     @Override
     public void fill() {
         IButton fillBlueGlass = Button.builder()
-                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.BLUE_STAINED_GLASS_PANE).build()))
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.GRAY_STAINED_GLASS_PANE).build()))
                 .build();
         IButton fillGlass = Button.builder()
-                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.GLASS_PANE).build()))
+                .setItemStack(Item.of(RecipeItem.builder().setMaterial(Materials.GRAY_STAINED_GLASS_PANE).build()))
                 .build();
 
         int rows = (getRows()*9) / 9;

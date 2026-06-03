@@ -134,8 +134,8 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     protected IItemStack createEmptyMessage() {
         RecipeItem recipe = RecipeItem.builder()
                 .setMaterial(Materials.BARRIER)
-                .setName(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)), "Paginated.button1.nameItem"))
-                .setLore(Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)), "Paginated.button1.lore"))
+                .setName("No hay elementos")
+                .setLore("No hay elementos para mostrar")
                 .build();
         return Item.of(recipe);
     }
@@ -156,9 +156,10 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
 
     protected IItemStack createPreviousButton() {
         RecipeItem recipe = RecipeItem.builder()
-                .setMaterial(Materials.ARROW)
-                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button2.nameItem"))
-                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button2.lore"))
+                .setMaterial(Materials.BARRIER)
+                .setTexture("http://textures.minecraft.net/texture/f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc")
+                .setName("Página Anterior")
+                .setLore("Ir hacia la Página Anterior")
                 .build();
         return Item.of(recipe);
     }
@@ -166,8 +167,9 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     protected IItemStack createNextButton() {
         RecipeItem recipe = RecipeItem.builder()
                 .setMaterial(Materials.ARROW)
-                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.AQUA)),"Paginated.button3.nameItem"))
-                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button3.lore"))
+                .setTexture("http://textures.minecraft.net/texture/96339ff2e5342ba18bdc48a99cca65d123ce781d878272f9d964ead3b8ad370")
+                .setName("Página Siguiente")
+                .setLore("Ir Hacia la siguiente página.")
                 .build();
         return Item.of(recipe);
     }
@@ -175,8 +177,9 @@ public abstract class PaginatedPanel<T> extends AbstractPanel {
     protected IItemStack createBackButton() {
         RecipeItem recipe = RecipeItem.builder()
                 .setMaterial(Materials.BARRIER)
-                .setName( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.RED)),"Paginated.button4.nameItem"))
-                .setLore( Message.process(Map.of("color", ChatColor.stringValueOf(Colors.WHITE)),"Paginated.button4.lore"))
+                .setTexture("http://textures.minecraft.net/texture/f84f597131bbe25dc058af888cb29831f79599bc67c95c802925ce4afba332fc")
+                .setName("Atrás")
+                .setLore("Ir Hacia el menú anterior.")
                 .build();
 
         setButton(getBackButtonSlot(), Button.builder()

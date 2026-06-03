@@ -2,6 +2,8 @@ package net.blockdynasty.economy.gui.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.tools.javac.Main;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Base64;
@@ -68,5 +70,10 @@ public class TextureValidator {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    //main test
+    public static void main(String[] args){
+        System.out.println(TextureValidator.validateInput("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTljZGI5YWYzOGNmNDFkYWE1M2JjOGNkYTc2NjVjNTA5NjMyZDE0ZTY3OGYwZjE5ZjI2M2Y0NmU1NDFkOGEzMCJ9fX0="));
     }
 }

@@ -36,17 +36,17 @@ public class CommandService {
     private static UseCaseFactory useCaseFactory;
     private static PlatformCommand platformAdapter;
 
-    public static void init(PlatformCommand platformAdapter, UseCaseFactory useCaseFactory) {
+    public static void init(PlatformCommand platformAdapter) {
         //MessageService.setProvider(messageProvider);
         CommandService.MainCommands = new ArrayList<>();
-        CommandService.useCaseFactory = useCaseFactory;
+        CommandService.useCaseFactory = null;
         CommandService.platformAdapter = platformAdapter;
         CommandService.registerCommands();
     }
 
     //tree structure of commands
     private static void registerCommands(){
-        OfferCommand offerCommand = new OfferCommand();//main
+       /* OfferCommand offerCommand = new OfferCommand();//main
         EconomyCommand economyCommand = new EconomyCommand();//main
         CurrencyCommand currencyCommand = new CurrencyCommand();//main
         WithdrawCommand withdrawCommand = new WithdrawCommand(useCaseFactory.withdraw());
@@ -126,6 +126,9 @@ public class CommandService {
         MainCommands.add(balanceTopCommand);
         MainCommands.add(exchangeCommand);
         MainCommands.add(bankGUICommand);
+*/
+
+        MainCommands.add(new WorksMainMenuCommand());
     }
 
     public static List<Command> getMainCommands() {

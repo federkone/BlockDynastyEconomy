@@ -22,6 +22,7 @@ import net.blockdynasty.economy.core.domain.services.courier.Courier;
 import net.blockdynasty.economy.core.domain.services.log.Log;
 import net.blockdynasty.economy.engine.repository.hibernate.Connection;
 import net.blockdynasty.economy.engine.repository.hibernate.ConnectionFactory;
+import net.blockdynasty.economy.gui.gui.templates.workGui.WorkGuiFactory;
 import net.blockdynasty.economy.libs.abstractions.platform.entity.IPlayer;
 import net.blockdynasty.economy.engine.apiImplement.ApiFactory;
 import net.blockdynasty.economy.engine.configFromChannel.ProxyConfigRequest;
@@ -40,6 +41,7 @@ import net.blockdynasty.economy.gui.commands.CommandService;
 import net.blockdynasty.economy.gui.placeholder.IPlaceHolderDynastyEconomy;
 import net.blockdynasty.economy.gui.placeholder.PlaceholderFactory;
 import net.blockdynasty.economy.engine.repository.hibernate.ConnectionHandler.Hibernate.*;
+import net.blockdynasty.economy.libs.services.TrabajosService.TrabajosService;
 import net.blockdynasty.providers.services.ServiceProvider;
 import net.blockdynasty.economy.libs.services.configuration.IConfiguration;
 import net.blockdynasty.economy.libs.util.colors.ChatColor;
@@ -93,19 +95,20 @@ public class Economy {
     }
 
     public void startServer(IConfigurationEngine configuration){
-        this.initDatabase(configuration);
+        //this.initDatabase(configuration);
 
-        this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
+        //this.core=new Core(repository,60,createPublisher(configuration,platformAdapter),new EconomyLogger( configuration,platformAdapter.getScheduler()));
 
-        this.createSubscriber(configuration,platformAdapter);
-        Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
-        HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().pay(),core.getUseCaseFactory().searchCurrency());
-        CommandService.init(platformAdapter,core.getUseCaseFactory());
-        GUISystem.init(core.getUseCaseFactory(),platformAdapter,new Message(),configuration);
-        EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
+        //this.createSubscriber(configuration,platformAdapter);
+        //Economy.playerJoinListener = new PlayerJoinListener(core.getUseCaseFactory(),core.getServicesManager().getAccountService(),configuration.getBoolean("online"),platformAdapter.isOnlineMode());
+        //HardCashService.init(configuration, platformAdapter, core.getUseCaseFactory().deposit(),core.getUseCaseFactory().withdraw(),core.getUseCaseFactory().pay(),core.getUseCaseFactory().searchCurrency());
+        CommandService.init(platformAdapter);
+        GUISystem.init(platformAdapter,new Message(),configuration);
+        WorkGuiFactory.init(new TrabajosService(platformAdapter),platformAdapter);
+        //EventListener.register(core.getServicesManager().getEventManager(),platformAdapter);
 
-        apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger(), configuration);
-        placeholderFactory.updateDependencies(core.getUseCaseFactory());
+        //apiFactory.updateDependencies(core.getUseCaseFactory(), getVaultLogger(), configuration);
+        //placeholderFactory.updateDependencies(core.getUseCaseFactory());
         platformAdapter.startServer(configuration);
     }
 

@@ -29,11 +29,11 @@ import java.util.UUID;
 public class GUISystem {
     private static final IGUIService guiService = new GUIService();
 
-    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IMessages messages, IConfigurationGUI config) {
+    public static void init(PlatformGUI adapter, IMessages messages, IConfigurationGUI config) {
         Item.init(adapter);
         Inventory.init(adapter);
         Message.addLang(messages);
-        GUIFactory.init(useCaseFactory, adapter, config);
+        GUIFactory.init(adapter, config);
     }
 
 

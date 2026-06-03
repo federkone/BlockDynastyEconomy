@@ -44,11 +44,11 @@ public class GUIFactory {
     private static UseCaseFactory useCaseFactory;
     private static PlatformGUI platformAdapter;
 
-    public static void init(UseCaseFactory useCaseFactory, PlatformGUI adapter, IConfigurationGUI configuration) {
+    public static void init( PlatformGUI adapter, IConfigurationGUI configuration) {
         GUIFactory.platformAdapter = adapter;
         GUIFactory.config = configuration;
         GUIFactory.textInput = adapter.getTextInput();
-        GUIFactory.useCaseFactory= useCaseFactory;
+        GUIFactory.useCaseFactory= null;
         BankPanel.setButtonsState(config.getButtonsConfig());
     }
 

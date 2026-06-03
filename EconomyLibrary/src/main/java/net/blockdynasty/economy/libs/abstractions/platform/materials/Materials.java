@@ -23,6 +23,7 @@ public enum Materials {
     // Basic materials
     GLASS_PANE,
     BLUE_STAINED_GLASS_PANE,
+    GRAY_STAINED_GLASS_PANE,
     RED_CONCRETE,
     LIME_CONCRETE,
     EMERALD_BLOCK,
